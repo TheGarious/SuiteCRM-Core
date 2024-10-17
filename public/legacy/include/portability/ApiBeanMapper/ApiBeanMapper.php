@@ -36,6 +36,7 @@ require_once __DIR__ . '/TypeMappers/DateMapper.php';
 require_once __DIR__ . '/TypeMappers/DateTimeMapper.php';
 require_once __DIR__ . '/TypeMappers/DateTimeComboMapper.php';
 require_once __DIR__ . '/TypeMappers/MultiEnumMapper.php';
+require_once __DIR__ . '/TypeMappers/MultiRelateMapper.php';
 require_once __DIR__ . '/TypeMappers/BooleanMapper.php';
 require_once __DIR__ . '/TypeMappers/HtmlMapper.php';
 require_once __DIR__ . '/TypeMappers/TextMapper.php';
@@ -83,6 +84,7 @@ class ApiBeanMapper
         $this->typeMappers[DateMapper::getType()] = new DateMapper();
         $this->typeMappers[DateTimeMapper::getType()] = new DateTimeMapper();
         $this->typeMappers[MultiEnumMapper::getType()] = new MultiEnumMapper();
+        $this->typeMappers[MultiRelateMapper::getType()] = new MultiRelateMapper();
         $this->typeMappers[BooleanMapper::getType()] = new BooleanMapper();
         $this->typeMappers['boolean'] = $this->typeMappers[BooleanMapper::getType()];
         $this->typeMappers[HtmlMapper::getType()] = new HtmlMapper();
@@ -594,8 +596,11 @@ class ApiBeanMapper
             }
         }
 
-        if (!empty($properties['isMultiSelect']) || $type === 'multienum') {
+        if ((!empty($properties['isMultiSelect']) || $type === 'multienum')) {
             $multiSelectValue = $values[$field];
+            if($type === 'multirelate') {
+                return;
+            }
             if (!is_array($values[$field])) {
                 $multiSelectValue = [];
             }
