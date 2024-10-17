@@ -51,7 +51,7 @@ class BeanMultiRelateSaveHandler implements BeanSaveHandlerInterface
                 continue;
             }
 
-            if (empty($bean->$key) || !is_array($bean->$key)) {
+            if (!isset($bean->$key) || !is_array($bean->$key)) {
                 continue;
             }
 
@@ -66,7 +66,10 @@ class BeanMultiRelateSaveHandler implements BeanSaveHandlerInterface
             }
 
             $ids = $this->getAddedRelatedIds($key, $bean);
-            $bean->$linkName->add($ids);
+
+            if(!empty($ids)) {
+                $bean->$linkName->add($ids);
+            }
         }
     }
 
@@ -77,7 +80,12 @@ class BeanMultiRelateSaveHandler implements BeanSaveHandlerInterface
      */
     protected function getAddedRelatedIds(int|string $key, SugarBean $bean): array
     {
+        if (empty($bean->$key)) {
+            return [];
+        }
+
         $ids = [];
+
         foreach ($bean->$key as $item) {
             $id = $item['id'] ?? '';
             $deleted = $item['deleted'] ?? 0;
