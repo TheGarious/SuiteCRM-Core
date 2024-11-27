@@ -46,6 +46,8 @@ export class GroupFieldComponent extends BaseFieldComponent implements AfterView
     @ViewChild('wrapper') wrapper: ElementRef;
     direction: WritableSignal<string> = signal<string>('');
     hasValidConfig: boolean;
+    fieldModes: {[key: string]: string} = {};
+    fields: Field[];
     protected recalculateDirectionBuffer = new Subject<boolean>();
     protected recalculateDirectionBuffer$: Observable<any> = this.recalculateDirectionBuffer.asObservable();
 
@@ -77,6 +79,8 @@ export class GroupFieldComponent extends BaseFieldComponent implements AfterView
 
         this.triggerRecalculateDirection();
 
+        this.fields = this.getFields();
+
         this.hasValidConfig = this.isConfigured();
     }
 
@@ -84,12 +88,12 @@ export class GroupFieldComponent extends BaseFieldComponent implements AfterView
         this.triggerRecalculateDirection();
     }
 
-    getComponentType(type: string, definition: FieldDefinition): any {
+    getComponentType(name:string, type: string, definition: FieldDefinition): any {
         let module = (this.record && this.record.module) || 'default';
 
         const displayType = (definition && definition.displayType) || '';
 
-        return this.registry.getDisplayType(module, type, displayType, this.mode, this.field.name);
+        return this.registry.getDisplayType(module, type, displayType, this.fieldModes[name] ?? this.mode, this.field.name);
     }
 
     /**
@@ -100,13 +104,23 @@ export class GroupFieldComponent extends BaseFieldComponent implements AfterView
     getFields(): Field[] {
         const fields: Field[] = [];
 
+        const fieldModes= {...this.fieldModes};
+
         this.field.definition.layout.forEach(name => {
             if (!this.record.fields[name] || this.record.fields[name]?.display() === 'none') {
                 return;
             }
 
+            fieldModes[name] = this.mode;
+
+            if (this.record?.fields[name]?.readonly){
+                fieldModes[name] = 'detail';
+            }
+
             fields.push(this.record.fields[name]);
         });
+
+        this.fieldModes = fieldModes;
 
         return fields;
     }
