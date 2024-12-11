@@ -105,6 +105,7 @@ class ModuleMetadataProvider implements ModuleMetadataProviderInterface
             $metadataArray['listview'] = $viewDefinitions->getListView() ?? [];
             $metadataArray['subpanel'] = $viewDefinitions->getSubPanel() ?? [];
             $metadataArray['recordview'] = $viewDefinitions->getRecordView() ?? [];
+            $metadataArray['recordmodal'] = $viewDefinitions->getRecordModal() ?? [];
             return $metadataArray;
         });
 
@@ -115,6 +116,7 @@ class ModuleMetadataProvider implements ModuleMetadataProviderInterface
         $metadata->setMassUpdate($metadataArray['mass_update'] ?? []);
         $metadata->setSubPanel($metadataArray['subpanel'] ?? []);
         $metadata->setRecordView($metadataArray['recordview'] ?? []);
+        $metadata->setRecordModal($metadataArray['recordmodal'] ?? []);
 
         $metadata->setRecentlyViewed($this->recentlyViewed->getModuleTrackers($moduleName));
         $metadata->setFavorites($this->favorites->getModuleFavorites($moduleName));

@@ -94,6 +94,11 @@ class ViewDefinitionsHandler extends LegacyHandler implements ViewDefinitionsPro
     private $recordViewDefinitionHandler;
 
     /**
+     * @var RecordModalDefinitionHandler
+     */
+    private $recordModalDefinitionHandler;
+
+    /**
      * @var SubPanelDefinitionHandler
      */
     private $subPanelDefinitionHandler;
@@ -128,6 +133,7 @@ class ViewDefinitionsHandler extends LegacyHandler implements ViewDefinitionsPro
      * @param ModuleNameMapperInterface $moduleNameMapper
      * @param FieldDefinitionsProviderInterface $fieldDefinitionProvider
      * @param RecordViewDefinitionHandler $recordViewDefinitionHandler
+     * @param RecordModalDefinitionHandler $recordModalDefinitionHandler
      * @param SubPanelDefinitionProviderInterface $subPanelDefinitionHandler
      * @param ListViewDefinitionHandler $listViewDefinitionsHandler
      * @param MassUpdateDefinitionProviderInterface $massUpdateDefinitionProvider
@@ -145,6 +151,7 @@ class ViewDefinitionsHandler extends LegacyHandler implements ViewDefinitionsPro
         ModuleNameMapperInterface             $moduleNameMapper,
         FieldDefinitionsProviderInterface     $fieldDefinitionProvider,
         RecordViewDefinitionHandler           $recordViewDefinitionHandler,
+        RecordModalDefinitionHandler          $recordModalDefinitionHandler,
         SubPanelDefinitionProviderInterface   $subPanelDefinitionHandler,
         ListViewDefinitionHandler             $listViewDefinitionsHandler,
         MassUpdateDefinitionProviderInterface $massUpdateDefinitionProvider,
@@ -165,6 +172,7 @@ class ViewDefinitionsHandler extends LegacyHandler implements ViewDefinitionsPro
         $this->moduleNameMapper = $moduleNameMapper;
         $this->fieldDefinitionProvider = $fieldDefinitionProvider;
         $this->recordViewDefinitionHandler = $recordViewDefinitionHandler;
+        $this->recordModalDefinitionHandler = $recordModalDefinitionHandler;
         $this->subPanelDefinitionHandler = $subPanelDefinitionHandler;
         $this->listViewDefinitionsHandler = $listViewDefinitionsHandler;
         $this->massUpdateDefinitionProvider = $massUpdateDefinitionProvider;
@@ -195,7 +203,8 @@ class ViewDefinitionsHandler extends LegacyHandler implements ViewDefinitionsPro
                 'listView',
                 'search',
                 'massUpdate',
-                'subPanel'
+                'subPanel',
+                'recordModal'
             ];
         }
 
@@ -225,6 +234,16 @@ class ViewDefinitionsHandler extends LegacyHandler implements ViewDefinitionsPro
                 $fieldDefinition
             );
             $viewDef->setRecordView($recordViewDefs);
+        }
+
+
+        if (in_array('recordModal', $views, true)) {
+            $recordModalDefs = $this->recordModalDefinitionHandler->fetch(
+                $moduleName,
+                $legacyModuleName,
+                $fieldDefinition
+            );
+            $viewDef->setRecordModal($recordModalDefs);
         }
 
         if (in_array('subPanel', $views, true)) {
@@ -303,6 +322,27 @@ class ViewDefinitionsHandler extends LegacyHandler implements ViewDefinitionsPro
         $viewDef->setId($moduleName);
         $recordViewDefs = $this->recordViewDefinitionHandler->fetch($moduleName, $legacyModuleName, $fieldDefinition);
         $viewDef->setRecordView($recordViewDefs);
+
+        $this->close();
+
+        return $viewDef;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getRecordModalDefs(string $moduleName): ViewDefinition
+    {
+        $this->init();
+
+        $fieldDefinition = $this->fieldDefinitionProvider->getVardef($moduleName);
+
+        $legacyModuleName = $this->validateModuleName($moduleName);
+
+        $viewDef = new ViewDefinition();
+        $viewDef->setId($moduleName);
+        $recordModalDefs = $this->recordModalDefinitionHandler->fetch($moduleName, $legacyModuleName, $fieldDefinition);
+        $viewDef->setRecordModal($recordModalDefs);
 
         $this->close();
 

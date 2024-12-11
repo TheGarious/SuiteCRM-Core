@@ -62,6 +62,19 @@ class ModuleMetadata
     public array $recordView;
 
     /**
+     * Record Modal metadata
+     *
+     * @var array
+     */
+    #[ApiProperty(
+        openapiContext: [
+            'type' => 'array',
+            'description' => 'The record-modal metadata',
+        ]
+    )]
+    public array $recordModal;
+
+    /**
      * Edit View metadata
      *
      * @var array
@@ -193,6 +206,7 @@ class ModuleMetadata
             'id' => $this->getId(),
             '_id' => $this->getId(),
             'recordView' => $this->getRecordView() ?? [],
+            'recordModal' => $this->getRecordModal() ?? [],
             'listView' => $this->getListView() ?? [],
             'search' => $this->getSearch() ?? [],
             'subPanel' => $this->getSubPanel() ?? [],
@@ -234,6 +248,24 @@ class ModuleMetadata
     public function setRecordView(?array $recordView): void
     {
         $this->recordView = $recordView;
+    }
+
+    /**
+     * Get Record Modal metadata
+     * @return array|null
+     */
+    public function getRecordModal(): ?array
+    {
+        return $this->recordModal ?? null;
+    }
+
+    /**
+     * Set Record Modal metadata
+     * @param array|null $recordModal
+     */
+    public function setRecordModal(?array $recordModal): void
+    {
+        $this->recordModal = $recordModal;
     }
 
     /**

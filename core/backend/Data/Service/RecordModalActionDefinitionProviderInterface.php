@@ -1,7 +1,7 @@
 <?php
 /**
  * SuiteCRM is a customer relationship management program developed by SalesAgility Ltd.
- * Copyright (C) 2021 SalesAgility Ltd.
+ * Copyright (C) 2024 SalesAgility Ltd.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by the
@@ -26,52 +26,15 @@
  */
 
 
-namespace App\ViewDefinitions\Service;
+namespace App\Data\Service;
 
-use App\ViewDefinitions\Entity\ViewDefinition;
-use Exception;
-
-interface ViewDefinitionsProviderInterface
+interface RecordModalActionDefinitionProviderInterface
 {
-
     /**
-     * Get list-view defs
-     * @param string $moduleName
-     * @return ViewDefinition
-     * @throws Exception
+     * Get list of record modal actions for module
+     * @param string $module
+     * @param array $moduleDefaults
+     * @return array
      */
-    public function getListViewDef(string $moduleName): ViewDefinition;
-
-    /**
-     * Get view definitions
-     * @param string $moduleName
-     * @param array $views
-     * @return ViewDefinition
-     * @throws Exception
-     */
-    public function getViewDefs(string $moduleName, array $views = []): ViewDefinition;
-
-    /**
-     * Get search defs
-     * @param string $moduleName
-     * @return ViewDefinition
-     * @throws Exception
-     */
-    public function getSearchDefs(string $moduleName): ViewDefinition;
-
-    /**
-     * Get record view defs
-     * @param string $moduleName
-     * @return ViewDefinition
-     * @throws Exception
-     */
-    public function getRecordViewDefs(string $moduleName): ViewDefinition;
-
-    /**
-     * Get record-modal defs
-     * @param string $moduleName
-     * @return ViewDefinition
-     * @throws Exception
-     */
-    public function getRecordModalDefs(string $moduleName): ViewDefinition;
+    public function getActions(string $module, array $moduleDefaults = []): array;
 }

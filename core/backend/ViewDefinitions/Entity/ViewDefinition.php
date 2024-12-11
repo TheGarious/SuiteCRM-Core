@@ -74,6 +74,14 @@ class ViewDefinition
     #[ApiProperty(
         openapiContext: [
             'type' => 'array',
+            'description' => 'The record-modal metadata'
+        ]
+    )]
+    public array $recordModal;
+
+    #[ApiProperty(
+        openapiContext: [
+            'type' => 'array',
             'description' => 'The search metadata'
         ]
     )]
@@ -176,6 +184,24 @@ class ViewDefinition
     public function setListView(array $listView): void
     {
         $this->listView = $listView;
+    }
+
+    /**
+     * Get Record Modal metadata
+     * @return array|null
+     */
+    public function getRecordModal(): ?array
+    {
+        return $this->recordModal ?? null;
+    }
+
+    /**
+     * Set Record Modal metadata
+     * @param array $recordModal
+     */
+    public function setRecordModal(array $recordModal): void
+    {
+        $this->recordModal = $recordModal;
     }
 
     /**
