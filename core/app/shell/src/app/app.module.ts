@@ -60,6 +60,7 @@ import {
     ModuleTitleModule,
     NavbarUiModule,
     RecordListModalModule,
+    RecordModalComponent,
     RecordModule,
     SidebarComponent,
     TableModule
@@ -103,6 +104,7 @@ export const initializeApp = (appInitService: AppInit) => (): Promise<any> => ap
         FullPageSpinnerModule,
         MessageModalModule,
         RecordListModalModule,
+        RecordModalComponent,
         ApolloModule,
         SidebarComponent
     ],

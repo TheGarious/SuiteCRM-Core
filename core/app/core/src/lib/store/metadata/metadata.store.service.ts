@@ -62,6 +62,14 @@ export interface RecordViewMetadata {
     header?: HeaderMetadata;
 }
 
+export interface RecordModalMetadata {
+    actions?: Action[];
+    templateMeta?: RecordTemplateMetadata;
+    panels?: Panel[];
+    vardefs?: FieldDefinitionMap;
+    metadata?: ObjectMap;
+}
+
 export interface RecordTemplateMetadata {
     maxColumns: number;
     useTabs: boolean;
@@ -76,6 +84,7 @@ export interface Metadata {
     listView?: ListViewMeta;
     search?: SearchMeta;
     recordView?: RecordViewMetadata;
+    recordModal?: RecordModalMetadata;
     subPanel?: SubPanelMeta;
     massUpdate?: MassUpdateMeta;
     recentlyViewed?: RecentlyViewed[];
@@ -94,6 +103,7 @@ const initialState: Metadata = {
     listView: {} as ListViewMeta,
     search: {} as SearchMeta,
     recordView: {} as RecordViewMetadata,
+    recordModal: {} as RecordModalMetadata,
     subPanel: {} as SubPanelMeta,
     massUpdate: {} as MassUpdateMeta,
     recentlyViewed: [],
@@ -130,6 +140,7 @@ export class MetadataStore implements StateStore {
     listMetadata$: Observable<ListViewMeta>;
     searchMetadata$: Observable<SearchMeta>;
     recordViewMetadata$: Observable<RecordViewMetadata>;
+    recordModalMetadata$: Observable<RecordModalMetadata>;
     fieldActions$: Observable<any>;
     metadata$: Observable<Metadata>;
     allModuleMetadata$: Observable<MetadataMap>;
@@ -180,6 +191,7 @@ export class MetadataStore implements StateStore {
         this.listMetadata$ = this.state$.pipe(map(state => state.listView), distinctUntilChanged());
         this.searchMetadata$ = this.state$.pipe(map(state => state.search), distinctUntilChanged());
         this.recordViewMetadata$ = this.state$.pipe(map(state => state.recordView), distinctUntilChanged());
+        this.recordModalMetadata$ = this.state$.pipe(map(state => state.recordModal), distinctUntilChanged());
         this.fieldActions$ = this.state$.pipe(map(state => state.fieldActions), distinctUntilChanged());
         this.subPanelMetadata$ = this.state$.pipe(map(state => state.subPanel), distinctUntilChanged());
         this.metadata$ = this.state$;
@@ -319,6 +331,7 @@ export class MetadataStore implements StateStore {
         this.parseListViewMetadata(data, metadata);
         this.parseSearchMetadata(data, metadata);
         this.parseRecordViewMetadata(data, metadata);
+        this.parseRecordModalMetadata(data, metadata);
         this.parseSubPanelMetadata(data, metadata);
         this.parseMassUpdateMetadata(data, metadata);
         this.parseRecentlyViewedMetadata(data, metadata);
@@ -499,6 +512,31 @@ export class MetadataStore implements StateStore {
         this.addDefinedMeta(recordViewMeta, receivedMeta, entries);
 
         metadata.recordView = recordViewMeta;
+    }
+
+    protected parseRecordModalMetadata(data, metadata: Metadata): void {
+        if (!data || !data.recordModal) {
+            return;
+        }
+
+        const recordModalMeta: RecordModalMetadata = {
+            actions: [] as Action[],
+            templateMeta: {} as RecordTemplateMetadata,
+            panels: []
+        };
+        // NOTE: Burada gereksizler var
+        const receivedMeta = data.recordModal;
+        const entries = {
+            templateMeta: 'templateMeta',
+            actions: 'actions',
+            panels: 'panels',
+            vardefs: 'vardefs',
+            metadata: 'metadata'
+        };
+
+        this.addDefinedMeta(recordModalMeta, receivedMeta, entries);
+
+        metadata.recordModal = recordModalMeta;
     }
 
     protected parseRecentlyViewedMetadata(data, metadata: Metadata): void {

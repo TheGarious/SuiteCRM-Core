@@ -1,6 +1,6 @@
 /**
  * SuiteCRM is a customer relationship management program developed by SalesAgility Ltd.
- * Copyright (C) 2023 SalesAgility Ltd.
+ * Copyright (C) 2024 SalesAgility Ltd.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by the
@@ -25,51 +25,48 @@
  */
 
 import {Injectable} from '@angular/core';
-import {AsyncActionService} from '../../../services/process/processes/async-action/async-action';
-import {MessageService} from '../../../services/message/message.service';
-import {ConfirmationModalService} from '../../../services/modals/confirmation-modal.service';
-import {SelectModalService} from '../../../services/modals/select-modal.service';
-import {LanguageStore} from '../../../store/language/language.store';
-import {MetadataStore} from '../../../store/metadata/metadata.store.service';
-import {FieldActionsAdapter} from './field.actions.adapter';
-import {FieldActionManager} from '../actions/field-action-manager.service';
 import {AppMetadataStore} from "../../../store/app-metadata/app-metadata.store.service";
-import {FieldModalService} from "../../../services/modals/field-modal.service";
+import {MetadataStore} from "../../../store/metadata/metadata.store.service";
+import {LanguageStore} from "../../../store/language/language.store";
+import {RecordModalStore} from "../store/record-modal/record-modal.store";
+import {RecordModalActionsAdapter} from "./recod-modal-actions.adapter";
+import {AsyncActionService} from "../../../services/process/processes/async-action/async-action";
+import {ConfirmationModalService} from "../../../services/modals/confirmation-modal.service";
+import {SelectModalService} from "../../../services/modals/select-modal.service";
+import {MessageService} from "../../../services/message/message.service";
+import {RecordActionDisplayTypeLogic} from "../../../views/record/action-logic/display-type/display-type.logic";
+import {RecordModalActionManager} from "../actions/record-modal-action-manager.service";
 
 @Injectable({
     providedIn: 'root',
 })
-export class FieldActionsAdapterFactory {
+export class RecordModalActionsAdapterFactory {
 
     constructor(
         protected metadata: MetadataStore,
-        protected appMetadataStore: AppMetadataStore,
         protected language: LanguageStore,
-        protected actionManager: FieldActionManager,
+        protected actionManager: RecordModalActionManager,
         protected asyncActionService: AsyncActionService,
         protected message: MessageService,
         protected confirmation: ConfirmationModalService,
         protected selectModalService: SelectModalService,
-        protected fieldModalService: FieldModalService,
+        protected displayTypeLogic: RecordActionDisplayTypeLogic,
+        protected appMetadataStore: AppMetadataStore
     ) {
     }
 
-    create(viewName: string, fieldName: string, store: any): FieldActionsAdapter {
-        const adapter = new FieldActionsAdapter(
+    create(store: RecordModalStore): RecordModalActionsAdapter {
+        return new RecordModalActionsAdapter(
             store,
             this.metadata,
-            this.appMetadataStore,
             this.language,
             this.actionManager,
             this.asyncActionService,
             this.message,
             this.confirmation,
             this.selectModalService,
-            this.fieldModalService,
-            viewName,
-            fieldName
+            this.displayTypeLogic,
+            this.appMetadataStore
         );
-
-        return adapter;
     }
 }
