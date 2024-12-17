@@ -24,12 +24,8 @@
  * the words "Supercharged by SuiteCRM".
  */
 
-import {isEmpty} from 'lodash-es';
 import {LogicDefinitions} from '../../../../common/metadata/metadata.model';
-import {Action} from '../../../../common/actions/action.model';
-import {isVoid} from '../../../../common/utils/value-utils';
-import {Field} from '../../../../common/record/field.model';
-import {Record} from '../../../../common/record/record.model';
+import {Action, ActionData} from '../../../../common/actions/action.model';
 import {StringArrayMap} from '../../../../common/types/string-map';
 import {StringArrayMatrix} from '../../../../common/types/string-matrix';
 import {ViewMode} from '../../../../common/views/view.model';
@@ -50,7 +46,7 @@ export class RecordActionDisplayTypeLogic extends ActionLogicHandler<RecordActio
         super();
     }
 
-    runAll(displayLogic: LogicDefinitions, data: RecordActionData): boolean {
+    runAll(displayLogic: LogicDefinitions, data: ActionData): boolean {
         let toDisplay = true;
 
         const validModeLogic = Object.values(displayLogic).filter(logic => {
@@ -79,7 +75,7 @@ export class RecordActionDisplayTypeLogic extends ActionLogicHandler<RecordActio
         return toDisplay;
     }
 
-    run(data: RecordActionData, logic: Action): boolean {
+    run(data: ActionData, logic: Action): boolean {
 
         const record = data.store.recordStore.getStaging();
         if (!record || !logic) {

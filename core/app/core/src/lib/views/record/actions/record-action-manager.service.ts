@@ -37,6 +37,8 @@ import {BaseActionManager} from '../../../services/actions/base-action-manager.s
 import {AsyncProcessRecordAction} from './async-process/async-process.service';
 import {RecordSaveContinueAction} from "./save-continue/record-save-continue.action";
 import {RecordSaveScheduleAction} from "./save-schedule/record-save-schedule.action";
+import {ModalEditAction} from "./modal-edit/modal-edit.action";
+import {ModalCreateAction} from "./modal-create/modal-create.action";
 
 @Injectable({
     providedIn: 'root',
@@ -54,6 +56,8 @@ export class RecordActionManager extends BaseActionManager<RecordActionData> {
         protected saveContinue: RecordSaveContinueAction,
         protected saveSchedule: RecordSaveScheduleAction,
         protected async: AsyncProcessRecordAction,
+        protected recordModalEdit: ModalEditAction,
+        protected recordModalCreate: ModalCreateAction,
     ) {
         super();
         edit.modes.forEach(mode => this.actions[mode][edit.key] = edit);
@@ -66,5 +70,7 @@ export class RecordActionManager extends BaseActionManager<RecordActionData> {
         saveContinue.modes.forEach(mode => this.actions[mode][saveContinue.key] = saveContinue);
         cancelCreate.modes.forEach(mode => this.actions[mode][cancelCreate.key] = cancelCreate);
         async.modes.forEach(mode => this.actions[mode][async.key] = async);
+        recordModalEdit.modes.forEach(mode => this.actions[mode][recordModalEdit.key] = recordModalEdit);
+        recordModalCreate.modes.forEach(mode => this.actions[mode][recordModalCreate.key] = recordModalCreate);
     }
 }
