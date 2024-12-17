@@ -51,7 +51,7 @@ parameters:
     campaigns:
       index: true
       list: true
-      record: false
+      record: true
     prospects:
       index: true
       list: true
