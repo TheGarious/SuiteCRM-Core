@@ -108,6 +108,10 @@ import {IconListFieldModule} from "./icon/templates/detail/icon.module";
 import {IconDetailFieldComponent} from "./icon/templates/detail/icon.component";
 import {TextListFieldModule} from './text/templates/list/text.module';
 import {TextListFieldComponent} from './text/templates/list/text.component';
+import {MultiRelateEditFieldComponent} from "./multirelate/templates/edit/multirelate.component";
+import {MultiRelateDetailFieldComponent} from "./multirelate/templates/detail/multirelate.component";
+import {MultiRelateEditFieldModule} from "./multirelate/templates/edit/multirelate.module";
+import {MultiRelateDetailFieldModule} from "./multirelate/templates/detail/multirelate.module";
 import {CurrencyEditFieldModule} from "./currency/templates/edit/currency.module";
 
 export const baseFieldModules = [
@@ -147,6 +151,8 @@ export const baseFieldModules = [
     MultiEnumDetailFieldModule,
     MultiEnumEditFieldModule,
     MultiEnumFilterFieldModule,
+    MultiRelateDetailFieldModule,
+    MultiRelateEditFieldModule,
     BooleanDetailFieldModule,
     BooleanEditFieldModule,
     BooleanCheckboxFilterFieldModule,
@@ -181,6 +187,8 @@ export const baseFieldComponents = [
     RelateDetailFieldComponent,
     RelateEditFieldComponent,
     RelateFilterFieldComponent,
+    MultiRelateEditFieldComponent,
+    MultiRelateDetailFieldComponent,
     FullNameDetailFieldsComponent,
     EnumDetailFieldComponent,
     EnumEditFieldComponent,
@@ -244,6 +252,8 @@ export const baseViewFieldsMap: FieldComponentMap = {
     'relate.edit': RelateEditFieldComponent,
     'relate.detail': RelateDetailFieldComponent,
     'relate.filter': RelateFilterFieldComponent,
+    'multirelate.edit': MultiRelateEditFieldComponent,
+    'multirelate.detail': MultiRelateDetailFieldComponent,
     'fullname.list': FullNameDetailFieldsComponent,
     'fullname.detail': FullNameDetailFieldsComponent,
     'enum-radio.list': RadioEnumDetailFieldComponent,

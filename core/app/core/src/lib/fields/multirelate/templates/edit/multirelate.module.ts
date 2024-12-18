@@ -1,6 +1,6 @@
 /**
  * SuiteCRM is a customer relationship management program developed by SalesAgility Ltd.
- * Copyright (C) 2021 SalesAgility Ltd.
+ * Copyright (C) 2024 SalesAgility Ltd.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by the
@@ -26,22 +26,20 @@
 
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {RelateFilterFieldComponent} from './relate.component';
 import {FormsModule} from '@angular/forms';
 import {ButtonModule} from '../../../../components/button/button.module';
-import {LabelModule} from '../../../../components/label/label.module';
 import {ImageModule} from "../../../../components/image/image.module";
 import {MultiSelectModule} from "primeng/multiselect";
 import {SharedModule} from "primeng/api";
 import {DropdownModule} from "primeng/dropdown";
 import {InputTextModule} from "primeng/inputtext";
+import {MultiRelateEditFieldComponent} from "./multirelate.component";
 
 @NgModule({
-    declarations: [RelateFilterFieldComponent],
-    exports: [RelateFilterFieldComponent],
+    declarations: [MultiRelateEditFieldComponent],
+    exports: [MultiRelateEditFieldComponent],
     imports: [
         CommonModule,
-        LabelModule,
         FormsModule,
         ButtonModule,
         ImageModule,
@@ -51,5 +49,5 @@ import {InputTextModule} from "primeng/inputtext";
         InputTextModule
     ]
 })
-export class RelateFilterFieldModule {
+export class MultiRelateEditFieldModule {
 }
