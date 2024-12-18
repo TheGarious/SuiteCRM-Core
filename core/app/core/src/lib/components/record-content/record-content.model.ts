@@ -45,5 +45,6 @@ export interface RecordContentConfig {
     layout: 'tabs' | 'panels';
     mode: ViewMode;
     maxColumns: number;
+    colClasses?: string[];
     tabDefs: TabDefinitions;
 }

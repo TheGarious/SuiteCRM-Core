@@ -33,6 +33,7 @@ import {ViewMode} from '../../common/views/view.model';
 export interface FieldLayoutConfig {
     mode: ViewMode;
     maxColumns: number;
+    colClasses?: string[];
 }
 
 export interface FieldLayoutDataSource {

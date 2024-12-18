@@ -76,13 +76,15 @@ export class RecordContentAdapter implements RecordContentDataSource {
             map(([meta, mode]: [RecordViewMetadata, ViewMode]) => {
                 const layout = this.getLayout(meta);
                 const maxColumns = meta.templateMeta.maxColumns || 2;
+                const colClasses = meta?.templateMeta?.colClasses ?? [];
                 const tabDefs = meta.templateMeta.tabDefs;
 
                 return {
                     layout,
                     mode,
                     maxColumns,
-                    tabDefs
+                    tabDefs,
+                    colClasses
                 } as RecordContentConfig;
             })
         );

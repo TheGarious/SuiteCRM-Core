@@ -172,6 +172,7 @@ export class RecordContentComponent implements OnInit, OnDestroy {
             getConfig: (): Observable<FieldLayoutConfig> => this.dataSource.getDisplayConfig().pipe(map(config => ({
                 mode: config.mode,
                 maxColumns: config.maxColumns,
+                colClasses: config?.colClasses ?? [],
             }))),
             getLayout: (): Observable<Panel> => of(panel).pipe(shareReplay(1)),
             getFields: (): Observable<FieldMap> => this.dataSource.getRecord().pipe(map(record => (record.fields))),
