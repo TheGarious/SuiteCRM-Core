@@ -250,7 +250,7 @@ export class BaseEnumComponent extends BaseFieldComponent implements OnInit, OnD
 
     protected initEnumDefaultFieldValues(defaultVal: string): void {
 
-        if (this.field.type === 'multienum') {
+        if (this.field.type === 'multienum' || this.field.type === 'multirelate') {
             const defaultValues = this.selectedValues.map(option => option.value);
             this.field.valueList = defaultValues;
             this.field.formControl.setValue(defaultValues);
@@ -291,7 +291,7 @@ export class BaseEnumComponent extends BaseFieldComponent implements OnInit, OnD
                 this.mappedOptions = this.createParentChildOptionsMap(parentOptionMap, this.options);
 
                 let parentValues: string[] = [];
-                if (parentEnum.definition.type === 'multienum') {
+                if (parentEnum.definition.type === 'multienum' || parentEnum.definition.type === 'multirelate') {
                     parentValues = parentEnum.valueList;
                 } else {
                     parentValues.push(parentEnum.value);

@@ -189,7 +189,7 @@ export interface Field {
     default?: string;
     defaultValueModes?: ViewMode[];
     source?: FieldSource;
-    valueSource?: 'value' | 'valueList' | 'valueObject' | 'criteria';
+    valueSource?: 'value' | 'valueList' | 'valueObject' | 'valueObjectArray' | 'criteria';
     metadata?: FieldMetadata;
     definition?: FieldDefinition;
     criteria?: SearchCriteriaFieldFilter;
@@ -302,7 +302,8 @@ export class BaseField implements Field {
         this.valueSubject.next({
             value: this.valueState,
             valueList: this.valueListState,
-            valueObject: this.valueObjectState
+            valueObject: this.valueObjectState,
+            valueObjectArray: this.valueObjectArrayState
         })
     }
 
@@ -328,6 +329,7 @@ export interface FieldValue {
     value?: string;
     valueList?: string[];
     valueObject?: any;
+    valueObjectArray?: ObjectMap[];
 }
 
 
