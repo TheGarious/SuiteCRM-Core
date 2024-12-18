@@ -413,19 +413,19 @@ export class RelateFilterFieldComponent extends BaseRelateComponent {
     }
 
     protected calculateSelectAll(): void {
-        const visibleOptions = this?.tag?.visibleOptions() ?? [];
-        const selectedValuesKeys = (this?.selectedValues ?? []).map(item => item.value);
+        const selectedValuesKeys = (this?.selectedValues ?? []).map(item => {
+            return item.id;
+        });
 
-        if (!visibleOptions.length || !selectedValuesKeys.length) {
+        if (!this.options.length || !selectedValuesKeys.length) {
             this.selectAll = false;
             return;
         }
 
-        if (visibleOptions.length > selectedValuesKeys.length) {
+        if (this.options.length > selectedValuesKeys.length) {
             this.selectAll = false;
             return;
         }
-
-        this.selectAll = visibleOptions.every(item => selectedValuesKeys.includes(item.value));
+        this.selectAll = this.options.every(item => selectedValuesKeys.includes(item.id));
     }
 }
