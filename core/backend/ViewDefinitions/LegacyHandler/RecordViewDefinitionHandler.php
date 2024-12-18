@@ -317,6 +317,7 @@ class RecordViewDefinitionHandler extends LegacyHandler
         $metadata['templateMeta']['maxColumns'] = $viewDefs['templateMeta']['maxColumns'] ?? 2;
         $metadata['templateMeta']['useTabs'] = $viewDefs['templateMeta']['useTabs'] ?? true;
         $metadata['templateMeta']['tabDefs'] = $viewDefs['templateMeta']['tabDefs'] ?? [];
+        $metadata['templateMeta']['colClasses'] = $viewDefs['templateMeta']['colClasses'] ?? [];
     }
 
     /**

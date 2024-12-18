@@ -61,6 +61,7 @@ export interface RecordTemplateMetadata {
     maxColumns: number;
     useTabs: boolean;
     tabDefs: TabDefinitions;
+    colClasses?: string[];
 }
 
 export interface Metadata {
