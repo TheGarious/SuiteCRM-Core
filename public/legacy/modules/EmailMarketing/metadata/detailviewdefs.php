@@ -42,6 +42,10 @@ $viewdefs ['EmailMarketing'] = [
     'DetailView' => [
         'templateMeta' => [
             'maxColumns' => '2',
+            'colClasses' => [
+                'col-xs-12 col-lg-3',
+                'col-xs-12 col-lg-9',
+            ],
             'widths' => [
                 [
                     'label' => '10',
@@ -72,11 +76,6 @@ $viewdefs ['EmailMarketing'] = [
                         'useFullColumn' => ['sm', 'md', 'lg', 'xl'],
                     ]
                 ],
-                [
-                    [
-                        'name' => 'parent_name'
-                    ]
-                ]
             ],
         ],
     ],
