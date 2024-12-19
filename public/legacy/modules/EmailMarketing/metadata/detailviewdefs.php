@@ -43,7 +43,7 @@ $viewdefs ['EmailMarketing'] = [
         'templateMeta' => [
             'maxColumns' => '2',
             'colClasses' => [
-                'col-xs-12 col-md-3 col-lg-3 col-xl-3',
+                'col-xs-12 col-md-3 col-lg-3 col-xl-3 border-right',
                 'col-xs-12 col-md-9 col-lg-9 col-xl-9',
             ],
             'widths' => [
