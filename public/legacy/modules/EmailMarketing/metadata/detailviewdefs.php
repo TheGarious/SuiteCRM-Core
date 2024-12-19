@@ -43,8 +43,8 @@ $viewdefs ['EmailMarketing'] = [
         'templateMeta' => [
             'maxColumns' => '2',
             'colClasses' => [
-                'col-xs-12 col-lg-3',
-                'col-xs-12 col-lg-9',
+                'col-xs-12 col-md-3 col-lg-3 col-xl-3',
+                'col-xs-12 col-md-9 col-lg-9 col-xl-9',
             ],
             'widths' => [
                 [
@@ -68,11 +68,11 @@ $viewdefs ['EmailMarketing'] = [
             'LBL_OVERVIEW' => [
                 [
                     [
-                        'name' => 'emailmarketingconfig',
+                        'name' => 'email_marketing_config',
                         'useFullColumn' => ['xs', 'sm', 'md', 'lg', 'xl'],
                     ],
                     [
-                        'name' => 'emailmarketingtemplate',
+                        'name' => 'email_marketing_template',
                         'useFullColumn' => ['sm', 'md', 'lg', 'xl'],
                     ]
                 ],
