@@ -983,6 +983,11 @@ $app_list_strings = array(
         'active' => 'Active',
         'inactive' => 'Inactive',
     ),
+    'email_marketing_type_dom' => array(
+        'marketing' => 'Marketing Email',
+        'survey' => 'Survey Email',
+        'transactional' => 'Transactional Email',
+    ),
 
     'campainglog_activity_type_dom' => array(
         '' => '',
