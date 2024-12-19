@@ -31,37 +31,36 @@
 
 <ng-container *ngIf="this.hasValidConfig">
     <div #wrapper class="d-flex {{direction()}} justify-content-start align-items-start field-group h-100 w-100">
-        <ng-container *ngIf="fields && fields.length > 0">
-            <ng-container *ngFor="let groupField of fields">
-                <div *ngIf="isModeEnabled(mode, groupField)"
-                     [class.flex-fill]="mode ==='edit' && direction() === 'flex-row'"
-                     class="field-group-item d-flex flex-column justify-content-end w-100"
-                     [class.h-100]="direction() === 'flex-row'">
+        <ng-container *ngFor="let groupField of getFields()">
+            <div *ngIf="isModeEnabled(mode, groupField)"
+                 [class.flex-fill]="mode ==='edit' && direction() === 'flex-row'"
+                 class="field-group-item d-flex flex-column justify-content-end w-100"
+                 [class.h-100]="direction() === 'flex-row'">
 
-                    <!-- LABEL -->
-                    <span *ngIf="groupField.labelKey && showLabel(groupField.definition.name)"
-                          class="field-group-label pt-2 pr-1 font-weight-bold">
+                <!-- LABEL -->
+                <span *ngIf="groupField.labelKey && showLabel(groupField.definition.name)"
+                      class="field-group-label pt-2 pr-1 font-weight-bold">
                         <label>
                             <scrm-label [labelKey]="groupField.labelKey" [module]="getModule()"></scrm-label>
                         </label>
                     </span>
 
-                    <!-- VALUE -->
-                    <span *ngIf="groupField.type" class="field-group-field pr-1">
+                <!-- VALUE -->
+                <span *ngIf="groupField.type" class="field-group-field pr-1">
 
-                        <scrm-dynamic-field [componentType]="getComponentType(groupField.name, groupField.type, groupField.definition)"
-                                            [field]="groupField"
-                                            [klass]="klass"
-                                            [mode]="fieldModes[groupField.name] ?? mode"
-                                            [originalMode]="originalMode"
-                                            [record]="record"
-                                            [parent]="parent"
-                                            [type]="groupField.type">
+                        <scrm-dynamic-field
+                                [componentType]="getComponentType(groupField.name, groupField.type, groupField.definition)"
+                                [field]="groupField"
+                                [klass]="klass"
+                                [mode]="fieldModes[groupField.name] ?? mode"
+                                [originalMode]="originalMode"
+                                [record]="record"
+                                [parent]="parent"
+                                [type]="groupField.type">
                         </scrm-dynamic-field>
 
                     </span>
-                </div>
-            </ng-container>
+            </div>
         </ng-container>
     </div>
 </ng-container>

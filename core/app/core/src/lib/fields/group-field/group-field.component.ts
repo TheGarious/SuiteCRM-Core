@@ -47,7 +47,6 @@ export class GroupFieldComponent extends BaseFieldComponent implements AfterView
     direction: WritableSignal<string> = signal<string>('');
     hasValidConfig: boolean;
     fieldModes: {[key: string]: string} = {};
-    fields: Field[];
     protected recalculateDirectionBuffer = new Subject<boolean>();
     protected recalculateDirectionBuffer$: Observable<any> = this.recalculateDirectionBuffer.asObservable();
 
@@ -78,8 +77,6 @@ export class GroupFieldComponent extends BaseFieldComponent implements AfterView
         }));
 
         this.triggerRecalculateDirection();
-
-        this.fields = this.getFields();
 
         this.hasValidConfig = this.isConfigured();
     }
@@ -113,8 +110,8 @@ export class GroupFieldComponent extends BaseFieldComponent implements AfterView
 
             fieldModes[name] = this.mode;
 
-            if (this.record?.fields[name]?.readonly){
-                fieldModes[name] = 'detail';
+            if (this.record?.fields[name]?.readonly) {
+                fieldModes[name] = 'detail' as ViewMode;
             }
 
             fields.push(this.record.fields[name]);
