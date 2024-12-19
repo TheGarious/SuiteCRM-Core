@@ -104,5 +104,10 @@ $mod_strings = array(
     'LBL_OUTBOUND_EMAIL_ACOUNT_ID' => 'Outbound Email Account ID',
     'LBL_EMAIL_TEMPLATE' => 'Email Template',
     'LBL_PROSPECT_LISTS' => 'Prospect Lists',
-
+    'LBL_OVERVIEW' => 'Basic',
+    'LBL_CONFIGS' => 'CONFIGS',
+    'LBL_EMAIL' => 'EMAIL',
+    'LBL_BODY' => 'Body',
+    'LBL_MARKETING_TYPE' => 'Marketing Type',
+    'LBL_SURVEY' => 'Survey'
 );
