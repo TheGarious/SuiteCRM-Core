@@ -166,10 +166,126 @@ $dictionary['EmailMarketing'] = array(
         'vname' => 'LBL_STATUS',
         'type' => 'enum',
         'len' => 100,
-        'required'=>true,
+        'display' => 'readonly',
+        'readonly' => 'true',
         'options' => 'email_marketing_status_dom',
         'importable' => 'required',
     ),
+    'type' =>
+    array(
+        'name' => 'type',
+        'vname' => 'LBL_MARKETING_TYPE',
+        'type' => 'enum',
+        'len' => 100,
+        'displayType' => 'readonly',
+        'readonly' => 'true',
+        'options' => 'email_marketing_type_dom',
+        'importable' => 'required',
+//        'logic' => [
+//            'update-value' => [
+//                'key' => 'updateValue',
+//                'modes' => ['detail', 'edit', 'create'],
+//                'params' => [
+//                    'fieldDependencies' => [
+//                        'type_relate',
+//                    ],
+//                    'targetValue' => 'Survey Email',
+//                    'activeOnFields' => [
+//                        'type_relate' => ['100'],
+//                    ]
+//                ]
+//            ]
+//        ]
+    ),
+        'emailmarketingconfig' => array(
+            'name' => 'emailmarketingconfig',
+            'vname' => 'LBL_CONFIGS',
+            'type' => 'varchar',
+            'group' => 'emailmarketingconfig',
+            'comment' => 'The street address used for for shipping purposes',
+            'merge_filter' => 'enabled',
+            'groupFields' => [
+                'name',
+                'template_name',
+                'date_start',
+                'status',
+                'type',
+                'prospectslists',
+                'all_prospect_lists',
+                'survey',
+            ],
+            'layout' => [
+                'name',
+                'template_name',
+                'date_start',
+                'status',
+                'type',
+                'prospectslists',
+                'all_prospect_lists',
+                'survey',
+            ],
+            'display' => 'vertical',
+            'showLabel' => [
+                'edit' => ['*'],
+                'filter' => ['*']
+            ]
+        ),
+        'emailmarketingtemplate' => array(
+            'name' => 'emailmarketingtemplate',
+            'vname' => 'LBL_EMAIL',
+            'type' => 'varchar',
+            'group' => 'emailmarketingtemplate',
+            'comment' => 'The street address used for for shipping purposes',
+            'merge_filter' => 'enabled',
+            'groupFields' => [
+                'subject',
+                'body'
+            ],
+            'layout' => [
+                'subject',
+                'body'
+            ],
+            'display' => 'vertical',
+            'showLabel' => [
+                'edit' => ['*'],
+                'filter' => ['*']
+            ]
+        ),
+        'parent_type' =>
+            array(
+                'name' => 'parent_type',
+                'vname' => 'LBL_PARENT_TYPE',
+                'type' => 'parent_type',
+                'dbType' => 'varchar',
+                'group' => 'parent_name',
+                'options' => 'parent_type_display',
+                'required' => false,
+                'len' => '255',
+                'comment' => 'The Sugar object to which the call is related',
+                'options' => 'parent_type_display',
+            ),
+
+        'parent_name' =>
+            array(
+                'name' => 'parent_name',
+                'parent_type' => 'record_type_display',
+                'type_name' => 'parent_type',
+                'id_name' => 'parent_id',
+                'vname' => 'LBL_LIST_RELATED_TO',
+                'type' => 'parent',
+                'group' => 'parent_name',
+                'source' => 'non-db',
+                'options' => 'parent_type_display',
+            ),
+
+        'parent_id' =>
+            array(
+                'name' => 'parent_id',
+                'type' => 'id',
+                'group' => 'parent_name',
+                'reportable' => false,
+                'vname' => 'LBL_PARENT_ID',
+            ),
     'campaign_id' =>
     array(
         'name' => 'campaign_id',
@@ -179,13 +295,13 @@ $dictionary['EmailMarketing'] = array(
         'required'=>false,
     ),
 
-        'outbound_email_id'=> array(
-            'name' => 'outbound_email_id',
-            'vname' => 'LBL_OUTBOUND_EMAIL_ACOUNT_ID',
-            'type' => 'id',
-            'isnull' => true,
-            'required'=>false,
-        ),
+    'outbound_email_id'=> array(
+        'name' => 'outbound_email_id',
+        'vname' => 'LBL_OUTBOUND_EMAIL_ACOUNT_ID',
+        'type' => 'id',
+        'isnull' => true,
+        'required'=>false,
+    ),
 
     'all_prospect_lists' => array(
         'name' => 'all_prospect_lists',
@@ -193,6 +309,15 @@ $dictionary['EmailMarketing'] = array(
         'type' => 'bool',
         'default'=> 0,
     ),
+    'subject' => array(
+        'name' => 'subject',
+        'vname' => 'LBL_SUBJECT',
+        'group' => 'emailmarketingconfig',
+        'type' => 'varchar',
+        'len' => '255',
+    ),
+
+
 //no-db-fields.
     'template_name' =>
     array(
@@ -217,6 +342,15 @@ $dictionary['EmailMarketing'] = array(
         'len'=>100,
         'source'=>'non-db',
     ),
+    'body' => array(
+        'name' => 'body',
+        'type' => 'html',
+        'vname' => 'LBL_BODY',
+        'source' => 'non-db',
+        'inline_edit' => false,
+        'rows' => 10,
+        'cols' => 250,
+    ),
 
 //related fields.
     'prospectlists'=> array(
@@ -226,6 +360,38 @@ $dictionary['EmailMarketing'] = array(
         'relationship' => 'email_marketing_prospect_lists',
         'source'=>'non-db',
     ),
+    'survey'=> array(
+        'name' => 'survey',
+        'vname' => 'LBL_SURVEY',
+        'id_name' => 'sruvey_id',
+        'type' => 'relate',
+        'table' => 'surveys',
+        'isnull' => 'true',
+        'module' => 'Surveys',
+        'dbType' => 'varchar',
+        'link'=>'surveylink',
+        'len' => '255',
+        'source'=>'non-db',
+//        'displayLogic' => [
+//            'hide_on_name' => [
+//                'key' => 'displayType',
+//                'modes' => [
+//                    'detail',
+//                    'edit',
+//                    'create',
+//                ],
+//                'params' => [
+//                    'fieldDependencies' => [
+//                        'type',
+//                    ],
+//                    'targetDisplayType' => 'show',
+//                    'activeOnFields' => [
+//                        'type' => ['survey'],
+//                    ]
+//                ]
+//            ]
+//        ]
+    ),
     'emailtemplate'=> array(
         'name' => 'emailtemplate',
         'vname' => 'LBL_EMAIL_TEMPLATE',
@@ -233,6 +399,13 @@ $dictionary['EmailMarketing'] = array(
         'relationship' => 'email_template_email_marketings',
         'source'=>'non-db',
     ),
+        'surveylink'=> array(
+            'name' => 'emailtemplate',
+            'vname' => 'LBL_EMAIL_TEMPLATE',
+            'type' => 'link',
+            'relationship' => 'email_template_survey',
+            'source'=>'non-db',
+        ),
   ),
   'indices' => array(
        array('name' =>'emmkpk', 'type' =>'primary', 'fields'=>array('id')),
@@ -240,6 +413,15 @@ $dictionary['EmailMarketing'] = array(
        array('name' =>'idx_emmkit_del', 'type'=>'index', 'fields'=>array('deleted')),
   ),
   'relationships' => array(
+      'email_template_survey' => array(
+          'lhs_module'=> 'EmailTemplates',
+          'lhs_table'=> 'email_templates',
+          'lhs_key' => 'id',
+          'rhs_module'=> 'Surveys',
+          'rhs_table'=> 'surveys',
+          'rhs_key' => 'survey_id',
+          'relationship_type'=>'many-to-one'
+      ),
     'email_template_email_marketings' => array(
         'lhs_module'=> 'EmailTemplates',
         'lhs_table'=> 'email_templates',
