@@ -313,8 +313,10 @@ $dictionary['EmailMarketing'] = [
                         ],
                         'activeOnFields' => [
                             'type' => [
-                                'operator' => 'not-equal',
-                                'values' => ['survey']
+                                [
+                                    'operator' => 'not-equal',
+                                    'values' => ['survey']
+                                ]
                             ]
                         ]
                     ]
