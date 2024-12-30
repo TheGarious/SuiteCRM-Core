@@ -67,6 +67,60 @@ $viewdefs ['EmailMarketing'] = [
                 ],
             ],
         ],
+        'recordActions' => [
+            'actions' => [
+                'schedule-email-marketing' => [
+                    'key' => 'schedule-email-marketing',
+                    'labelKey' => 'LBL_SCHEDULE',
+                    'asyncProcess' => true,
+                    'modes' => ['detail'],
+                    'params' => [
+                        'expanded' => true,
+                    ],
+                    'acl' => ['view'],
+                    'displayLogic' => [
+                        'hide-on-scheduled' => [
+                            'modes' => ['detail'],
+                            'params' => [
+                                'activeOnFields' => [
+                                    'status' => [
+                                        [
+                                            'operator' => 'not-equal',
+                                            'values' => ['inactive']
+                                        ],
+                                    ],
+                                ]
+                            ]
+                        ],
+                    ],
+                ],
+                'unschedule-email-marketing' => [
+                    'key' => 'unschedule-email-marketing',
+                    'labelKey' => 'LBL_UNSCHEDULE',
+                    'asyncProcess' => true,
+                    'modes' => ['detail'],
+                    'params' => [
+                        'expanded' => true,
+                    ],
+                    'acl' => ['view'],
+                    'displayLogic' => [
+                        'hide-on-unscheduled' => [
+                            'modes' => ['detail'],
+                            'params' => [
+                                'activeOnFields' => [
+                                    'status' => [
+                                        [
+                                            'operator' => 'is-equal',
+                                            'values' => ['inactive']
+                                        ],
+                                    ],
+                                ]
+                            ]
+                        ],
+                    ],
+                ],
+            ]
+        ],
         'panels' => [
             'LBL_OVERVIEW' => [
                 [
