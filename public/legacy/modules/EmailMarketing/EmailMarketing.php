@@ -92,15 +92,21 @@ class EmailMarketing extends SugarBean
             $this->time_start = '';
         }
 
+        $userTimeZone = $current_user->getPreference('timezone');
+
+        if (empty($userTimeZone)) {
+            return parent::save($check_notify);
+        }
+
         $timedate = TimeDate::getInstance();
 
-        $userTimeZone = $current_user->getPreference('timezone');
         $timeZone = new DateTimeZone($userTimeZone);
 
         if ($dateTime = DateTime::createFromFormat($current_user->getPreference('datef') . ' ' . $current_user->getPreference('timef'), $this->date_start, $timeZone)) {
             $dateStart = $timedate->asDb($dateTime);
             $this->date_start = $dateStart;
         }
+
 
         return parent::save($check_notify);
     }
