@@ -118,7 +118,7 @@ export class RecordPaginationStore {
         const data = this.loadPreference(module, 'current-record-pagination');
         this.checkPaginationExist(data);
 
-        if (!isArray(data.recordIds) || !data.recordIds || !data.recordIds.length) {
+        if (!data?.recordIds || !isArray(data?.recordIds) || !data?.recordIds?.length) {
             return null;
         }
         return data;
@@ -128,7 +128,7 @@ export class RecordPaginationStore {
         const module = this.getModule();
         const hasPagination = this.loadPreference(module, 'current-pagination', 'listview');
         if (!hasPagination) {
-            this.recordListStore.pagination = data.pagination;
+            this.recordListStore.pagination = data?.pagination ?? {} as Pagination;
         }
     }
 
