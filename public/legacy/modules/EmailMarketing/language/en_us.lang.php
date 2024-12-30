@@ -111,5 +111,7 @@ $mod_strings = array(
     'LBL_EMAIL' => 'EMAIL',
     'LBL_BODY' => 'Body',
     'LBL_MARKETING_TYPE' => 'Marketing Type',
-    'LBL_SURVEY' => 'Survey'
+    'LBL_SURVEY' => 'Survey',
+    'LBL_SCHEDULE' => 'Schedule',
+    'LBL_UNSCHEDULE' => 'Unschedule',
 );
