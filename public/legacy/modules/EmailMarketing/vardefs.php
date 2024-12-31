@@ -332,6 +332,10 @@ $dictionary['EmailMarketing'] = [
             'link' => 'emailtemplate',
             'len' => '255',
             'source' => 'non-db',
+            'metadata' => [
+                'selectConfirmation' => true,
+                'confirmationLabel' => 'LBL_TEMPLATE_CONFIRMATION',
+            ]
         ],
         'prospect_list_name' => [
             'name' => 'prospect_list_name',

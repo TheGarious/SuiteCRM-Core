@@ -1881,6 +1881,7 @@ $app_strings = array(
     'NTC_YEAR_FORMAT' => '(yyyy)',
     'WARN_UNSAVED_CHANGES' => 'You are about to leave this record without saving any changes you may have made to the record. Are you sure you want to navigate away from this record?',
     'ERROR_NO_RECORD' => 'Error retrieving record. This record may be deleted or you may not be authorized to view it.',
+    'LBL_TEMPLATE_CONFIRMATION' => 'Apply new Email Template? (This will override your current email body and subject field)',
     'WARN_BROWSER_VERSION_WARNING' => '<b>Warning:</b> Your browser version is no longer supported or you are using an unsupported browser.<p></p>The following browser versions are recommended:<p></p><ul><li>Internet Explorer 10 (compatibility view not supported)<li>Firefox 32.0<li>Safari 5.1<li>Chrome 37</ul>',
     'WARN_BROWSER_IE_COMPATIBILITY_MODE_WARNING' => '<b>Warning:</b> Your browser is in IE compatibility view which is not supported.',
     'ERROR_TYPE_NOT_VALID' => 'Error. This type is not valid.',
