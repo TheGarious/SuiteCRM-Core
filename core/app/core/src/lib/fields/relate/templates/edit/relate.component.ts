@@ -45,6 +45,7 @@ import {FieldLogicManager} from '../../../field-logic/field-logic.manager';
 import {FieldLogicDisplayManager} from '../../../field-logic-display/field-logic-display.manager';
 import {map, take} from "rxjs/operators";
 import {Dropdown, DropdownFilterOptions} from "primeng/dropdown";
+import {ConfirmationModalService} from "../../../../services/modals/confirmation-modal.service";
 
 @Component({
     selector: 'scrm-relate-edit',
@@ -73,6 +74,7 @@ export class RelateEditFieldComponent extends BaseRelateComponent {
      * @param {object} modalService service
      * @param {object} logic
      * @param {object} logicDisplay
+     * @param confirmation
      */
     constructor(
         protected languages: LanguageStore,
@@ -81,7 +83,8 @@ export class RelateEditFieldComponent extends BaseRelateComponent {
         protected moduleNameMapper: ModuleNameMapper,
         protected modalService: NgbModal,
         protected logic: FieldLogicManager,
-        protected logicDisplay: FieldLogicDisplayManager
+        protected logicDisplay: FieldLogicDisplayManager,
+        protected confirmation: ConfirmationModalService
     ) {
         super(languages, typeFormatter, relateService, moduleNameMapper, logic, logicDisplay);
     }
@@ -262,6 +265,15 @@ export class RelateEditFieldComponent extends BaseRelateComponent {
         modal.result.then((data: RecordListModalResult) => {
 
             if (!data || !data.selection || !data.selection.selected) {
+                return;
+            }
+
+            if (this.field?.metadata?.selectConfirmation ?? false) {
+                const confirmationLabel = this.field.metadata.confirmationLabel ?? '';
+                this.confirmation.showModal(confirmationLabel, () => {
+                    const record = this.getSelectedRecord(data);
+                    this.setItem(record);
+                });
                 return;
             }
 
