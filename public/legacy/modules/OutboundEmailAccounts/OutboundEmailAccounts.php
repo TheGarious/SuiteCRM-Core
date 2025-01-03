@@ -407,7 +407,8 @@ class OutboundEmailAccounts extends OutboundEmailAccounts_sugar
 
     public static function getPasswordChange()
     {
-        global $mod_strings;
+        global $mod_strings, $app_strings;
+        $label = $mod_strings['LBL_CHANGE_PASSWORD'] ?? $app_strings['LBL_CHANGE_PASSWORD'];
         $html = <<<HTML
 <script type="text/javascript">
 var passwordToggle = function(elem, sel) {
@@ -418,7 +419,7 @@ var passwordToggle = function(elem, sel) {
 <div id="password_toggle" style="display:none;">
 	<input type="password" id="mail_smtppass" name="mail_smtppass" />
 </div>
-<a class="pwd-btn" href="javascript:;" onclick="passwordToggle(this, '#password_toggle');">{$mod_strings['LBL_CHANGE_PASSWORD']}</a>
+<a class="pwd-btn" href="javascript:;" onclick="passwordToggle(this, '#password_toggle');">{$label}</a>
 
 HTML;
         return $html;
