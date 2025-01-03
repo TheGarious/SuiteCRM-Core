@@ -175,6 +175,7 @@ $dictionary['EmailMarketing'] = [
             'source' => 'non-db',
             'groupFields' => [
                 'name',
+                'outbound_email_name',
                 'template_name',
                 'date_start',
                 'status',
@@ -184,6 +185,7 @@ $dictionary['EmailMarketing'] = [
             ],
             'layout' => [
                 'name',
+                'outbound_email_name',
                 'template_name',
                 'date_start',
                 'status',
@@ -231,6 +233,28 @@ $dictionary['EmailMarketing'] = [
             'type' => 'id',
             'isnull' => true,
             'required' => false,
+        ],
+        'outbound_email_name' => [
+            'name' => 'outbound_email_name',
+            'rname' => 'from_addr',
+            'id_name' => 'outbound_email_id',
+            'vname' => 'LBL_FROM',
+            'join_name' => 'outbound_email',
+            'type' => 'relate',
+            'link' => 'outbound_email',
+            'table' => 'outbound_email',
+            'isnull' => 'true',
+            'module' => 'OutboundEmailAccounts',
+            'dbType' => 'varchar',
+            'len' => '255',
+            'source' => 'non-db',
+            'reportable' => false,
+            'required' => true,
+            'massupdate' => false,
+            'inline_edit' => false,
+            'importable' => false,
+            'exportable' => false,
+            'unified_search' => false,
         ],
         'all_prospect_lists' => [
             'name' => 'all_prospect_lists',
@@ -323,6 +347,21 @@ $dictionary['EmailMarketing'] = [
                 ]
             ]
         ],
+        'outbound_email' => [
+            'name' => 'outbound_email',
+            'type' => 'link',
+            'relationship' => 'email_marketing_outbound_email_accounts',
+            'link_type' => 'one',
+            'source' => 'non-db',
+            'vname' => 'LBL_OUTBOUND_EMAIL_ACCOUNT',
+            'duplicate_merge' => 'disabled',
+            'reportable' => false,
+            'massupdate' => false,
+            'inline_edit' => false,
+            'importable' => false,
+            'exportable' => false,
+            'unified_search' => false,
+        ],
         'emailtemplate' => [
             'name' => 'emailtemplate',
             'vname' => 'LBL_EMAIL_TEMPLATE',
@@ -361,6 +400,15 @@ $dictionary['EmailMarketing'] = [
             'rhs_table' => 'email_marketing',
             'rhs_key' => 'template_id',
             'relationship_type' => 'one-to-many'
+        ],
+        'email_marketing_outbound_email_accounts' => [
+            'lhs_module' => 'OutboundEmailAccounts',
+            'lhs_table' => 'outbound_email',
+            'lhs_key' => 'id',
+            'rhs_module' => 'EmailMarketing',
+            'rhs_table' => 'email_marketing',
+            'rhs_key' => 'outbound_email_id',
+            'relationship_type' => 'many-to-one'
         ],
     ],
 ];
