@@ -39,7 +39,7 @@ export class ConfirmationModalService {
     ) {
     }
 
-    public showModal(messageLabel: string, onProceed: Function): void {
+    public showModal(messageLabel: string, onProceed: Function, onClose: Function = () => {}): void {
         const modal = this.modalService.open(MessageModalComponent);
 
         modal.componentInstance.textKey = messageLabel ?? 'LBL_GENERIC_CONFIRMATION';
@@ -47,7 +47,10 @@ export class ConfirmationModalService {
             {
                 labelKey: 'LBL_CANCEL',
                 klass: ['btn-secondary'],
-                onClick: activeModal => activeModal.dismiss()
+                onClick: activeModal => {
+                    onClose();
+                    activeModal.dismiss();
+                }
             } as ModalButtonInterface,
             {
                 labelKey: 'LBL_PROCEED',
