@@ -147,9 +147,26 @@ export class RelateEditFieldComponent extends BaseRelateComponent {
      *
      * @param {object} item added
      */
-    onAdd(item): void {
+    onAdd(item, event = null): void {
+        const relateName = this.getRelateFieldName();
+
         if (item) {
-            const relateName = this.getRelateFieldName();
+            if (event && (this.field?.metadata?.selectConfirmation ?? false)) {
+                const confirmationLabel = this.field.metadata.confirmationLabel ?? '';
+                this.confirmation.showModal(
+                    confirmationLabel,
+                    () => {
+                        this.tag.writeValue(item);
+                        this.setValue(item.id, item[relateName]);
+                    },
+                    () => {
+                        if (this.field.value) {
+                            this.tag.writeValue(this.field.valueObject);
+                            this.setValue(this.field.valueObject.id, this.field.value);
+                        }
+                    });
+                return;
+            }
             this.setValue(item.id, item[relateName]);
             return;
         }
@@ -270,10 +287,12 @@ export class RelateEditFieldComponent extends BaseRelateComponent {
 
             if (this.field?.metadata?.selectConfirmation ?? false) {
                 const confirmationLabel = this.field.metadata.confirmationLabel ?? '';
-                this.confirmation.showModal(confirmationLabel, () => {
-                    const record = this.getSelectedRecord(data);
-                    this.setItem(record);
-                });
+                this.confirmation.showModal(
+                    confirmationLabel,
+                    () => {
+                        const record = this.getSelectedRecord(data);
+                        this.setItem(record);
+                    });
                 return;
             }
 
