@@ -46,6 +46,11 @@ export class RelateService {
     search(term: string, field: string): Observable<Record[]> {
 
         const criteria = this.recordList.criteria;
+
+        if (!term.startsWith('%')) {
+            term = '%' + term;
+        }
+
         criteria.filters[field] = {
             field,
             operator: '=',
