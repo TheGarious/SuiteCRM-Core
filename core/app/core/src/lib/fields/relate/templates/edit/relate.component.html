@@ -33,7 +33,7 @@
                 [options]="options"
                 [(ngModel)]="selectedValue"
                 [optionLabel]="getRelateFieldName()"
-                (onChange)="onAdd($event.value)"
+                (onChange)="onAdd($event.value, $event)"
                 (onLazyLoad)="onFilter()"
                 (onShow)="focusFilterInput()"
                 (onHide)="resetFunction(tag.options)"
