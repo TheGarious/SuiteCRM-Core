@@ -53,6 +53,30 @@ parameters:
             - edit
           acl:
             - edit
+        saveSchedule:
+          key: saveSchedule
+          labelKey: LBL_SCHEDULE_BUTTON_LABEL
+          params:
+            expanded: true
+            modules:
+              - email-marketing
+          modes:
+            - edit
+            - create
+          displayLogic:
+            hide-on-scheduled:
+              modes: ['edit']
+              params:
+                activeOnFields:
+                  status:
+                    [
+                      [
+                        operator: 'not-equal',
+                        value: 'inactive'
+                      ]
+                    ]
+          acl:
+            - edit
         delete:
           key: delete
           labelKey: LBL_DELETE
