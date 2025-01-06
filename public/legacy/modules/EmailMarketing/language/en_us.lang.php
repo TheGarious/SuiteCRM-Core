@@ -98,7 +98,8 @@ $mod_strings = array(
     'LBL_SCHEDULE_MESSAGE_TEST' => 'Please select the campaign messages that you would like to test:',
     'LBL_SCHEDULE_MESSAGE_EMAILS' => 'Please select the campaign messages that you would like to schedule for distribution on the specified start date and time:',
     'LBL_SCHEDULE_BUTTON_TITLE' => 'Send',
-    'LBL_SCHEDULE_BUTTON_LABEL' => 'Send',
+    'LBL_SEND_BUTTON_LABEL' => 'Send',
+    'LBL_SCHEDULE_BUTTON_LABEL' => 'Schedule',
     'LBL_ERROR_ON_MARKETING' => 'Missing required field(s)',
 
     'LBL_CAMPAIGN_ID' => 'Campaign ID',

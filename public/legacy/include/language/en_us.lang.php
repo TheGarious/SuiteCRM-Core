@@ -2220,6 +2220,7 @@ $app_strings = array(
     'LBL_ERROR_SAVING' => 'Error occurred while saving record',
     'LBL_SAVE_BUTTON_KEY' => 'a',
     'LBL_SAVE_BUTTON_LABEL' => 'Save',
+    'LBL_SCHEDULE_BUTTON_LABEL' => 'Schedule',
     'LBL_SAVE_BUTTON_TITLE' => 'Save',
     'LBL_SAVE_CONTINUE_LABEL' => 'Save And Continue',
     'LBL_CANCEL_BUTTON_KEY' => 'l',
