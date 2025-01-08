@@ -383,15 +383,6 @@ $dictionary['EmailMarketing'] = [
         ['name' => 'idx_emmkit_del', 'type' => 'index', 'fields' => ['deleted']],
     ],
     'relationships' => [
-        'email_template_survey' => [
-            'lhs_module' => 'EmailTemplates',
-            'lhs_table' => 'email_templates',
-            'lhs_key' => 'id',
-            'rhs_module' => 'Surveys',
-            'rhs_table' => 'surveys',
-            'rhs_key' => 'survey_id',
-            'relationship_type' => 'many-to-one'
-        ],
         'email_template_email_marketings' => [
             'lhs_module' => 'EmailTemplates',
             'lhs_table' => 'email_templates',
@@ -408,7 +399,7 @@ $dictionary['EmailMarketing'] = [
             'rhs_module' => 'EmailMarketing',
             'rhs_table' => 'email_marketing',
             'rhs_key' => 'outbound_email_id',
-            'relationship_type' => 'many-to-one'
+            'relationship_type' => 'one-to-many'
         ],
     ],
 ];

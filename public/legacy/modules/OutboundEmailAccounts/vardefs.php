@@ -592,6 +592,15 @@ $dictionary["OutboundEmailAccounts"] = [
         ],
     ],
     'relationships' => [
+        'outbound_email_accounts_email_marketing' => [
+            'lhs_module' => 'OutboundEmailAccounts',
+            'lhs_table' => 'outbound_email',
+            'lhs_key' => 'id',
+            'rhs_module' => 'EmailMarketing',
+            'rhs_table' => 'email_marketing',
+            'rhs_key' => 'outbound_email_id',
+            'relationship_type' => 'one-to-one'
+        ],
         'outbound_email_owner_user' => [
             'lhs_module' => 'Users',
             'lhs_table' => 'users',
