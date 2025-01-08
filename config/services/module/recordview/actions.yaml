@@ -69,12 +69,8 @@ parameters:
               params:
                 activeOnFields:
                   status:
-                    [
-                      [
-                        operator: 'not-equal',
-                        value: 'inactive'
-                      ]
-                    ]
+                    operator: 'not-equal'
+                    value: 'inactive'
           acl:
             - edit
         delete:
