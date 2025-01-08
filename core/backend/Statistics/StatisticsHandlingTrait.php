@@ -248,6 +248,7 @@ trait StatisticsHandlingTrait
         array $result,
         string $nameField,
         string $valueField,
+        array $labels = [],
         array $defaultValues = []
     ) {
         $seriesMap = [];
@@ -264,11 +265,15 @@ trait StatisticsHandlingTrait
 
         foreach ($result as $row) {
             $nameFieldValue = $row[$nameField] ?? '';
-            $valueFieldValue = $row[$valueField] ?? '';
+            $valueFieldValue = $row[$valueField] ?? 0;
+            $label = $labels[$nameFieldValue] ?? '';
 
             if (empty($seriesMap[$nameFieldValue])) {
                 $seriesMap[$nameFieldValue] = new SeriesItem();
                 $seriesMap[$nameFieldValue]->name = $nameFieldValue;
+                if (!empty($label)) {
+                    $seriesMap[$nameFieldValue]->label = $label;
+                }
             }
 
             $seriesMap[$nameFieldValue]->value = $valueFieldValue;
