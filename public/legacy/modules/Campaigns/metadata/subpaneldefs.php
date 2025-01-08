@@ -249,7 +249,7 @@ $layout_defs['Campaigns'] = array(
             'get_subpanel_data' => "function:track_log_entries",
             'function_parameters' => array(0 => 'blocked', 'EMAIL_MARKETING_ID_VALUE' => '',/*'group_by'=>'campaign_log.target_id','distinct'=>'campaign_log.target_id'*/),
             'subpanel_name' => 'default',
-            'title_key' => 'LBL_LOG_ENTRIES_BLOCKEDD_TITLE',
+            'title_key' => 'LBL_LOG_ENTRIES_BLOCKED_TITLE',
             'sort_order' => 'desc',
             'sort_by' => 'campaign_log.id'
         ),

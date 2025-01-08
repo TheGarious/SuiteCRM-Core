@@ -40,6 +40,37 @@
 
 $viewdefs ['Campaigns'] = [
     'DetailView' => [
+        'sidebarWidgets' => [
+            'campaign-charts' => [
+                'type' => 'chart',
+                'labelKey' => 'LBL_CAMPAIGN_CHARTS',
+                'options' => [
+                    'toggle' => true,
+                    'headerTitle' => false,
+                    'charts' => [
+                        [
+                            'chartKey' => 'campaign-response-by-recipient-activity',
+                            'chartType' => 'vertical-bar',
+                            'statisticsType' => 'campaign-response-by-recipient-activity',
+                            'labelKey' => 'LBL_CAMPAIGN_RESPONSE_BY_RECIPIENT_ACTIVITY',
+                            'chartOptions' => [
+                            ],
+                        ],
+                        [
+                            'chartKey' => 'campaign-send-status',
+                            'chartType' => 'vertical-bar',
+                            'statisticsType' => 'campaign-send-status',
+                            'labelKey' => 'LBL_CAMPAIGN_SEND_STATUS',
+                            'chartOptions' => [
+                            ],
+                        ],
+                    ],
+                ],
+                'acls' => [
+                    'Campaigns' => ['view', 'detail', 'edit', 'create']
+                ]
+            ],
+        ],
         'templateMeta' => [
             'maxColumns' => '2',
             'widths' => [
