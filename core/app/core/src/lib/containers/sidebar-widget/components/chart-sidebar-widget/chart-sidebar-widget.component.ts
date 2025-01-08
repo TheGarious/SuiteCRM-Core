@@ -229,8 +229,9 @@ export class ChartSidebarWidgetComponent extends BaseWidgetComponent implements 
         this.title = this.language.getFieldLabel(this.titleLabelKey);
     }
 
-    onChartSelect(): void {
+    onChartSelect(event): void {
         this.dataSource = null;
+        this.selectedChart = event;
         this.chartType = this.charts[this.selectedChart].chartType;
         this.reloadSelectedChart(false);
     }
