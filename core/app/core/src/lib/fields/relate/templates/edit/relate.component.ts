@@ -43,9 +43,11 @@ import {
 } from '../../../../containers/record-list-modal/components/record-list-modal/record-list-modal.model';
 import {FieldLogicManager} from '../../../field-logic/field-logic.manager';
 import {FieldLogicDisplayManager} from '../../../field-logic-display/field-logic-display.manager';
-import {map, take} from "rxjs/operators";
+import {debounceTime, map, take} from "rxjs/operators";
 import {Dropdown, DropdownFilterOptions} from "primeng/dropdown";
 import {ConfirmationModalService} from "../../../../services/modals/confirmation-modal.service";
+import {Observable, Subject} from "rxjs";
+import {SystemConfigStore} from "../../../../store/system-config/system-config.store";
 
 @Component({
     selector: 'scrm-relate-edit',
@@ -64,6 +66,9 @@ export class RelateEditFieldComponent extends BaseRelateComponent {
     emptyFilterLabel: string = '';
     filterValue: string | undefined = '';
 
+    protected filterInputBuffer = new Subject<any>();
+    protected filterInputBuffer$: Observable<any> = this.filterInputBuffer.asObservable();
+
     /**
      * Constructor
      *
@@ -73,6 +78,7 @@ export class RelateEditFieldComponent extends BaseRelateComponent {
      * @param {object} moduleNameMapper service
      * @param {object} modalService service
      * @param {object} logic
+     * @param config
      * @param {object} logicDisplay
      * @param confirmation
      */
@@ -83,6 +89,7 @@ export class RelateEditFieldComponent extends BaseRelateComponent {
         protected moduleNameMapper: ModuleNameMapper,
         protected modalService: NgbModal,
         protected logic: FieldLogicManager,
+        protected config: SystemConfigStore,
         protected logicDisplay: FieldLogicDisplayManager,
         protected confirmation: ConfirmationModalService
     ) {
@@ -118,6 +125,12 @@ export class RelateEditFieldComponent extends BaseRelateComponent {
         if (idFieldName && this.record && this.record.fields && this.record.fields[idFieldName]) {
             this.idField = this.record.fields[idFieldName];
         }
+
+        const clickDebounceTime = this.getDebounceTime();
+
+        this.subs.push(this.filterInputBuffer$.pipe(debounceTime(clickDebounceTime)).subscribe(value => {
+            this.filterResults(this.filterValue ?? '');
+        }));
     }
 
     protected initValue(): void {
@@ -199,13 +212,16 @@ export class RelateEditFieldComponent extends BaseRelateComponent {
     }
 
     onFilter(): void {
+        this.filterInputBuffer.next(this.filterValue ?? '');
+    }
+
+    filterResults(filterValue: string): void {
         const relateName = this.getRelateFieldName();
-        this.filterValue = this.filterValue ?? '';
-        const matches = this.filterValue.match(/^\s*$/g);
+        const matches = filterValue.match(/^\s*$/g);
         if (matches && matches.length) {
-            this.filterValue = '';
+            filterValue = '';
         }
-        let term = this.filterValue;
+        let term = filterValue;
         this.search(term).pipe(
             take(1),
             map(data => data.filter(item => item[relateName] !== '')),
@@ -344,6 +360,19 @@ export class RelateEditFieldComponent extends BaseRelateComponent {
     public getTranslatedLabels(): void {
         this.placeholderLabel = this.languages.getAppString('LBL_SELECT_ITEM') || '';
         this.emptyFilterLabel = this.languages.getAppString('ERR_SEARCH_NO_RESULTS') || '';
+    }
+
+    /**
+     * Get debounce time
+     * @return number
+     * @protected
+     */
+    protected getDebounceTime(): number {
+        let filterDebounceTime = this.config?.getUi('relate_field_debounce_time') ?? 750;
+        if (!isFinite(filterDebounceTime)) {
+            filterDebounceTime = 750;
+        }
+        return filterDebounceTime;
     }
 
     focusFilterInput() {
