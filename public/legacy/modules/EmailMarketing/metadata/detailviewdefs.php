@@ -43,6 +43,37 @@ $viewdefs ['EmailMarketing'] = [
         'header' => [
             'backButton' => 'hide',
         ],
+        'sidebarWidgets' => [
+            'email-marketing-charts' => [
+                'type' => 'chart',
+                'labelKey' => 'LBL_EMAIL_MARKETING_CHARTS',
+                'options' => [
+                    'toggle' => true,
+                    'headerTitle' => false,
+                    'charts' => [
+                        [
+                            'chartKey' => 'campaign-response-by-recipient-activity',
+                            'chartType' => 'vertical-bar',
+                            'statisticsType' => 'campaign-response-by-recipient-activity',
+                            'labelKey' => 'LBL_EMAIL_MARKETING_RESPONSE_BY_RECIPIENT_ACTIVITY',
+                            'chartOptions' => [
+                            ],
+                        ],
+                        [
+                            'chartKey' => 'campaign-send-status',
+                            'chartType' => 'vertical-bar',
+                            'statisticsType' => 'campaign-send-status',
+                            'labelKey' => 'LBL_EMAIL_MARKETING_SEND_STATUS',
+                            'chartOptions' => [
+                            ],
+                        ],
+                    ],
+                ],
+                'acls' => [
+                    'EmailMarketing' => ['view', 'detail', 'edit', 'create']
+                ]
+            ],
+        ],
         'templateMeta' => [
             'maxColumns' => '2',
             'colClasses' => [
