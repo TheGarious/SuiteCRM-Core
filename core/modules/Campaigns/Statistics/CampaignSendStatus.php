@@ -89,7 +89,12 @@ class CampaignSendStatus extends LegacyHandler implements StatisticsProviderInte
     {
         [$module, $id, $criteria, $sort] = $this->extractContext($query);
 
-        if (empty($module) || $module !== 'campaigns') {
+        $allowedModules = [
+            'email-marketing',
+            'campaigns'
+        ];
+
+        if (empty($module) || !in_array($module, $allowedModules, true)) {
             return $this->getEmptySeriesResponse(self::KEY);
         }
 
@@ -101,11 +106,18 @@ class CampaignSendStatus extends LegacyHandler implements StatisticsProviderInte
             'viewed' => 'LBL_LOG_ENTRIES_VIEWED_TITLE',
         ];
 
+        $emailMarketingId = null;
+
         $this->init();
         $this->startLegacyApp();
 
         $legacyName = $this->moduleNameMapper->toLegacy($module);
         $bean = BeanFactory::newBean($legacyName);
+
+        if ($module === 'email-marketing') {
+            $emailMarketingId = $id;
+            $id = $this->getCampaignId($id);
+        }
 
         if (!$bean instanceof SugarBean) {
             return $this->getEmptySeriesResponse(self::KEY);
@@ -113,7 +125,7 @@ class CampaignSendStatus extends LegacyHandler implements StatisticsProviderInte
 
         $query = $this->queryHandler->getQuery($bean, $criteria, $sort);
 
-        $query = $this->generateQuery($query, $id, $activities);
+        $query = $this->generateQuery($query, $id, $activities, $emailMarketingId);
 
         $result = $this->runQuery($query, $bean);
 
@@ -132,13 +144,17 @@ class CampaignSendStatus extends LegacyHandler implements StatisticsProviderInte
     }
 
 
-    public function generateQuery(array $query, string $id, array $activities): array
+    public function generateQuery(array $query, string $id, array $activities, string $emailMarketingId = null): array
     {
         $query['select'] = "SELECT activity_type,target_type, count(*) hits ";
         $query['from'] = " FROM campaign_log ";
         $query['where'] = " WHERE campaign_id = '$id' AND archived=0 AND deleted=0 AND activity_type in ('" . implode("','", array_keys($activities)) . "')";
         $query['group_by'] = " GROUP BY  activity_type, target_type";
         $query['order_by'] = " ORDER BY  activity_type, target_type";
+
+        if ($emailMarketingId !== null) {
+            $query['where'] .= " AND marketing_id ='$emailMarketingId'";
+        }
 
         return $query;
     }
@@ -150,8 +166,26 @@ class CampaignSendStatus extends LegacyHandler implements StatisticsProviderInte
      */
     protected function runQuery(array $query, $bean): array
     {
-        // send limit -2 to not add a limit
         return $this->queryHandler->runQuery($bean, $query, -1, -2);
+    }
+
+    protected function getCampaignId(string $id): string
+    {
+        $bean = BeanFactory::newBean('Campaigns');
+        $query = [];
+        $query['select'] = 'SELECT campaign_id';
+        $query['from'] = ' FROM email_marketing';
+        $query['where'] = " WHERE id = '$id'";
+
+        $result = $this->runQuery($query, $bean);
+
+        $campaignId = null;
+
+        foreach ($result as $row) {
+            $campaignId = $row['campaign_id'];
+        }
+
+        return $campaignId;
     }
 
 }
