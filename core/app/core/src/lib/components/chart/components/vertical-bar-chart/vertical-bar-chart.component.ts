@@ -30,6 +30,7 @@ import {isFalse} from '../../../../common/utils/value-utils';
 import {BaseChartComponent} from '../base-chart/base-chart.component';
 import {ScreenSizeObserverService} from "../../../../services/ui/screen-size-observer/screen-size-observer.service";
 import {debounceTime} from "rxjs/operators";
+import {LanguageStore} from "../../../../store/language/language.store";
 
 @Component({
     selector: 'scrm-vertical-bar-chart',
@@ -40,7 +41,7 @@ export class VerticalBarChartComponent extends BaseChartComponent implements OnI
 
     results: SingleSeries;
 
-    constructor(protected elementRef: ElementRef, protected screenSize: ScreenSizeObserverService) {
+    constructor(protected elementRef: ElementRef, protected screenSize: ScreenSizeObserverService, protected language: LanguageStore) {
         super(elementRef, screenSize);
     }
 
@@ -55,6 +56,12 @@ export class VerticalBarChartComponent extends BaseChartComponent implements OnI
             this.results = value.singleSeries;
             this.calculateView()
         }));
+
+        this.results.forEach((result) => {
+            if (result?.label) {
+                result.name = this.language.getFieldLabel(result.label);
+            }
+        })
     }
 
     ngOnDestroy(): void {
