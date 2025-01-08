@@ -355,6 +355,7 @@ $dictionary['EmailMarketing'] = [
         'survey' => [
             'name' => 'survey',
             'vname' => 'LBL_SURVEY',
+            'rname' => 'name',
             'id_name' => 'survey_id',
             'type' => 'relate',
             'table' => 'surveys',

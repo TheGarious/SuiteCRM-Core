@@ -348,7 +348,7 @@ $mod_strings = array(
     //Campaign charts
     'LBL_CAMPAIGN_RETURN_ON_INVESTMENT' => 'Campaign Return On Investment',
     'LBL_CAMPAIGN_RESPONSE_BY_RECIPIENT_ACTIVITY' => 'Campaign Response by Recipient Activity',
-    'LBL_LOG_ENTRIES_BLOCKEDD_TITLE' => 'Suppressed by Email Address or domain',
+    'LBL_LOG_ENTRIES_BLOCKED_TITLE' => 'Suppressed by Email Address or domain',
 
     'LBL_AMOUNT_IN' => 'Amount in',
 
