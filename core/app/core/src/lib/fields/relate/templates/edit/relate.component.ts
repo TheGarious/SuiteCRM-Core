@@ -160,10 +160,15 @@ export class RelateEditFieldComponent extends BaseRelateComponent {
                         this.setValue(item.id, item[relateName]);
                     },
                     () => {
-                        if (this.field.value) {
-                            this.tag.writeValue(this.field.valueObject);
-                            this.setValue(this.field.valueObject.id, this.field.value);
+                        this.tag.writeValue(this.field.valueObject);
+                        const value = this.field.value;
+
+                        if (value === '') {
+                            this.onClear(event);
+                            return;
                         }
+
+                        this.setValue(this.field.valueObject.id, value);
                     });
                 return;
             }
