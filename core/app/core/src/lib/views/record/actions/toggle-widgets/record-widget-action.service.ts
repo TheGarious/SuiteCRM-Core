@@ -45,7 +45,9 @@ export class RecordToggleWidgetsAction extends RecordActionHandler {
     }
 
     shouldDisplay(data: RecordActionData): boolean {
-        return data.store.widgets;
+        const widgets = data.store.metadata?.recordView?.sidebarWidgets ?? [];
+        const filteredWidgets = data.store.filterWidgetsByMode(widgets)
+        return data.store.widgets && !!filteredWidgets.length;
     }
 
     getStatus(data: RecordActionData): string {
