@@ -27,6 +27,7 @@
 import {Observable} from 'rxjs';
 import {SingleValueStatisticsStoreInterface} from '../statistics/statistics-store.model';
 import {BooleanMap} from '../types/boolean-map';
+import {ViewMode} from "../views/view.model";
 
 export interface WidgetMetadata {
     type: string;
@@ -36,6 +37,7 @@ export interface WidgetMetadata {
     subpanelReload$?: Observable<BooleanMap>;
     refreshOn?: string;
     allowCollapse?: boolean;
+    modes?: ViewMode[];
 }
 
 export interface WidgetOptionMap {
