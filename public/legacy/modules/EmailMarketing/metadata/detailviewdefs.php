@@ -46,6 +46,7 @@ $viewdefs ['EmailMarketing'] = [
         'sidebarWidgets' => [
             'email-marketing-charts' => [
                 'type' => 'chart',
+                'modes' => ['detail'],
                 'labelKey' => 'LBL_EMAIL_MARKETING_CHARTS',
                 'options' => [
                     'toggle' => true,
