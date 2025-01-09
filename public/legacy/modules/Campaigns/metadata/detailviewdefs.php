@@ -44,6 +44,7 @@ $viewdefs ['Campaigns'] = [
             'campaign-charts' => [
                 'type' => 'chart',
                 'labelKey' => 'LBL_CAMPAIGN_CHARTS',
+                'modes' => ['detail'],
                 'options' => [
                     'toggle' => true,
                     'headerTitle' => false,
