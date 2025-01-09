@@ -68,6 +68,7 @@ import {RecordConvertService} from "../../../../services/record/record-convert.s
 import {FieldActionsAdapterFactory} from "../../../../components/field-layout/adapters/field.actions.adapter.factory";
 import {RecordValidationHandler} from "../../../../services/record/validation/record-validation.handler";
 import {ObjectMap} from "../../../../common/types/object-map";
+import {WidgetMetadata} from "../../../../common/metadata/widget.metadata";
 
 const initialState: RecordViewState = {
     module: '',
@@ -358,6 +359,7 @@ export class RecordViewStore extends ViewStore implements StateStore {
      */
     setMode(mode: ViewMode): void {
         this.updateState({...this.internalState, mode});
+        this.calculateShowWidgets();
     }
 
     save(): Observable<Record> {
@@ -798,6 +800,20 @@ export class RecordViewStore extends ViewStore implements StateStore {
      */
     protected loadPreference(module: string, storageKey: string): any {
         return this.preferences.getUi(module, this.getPreferenceKey(storageKey));
+    }
+
+    public filterWidgetsByMode(widgets: WidgetMetadata[]): WidgetMetadata[] {
+        return widgets.filter(widget => {
+            const modes = widget?.modes ?? [];
+
+            if (modes.length === 0) {
+                return true;
+            }
+
+            const mode = this.getMode();
+
+            return modes.includes(mode);
+        });
     }
 
     private safeUnsubscription(subscriptionArray: Subscription[]): Subscription[] {

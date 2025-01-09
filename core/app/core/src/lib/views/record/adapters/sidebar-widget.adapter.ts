@@ -37,8 +37,13 @@ export class SidebarWidgetAdapter {
         combineLatestWith(this.store.showSidebarWidgets$),
         map(([metadata, show]: [RecordViewMetadata, boolean]) => {
 
+            let filteredWidgets = [];
+
             if (metadata.sidebarWidgets && metadata.sidebarWidgets.length) {
-                metadata.sidebarWidgets.forEach(widget => {
+
+                filteredWidgets = this.store.filterWidgetsByMode(metadata.sidebarWidgets);
+
+                filteredWidgets.forEach(widget => {
                     if (widget && widget.refreshOn === 'data-update') {
                         widget.reload$ = this.store.record$.pipe(map(() => true));
                     }
@@ -49,8 +54,12 @@ export class SidebarWidgetAdapter {
                 });
             }
 
+            if (!filteredWidgets.length) {
+                show = false;
+            }
+
             return {
-                widgets: metadata.sidebarWidgets || [],
+                widgets: filteredWidgets || [],
                 show
             };
         })

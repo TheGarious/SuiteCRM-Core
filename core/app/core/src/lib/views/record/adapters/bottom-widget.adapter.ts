@@ -37,8 +37,13 @@ export class BottomWidgetAdapter {
         combineLatestWith(this.store.showBottomWidgets$),
         map(([metadata, show]: [RecordViewMetadata, boolean]) => {
 
+            let filteredWidgets = [];
+
             if (metadata.bottomWidgets && metadata.bottomWidgets.length) {
-                metadata.bottomWidgets.forEach(widget => {
+
+                filteredWidgets = this.store.filterWidgetsByMode(metadata.bottomWidgets);
+
+                filteredWidgets.forEach(widget => {
                     if (widget && widget.refreshOn === 'data-update') {
                         widget.reload$ = this.store.record$.pipe(map(() => true));
                     }
@@ -47,10 +52,14 @@ export class BottomWidgetAdapter {
                         widget.subpanelReload$ = this.store.subpanelReload$;
                     }
                 });
+
+                if (!filteredWidgets.length) {
+                    show = false;
+                }
             }
 
             return {
-                widgets: metadata.bottomWidgets || [],
+                widgets: filteredWidgets || [],
                 show
             };
         })
