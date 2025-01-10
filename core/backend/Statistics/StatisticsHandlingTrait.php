@@ -248,9 +248,10 @@ trait StatisticsHandlingTrait
         array $result,
         string $nameField,
         string $valueField,
-        array $labels = [],
+        array $fields = [],
         array $defaultValues = []
-    ) {
+    ): Series|SeriesResult
+    {
         $seriesMap = [];
 
         if (!empty($defaultValues)) {
@@ -265,8 +266,8 @@ trait StatisticsHandlingTrait
 
         foreach ($result as $row) {
             $nameFieldValue = $row[$nameField] ?? '';
-            $valueFieldValue = $row[$valueField] ?? 0;
-            $label = $labels[$nameFieldValue] ?? '';
+            $valueFieldValue = $row[$valueField] ?? '0';
+            $label = $fields[$nameFieldValue] ?? '';
 
             if (empty($seriesMap[$nameFieldValue])) {
                 $seriesMap[$nameFieldValue] = new SeriesItem();
@@ -279,10 +280,29 @@ trait StatisticsHandlingTrait
             $seriesMap[$nameFieldValue]->value = $valueFieldValue;
         }
 
+        if (empty($result)){
+            $series = new SeriesResult();
+            $series->singleSeries = array_values($seriesMap);
+
+            return $series;
+        }
+
+
+        foreach ($fields as $i => $field) {
+            if (empty($seriesMap[$i])){
+                $seriesMap[$i] = new SeriesItem();
+                $seriesMap[$i]->name = $i;
+                $seriesMap[$i]->label = $field;
+                $seriesMap[$i]->value = '0';
+            }
+        }
+
+
         $series = new SeriesResult();
         $series->singleSeries = array_values($seriesMap);
 
         return $series;
+
     }
 
 
@@ -414,5 +434,6 @@ trait StatisticsHandlingTrait
 
         return $entry;
     }
+
 
 }
