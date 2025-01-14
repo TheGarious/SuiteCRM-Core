@@ -40,6 +40,9 @@
 
 $viewdefs ['EmailMarketing'] = [
     'DetailView' => [
+        'header' => [
+            'backButton' => 'hide',
+        ],
         'templateMeta' => [
             'maxColumns' => '2',
             'colClasses' => [
