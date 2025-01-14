@@ -400,6 +400,13 @@ export class RecordViewStore extends ViewStore implements StateStore {
         );
     }
 
+    showBackButton(): boolean {
+        const metadata = this.getRecordViewMetadata();
+        const backButton = metadata?.header?.backButton ?? false;
+
+        return !backButton || backButton === 'show';
+    }
+
     /**
      * Load / reload record using current pagination and criteria
      *

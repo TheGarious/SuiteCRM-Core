@@ -35,7 +35,7 @@
         </div>
         <div *ngIf="!loading" class="row m-0 d-flex justify-content-between ml-1 mr-1">
             <div class="col-xs-12 col-sm-12 col-md-5 col-lg-6 col-xl-7 record-name-container">
-                <div class="float-left p-0">
+                <div *ngIf="showBackButton()" class="float-left p-0">
                     <div class="d-flex record-view-back-button justify-content-start" *ngIf="mode === 'detail' || mode === 'edit'">
                         <scrm-button *ngIf="backButtonConfig" [config]="backButtonConfig"></scrm-button>
                     </div>
@@ -43,7 +43,7 @@
                 <div class="record-view-name-wrapper d-flex justify-content-md-start align-items-center"
                      [class.justify-content-center]="mode === 'detail' || mode === 'edit'"
                      [class.justify-content-start]="!(mode === 'detail' || mode === 'edit')"
-                     [class.record-view-name-wrapper-margin-left]="mode === 'detail' || mode === 'edit'"
+                     [class.record-view-name-wrapper-margin-left]="(mode === 'detail' || mode === 'edit') && showBackButton()"
                 >
                     <div class="p-0 d-inline-block" [ngClass]="isScrolled ? 'record-view-name-scrolled' : 'record-view-name'">
                         <div *ngIf="record && record.fields && mode !== 'create'" class="float-right align-items-top d-flex">

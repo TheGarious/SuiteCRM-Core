@@ -182,6 +182,7 @@ class RecordViewDefinitionHandler extends LegacyHandler
         $vardefs = $fieldDefinition->getVardef();
 
         $metadata = [
+            'header' => [],
             'templateMeta' => [],
             'topWidget' => [],
             'sidebarWidgets' => [],
@@ -201,6 +202,7 @@ class RecordViewDefinitionHandler extends LegacyHandler
         $this->addPanelDefinitions($detailViewDefs, $editViewDefs, $vardefs, $metadata);
         $this->addActionConfig($module, $detailViewDefs, $metadata);
         $this->addSummaryTemplates($detailViewDefs, $metadata);
+        $this->addBackButton($detailViewDefs, $metadata);
 
         return $metadata;
     }
@@ -548,6 +550,16 @@ class RecordViewDefinitionHandler extends LegacyHandler
         return $definition;
     }
 
+    protected function addBackButton(array $detailViewDefs, array &$metadata): void
+    {
+        $backButton = 'show';
+        if (isset($detailViewDefs['header']['backButton'])){
+            $backButton = $detailViewDefs['header']['backButton'];
+        }
+
+        $metadata['header']['backButton'] = $backButton;
+    }
+
     /**
      * @param $newRow
      * @param $definition
@@ -657,4 +669,5 @@ class RecordViewDefinitionHandler extends LegacyHandler
 
         return $definition;
     }
+
 }

@@ -125,6 +125,10 @@ export class RecordHeaderComponent implements OnInit, OnDestroy {
         } as ActionContext
     }
 
+    showBackButton(): boolean {
+        return this.recordViewStore.showBackButton();
+    }
+
     setBackButtonConfig(): void {
         const moduleRoute= this.moduleNavigation.getModuleRoute(this.recordViewStore.vm.appData.module);
 
