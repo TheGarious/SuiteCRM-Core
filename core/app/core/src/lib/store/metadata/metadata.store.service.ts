@@ -45,6 +45,10 @@ export interface SummaryTemplates {
     [key: string]: string;
 }
 
+export interface HeaderMetadata {
+    backButton?: string;
+}
+
 export interface RecordViewMetadata {
     topWidget?: WidgetMetadata;
     sidebarWidgets?: WidgetMetadata[];
@@ -55,6 +59,7 @@ export interface RecordViewMetadata {
     summaryTemplates?: SummaryTemplates;
     vardefs?: FieldDefinitionMap;
     metadata?: ObjectMap;
+    header?: HeaderMetadata;
 }
 
 export interface RecordTemplateMetadata {
@@ -487,7 +492,8 @@ export class MetadataStore implements StateStore {
             bottomWidgets: 'bottomWidgets',
             summaryTemplates: 'summaryTemplates',
             vardefs: 'vardefs',
-            metadata: 'metadata'
+            metadata: 'metadata',
+            header: 'header'
         };
 
         this.addDefinedMeta(recordViewMeta, receivedMeta, entries);
