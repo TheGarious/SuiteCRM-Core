@@ -45,8 +45,8 @@ class CampaignResponseByRecipientType extends LegacyHandler implements Statistic
 
     public const KEY = 'campaign-response-by-recipient-activity';
 
-    private ListDataQueryHandler $queryHandler;
-    private ModuleNameMapperInterface $moduleNameMapper;
+    protected ListDataQueryHandler $queryHandler;
+    protected ModuleNameMapperInterface $moduleNameMapper;
 
 
     /**
@@ -145,8 +145,12 @@ class CampaignResponseByRecipientType extends LegacyHandler implements Statistic
     }
 
 
-    public function generateQuery(array $query, string $id, $activities, string $emailMarketingId = null): array
+    public function generateQuery(array $query, string $id, array $activities, string $emailMarketingId = null): array
     {
+        global $db;
+
+        $id = $db->quote($id);
+
         $query['select'] = "SELECT activity_type,target_type, count(*) hits ";
         $query['from'] = " FROM campaign_log ";
         $query['where'] = " WHERE campaign_id = '$id' AND archived=0 AND deleted=0 AND activity_type in ('" . implode("','", array_keys($activities)) . "')";
@@ -154,6 +158,7 @@ class CampaignResponseByRecipientType extends LegacyHandler implements Statistic
         $query['order_by'] = " ORDER BY  activity_type, target_type";
 
         if ($emailMarketingId !== null) {
+            $emailMarketingId = $db->quote($emailMarketingId);
             $query['where'] .= " AND marketing_id ='$emailMarketingId'";
         }
 
@@ -172,6 +177,9 @@ class CampaignResponseByRecipientType extends LegacyHandler implements Statistic
 
     protected function getCampaignId(string $id): string
     {
+        global $db;
+        $id = $db->quote($id);
+
         $bean = BeanFactory::newBean('Campaigns');
         $query = [];
         $query['select'] = 'SELECT campaign_id';
