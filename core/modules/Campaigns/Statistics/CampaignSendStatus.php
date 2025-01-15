@@ -45,8 +45,8 @@ class CampaignSendStatus extends LegacyHandler implements StatisticsProviderInte
 
     public const KEY = 'campaign-send-status';
 
-    private ListDataQueryHandler $queryHandler;
-    private ModuleNameMapperInterface$moduleNameMapper;
+    protected ListDataQueryHandler $queryHandler;
+    protected ModuleNameMapperInterface $moduleNameMapper;
 
 
     /**
@@ -99,6 +99,7 @@ class CampaignSendStatus extends LegacyHandler implements StatisticsProviderInte
         }
 
         $activities = [
+            'track_queue' => 'LBL_MESSAGE_QUEUE_TITLE',
             'targeted' => 'LBL_LOG_ENTRIES_TARGETED_TITLE',
             'sent error' => 'LBL_LOG_ENTRIES_SEND_ERROR_TITLE',
             'invalid email' => 'LBL_LOG_ENTRIES_INVALID_EMAIL_TITLE',
@@ -146,6 +147,10 @@ class CampaignSendStatus extends LegacyHandler implements StatisticsProviderInte
 
     public function generateQuery(array $query, string $id, array $activities, string $emailMarketingId = null): array
     {
+        global $db;
+
+        $id = $db->quote($id);
+
         $query['select'] = "SELECT activity_type,target_type, count(*) hits ";
         $query['from'] = " FROM campaign_log ";
         $query['where'] = " WHERE campaign_id = '$id' AND archived=0 AND deleted=0 AND activity_type in ('" . implode("','", array_keys($activities)) . "')";
@@ -153,6 +158,7 @@ class CampaignSendStatus extends LegacyHandler implements StatisticsProviderInte
         $query['order_by'] = " ORDER BY  activity_type, target_type";
 
         if ($emailMarketingId !== null) {
+            $emailMarketingId = $db->quote($emailMarketingId);
             $query['where'] .= " AND marketing_id ='$emailMarketingId'";
         }
 
@@ -171,6 +177,9 @@ class CampaignSendStatus extends LegacyHandler implements StatisticsProviderInte
 
     protected function getCampaignId(string $id): string
     {
+        global $db;
+        $id = $db->quote($id);
+
         $bean = BeanFactory::newBean('Campaigns');
         $query = [];
         $query['select'] = 'SELECT campaign_id';
