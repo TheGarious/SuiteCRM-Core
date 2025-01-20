@@ -73,13 +73,13 @@ class EmailMarketing extends SugarBean
     public $module_dir = 'EmailMarketing';
 
     public $new_schema = true;
+    public $log_entries;
+    public $queueitems;
 
     public function __construct()
     {
         parent::__construct();
     }
-
-
 
 
     public function save($check_notify = false)
@@ -245,5 +245,72 @@ class EmailMarketing extends SugarBean
             $errors['from_addr'] = isset($mod_strings['LBL_NO_FROM_ADDR_OR_INVALID']) ? $mod_strings['LBL_NO_FROM_ADDR_OR_INVALID'] : 'LBL_NO_FROM_ADDR_OR_INVALID';
         }
         return $errors;
+    }
+
+    public function trackLogLeads()
+    {
+        $this->load_relationship('log_entries');
+        $query_array = $this->log_entries->getQuery(true);
+
+        $query_array['select'] = 'SELECT campaign_log.* ';
+        $query_array['where'] .= " AND activity_type = 'lead' AND archived = 0 AND target_id IS NOT NULL";
+
+        return implode(' ', $query_array);
+    }
+
+    public function trackLogEntries($type = array())
+    {
+        $args = func_get_args();
+
+        $this->load_relationship('log_entries');
+        $query_array = $this->log_entries->getQuery(true);
+
+        $mkt_id = $this->id;
+        foreach ($args as $arg) {
+            if (isset($arg['group_by'])) {
+                $query_array['group_by'] = $arg['group_by'];
+            }
+        }
+
+        if (empty($type)) {
+            $type[0] = 'targeted';
+        }
+
+        $query_array['select'] = "SELECT campaign_log.* ";
+        $query_array['where'] .= " AND activity_type='{$type[0]}' AND marketing_id ='$mkt_id'  AND archived=0";
+
+        if (isset($query_array['group_by'])) {
+            $group_by = str_replace("campaign_log", "cl", (string)$query_array['group_by']);
+            $join_where = str_replace("campaign_log", "cl", $query_array['where']);
+            $query_array['from'] .= " INNER JOIN (select min(id) as id from campaign_log cl $join_where GROUP BY $group_by  ) secondary
+					on campaign_log.id = secondary.id	";
+            unset($query_array['group_by']);
+        }
+
+        return (implode(" ", $query_array));
+    }
+
+
+    public function getQueueItems(...$args)
+    {
+        $mkt_id = $this->id;
+
+        $this->load_relationship('queueitems');
+        $query_array = $this->queueitems->getQuery(true);
+
+        foreach ($args as $arg) {
+
+            if (isset($arg['group_by'])) {
+                $query_array['group_by'] = $arg['group_by'];
+            }
+        }
+
+        $query_array['where'] .= " AND marketing_id ='$mkt_id' ";
+
+        $man = BeanFactory::newBean('EmailMan');
+
+        $listQuery = $man->create_queue_items_query('', str_replace(array("WHERE", "where"), "", (string)$query_array['where']), null, $query_array);
+
+        return $listQuery;
     }
 }

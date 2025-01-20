@@ -41,32 +41,146 @@ if (!defined('sugarEntry') || !sugarEntry) {
  * display the words "Powered by SugarCRM" and "Supercharged by SuiteCRM".
  */
 
- 
 
-$layout_defs['EmailMarketing'] = array(
-    // list of what Subpanels to show in the DetailView
-    'subpanel_setup' => array(
-        'prospectlists' => array(
+$layout_defs['EmailMarketing'] = [
+    'subpanel_setup' => [
+        'track_queue' => [
+            'order' => 100,
+            'module' => 'EmailMan',
+            'get_subpanel_data' => 'function:getQueueItems',
+            'subpanel_name' => 'default',
+            'title_key' => 'LBL_MESSAGE_QUEUE_TITLE',
+            'sort_order' => 'desc',
+        ],
+        'targeted' => [
+            'order' => 110,
+            'module' => 'CampaignLog',
+            'get_subpanel_data' => "function:trackLogEntries",
+            'function_parameters' => [
+                0 => 'targeted',
+            ],
+            'subpanel_name' => 'default',
+            'title_key' => 'LBL_LOG_ENTRIES_TARGETED_TITLE',
+            'sort_order' => 'desc',
+            'sort_by' => 'campaign_log.id'
+        ],
+        'viewed' => [
+            'order' => 120,
+            'module' => 'CampaignLog',
+            'get_subpanel_data' => "function:trackLogEntries",
+            'subpanel_name' => 'default',
+            'function_parameters' => [
+                0 => 'viewed',
+            ],
+            'title_key' => 'LBL_LOG_ENTRIES_VIEWED_TITLE',
+            'sort_order' => 'desc',
+            'sort_by' => 'campaign_log.id'
+        ],
+        'link' => [
+            'order' => 130,
+            'module' => 'CampaignLog',
+            'get_subpanel_data' => "function:trackLogEntries",
+            'function_parameters' => [
+                0 => 'link',
+            ],
+            'subpanel_name' => 'default',
+            'title_key' => 'LBL_LOG_ENTRIES_LINK_TITLE',
+            'sort_order' => 'desc',
+            'sort_by' => 'campaign_log.id'
+        ],
+        'lead' => [
+            'order' => 140,
+            'module' => 'CampaignLog',
+            'get_subpanel_data' => "function:trackLogLeads",
+            'subpanel_name' => 'default',
+            'title_key' => 'LBL_LOG_ENTRIES_LEAD_TITLE',
+            'sort_order' => 'desc',
+            'sort_by' => 'campaign_log.id',
+            'top_buttons' => [
+                ['widget_class' => 'SubPanelAddToProspectListButton', 'create' => true],
+            ]
+        ],
+        'contact' => [
+            'order' => 150,
+            'module' => 'CampaignLog',
+            'get_subpanel_data' => "function:trackLogEntries",
+            'function_parameters' => [
+                0 => 'contact',
+            ],
+            'subpanel_name' => 'default',
+            'title_key' => 'LBL_LOG_ENTRIES_CONTACT_TITLE',
+            'sort_order' => 'desc',
+            'sort_by' => 'campaign_log.id'
+        ],
+        'invalid_email' => [
+            'order' => 160,
+            'module' => 'CampaignLog',
+            'get_subpanel_data' => "function:trackLogEntries",
+            'function_parameters' => [
+                0 => 'invalid email',
+            ],
+            'subpanel_name' => 'default',
+            'title_key' => 'LBL_LOG_ENTRIES_INVALID_EMAIL_TITLE',
+            'sort_order' => 'desc',
+            'sort_by' => 'campaign_log.id'
+        ],
+        'send_error' => [
+            'order' => 170,
+            'module' => 'CampaignLog',
+            'get_subpanel_data' => "function:trackLogEntries",
+            'function_parameters' => [
+                0 => 'send error',
+            ],
+            'subpanel_name' => 'default',
+            'title_key' => 'LBL_LOG_ENTRIES_SEND_ERROR_TITLE',
+            'sort_order' => 'desc',
+            'sort_by' => 'campaign_log.id'
+        ],
+        'removed' => [
+            'order' => 180,
+            'module' => 'CampaignLog',
+            'get_subpanel_data' => "function:trackLogEntries",
+            'function_parameters' => [
+                0 => 'removed',
+            ],
+            'subpanel_name' => 'default',
+            'title_key' => 'LBL_LOG_ENTRIES_REMOVED_TITLE',
+            'sort_order' => 'desc',
+            'sort_by' => 'campaign_log.id'
+        ],
+        'blocked' => [
+            'order' => 185,
+            'module' => 'CampaignLog',
+            'get_subpanel_data' => "function:trackLogEntries",
+            'function_parameters' => [
+                0 => 'blocked',
+            ],
+            'subpanel_name' => 'default',
+            'title_key' => 'LBL_LOG_ENTRIES_BLOCKED_TITLE',
+            'sort_order' => 'desc',
+            'sort_by' => 'campaign_log.id'
+        ],
+        'prospectlists' => [
             'order' => 10,
             'sort_order' => 'asc',
             'sort_by' => 'name',
             'module' => 'ProspectLists',
-            'get_subpanel_data'=>'prospectlists',
-            'set_subpanel_data'=>'prospectlists',
+            'get_subpanel_data' => 'prospectlists',
+            'set_subpanel_data' => 'prospectlists',
             'subpanel_name' => 'default',
             'title_key' => 'LBL_PROSPECT_LIST_SUBPANEL_TITLE',
-            'top_buttons' => array(),
-        ),
-        'allprospectlists' => array(
+            'top_buttons' => [],
+        ],
+        'allprospectlists' => [
             'order' => 20,
             'module' => 'ProspectLists',
             'sort_order' => 'asc',
             'sort_by' => 'name',
-            'get_subpanel_data'=>'function:get_all_prospect_lists',
-            'set_subpanel_data'=>'prospectlists',
+            'get_subpanel_data' => 'function:get_all_prospect_lists',
+            'set_subpanel_data' => 'prospectlists',
             'subpanel_name' => 'default',
             'title_key' => 'LBL_PROSPECT_LIST_SUBPANEL_TITLE',
-            'top_buttons' => array(),
-        ),
-    )
-);
+            'top_buttons' => [],
+        ],
+    ]
+];
