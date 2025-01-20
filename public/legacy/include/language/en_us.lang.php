@@ -648,7 +648,6 @@ $app_list_strings = array(
     ),
     /*Added entries 'Queued' and 'Sending' for 4.0 release..*/
     'campaign_status_dom' => array(
-        '' => '',
         'Planning' => 'Planning',
         'Active' => 'Active',
         'Inactive' => 'Inactive',
@@ -1609,12 +1608,12 @@ $app_strings = array(
     'LBL_CAMPAIGN_NONE' => 'None',
     'LBL_CAMPAIGN_CHARTS' => 'Campaign Charts',
     'LBL_EMAIL_MARKETING_CHARTS' => 'Email Marketing Charts',
+    'LBL_MESSAGE_QUEUE_TITLE' => 'Message Queue',
     'LBL_CAMPAIGN_SEND_STATUS' => 'Campaign Send Status',
     'LBL_EMAIL_MARKETING_SEND_STATUS' => 'Email Marketing Send Status',
     'LBL_CAMPAIGN_RESPONSE_BY_RECIPIENT_ACTIVITY' => 'Campaign Response By Recipent Activity',
     'LBL_EMAIL_MARKETING_RESPONSE_BY_RECIPIENT_ACTIVITY' => 'Email Marketing Response By Recipent Activity',
     'LBL_LOG_ENTRIES_TARGETED_TITLE' => 'Message Sent/Attempted',
-    'LBL_MESSAGE_QUEUE_TITLE' => 'Message Queue',
     'LBL_LOG_ENTRIES_SEND_ERROR_TITLE' => 'Bounced Messages, Other',
     'LBL_LOG_ENTRIES_INVALID_EMAIL_TITLE' => 'Bounced Messages, Invalid Email',
     'LBL_LOG_ENTRIES_LINK_TITLE' => 'Click-thru Link',
