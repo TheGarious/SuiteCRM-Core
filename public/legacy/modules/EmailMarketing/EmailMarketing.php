@@ -265,7 +265,7 @@ class EmailMarketing extends SugarBean
         $this->load_relationship('log_entries');
         $query_array = $this->log_entries->getQuery(true);
 
-        $mkt_id = $this->id;
+        $mkt_id = $this->db->quote($this->id);
         foreach ($args as $arg) {
             if (isset($arg['group_by'])) {
                 $query_array['group_by'] = $arg['group_by'];
@@ -293,7 +293,7 @@ class EmailMarketing extends SugarBean
 
     public function getQueueItems(...$args)
     {
-        $mkt_id = $this->id;
+        $mkt_id = $this->db->quote($this->id);
 
         $this->load_relationship('queueitems');
         $query_array = $this->queueitems->getQuery(true);
