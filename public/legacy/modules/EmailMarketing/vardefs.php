@@ -127,12 +127,6 @@ $dictionary['EmailMarketing'] = [
             'type' => 'varchar',
             'len' => '100',
         ],
-        'inbound_email_id' => [
-            'name' => 'inbound_email_id',
-            'vname' => 'LBL_FROM_MAILBOX',
-            'type' => 'varchar',
-            'len' => '36',
-        ],
         'date_start' => [
             'name' => 'date_start',
             'vname' => 'LBL_DATE_START',
@@ -255,6 +249,20 @@ $dictionary['EmailMarketing'] = [
             'importable' => false,
             'exportable' => false,
             'unified_search' => false,
+        ],
+        'log_entries' => [
+            'name' => 'log_entries',
+            'type' => 'link',
+            'relationship' => 'email_marketing_campaignlog',
+            'source' => 'non-db',
+            'vname' => 'LBL_LOG_ENTRIES',
+        ],
+        'queueitems' => [
+            'name' => 'queueitems',
+            'vname' => 'LBL_QUEUE_ITEMS',
+            'type' => 'link',
+            'relationship' => 'email_marketing_emailman',
+            'source' => 'non-db',
         ],
         'all_prospect_lists' => [
             'name' => 'all_prospect_lists',
@@ -440,6 +448,24 @@ $dictionary['EmailMarketing'] = [
             'rhs_module' => 'EmailMarketing',
             'rhs_table' => 'email_marketing',
             'rhs_key' => 'outbound_email_id',
+            'relationship_type' => 'one-to-many'
+        ],
+        'email_marketing_campaignlog' => [
+            'lhs_module' => 'EmailMarketing',
+            'lhs_table' => 'email_marketing',
+            'lhs_key' => 'id',
+            'rhs_module' => 'CampaignLog',
+            'rhs_table' => 'campaign_log',
+            'rhs_key' => 'marketing_id',
+            'relationship_type' => 'one-to-many'
+        ],
+        'email_marketing_emailman' => [
+            'lhs_module' => 'EmailMarketing',
+            'lhs_table' => 'email_marketing',
+            'lhs_key' => 'id',
+            'rhs_module' => 'EmailMan',
+            'rhs_table' => 'emailman',
+            'rhs_key' => 'marketing_id',
             'relationship_type' => 'one-to-many'
         ],
     ],
