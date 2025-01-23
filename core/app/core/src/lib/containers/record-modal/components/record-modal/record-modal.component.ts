@@ -31,7 +31,6 @@ import {ActivatedRoute} from "@angular/router";
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {animate, transition, trigger} from '@angular/animations';
 import {combineLatest, Observable, Subscription} from 'rxjs';
-import {ActionContext, ButtonInterface, ModalCloseFeedBack, Record, ViewMode} from 'common';
 import {LabelModule} from "../../../../components/label/label.module";
 import {RecordModalStore} from "../../store/record-modal/record-modal.store";
 import {ModalModule} from "../../../../components/modal/components/modal/modal.module";
@@ -41,6 +40,11 @@ import {RecordModalActionsAdapterFactory} from "../../adapters/record-modal-acti
 import {RecordContentModule} from "../../../../components/record-content/record-content.module";
 import {LoadingSpinnerModule} from "../../../../components/loading-spinner/loading-spinner.module";
 import {ActionGroupMenuModule} from "../../../../components/action-group-menu/action-group-menu.module";
+import {ViewMode} from "../../../../common/views/view.model";
+import {ActionContext} from "../../../../common/actions/action.model";
+import {ButtonInterface} from "../../../../common/components/button/button.model";
+import {ModalCloseFeedBack} from "../../../../common/components/modal/modal.model";
+import {Record} from "../../../../common/record/record.model";
 
 @Component({
     selector: 'scrm-record-modal',
@@ -89,16 +93,16 @@ export class RecordModalComponent implements OnInit, OnDestroy {
         protected recordModalActionsAdapterFactory: RecordModalActionsAdapterFactory,
     ) {
         this.modalStore = this.storeFactory.create();
-        if(!this.contentAdapter) {
+        if (!this.contentAdapter) {
             this.contentAdapter = this.recordModalContentAdapterFactory.create(this.modalStore);
         }
-        if(!this.actionsAdapter) {
+        if (!this.actionsAdapter) {
             this.actionsAdapter = this.recordModalActionsAdapterFactory.create(this.modalStore);
         }
     }
 
     ngOnInit(): void {
-       this.initStore();
+        this.initStore();
 
         this.closeButton = {
             klass: ['btn', 'btn-outline-light', 'btn-sm'],
@@ -113,7 +117,7 @@ export class RecordModalComponent implements OnInit, OnDestroy {
             combineLatest([this.modalStore.record$, this.modalStore.loading$, this.modalStore.viewContext$]).pipe(
                 filter(([record, loading, viewContext]) => !!record && !loading),
                 take(1)
-            ).subscribe(([record, loading, viewContext]) : void => {
+            ).subscribe(([record, loading, viewContext]): void => {
                 this.record = record;
                 this.viewContext = viewContext;
             })

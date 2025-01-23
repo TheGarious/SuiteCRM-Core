@@ -27,7 +27,6 @@
 import {Injectable} from '@angular/core';
 import {combineLatestWith, Observable} from 'rxjs';
 import {map, take} from 'rxjs/operators';
-import {Action, ActionContext, ActionHandler, LogicDefinitions, Panel, Record, ViewMode} from 'common';
 import {MetadataStore, RecordModalMetadata} from '../../../store/metadata/metadata.store.service';
 import {AsyncActionInput, AsyncActionService,} from '../../../services/process/processes/async-action/async-action';
 import {AppMetadataStore} from "../../../store/app-metadata/app-metadata.store.service";
@@ -41,6 +40,10 @@ import {RecordModalStore} from "../store/record-modal/record-modal.store";
 import {RecordActionDisplayTypeLogic} from "../../../views/record/action-logic/display-type/display-type.logic";
 import {RecordModalActionManager} from "../actions/record-modal-action-manager.service";
 import {RecordModalActionData} from "../actions/record-modal.action";
+import {Action, ActionContext, ActionHandler} from "../../../common/actions/action.model";
+import {ViewMode} from "../../../common/views/view.model";
+import {LogicDefinitions, Panel} from "../../../common/metadata/metadata.model";
+import {Record} from "../../../common/record/record.model";
 
 @Injectable()
 export class RecordModalActionsAdapter extends BaseRecordActionsAdapter<RecordModalActionData> {

@@ -25,7 +25,6 @@
  */
 
 import {Injectable} from '@angular/core';
-import {ViewMode} from 'common';
 import {take} from 'rxjs/operators';
 import {Router} from "@angular/router";
 import {MessageService} from '../../../../services/message/message.service';
@@ -33,6 +32,7 @@ import {ModuleNavigation} from '../../../../services/navigation/module-navigatio
 import {NotificationStore} from '../../../../store/notification/notification.store';
 import {RecordModalActionData, RecordModalActionHandler} from "../record-modal.action";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import {ViewMode} from "../../../../common/views/view.model";
 
 @Injectable({
     providedIn: 'root'

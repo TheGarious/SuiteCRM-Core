@@ -25,10 +25,11 @@
  */
 
 import {Injectable} from '@angular/core';
-import {ModalButtonInterface, ViewMode} from 'common';
 import { NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {MessageModalComponent} from '../../../../components/modal/components/message-modal/message-modal.component';
 import {RecordModalActionData, RecordModalActionHandler} from "../record-modal.action";
+import {ViewMode} from "../../../../common/views/view.model";
+import {ModalButtonInterface} from "../../../../common/components/modal/modal.model";
 
 @Injectable({
     providedIn: 'root'

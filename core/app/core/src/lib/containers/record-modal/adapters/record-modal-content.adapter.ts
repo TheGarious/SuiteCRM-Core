@@ -27,13 +27,16 @@
 import {BehaviorSubject, combineLatestWith, Observable, Subscription} from 'rxjs';
 import {inject, Injectable} from '@angular/core';
 import {map} from 'rxjs/operators';
-import {Action, Panel, Record, ViewMode} from 'common';
 import {MetadataStore, RecordViewMetadata} from '../../../store/metadata/metadata.store.service';
 import {RecordContentConfig, RecordContentDataSource} from "../../../components/record-content/record-content.model";
 import {RecordValidationHandler} from "../../../services/record/validation/record-validation.handler";
 import {RecordModalStore} from "../store/record-modal/record-modal.store";
 import {LanguageStore} from "../../../store/language/language.store";
 import {RecordModalActionManager} from "../actions/record-modal-action-manager.service";
+import {Action} from "../../../common/actions/action.model";
+import {ViewMode} from "../../../common/views/view.model";
+import {Panel} from "../../../common/metadata/metadata.model";
+import {Record} from "../../../common/record/record.model";
 
 @Injectable()
 export class RecordModalContentAdapter implements RecordContentDataSource {
@@ -106,7 +109,7 @@ export class RecordModalContentAdapter implements RecordContentDataSource {
     }
 
     protected getLayout(recordMeta: RecordViewMetadata): string {
-       let layout = 'panels';
+        let layout = 'panels';
         if (recordMeta.templateMeta.useTabs) {
             layout = 'tabs';
         }
