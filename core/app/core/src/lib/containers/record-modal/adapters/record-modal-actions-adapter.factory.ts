@@ -29,13 +29,13 @@ import {AppMetadataStore} from "../../../store/app-metadata/app-metadata.store.s
 import {MetadataStore} from "../../../store/metadata/metadata.store.service";
 import {LanguageStore} from "../../../store/language/language.store";
 import {RecordModalStore} from "../store/record-modal/record-modal.store";
-import {RecordModalActionsAdapter} from "./recod-modal-actions.adapter";
 import {AsyncActionService} from "../../../services/process/processes/async-action/async-action";
 import {ConfirmationModalService} from "../../../services/modals/confirmation-modal.service";
 import {SelectModalService} from "../../../services/modals/select-modal.service";
 import {MessageService} from "../../../services/message/message.service";
 import {RecordActionDisplayTypeLogic} from "../../../views/record/action-logic/display-type/display-type.logic";
 import {RecordModalActionManager} from "../actions/record-modal-action-manager.service";
+import {RecordModalActionsAdapter} from "./record-modal-actions.adapter";
 
 @Injectable({
     providedIn: 'root',

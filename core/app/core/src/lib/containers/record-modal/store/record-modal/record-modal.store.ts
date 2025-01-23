@@ -26,11 +26,6 @@
 
 import {inject, Injectable} from '@angular/core';
 import {BehaviorSubject, combineLatest, combineLatestWith, Observable, of, Subscription} from 'rxjs';
-import {
-    deepClone, FieldDefinitionMap,
-    FieldLogicMap, FieldMetadata, isVoid, ObjectMap, Panel, PanelRow, Record, ViewContext,
-    ViewFieldDefinition, ViewFieldDefinitionMap, ViewMode
-} from 'common';
 import {catchError, distinctUntilChanged, finalize, map, take, tap} from 'rxjs/operators';
 import {MetadataStore, RecordViewMetadata} from '../../../../store/metadata/metadata.store.service';
 import {StateStore} from '../../../../store/state';
@@ -53,6 +48,14 @@ import {MessageService} from "../../../../services/message/message.service";
 import {ViewStore} from "../../../../store/view/view.store";
 import {NavigationStore} from "../../../../store/navigation/navigation.store";
 import {ModuleNavigation} from "../../../../services/navigation/module-navigation/module-navigation.service";
+import {Record} from "../../../../common/record/record.model";
+import {ViewContext, ViewMode} from "../../../../common/views/view.model";
+import {Panel, PanelRow, ViewFieldDefinition, ViewFieldDefinitionMap} from "../../../../common/metadata/metadata.model";
+import {deepClone} from "../../../../common/utils/object-utils";
+import {isVoid} from "../../../../common/utils/value-utils";
+import {FieldDefinitionMap, FieldMetadata} from "../../../../common/record/field.model";
+import {FieldLogicMap} from "../../../../common/actions/field-logic-action.model";
+import {ObjectMap} from "../../../../common/types/object-map";
 
 const initialState: any = {
     module: '',
@@ -67,7 +70,7 @@ const initialState: any = {
 };
 
 @Injectable()
-export class RecordModalStore extends ViewStore  implements StateStore {
+export class RecordModalStore extends ViewStore implements StateStore {
 
     record$: Observable<Record>;
     stagingRecord$: Observable<Record>;
@@ -176,7 +179,8 @@ export class RecordModalStore extends ViewStore  implements StateStore {
                     id: '',
                     type: '',
                     module: module,
-                    attributes: { assigned_user_id: this.appStateStore.getCurrentUser().id,
+                    attributes: {
+                        assigned_user_id: this.appStateStore.getCurrentUser().id,
                         assigned_user_name: {
                             id: this.appStateStore.getCurrentUser().id,
                             user_name: this.appStateStore.getCurrentUser().userName

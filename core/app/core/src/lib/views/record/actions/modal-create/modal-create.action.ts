@@ -25,12 +25,12 @@
  */
 
 import {Injectable} from '@angular/core';
-import {ViewMode} from 'common';
 import {RecordActionData, RecordActionHandler} from '../record.action';
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {RecordModalComponent} from "../../../../containers/record-modal/components/record-modal/record-modal.component";
 import {ActivatedRoute} from "@angular/router";
 import {AppStateStore} from "../../../../store/app-state/app-state.store";
+import {ViewMode} from "../../../../common/views/view.model";
 
 @Injectable({
     providedIn: 'root'
