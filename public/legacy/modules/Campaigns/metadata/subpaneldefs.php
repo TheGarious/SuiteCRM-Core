@@ -283,7 +283,23 @@ $layout_defs['Campaigns'] = array(
             'title_key' => 'LBL_OPPORTUNITY_SUBPANEL_TITLE',
             'top_buttons' => array(),
         ),
-        'surveyresponses_campaigns' => array(
+        'campaign_interactions' => [
+            'name' => 'campaign_interactions',
+            'type' => 'collection',
+            'labelKey' => 'LBL_CAMPAIGN_ACTIONS',
+            'title_key' => 'LBL_CAMPAIGN_ACTIONS',
+            'headerModule' => 'Campaigns',
+            'module' => 'EmailMarketing',
+            'order' => 1000,
+            'collection_list' => [
+                'emailmarketing' => [
+                    'module' => 'EmailMarketing',
+                    'get_subpanel_data' => 'emailmarketing',
+                    'subpanel_name' => 'default',
+                ],
+            ],
+        ],
+        'surveyresponses_campaigns' => [
           'order' => 100,
           'module' => 'SurveyResponses',
           'subpanel_name' => 'default',
@@ -291,19 +307,16 @@ $layout_defs['Campaigns'] = array(
           'sort_by' => 'id',
           'title_key' => 'LBL_SURVEYRESPONSES_CAMPAIGNS_FROM_SURVEYRESPONSES_TITLE',
           'get_subpanel_data' => 'surveyresponses_campaigns',
-          'top_buttons' =>
-          array(
-            0 =>
-            array(
+          'top_buttons' => [
+            [
               'widget_class' => 'SubPanelTopButtonQuickCreate',
-            ),
-            1 =>
-            array(
+            ],
+            [
               'widget_class' => 'SubPanelTopSelectButton',
               'mode' => 'MultiSelect',
-            ),
-          ),
-        ),
+            ],
+          ],
+        ],
         'securitygroups' => array(
             'top_buttons' => array(array('widget_class' => 'SubPanelTopSelectButton', 'popup_module' => 'SecurityGroups', 'mode' => 'MultiSelect'),),
             'order' => 900,
