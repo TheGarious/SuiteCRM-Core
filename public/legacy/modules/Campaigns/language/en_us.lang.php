@@ -470,4 +470,6 @@ $mod_strings = array(
     'LBL_PROSPECT_LISTS' => 'Target Lists',
     'LBL_SURVEYRESPONSES_CAMPAIGNS_FROM_SURVEYRESPONSES_TITLE' => 'Survey Responses',
     'LBL_CAMPAIGN_SURVEY' => "Survey",
+    'LBL_CAMPAIGN_ACTIONS' => 'Campaign Actions',
+    'LBL_NEW_EM_SURVEY' => 'Create Survey Email Marketing'
 );
