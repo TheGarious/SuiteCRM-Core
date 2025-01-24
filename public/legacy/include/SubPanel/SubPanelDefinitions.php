@@ -251,7 +251,7 @@ class aSubPanel
             //this will happen only in the case of sub-panels with multiple sources(activities).
             $buttons = $this->_instance_properties [ 'top_buttons' ] ;
         } else {
-            $buttons = $this->panel_definition [ 'top_buttons' ] ;
+            $buttons = $this->panel_definition [ 'top_buttons' ] ?? [] ;
         }
 
         // permissions. hide SubPanelTopComposeEmailButton from activities if email module is disabled.

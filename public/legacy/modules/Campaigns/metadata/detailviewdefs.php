@@ -72,6 +72,102 @@ $viewdefs ['Campaigns'] = [
                 ]
             ],
         ],
+        'bottomWidgets' => [
+            [
+                'type' => 'record-table',
+                'allowCollapse' => true,
+                'options' => [
+                    'recordTable' => [
+                        'name' => 'campaign_interactions',
+                        'type' => 'collection',
+                        'labelKey' => 'LBL_CAMPAIGN_ACTIONS',
+                        'title_key' => 'LBL_CAMPAIGN_ACTIONS',
+                        'headerModule' => 'Campaigns',
+                        'module' => 'EmailMarketing',
+                        'top_buttons' => [
+                            [
+                                'modes' => ['list'],
+                                'acl' => ['edit'],
+                                'action' => 'create',
+                                'key' => 'create',
+                                'module' => 'email-marketing',
+                                'extraParams' => [
+                                    'type' => 'marketing',
+                                ],
+                                'labelKey' => 'LBL_NEW_EM_MARKETING',
+                                'widget_class' => 'SubPanelTopButtonQuickCreate',
+                            ],
+                            [
+                                'modes' => ['list'],
+                                'acl' => ['edit'],
+                                'action' => 'create',
+                                'key' => 'create',
+                                'module' => 'surveys',
+                                'labelKey' => 'LBL_NEW_SURVEY',
+                                'widget_class' => 'SubPanelTopButtonQuickCreate',
+                            ],
+                            [
+                                'modes' => ['list'],
+                                'acl' => ['edit'],
+                                'action' => 'create',
+                                'key' => 'create',
+                                'module' => 'email-marketing',
+                                'extraParams' => [
+                                    'type' => 'survey',
+                                ],
+                                'labelKey' => 'LBL_NEW_EM_SURVEY',
+                                'widget_class' => 'SubPanelTopButtonQuickCreate',
+                            ],
+                            [
+                                'modes' => ['list'],
+                                'acl' => ['edit'],
+                                'action' => 'create',
+                                'key' => 'create',
+                                'module' => 'email-marketing',
+                                'extraParams' => [
+                                    'type' => 'transactional',
+                                ],
+                                'labelKey' => 'LBL_NEW_EM_TRANSACTIONAL',
+                                'widget_class' => 'SubPanelTopButtonQuickCreate',
+                            ],
+                            [
+                                'modes' => ['list'],
+                                'acl' => ['edit'],
+                                'action' => 'create',
+                                'key' => 'create',
+                                'module' => 'campaigns',
+                                'moduleAction' => 'web-to-lead',
+                                'labelKey' => 'LBL_WEB_TO_LEAD',
+                                'widget_class' => 'SubPanelTopCreateWebToLead',
+                            ],
+                        ],
+                        'columns' => [
+                            [
+                                'name' => 'name',
+                                'label' => 'LBL_NAME',
+                                'link' => true,
+                            ],
+                            [
+                                'name' => 'status',
+                                'label' => 'LBL_STATUS',
+                                'type' => 'enum',
+                                'fieldDefinition' => [
+                                    'options' => 'email_marketing_status_dom'
+                                ]
+                            ],
+                            [
+                                'name' => 'type',
+                                'label' => 'LBL_TYPE',
+                                'type' => 'enum',
+                                'fieldDefinition' => [
+                                    'options' => 'email_marketing_type_dom',
+                                ]
+                            ]
+                        ],
+                    ]
+                ],
+            ]
+        ],
         'templateMeta' => [
             'maxColumns' => '2',
             'widths' => [
