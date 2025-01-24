@@ -111,7 +111,7 @@ export class SubpanelStore implements StateStore {
             label = (moduleList && moduleList[this.metadata.title_key]) || '';
         }
 
-        return label;
+        return label ?? this.metadata.title_key;
     }
 
     getIcon(): string {
