@@ -212,6 +212,7 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
 
     protected updateFieldValues(): void {
         this.field.valueObjectArray = deepClone(this.selectedValues ?? []);
+        this.field.value = deepClone(this.selectedValues ?? []);
     }
 
     /**
