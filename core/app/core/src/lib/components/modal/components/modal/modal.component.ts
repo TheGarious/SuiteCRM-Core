@@ -39,6 +39,7 @@ export class ModalComponent{
     @Input() bodyKlass = '';
     @Input() footerKlass = '';
     @Input() titleKey = '';
+    @Input() descriptionKey = '';
     @Input() closable:boolean = false;
     @Input() close: ButtonInterface = {
         klass: ['btn', 'btn-outline-light', 'btn-sm']

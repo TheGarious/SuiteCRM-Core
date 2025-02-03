@@ -58,8 +58,10 @@
 }
 
 .modal-title {
+  display: flex;
+  flex-direction: column;
   text-align: center;
-  margin: 0 auto;
+  margin: 0.5rem auto;
   padding: 0;
   line-height: 0.9em;
 }

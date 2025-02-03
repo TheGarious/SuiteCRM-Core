@@ -28,7 +28,8 @@
 <div [class]="klass">
     <div class="modal-header {{headerKlass}} d-flex align-items-center">
         <div class="modal-title">
-            <scrm-label *ngIf="titleKey" [labelKey]="titleKey"></scrm-label>
+            <scrm-label class="mt-1" *ngIf="titleKey" [labelKey]="titleKey"></scrm-label>
+            <scrm-label class="small text-muted mt-2" *ngIf="descriptionKey" [labelKey]="descriptionKey"></scrm-label>
         </div>
         <scrm-close-button *ngIf="closable" [config]="close"></scrm-close-button>
     </div>
