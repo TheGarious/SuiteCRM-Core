@@ -2328,6 +2328,9 @@ $app_strings = array(
     'LBL_CONFIRM_EMAIL_SENDING_FAILED' => 'Confirm Opt In Email sending failed',
     'LBL_CONFIRM_EMAIL_SENT' => 'Confirm Opt In Email sent successfully',
 
+    'LBL_SEND_TEST_EMAIL' => 'Send Test Email',
+    'LBL_PROSPECT_LIST_NAME' => 'Target Lists',
+
     //List View Column Selector Modal
     'LBL_COLUMN_SELECTOR_DISPLAYED_COLS' => 'DISPLAYED',
     'LBL_COLUMN_SELECTOR_HIDDEN_COLS' => 'HIDDEN',
@@ -3952,6 +3955,7 @@ $app_strings['LBL_DUPLICATE_EMAIL_VALIDATION_ERROR'] = "Duplicate email addresse
 $app_strings['LBL_NO_PRIMARY_EMAIL_VALIDATION_ERROR'] = "One Valid Email Address should be marked as primary";
 $app_strings['LBL_VALIDATION_ERRORS'] = 'There are validation errors, unable to perform action.';
 $app_strings['LBL_LOADING_IN_PROGRESS'] = 'The calculation is currently in progress, please wait a few moments before trying again.';
+$app_strings['LBL_SELECT_EMAIL_FOR_TEST'] = 'Please Select Targets/ Users or Enter an Email';
 $app_strings['LBL_TYPE_TO_SEARCH'] = 'Type to search...';
 $app_strings['LBL_SEARCHING'] = 'searching...';
 $app_strings['LBL_NOT_FOUND'] = 'Not found.';
