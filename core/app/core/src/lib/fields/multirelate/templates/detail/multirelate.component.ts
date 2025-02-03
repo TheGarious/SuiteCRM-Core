@@ -31,8 +31,9 @@ import {FieldLogicDisplayManager} from '../../../field-logic-display/field-logic
 import {LanguageStore} from "../../../../store/language/language.store";
 import {RelateService} from "../../../../services/record/relate/relate.service";
 import {BaseMultiEnumComponent} from "../../../base/base-multienum.component";
-import {Option, isVoid} from 'common';
 import {isEmpty, isEqual, isNull, isObject, uniqBy} from "lodash-es";
+import {Option} from "../../../../common/record/field.model";
+import {isVoid} from "../../../../common/utils/value-utils";
 
 @Component({
     selector: 'scrm-multirelate-detail',

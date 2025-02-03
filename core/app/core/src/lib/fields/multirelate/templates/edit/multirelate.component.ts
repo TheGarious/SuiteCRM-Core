@@ -25,7 +25,6 @@
  */
 
 import {Component, ElementRef, ViewChild} from '@angular/core';
-import {AttributeMap, ButtonInterface, deepClone, ObjectMap, Record} from 'common';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ModuleNameMapper} from '../../../../services/navigation/module-name-mapper/module-name-mapper.service';
 import {DataTypeFormatter} from '../../../../services/formatters/data-type.formatter.service';
@@ -42,6 +41,10 @@ import {FieldLogicManager} from '../../../field-logic/field-logic.manager';
 import {FieldLogicDisplayManager} from '../../../field-logic-display/field-logic-display.manager';
 import {map, take} from "rxjs/operators";
 import {MultiSelect} from "primeng/multiselect";
+import {ButtonInterface} from "../../../../common/components/button/button.model";
+import {deepClone} from "../../../../common/utils/object-utils";
+import {ObjectMap} from "../../../../common/types/object-map";
+import {AttributeMap, Record} from "../../../../common/record/record.model";
 
 @Component({
     selector: 'scrm-multirelate-edit',
