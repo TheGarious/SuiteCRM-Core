@@ -151,6 +151,64 @@ $viewdefs ['EmailMarketing'] = [
                         ],
                     ],
                 ],
+                'send-test-email' => [
+                    'key' => 'sendTestEmail',
+                    'labelKey' => 'LBL_SEND_TEST_EMAIL',
+                    'modes' => ['edit', 'detail'],
+                    'params' => [
+                        'expanded' => true,
+                        'maxColumns' => 1,
+                        'fields' => [
+                            'prospect_list_name' => [
+                                'name' => 'prospect_list_name',
+                                'label' => 'LBL_PROSPECT_LIST_NAME',
+                                'type' => 'multirelate',
+                                'fieldDefinition' => [
+                                    'link' => 'prospectlists',
+                                    'source' => 'non-db',
+                                    'module' => 'ProspectLists',
+                                    'rname' => 'name',
+                                ],
+                            ],
+                            'email_marketing_users' => [
+                                'name' => 'email_marketing_users',
+                                'label' => 'LBL_USERS',
+                                'type' => 'multirelate',
+                                'fieldDefinition' => [
+                                    'source' => 'non-db',
+                                    'module' => 'Users',
+                                    'link' => 'emailmarketing_users',
+                                    'rname' => 'name',
+                                ],
+                            ],
+                            'email_address' => [
+                                'name' => 'email_address',
+                                'module' => 'EmailAddress',
+                                'type' => 'line-items',
+                                'label' => 'LBL_EMAIL',
+                                'fieldDefinition' => [
+                                    'lineItems' => [
+                                        'labelOnFirstLine' => true,
+                                        'definition' => [
+                                            'name' => 'email-fields',
+                                            'type' => 'composite',
+                                            'layout' => ['email_address'],
+                                            'display' => 'inline',
+                                            'attributeFields' => [
+                                                'email_address' => [
+                                                    'name' => 'email_address',
+                                                    'type' => 'email',
+                                                    'showLabel' => ['*'],
+                                                ],
+                                            ],
+                                        ]
+                                    ]
+                                ]
+                            ],
+                        ]
+                    ],
+                    'acl' => ['view'],
+                ],
             ]
         ],
         'panels' => [
