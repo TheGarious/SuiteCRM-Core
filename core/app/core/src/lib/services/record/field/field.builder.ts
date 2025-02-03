@@ -211,7 +211,7 @@ export class FieldBuilder {
         field.asyncValidators = asyncValidators;
 
         if (field.type === 'line-items') {
-            field.valueObjectArray = record.attributes[field.name];
+            field.valueObjectArray = record?.attributes[field.name] ?? [];
             field.itemFormArray = new UntypedFormArray([]);
             field.formControl = new UntypedFormControl(formattedValue);
         } else {
