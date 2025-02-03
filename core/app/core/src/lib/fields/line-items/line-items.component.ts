@@ -59,7 +59,7 @@ export class LineItemsComponent extends BaseLineItemsComponent {
 
         this.field.metadata = this?.field?.metadata ?? {};
         const emptyItemInitialized = this?.field?.metadata?.emptyItemInitialized ?? false;
-        if (['create'].includes(this.originalMode as ViewMode) && !emptyItemInitialized) {
+        if (['create', 'edit'].includes(this.originalMode as ViewMode) && !emptyItemInitialized) {
             this.initEmptyItem();
             this.field.metadata.emptyItemInitialized = true;
         }
