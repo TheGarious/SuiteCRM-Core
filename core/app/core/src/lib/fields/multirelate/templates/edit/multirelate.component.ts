@@ -24,7 +24,7 @@
  * the words "Supercharged by SuiteCRM".
  */
 
-import {Component, ElementRef, ViewChild} from '@angular/core';
+import {Component, ElementRef, signal, ViewChild, WritableSignal} from '@angular/core';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ModuleNameMapper} from '../../../../services/navigation/module-name-mapper/module-name-mapper.service';
 import {DataTypeFormatter} from '../../../../services/formatters/data-type.formatter.service';
@@ -63,6 +63,7 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
     maxSelectedLabels: number = 20;
     selectAll: boolean = false;
     filterValue: string | undefined = '';
+    currentOptions: WritableSignal<AttributeMap[]> = signal([]);
 
     /**
      * Constructor
@@ -103,6 +104,7 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
         const relatedFieldName = this.getRelateFieldName();
          if ((this.field?.valueList ?? []).length > 0) {
             this.field.valueObjectArray = deepClone(this.field.valueList);
+            this.currentOptions.set([this.field.valueObjectArray]);
             this.field.valueList = [];
             this.selectedValues = this.field.valueObjectArray.map( valueElement => {
                 const relateValue = valueElement['attributes'][relatedFieldName] ?? '';
@@ -116,6 +118,7 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
             this.selectedValues = [];
             this.field.valueObjectArray = [];
             this.field.valueList = [];
+             this.currentOptions.set([]);
         }
 
         super.ngOnInit();
@@ -176,6 +179,9 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
     onPanelShow(): void {
         this.dropdownFilterInput.nativeElement.focus()
         this.calculateSelectAll();
+        if (this.field?.definition?.filterOnEmpty ?? false) {
+            this.tag.onLazyLoad.emit();
+        }
     }
 
     resetFunction(): void {
@@ -208,6 +214,7 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
             })))
         ).subscribe(filteredOptions => {
             this.options = filteredOptions;
+            this.currentOptions.set(filteredOptions);
             this.addCurrentlySelectedToOptions(filteredOptions);
             this.calculateSelectAll();
         });
