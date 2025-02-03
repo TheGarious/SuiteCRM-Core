@@ -54,10 +54,12 @@ export class FieldGridModalComponent {
 
   @Input() fields: ViewFieldDefinition[];
   @Input() titleKey: string = '';
+  @Input() descriptionKey: string = '';
   @Input() module: string;
   @Input() recordID: string;
 
-  closeButton: ButtonInterface;
+  cancelButton: ButtonInterface;
+  crossButton: ButtonInterface;
   sendTestEmail: ButtonInterface;
 
   constructor(
@@ -74,9 +76,18 @@ export class FieldGridModalComponent {
   }
 
   protected initButtons() {
-    this.closeButton = {
+    this.cancelButton = {
       klass: 'btn btn-primary btn-sm mt-3 mb-3',
-      labelKey: 'LBL_CLOSE',
+      labelKey: 'LBL_CANCEL',
+      onClick: (): void => {
+        this.activeModal.close({
+          type: 'close-button'
+        } as ModalCloseFeedBack);
+      }
+    } as ButtonInterface;
+
+    this.crossButton = {
+      klass: ['btn', 'btn-outline-light', 'btn-sm'],
       onClick: (): void => {
         this.activeModal.close({
           type: 'close-button'

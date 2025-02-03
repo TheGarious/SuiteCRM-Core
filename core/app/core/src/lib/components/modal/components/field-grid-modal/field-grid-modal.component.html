@@ -26,6 +26,9 @@
 */
 -->
 <scrm-modal [titleKey]="titleKey"
+            [closable]="true"
+            [descriptionKey]="descriptionKey"
+            [close]="crossButton"
             bodyKlass="m-0 small-font"
             footerKlass="border-0"
             klass="classic-view-modal">
@@ -39,7 +42,7 @@
                      type='submit'
                      class="float-right">
         </scrm-button>
-        <scrm-button [config]="closeButton"
+        <scrm-button [config]="cancelButton"
                      class="float-right">
         </scrm-button>
 
