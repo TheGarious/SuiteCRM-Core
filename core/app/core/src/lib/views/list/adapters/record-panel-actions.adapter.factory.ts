@@ -36,6 +36,7 @@ import {RecordPanelActionManager} from '../actions/record-panel/record-panel-act
 import {SelectModalService} from '../../../services/modals/select-modal.service';
 import {MetadataStore} from '../../../store/metadata/metadata.store.service';
 import {AppMetadataStore} from "../../../store/app-metadata/app-metadata.store.service";
+import {FieldModalService} from "../../../services/modals/field-modal.service";
 
 @Injectable({
     providedIn: 'root',
@@ -49,6 +50,7 @@ export class ListViewRecordPanelActionAdapterFactory {
         protected message: MessageService,
         protected confirmation: ConfirmationModalService,
         protected selectModalService: SelectModalService,
+        protected fieldModalService: FieldModalService,
         protected metadata: MetadataStore,
         protected appMetadataStore: AppMetadataStore
     ) {
@@ -64,6 +66,7 @@ export class ListViewRecordPanelActionAdapterFactory {
             this.message,
             this.confirmation,
             this.selectModalService,
+            this.fieldModalService,
             this.metadata,
             this.appMetadataStore
         );

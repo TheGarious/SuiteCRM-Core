@@ -35,6 +35,7 @@ import {ListViewTableActionsAdapter} from "./listview-table-actions.adapter";
 import {TableActionManager} from "../table-actions/table-action-manager.service";
 import {LanguageStore} from "../../../store/language/language.store";
 import {AppMetadataStore} from "../../../store/app-metadata/app-metadata.store.service";
+import {FieldModalService} from "../../../services/modals/field-modal.service";
 
 @Injectable({
     providedIn: 'root',
@@ -48,6 +49,7 @@ export class ListviewTableActionsAdapterFactory {
         protected confirmation: ConfirmationModalService,
         protected language: LanguageStore,
         protected selectModalService: SelectModalService,
+        protected fieldModalService: FieldModalService,
         protected metadata: MetadataStore,
         protected appMetadataStore: AppMetadataStore
     ) {
@@ -62,6 +64,7 @@ export class ListviewTableActionsAdapterFactory {
             this.confirmation,
             this.language,
             this.selectModalService,
+            this.fieldModalService,
             this.metadata,
             this.appMetadataStore
         );

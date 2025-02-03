@@ -37,6 +37,7 @@ import {RecordThreadItemActionManager} from '../actions/item-actions/record-thre
 import {MetadataStore} from '../../../store/metadata/metadata.store.service';
 import {RecordThreadItemConfig} from '../components/record-thread-item/record-thread-item.model';
 import {AppMetadataStore} from "../../../store/app-metadata/app-metadata.store.service";
+import {FieldModalService} from "../../../services/modals/field-modal.service";
 
 @Injectable({
     providedIn: 'root',
@@ -50,6 +51,7 @@ export class RecordThreadItemActionsAdapterFactory {
         protected message: MessageService,
         protected confirmation: ConfirmationModalService,
         protected selectModalService: SelectModalService,
+        protected fieldModalService: FieldModalService,
         protected metadata: MetadataStore,
         protected appMetadataStore: AppMetadataStore
     ) {
@@ -65,6 +67,7 @@ export class RecordThreadItemActionsAdapterFactory {
             this.message,
             this.confirmation,
             this.selectModalService,
+            this.fieldModalService,
             this.metadata,
             this.appMetadataStore
         );

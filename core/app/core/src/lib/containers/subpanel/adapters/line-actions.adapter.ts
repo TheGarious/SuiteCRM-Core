@@ -41,6 +41,7 @@ import {SubpanelLineActionManager} from '../line-actions/line-action-manager.ser
 import {SelectModalService} from "../../../services/modals/select-modal.service";
 import {MetadataStore} from '../../../store/metadata/metadata.store.service';
 import {AppMetadataStore} from "../../../store/app-metadata/app-metadata.store.service";
+import {FieldModalService} from "../../../services/modals/field-modal.service";
 
 @Injectable({
     providedIn: 'root',
@@ -55,6 +56,7 @@ export class SubpanelLineActionsAdapter extends BaseRecordActionsAdapter<Subpane
         protected confirmation: ConfirmationModalService,
         protected language: LanguageStore,
         protected selectModalService: SelectModalService,
+        protected fieldModalService: FieldModalService,
         protected metadata: MetadataStore,
         protected appMetadataStore: AppMetadataStore
     ) {
@@ -65,6 +67,7 @@ export class SubpanelLineActionsAdapter extends BaseRecordActionsAdapter<Subpane
             confirmation,
             language,
             selectModalService,
+            fieldModalService,
             metadata,
             appMetadataStore
         )

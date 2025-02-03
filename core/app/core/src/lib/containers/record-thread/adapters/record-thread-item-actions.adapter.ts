@@ -43,6 +43,7 @@ import {RecordThreadItemStore} from '../store/record-thread/record-thread-item.s
 import {RecordThreadStore} from '../store/record-thread/record-thread.store';
 import {MetadataStore} from '../../../store/metadata/metadata.store.service';
 import {AppMetadataStore} from "../../../store/app-metadata/app-metadata.store.service";
+import {FieldModalService} from "../../../services/modals/field-modal.service";
 
 @Injectable()
 export class RecordThreadItemActionsAdapter extends BaseRecordActionsAdapter<RecordThreadItemActionData> {
@@ -63,6 +64,7 @@ export class RecordThreadItemActionsAdapter extends BaseRecordActionsAdapter<Rec
         protected message: MessageService,
         protected confirmation: ConfirmationModalService,
         protected selectModalService: SelectModalService,
+        protected fieldModalService: FieldModalService,
         protected metadata: MetadataStore,
         protected appMetadataStore: AppMetadataStore
     ) {
@@ -73,6 +75,7 @@ export class RecordThreadItemActionsAdapter extends BaseRecordActionsAdapter<Rec
             confirmation,
             language,
             selectModalService,
+            fieldModalService,
             metadata,
             appMetadataStore
         );

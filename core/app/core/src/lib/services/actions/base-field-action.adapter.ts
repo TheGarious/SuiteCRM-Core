@@ -34,6 +34,7 @@ import {SelectModalService} from '../modals/select-modal.service';
 import {MetadataStore} from '../../store/metadata/metadata.store.service';
 import {AppMetadataStore} from "../../store/app-metadata/app-metadata.store.service";
 import {Action, ActionContext, ActionManager} from "../../common/actions/action.model";
+import {FieldModalService} from "../modals/field-modal.service";
 
 @Injectable()
 export abstract class BaseFieldActionsAdapter<D> extends BaseActionsAdapter<D> {
@@ -46,6 +47,7 @@ export abstract class BaseFieldActionsAdapter<D> extends BaseActionsAdapter<D> {
         protected confirmation: ConfirmationModalService,
         protected language: LanguageStore,
         protected selectModalService: SelectModalService,
+        protected fieldModalService: FieldModalService,
         protected metadata: MetadataStore,
         protected appMetadataStore: AppMetadataStore
     ) {
@@ -56,6 +58,7 @@ export abstract class BaseFieldActionsAdapter<D> extends BaseActionsAdapter<D> {
             confirmation,
             language,
             selectModalService,
+            fieldModalService,
             metadata,
             appMetadataStore
         )

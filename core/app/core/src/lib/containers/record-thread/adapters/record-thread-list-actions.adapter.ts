@@ -43,6 +43,7 @@ import {RecordThreadListActionData} from "../actions/list-actions/record-thread-
 import {RecordThreadListActionManager} from "../actions/list-actions/record-thread-list-action-manager.service";
 import {RecordThreadListMetadata} from '../store/record-thread/record-thread-list.store.model';
 import {AppMetadataStore} from "../../../store/app-metadata/app-metadata.store.service";
+import {FieldModalService} from "../../../services/modals/field-modal.service";
 
 @Injectable()
 export class RecordThreadListActionsAdapter extends BaseRecordActionsAdapter<RecordThreadListActionData> {
@@ -63,6 +64,7 @@ export class RecordThreadListActionsAdapter extends BaseRecordActionsAdapter<Rec
         protected message: MessageService,
         protected confirmation: ConfirmationModalService,
         protected selectModalService: SelectModalService,
+        protected fieldModalService: FieldModalService,
         protected metadata: MetadataStore,
         protected appMetadataStore: AppMetadataStore
     ) {
@@ -73,6 +75,7 @@ export class RecordThreadListActionsAdapter extends BaseRecordActionsAdapter<Rec
             confirmation,
             language,
             selectModalService,
+            fieldModalService,
             metadata,
             appMetadataStore
         );

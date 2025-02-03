@@ -42,6 +42,7 @@ import {BaseRecordActionsAdapter} from '../../../services/actions/base-record-ac
 import {SelectModalService} from "../../../services/modals/select-modal.service";
 import {MetadataStore, RecordViewMetadata} from '../../../store/metadata/metadata.store.service';
 import {AppMetadataStore} from "../../../store/app-metadata/app-metadata.store.service";
+import {FieldModalService} from "../../../services/modals/field-modal.service";
 
 @Injectable()
 export class SavedFilterActionsAdapter extends BaseRecordActionsAdapter<SavedFilterActionData> {
@@ -57,6 +58,7 @@ export class SavedFilterActionsAdapter extends BaseRecordActionsAdapter<SavedFil
         protected message: MessageService,
         protected confirmation: ConfirmationModalService,
         protected selectModalService: SelectModalService,
+        protected fieldModalService: FieldModalService,
         protected metadata: MetadataStore,
         protected appMetadataStore: AppMetadataStore
     ) {
@@ -67,6 +69,7 @@ export class SavedFilterActionsAdapter extends BaseRecordActionsAdapter<SavedFil
             confirmation,
             language,
             selectModalService,
+            fieldModalService,
             metadata,
             appMetadataStore
         )
