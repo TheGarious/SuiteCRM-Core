@@ -44,6 +44,7 @@ import {UserPreferenceStore} from "../../../store/user-preference/user-preferenc
 import {SystemConfigStore} from "../../../store/system-config/system-config.store";
 import {ListviewTableActionsAdapterFactory} from "./listview-table-actions.adapter.factory";
 import {AppMetadataStore} from "../../../store/app-metadata/app-metadata.store.service";
+import {FieldModalService} from "../../../services/modals/field-modal.service";
 
 @Injectable()
 export class TableAdapter {
@@ -59,6 +60,7 @@ export class TableAdapter {
         protected bulkActionsAdapterFactory: BulkActionsAdapterFactory,
         protected listviewTableActionsAdapterFactory: ListviewTableActionsAdapterFactory,
         protected selectModalService: SelectModalService,
+        protected fieldModalService: FieldModalService,
         protected preferences: UserPreferenceStore,
         protected systemConfigs: SystemConfigStore,
         protected appMetadataStore: AppMetadataStore
@@ -134,6 +136,7 @@ export class TableAdapter {
             this.confirmation,
             this.language,
             this.selectModalService,
+            this.fieldModalService,
             this.metadata,
             this.appMetadataStore
         );

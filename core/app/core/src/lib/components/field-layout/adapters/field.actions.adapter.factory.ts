@@ -35,6 +35,7 @@ import {FieldActionsAdapter} from './field.actions.adapter';
 import {FieldActionManager} from '../actions/field-action-manager.service';
 import {RecordViewStore} from '../../../views/record/store/record-view/record-view.store';
 import {AppMetadataStore} from "../../../store/app-metadata/app-metadata.store.service";
+import {FieldModalService} from "../../../services/modals/field-modal.service";
 
 @Injectable({
     providedIn: 'root',
@@ -49,7 +50,8 @@ export class FieldActionsAdapterFactory {
         protected asyncActionService: AsyncActionService,
         protected message: MessageService,
         protected confirmation: ConfirmationModalService,
-        protected selectModalService: SelectModalService
+        protected selectModalService: SelectModalService,
+        protected fieldModalService: FieldModalService,
     ) {
     }
 
@@ -64,6 +66,7 @@ export class FieldActionsAdapterFactory {
             this.message,
             this.confirmation,
             this.selectModalService,
+            this.fieldModalService,
             viewName,
             fieldName
         );

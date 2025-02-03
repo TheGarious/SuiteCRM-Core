@@ -41,6 +41,7 @@ import {InstallViewStore} from '../store/install-view/install-view.store';
 import {InstallActionManager} from '../actions/install-action-manager.service';
 import {SelectModalService} from '../../../services/modals/select-modal.service';
 import {AppMetadataStore} from "../../../store/app-metadata/app-metadata.store.service";
+import {FieldModalService} from "../../../services/modals/field-modal.service";
 
 @Injectable()
 export class InstallActionsAdapter extends BaseRecordActionsAdapter<InstallViewActionData> {
@@ -70,6 +71,7 @@ export class InstallActionsAdapter extends BaseRecordActionsAdapter<InstallViewA
         protected message: MessageService,
         protected confirmation: ConfirmationModalService,
         protected selectModalService: SelectModalService,
+        protected fieldModalService: FieldModalService,
         protected appMetadataStore: AppMetadataStore
     ) {
         super(
@@ -79,6 +81,7 @@ export class InstallActionsAdapter extends BaseRecordActionsAdapter<InstallViewA
             confirmation,
             language,
             selectModalService,
+            fieldModalService,
             metadata,
             appMetadataStore
         )

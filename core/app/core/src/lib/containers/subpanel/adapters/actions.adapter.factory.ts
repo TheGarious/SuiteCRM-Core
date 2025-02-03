@@ -35,6 +35,7 @@ import {MetadataStore} from '../../../store/metadata/metadata.store.service';
 import {SubpanelStore} from "../store/subpanel/subpanel.store";
 import {SubpanelActionManager} from "../components/subpanel/action-manager.service";
 import {AppMetadataStore} from "../../../store/app-metadata/app-metadata.store.service";
+import {FieldModalService} from "../../../services/modals/field-modal.service";
 
 @Injectable({
     providedIn: 'root',
@@ -48,6 +49,7 @@ export class SubpanelActionAdapterFactory {
         protected message: MessageService,
         protected confimation: ConfirmationModalService,
         protected selectModalService: SelectModalService,
+        protected fieldModalService: FieldModalService,
         protected metadata: MetadataStore,
         protected appMetadataStore: AppMetadataStore
     ) {
@@ -62,6 +64,7 @@ export class SubpanelActionAdapterFactory {
             this.message,
             this.confimation,
             this.selectModalService,
+            this.fieldModalService,
             this.metadata,
             this.appMetadataStore
         );

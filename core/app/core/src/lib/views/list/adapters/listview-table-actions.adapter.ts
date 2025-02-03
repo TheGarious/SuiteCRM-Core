@@ -42,6 +42,7 @@ import {BaseActionsAdapter} from "../../../services/actions/base-action.adapter"
 import {TableActionData} from "../table-actions/table.action";
 import {TableActionManager} from "../table-actions/table-action-manager.service";
 import {AppMetadataStore} from "../../../store/app-metadata/app-metadata.store.service";
+import {FieldModalService} from "../../../services/modals/field-modal.service";
 
 
 @Injectable()
@@ -55,6 +56,7 @@ export class ListViewTableActionsAdapter extends BaseActionsAdapter<TableActionD
         protected confirmation: ConfirmationModalService,
         protected language: LanguageStore,
         protected selectModalService: SelectModalService,
+        protected fieldModalService: FieldModalService,
         protected metadata: MetadataStore,
         protected appMetadataStore: AppMetadataStore
     ) {
@@ -65,6 +67,7 @@ export class ListViewTableActionsAdapter extends BaseActionsAdapter<TableActionD
             confirmation,
             language,
             selectModalService,
+            fieldModalService,
             metadata,
             appMetadataStore
         );

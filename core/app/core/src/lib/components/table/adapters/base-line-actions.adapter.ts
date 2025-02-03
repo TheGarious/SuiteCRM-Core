@@ -36,6 +36,7 @@ import {LanguageStore} from '../../../store/language/language.store';
 import {SelectModalService} from '../../../services/modals/select-modal.service';
 import {MetadataStore} from '../../../store/metadata/metadata.store.service';
 import {AppMetadataStore} from "../../../store/app-metadata/app-metadata.store.service";
+import {FieldModalService} from "../../../services/modals/field-modal.service";
 
 @Injectable()
 export abstract class BaseLineActionsAdapter extends BaseRecordActionsAdapter<LineActionData> {
@@ -47,6 +48,7 @@ export abstract class BaseLineActionsAdapter extends BaseRecordActionsAdapter<Li
         protected confirmation: ConfirmationModalService,
         protected language: LanguageStore,
         protected selectModalService: SelectModalService,
+        protected fieldModalService: FieldModalService,
         protected metadata: MetadataStore,
         protected appMetadataStore: AppMetadataStore
     ) {
@@ -57,6 +59,7 @@ export abstract class BaseLineActionsAdapter extends BaseRecordActionsAdapter<Li
             confirmation,
             language,
             selectModalService,
+            fieldModalService,
             metadata,
             appMetadataStore
         )

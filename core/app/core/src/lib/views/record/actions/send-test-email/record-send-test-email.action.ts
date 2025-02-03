@@ -47,7 +47,9 @@ export class RecordSendTestEmailAction extends RecordActionHandler {
     }
 
     run(data: RecordActionData): void {
-        const modal = this.modalService.open(FieldGridModalComponent);
+        const modal = this.modalService.open(FieldGridModalComponent, {
+            centered: true,
+        });
 
         modal.componentInstance.fields = data?.action?.params?.fieldModal.fields;
         modal.componentInstance.titleKey = data?.action?.labelKey

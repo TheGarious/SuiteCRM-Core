@@ -36,6 +36,7 @@ import {RecordThreadListActionsAdapter} from "./record-thread-list-actions.adapt
 import {RecordThreadListActionManager} from "../actions/list-actions/record-thread-list-action-manager.service";
 import {RecordThreadConfig} from '../components/record-thread/record-thread.model';
 import {AppMetadataStore} from "../../../store/app-metadata/app-metadata.store.service";
+import {FieldModalService} from "../../../services/modals/field-modal.service";
 
 @Injectable({
     providedIn: 'root',
@@ -49,6 +50,7 @@ export class RecordThreadListActionsAdapterFactory {
         protected message: MessageService,
         protected confirmation: ConfirmationModalService,
         protected selectModalService: SelectModalService,
+        protected fieldModalService: FieldModalService,
         protected metadata: MetadataStore,
         protected appMetadataStore: AppMetadataStore
     ) {
@@ -63,6 +65,7 @@ export class RecordThreadListActionsAdapterFactory {
             this.message,
             this.confirmation,
             this.selectModalService,
+            this.fieldModalService,
             this.metadata,
             this.appMetadataStore
         );
