@@ -47,12 +47,13 @@ export class RecordSendTestEmailAction extends RecordActionHandler {
     }
 
     run(data: RecordActionData): void {
-        const modal = this.modalService.open(FieldGridModalComponent, {size: 'lg'});
+        const modal = this.modalService.open(FieldGridModalComponent);
 
-        modal.componentInstance.fields = data?.action?.params?.fields;
+        modal.componentInstance.fields = data?.action?.params?.fieldModal.fields;
         modal.componentInstance.titleKey = data?.action?.labelKey
+        modal.componentInstance.descriptionKey = data?.action?.descriptionKey
         modal.componentInstance.module = data?.store?.module?.name;
-        modal.componentInstance.maxColumns = data.action.params.maxColumns
+        modal.componentInstance.maxColumns = data.action.params.fieldModal.maxColumns
     }
 
     shouldDisplay(data: RecordActionData): boolean {
