@@ -31,14 +31,27 @@
             [close]="crossButton"
             bodyKlass="m-0 small-font"
             footerKlass="border-0"
-            klass="classic-view-modal">
+            klass="field-grid-modal">
 
     <div modal-body>
 
+        <scrm-field-grid
+                [fields]="mappedFields"
+                [fieldMode]="'edit'"
+                [maxColumns]="fieldGridOptions?.maxColumns"
+                [special]="fieldGridOptions?.special"
+                [actions]="fieldGridOptions?.actions"
+                [labelClass]="fieldGridOptions?.labelClass"
+                [inputClass]="fieldGridOptions?.inputClass"
+                [labelDisplay]="fieldGridOptions?.labelDisplay"
+                [rowClass]="fieldGridOptions?.rowClass"
+                [colClass]="fieldGridOptions?.colClass"
+                [colAlignItems]="fieldGridOptions?.colAlignItems"
+                [sizeMap]="fieldGridOptions?.sizeMap"
+                [appendActions]="fieldGridOptions?.appendActions"
+        ></scrm-field-grid>
 
-        <scrm-field-grid [fields]="fields" [fieldMode]="'edit'" [maxColumns]="1"></scrm-field-grid>
-
-        <scrm-button [config]="sendTestEmail"
+        <scrm-button [config]="actionButton"
                      type='submit'
                      class="float-right">
         </scrm-button>

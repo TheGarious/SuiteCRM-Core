@@ -116,7 +116,7 @@ export class FieldModalService {
      * @param module
      * @protected
      */
-    protected getValues(fields: Field[], module: string): any {
+    protected getValues(fields: Field[], module: string) {
 
         let response = {
             fields: {},
@@ -167,7 +167,7 @@ export class FieldModalService {
      * @param key
      * @protected
      */
-    protected getFieldFromItem(fieldName, items: Record[], key): [] {
+    protected getFieldFromItem(fieldName, items: Record[], key) {
 
         const values = [];
 

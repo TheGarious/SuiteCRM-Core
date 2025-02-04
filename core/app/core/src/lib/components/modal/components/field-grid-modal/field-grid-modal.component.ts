@@ -34,10 +34,33 @@ import {ModalFieldBuilder} from "../../../../services/record/field/modal-field.b
 import {ButtonModule} from "../../../button/button.module";
 import {SendTestEmail} from "../../../../services/process/processes/send-test-email/send-test-email";
 import {FieldModule} from "../../../../fields/field.module";
-import {Record} from "../../../../common/record/record.model";
-import {emptyObject} from "../../../../common/utils/object-utils";
+import {deepClone} from "../../../../common/utils/object-utils";
 import {MessageService} from "../../../../services/message/message.service";
 import {ViewFieldDefinition} from "../../../../common/metadata/metadata.model";
+import {FieldGridOptions} from "../../../field-grid/field-grid.model";
+import {FieldModalResult} from "../../../../services/modals/field-modal.service";
+import {Field} from "../../../../common/record/field.model";
+
+
+const fieldGridDefaultOptions = {
+  special: false,
+  actions: false,
+  appendActions: false,
+  labelDisplay: 'top',
+  labelClass: {},
+  inputClass: {},
+  rowClass: {},
+  colClass: {},
+  colAlignItems: '',
+  maxColumns: 3,
+  sizeMap: {
+    handset: 1,
+    tablet: 2,
+    web: 3,
+    wide: 4
+  }
+} as FieldGridOptions;
+
 
 @Component({
   selector: 'scrm-field-grid-modal',
@@ -56,11 +79,13 @@ export class FieldGridModalComponent {
   @Input() titleKey: string = '';
   @Input() descriptionKey: string = '';
   @Input() module: string;
-  @Input() recordID: string;
+  @Input() fieldGridOptions: FieldGridOptions = deepClone(fieldGridDefaultOptions);
+  @Input() actionLabelKey: string;
 
   cancelButton: ButtonInterface;
+  mappedFields: Field[];
   crossButton: ButtonInterface;
-  sendTestEmail: ButtonInterface;
+  actionButton: ButtonInterface;
 
   constructor(
       public activeModal: NgbActiveModal,
@@ -72,12 +97,13 @@ export class FieldGridModalComponent {
 
   ngOnInit(): void {
     this.buildFields();
+    this.initFieldGridOptions();
     this.initButtons();
   }
 
   protected initButtons() {
     this.cancelButton = {
-      klass: 'btn btn-primary btn-sm mt-3 mb-3',
+      klass: 'btn btn-primary btn-sm mt-3 mb-2',
       labelKey: 'LBL_CANCEL',
       onClick: (): void => {
         this.activeModal.close({
@@ -95,11 +121,15 @@ export class FieldGridModalComponent {
       }
     } as ButtonInterface;
 
-    this.sendTestEmail = {
-      klass: 'btn btn-primary btn-sm mt-3 mb-3',
-      labelKey: 'LBL_SEND',
+    this.actionButton = {
+      klass: 'btn btn-primary btn-sm mt-3 mb-2',
+      labelKey: this.actionLabelKey,
       onClick: (): void => {
-        this.send();
+        this.activeModal.close({
+          fields: this.mappedFields,
+          module: this.module,
+          type: 'run'
+        } as FieldModalResult);
       }
     } as ButtonInterface;
   }
@@ -111,82 +141,17 @@ export class FieldGridModalComponent {
       fields.push(this.modalFieldBuilder.buildModalField(this.module, field))
     })
 
-    this.fields = fields;
+    this.mappedFields = fields;
   }
 
-  protected send() {
-
-    const response = this.getValues();
-
-    if (emptyObject(response.fields)) {
-      this.message.addWarningMessageByKey('LBL_SELECT_EMAIL_FOR_TEST');
-      return;
-    }
-
-    this.emailProcess.send(response).subscribe({
-      next: (response) => {
-        this.activeModal.close({
-          type: 'close-button'
-        } as ModalCloseFeedBack);
-      },
-      error: () => {
-      }
-    })
-  }
-
-  protected getValues() {
-    let response = {
-      fields: {},
-      module: this.module,
-    };
-
-    Object.entries(this.fields).forEach(([_, field]) => {
-
-      if (field.type === 'line-items') {
-        const items = field.items;
-        const key = field.definition?.lineItems?.definition?.name ?? '';
-
-        let values = this.getFieldFromItem(field.name, items, key);
-
-        if (emptyObject(values)) {
-          return;
-        }
-
-        response.fields[field.name] = {
-          definition: field.definition,
-          type: 'line-items',
-          module: field?.definition?.module ?? this.module,
-          value: values
-        };
-
-        return;
-      }
-
-      if (!field.value){
-        return;
-      }
-
-      response.fields[field.name] = {
-        definition: field.definition,
-        type: field.type,
-        module: field?.definition?.module ?? this.module,
-        value: field.value
+  protected initFieldGridOptions() {
+    const options = fieldGridDefaultOptions;
+    Object.entries(fieldGridDefaultOptions).forEach(([key, value]) => {
+      if (this.fieldGridOptions[key]) {
+        options[key] = this.fieldGridOptions[key];
       }
     })
 
-    return response;
-  }
-
-  protected getFieldFromItem(fieldName, items: Record[], key) {
-
-    const values = [];
-
-    Object.entries(items).forEach(([_, item]) => {
-      if (item.fields[key].attributes[fieldName].value !== ''){
-        values.push(item.fields[key].attributes[fieldName].value);
-      }
-    })
-
-    return values;
+    this.fieldGridOptions = options;
   }
 }
