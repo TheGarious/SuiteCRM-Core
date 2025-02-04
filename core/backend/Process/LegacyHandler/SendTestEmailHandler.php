@@ -41,7 +41,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 class SendTestEmailHandler extends LegacyHandler implements ProcessHandlerInterface
 {
     protected const MSG_OPTIONS_NOT_FOUND = 'Process options is not defined';
-    protected const PROCESS_TYPE = 'send-test-email';
+    protected const PROCESS_TYPE = 'record-send-test-email';
 
     protected ProspectListsEmailMapper $prospectListsEmailMapper;
 
@@ -118,7 +118,7 @@ class SendTestEmailHandler extends LegacyHandler implements ProcessHandlerInterf
     {
         $options = $process->getOptions();
 
-        $fields = $options['fields'];
+        $fields = $options['params']['fields'];
 
         $this->init();
 
