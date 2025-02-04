@@ -152,14 +152,20 @@ $viewdefs ['EmailMarketing'] = [
                     ],
                 ],
                 'send-test-email' => [
-                    'key' => 'sendTestEmail',
+                    'key' => 'send-test-email',
                     'labelKey' => 'LBL_SEND_TEST_EMAIL',
-                    'descriptionKey' => 'LBL_SEND_TEST_EMAIL_DESC',
                     'modes' => ['edit', 'detail'],
+                    'asyncProcess' => true,
                     'params' => [
                         'expanded' => true,
                         'fieldModal' => [
-                            'maxColumns' => 1,
+                            'fieldGridOptions' => [
+                                'maxColumns' => 1,
+                            ],
+                            'actionLabelKey' => 'LBL_SEND',
+                            'titleKey' => 'LBL_SEND_TEST_EMAIL',
+                            'descriptionKey' => 'LBL_SEND_TEST_EMAIL_DESC',
+                            'centered' => true,
                             'fields' => [
                                 'prospect_list_name' => [
                                     'name' => 'prospect_list_name',
