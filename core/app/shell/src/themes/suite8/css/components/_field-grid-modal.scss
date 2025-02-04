@@ -23,6 +23,13 @@
  * feasible for technical reasons, the Appropriate Legal Notices must display
  * the words "Supercharged by SuiteCRM".
  */
+
+.field-grid-modal {
+  .modal-header {
+    padding: .5rem 1rem;
+  }
+}
+
 @media (min-width: 991px) {
   .field-grid-modal {
 
