@@ -114,7 +114,7 @@ export abstract class BaseFieldGridComponent implements OnInit, OnDestroy {
     }
 
     get colNumber(): number {
-        const max = this.sizeMap[this.currentSize];
+        const max = this.sizeMap[this.currentSize] ?? 3;
 
         if (this.maxColumns && max > this.maxColumns) {
             return this.maxColumns;
