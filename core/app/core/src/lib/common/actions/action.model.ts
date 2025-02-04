@@ -82,6 +82,7 @@ export interface Action {
     key: string;
     labelKey?: string;
     titleKey?: string;
+    descriptionKey?: string;
     label?: string;
     icon?: string;
     klass?: string[];
