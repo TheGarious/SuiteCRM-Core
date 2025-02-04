@@ -2329,7 +2329,7 @@ $app_strings = array(
     'LBL_CONFIRM_EMAIL_SENT' => 'Confirm Opt In Email sent successfully',
 
     'LBL_SEND_TEST_EMAIL' => 'Send Test Email',
-    'LBL_SEND_TEST_EMAIL_DESC' => 'Please select the Target List(s), User(s) and/or email address to send to.',
+    'LBL_SEND_TEST_EMAIL_DESC' => 'Please select the Target List(s), User(s) and/or email addresses to send to.',
     'LBL_PROSPECT_LIST_NAME' => 'Target Lists',
 
     //List View Column Selector Modal
