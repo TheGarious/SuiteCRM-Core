@@ -45,6 +45,8 @@ import {LanguageStore} from '../../store/language/language.store';
 import {SelectModalService} from '../modals/select-modal.service';
 import {MetadataStore} from '../../store/metadata/metadata.store.service';
 import {AppMetadataStore} from "../../store/app-metadata/app-metadata.store.service";
+import {FieldModalService} from "../modals/field-modal.service";
+import {Field} from "../../common/record/field.model";
 
 export abstract class BaseActionsAdapter<D extends ActionData> implements ActionDataSource {
 
@@ -63,6 +65,7 @@ export abstract class BaseActionsAdapter<D extends ActionData> implements Action
         protected confirmation: ConfirmationModalService,
         protected language: LanguageStore,
         protected selectModalService: SelectModalService,
+        protected fieldModalService: FieldModalService,
         protected metadata: MetadataStore,
         protected appMetadataStore: AppMetadataStore
     ) {
@@ -91,24 +94,41 @@ export abstract class BaseActionsAdapter<D extends ActionData> implements Action
         const selectModal = action.params && action.params.selectModal;
         const selectModule = selectModal && selectModal.module;
 
+        const fieldModal = action?.params?.fieldModal ?? null;
+
         if (displayConfirmation) {
             this.confirmation.showModal(confirmationLabel, () => {
-                if (!selectModule) {
+                if (!selectModule && !fieldModal) {
                     this.callAction(action, context);
                     return;
                 }
-                this.showSelectModal(selectModal.module, action, context);
+
+                if (selectModal) {
+                    this.showSelectModal(selectModal.module, action, context);
+                    return;
+                }
+                if (fieldModal) {
+                    this.showFieldModal(action, context);
+                    return;
+                }
             });
 
             return;
         }
 
-        if (!selectModule) {
+        if (!selectModule && !fieldModal) {
             this.callAction(action, context);
             return;
         }
 
-        this.showSelectModal(selectModal.module, action, context);
+        if (selectModal){
+            this.showSelectModal(selectModal.module, action, context);
+        }
+
+        if (fieldModal) {
+            this.showFieldModal(action, context);
+            return;
+        }
     }
 
     /**
@@ -339,5 +359,23 @@ export abstract class BaseActionsAdapter<D extends ActionData> implements Action
         const data: D = this.buildActionData(action, context);
 
         this.actionManager.run(action, this.getMode(), data);
+    }
+
+    /**
+     * Show Field Modal
+     * @param action
+     * @param context
+     * @protected
+     */
+    protected showFieldModal(action: Action, context: ActionContext): void {
+
+        const options = action.params.fieldModal;
+
+        this.fieldModalService.showFieldModal(options, (fields: Field[]) => {
+            if (fields) {
+                action.params.fields = fields;
+            }
+            this.callAction(action, context);
+        });
     }
 }
