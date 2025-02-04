@@ -29,6 +29,26 @@
   .modal-footer {
     background-color: $white;
   }
+
+  .modal-header {
+    .close-button {
+      border: none;
+      color: $cool-blue;
+      font-size: 2em;
+      font-weight: normal;
+      margin: 0;
+      padding: 0;
+      width: auto;
+      &:hover {
+        background: none;
+      }
+      &:focus {
+        box-shadow: none;
+      }
+    }
+  }
+
+
   .modal-body {
     margin: 0;
     overflow-y: scroll;
@@ -40,6 +60,23 @@
   .modal-header,
   .modal-footer {
     background-color: $white;
+  }
+  .modal-header {
+    .close-button {
+      border: none;
+      color: $cool-blue;
+      font-size: 2em;
+      font-weight: normal;
+      margin: 0;
+      padding: 0;
+      width: auto;
+      &:hover {
+        background: none;
+      }
+      &:focus {
+        box-shadow: none;
+      }
+    }
   }
   .modal-redirect-text {
     color: $white;
