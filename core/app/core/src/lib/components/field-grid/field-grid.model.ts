@@ -27,6 +27,7 @@
 import {ButtonInterface} from '../../common/components/button/button.model';
 import {Field} from '../../common/record/field.model';
 import {FieldActions} from "../../common/metadata/metadata.model";
+import {ScreenSizeMap} from "../../common/services/ui/resize.model";
 
 export interface FieldGridColumn {
     field?: Field;
@@ -40,6 +41,21 @@ export interface FieldGridColumn {
 
 export interface FieldGridRow {
     cols: FieldGridColumn[];
+}
+
+export class FieldGridOptions {
+    special?: boolean;
+    actions?: boolean;
+    appendActions?: boolean;
+    labelDisplay?: LabelDisplay ;
+    labelClass?: { [klass: string]: any };
+    inputClass?: { [klass: string]: any };
+    rowClass?: { [klass: string]: any };
+    colClass?: { [klass: string]: any };
+    colAlignItems?: string;
+
+    maxColumns?: number;
+    sizeMap?: ScreenSizeMap;
 }
 
 export type LabelDisplay = 'top' | 'inline' | 'none';
