@@ -23,43 +23,12 @@
  * feasible for technical reasons, the Appropriate Legal Notices must display
  * the words "Supercharged by SuiteCRM".
  */
+@media (min-width: 991px) {
+  .field-grid-modal {
 
-import {Injectable} from "@angular/core";
-import {RecordActionData, RecordActionHandler} from "../record.action";
-import {ViewMode} from "../../../../common/views/view.model";
-import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {
-    FieldGridModalComponent
-} from "../../../../components/modal/components/field-grid-modal/field-grid-modal.component";
-
-@Injectable({
-    providedIn: 'root'
-})
-export class RecordSendTestEmailAction extends RecordActionHandler {
-
-    key = 'sendTestEmail';
-    modes = ['edit' as ViewMode, 'detail' as ViewMode];
-
-    constructor(
-        protected modalService: NgbModal,
-    ) {
-        super();
+    .modal-body form {
+      min-height: 250px;
     }
-
-    run(data: RecordActionData): void {
-        const modal = this.modalService.open(FieldGridModalComponent, {
-            centered: true,
-        });
-
-        modal.componentInstance.fields = data?.action?.params?.fieldModal.fields;
-        modal.componentInstance.titleKey = data?.action?.labelKey
-        modal.componentInstance.descriptionKey = data?.action?.descriptionKey
-        modal.componentInstance.module = data?.store?.module?.name;
-        modal.componentInstance.maxColumns = data.action.params.fieldModal.maxColumns
-    }
-
-    shouldDisplay(data: RecordActionData): boolean {
-        return true;
-    }
-
+  }
 }
+
