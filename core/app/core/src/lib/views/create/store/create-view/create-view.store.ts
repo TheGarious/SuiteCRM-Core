@@ -68,7 +68,6 @@ export class CreateViewStore extends RecordViewStore {
         protected auth: AuthService,
         protected recordStoreFactory: RecordStoreFactory,
         protected preferences: UserPreferenceStore,
-        protected panelLogicManager: PanelLogicManager,
         protected recordConvertService: RecordConvertService
     ) {
         super(
@@ -86,7 +85,6 @@ export class CreateViewStore extends RecordViewStore {
             statisticsBatch,
             recordStoreFactory,
             preferences,
-            panelLogicManager,
             recordConvertService
         );
     }

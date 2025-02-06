@@ -35,7 +35,7 @@
 
                 <div class="container-fluid pl-0 pr-0">
 
-                    <div class="row no-gutters mt-1">
+                    <div class="row no-gutters mt-1" *ngIf="this.panels().length">
                         <div class="col">
                             <ng-container *ngIf="loading">
                                 <scrm-record-content-skeleton></scrm-record-content-skeleton>
@@ -47,6 +47,14 @@
                                     </div>
                                 </scrm-record-content>
                             </ng-container>
+                        </div>
+                    </div>
+
+                    <div class="row no-gutters mt-1" *ngIf="isOffsetExist && !this.panels().length">
+                        <div class="col">
+                            <div>
+                                <scrm-record-pagination></scrm-record-pagination>
+                            </div>
                         </div>
                     </div>
 

@@ -25,9 +25,9 @@
  */
 
 import {isEmpty} from 'lodash-es';
-import {BehaviorSubject, combineLatest, combineLatestWith, Observable, of, Subscription} from 'rxjs';
+import {BehaviorSubject, combineLatestWith, Observable, of, Subscription} from 'rxjs';
 import {catchError, distinctUntilChanged, finalize, map, take, tap} from 'rxjs/operators';
-import {inject, Injectable} from '@angular/core';
+import {inject, Injectable, signal, WritableSignal} from '@angular/core';
 import {Params} from '@angular/router';
 import {isVoid} from '../../../../common/utils/value-utils';
 import {deepClone} from '../../../../common/utils/object-utils';
@@ -35,7 +35,7 @@ import {BooleanMap} from '../../../../common/types/boolean-map';
 import {FieldDefinitionMap, FieldMetadata} from '../../../../common/record/field.model';
 import {FieldLogicMap} from '../../../../common/actions/field-logic-action.model';
 import {Record} from '../../../../common/record/record.model';
-import {Panel, PanelRow, ViewFieldDefinition, ViewFieldDefinitionMap} from '../../../../common/metadata/metadata.model';
+import {ViewFieldDefinition, ViewFieldDefinitionMap} from '../../../../common/metadata/metadata.model';
 import {StatisticsMap, StatisticsQueryMap} from '../../../../common/statistics/statistics.model';
 import {SubPanelMeta} from '../../../../common/metadata/subpanel.metadata.model';
 import {ViewContext, ViewMode} from '../../../../common/views/view.model';
@@ -48,6 +48,7 @@ import {ModuleNavigation} from '../../../../services/navigation/module-navigatio
 import {
     Metadata,
     MetadataStore,
+    RecordViewLayoutMetadata,
     RecordViewMetadata,
     SummaryTemplates
 } from '../../../../store/metadata/metadata.store.service';
@@ -63,9 +64,7 @@ import {RecordFetchGQL} from '../../../../store/record/graphql/api.record.get';
 import {StatisticsBatch} from '../../../../store/statistics/statistics-batch.service';
 import {RecordStoreFactory} from '../../../../store/record/record.store.factory';
 import {UserPreferenceStore} from '../../../../store/user-preference/user-preference.store';
-import {PanelLogicManager} from '../../../../components/panel-logic/panel-logic.manager';
 import {RecordConvertService} from "../../../../services/record/record-convert.service";
-import {FieldActionsAdapterFactory} from "../../../../components/field-layout/adapters/field.actions.adapter.factory";
 import {RecordValidationHandler} from "../../../../services/record/validation/record-validation.handler";
 import {ObjectMap} from "../../../../common/types/object-map";
 import {WidgetMetadata} from "../../../../common/metadata/widget.metadata";
@@ -81,6 +80,7 @@ const initialState: RecordViewState = {
     showTopWidget: false,
     showSubpanels: false,
     mode: 'detail',
+    layout: '',
     params: {
         returnModule: '',
         returnId: '',
@@ -106,8 +106,8 @@ export class RecordViewStore extends ViewStore implements StateStore, BaseRecord
     subpanels$: Observable<SubpanelStoreMap>;
     viewContext$: Observable<ViewContext>;
     subpanelReload$: Observable<BooleanMap>;
-    panels: Panel[] = [];
-    panels$: Observable<Panel[]>;
+    layout: WritableSignal<string> = signal('');
+
 
 
     /**
@@ -127,10 +127,10 @@ export class RecordViewStore extends ViewStore implements StateStore, BaseRecord
     protected subpanelsState: BehaviorSubject<SubpanelStoreMap>;
     protected subpanelReloadSubject = new BehaviorSubject<BooleanMap>({} as BooleanMap);
     protected subpanelReloadSub: Subscription[] = [];
+    protected layoutMetadataSubject = new BehaviorSubject<RecordViewLayoutMetadata>({} as RecordViewLayoutMetadata);
+    layoutMetadata$: Observable<RecordViewLayoutMetadata> = this.layoutMetadataSubject.asObservable();
     protected subs: Subscription[] = [];
-    protected fieldSubs: Subscription[] = [];
-    protected panelsSubject: BehaviorSubject<Panel[]> = new BehaviorSubject(this.panels);
-    protected actionAdaptorFactory: FieldActionsAdapterFactory;
+
     protected recordValidationHandler: RecordValidationHandler;
 
     constructor(
@@ -148,15 +148,10 @@ export class RecordViewStore extends ViewStore implements StateStore, BaseRecord
         protected statisticsBatch: StatisticsBatch,
         protected recordStoreFactory: RecordStoreFactory,
         protected preferences: UserPreferenceStore,
-        protected panelLogicManager: PanelLogicManager,
         protected recordConvertService: RecordConvertService
     ) {
 
         super(appStateStore, languageStore, navigationStore, moduleNavigation, metadataStore);
-
-        this.actionAdaptorFactory = inject(FieldActionsAdapterFactory);
-
-        this.panels$ = this.panelsSubject.asObservable();
 
         this.recordStore = recordStoreFactory.create(this.getViewFieldsObservable(), this.getRecordMetadata$());
 
@@ -170,6 +165,9 @@ export class RecordViewStore extends ViewStore implements StateStore, BaseRecord
         this.showSubpanels$ = this.state$.pipe(map(state => state.showSubpanels));
         this.mode$ = this.state$.pipe(map(state => state.mode));
         this.subpanelReload$ = this.subpanelReloadSubject.asObservable();
+
+
+
 
         const data$ = this.record$.pipe(
             combineLatestWith(this.loading$),
@@ -191,7 +189,6 @@ export class RecordViewStore extends ViewStore implements StateStore, BaseRecord
 
 
         this.viewContext$ = this.record$.pipe(map(() => this.getViewContext()));
-        this.initPanels();
 
         this.recordValidationHandler = inject(RecordValidationHandler);
     }
@@ -283,6 +280,26 @@ export class RecordViewStore extends ViewStore implements StateStore, BaseRecord
         return this.subpanels;
     }
 
+    setLayout(layout: string): void {
+        const recordViewMetadata = this.getRecordViewMetadata() ?? {} as RecordViewMetadata;
+        const layouts = recordViewMetadata.layouts ?? {};
+        if (layout && layouts[layout]) {
+            this.layoutMetadataSubject.next(layouts[layout]);
+        } else {
+            this.layoutMetadataSubject.next({
+                topWidget: recordViewMetadata?.topWidget,
+                sidebarWidgets: recordViewMetadata?.sidebarWidgets,
+                bottomWidgets: recordViewMetadata?.bottomWidgets,
+                templateMeta: recordViewMetadata?.templateMeta,
+                panels: recordViewMetadata?.panels,
+                metadata: recordViewMetadata?.metadata,
+                subpanels: []
+            } as RecordViewLayoutMetadata);
+        }
+
+        this.layout.set(layout);
+    }
+
     /**
      * Clean destroy
      */
@@ -304,6 +321,7 @@ export class RecordViewStore extends ViewStore implements StateStore, BaseRecord
         this.internalState.module = module;
         this.internalState.recordID = recordID;
         this.setMode(mode);
+        this.calculateCurrentLayout();
         this.initSubpanels(module, recordID);
 
         this.calculateShowWidgets();
@@ -326,7 +344,6 @@ export class RecordViewStore extends ViewStore implements StateStore, BaseRecord
         this.subpanelsState.unsubscribe();
         this.updateState(deepClone(initialState));
         this.subs = this.safeUnsubscription(this.subs);
-        this.fieldSubs = this.safeUnsubscription(this.fieldSubs);
     }
 
     /**
@@ -584,78 +601,6 @@ export class RecordViewStore extends ViewStore implements StateStore, BaseRecord
         });
     }
 
-    protected initPanels(): void {
-        const panelSub = combineLatest([
-            this.metadataStore.recordViewMetadata$,
-            this.stagingRecord$,
-            this.languageStore.vm$,
-        ]).subscribe(([meta, record, languages]) => {
-            const panels = [];
-            const module = (record && record.module) || '';
-
-            this.safeUnsubscription(this.fieldSubs);
-            meta.panels.forEach(panelDefinition => {
-                const label = (panelDefinition.label)
-                    ? panelDefinition.label.toUpperCase()
-                    : this.languageStore.getFieldLabel(panelDefinition.key.toUpperCase(), module, languages);
-                const panel = {label, key: panelDefinition.key, rows: []} as Panel;
-
-
-                let adaptor = null;
-                const tabDef = meta.templateMeta.tabDefs[panelDefinition.key.toUpperCase()] ?? null;
-                if (tabDef) {
-                    panel.meta = tabDef;
-                }
-
-                panelDefinition.rows.forEach(rowDefinition => {
-                    const row = {cols: []} as PanelRow;
-                    rowDefinition.cols.forEach(cellDefinition => {
-                        const cellDef = {...cellDefinition};
-                        const fieldActions = cellDefinition.fieldActions || null;
-                        if (fieldActions) {
-                            adaptor = this.actionAdaptorFactory.create('recordView', cellDef.name, this);
-                            cellDef.adaptor = adaptor;
-                        }
-                        row.cols.push(cellDef);
-                    });
-                    panel.rows.push(row);
-                });
-
-                panel.displayState = new BehaviorSubject(tabDef?.display ?? true);
-                panel.display$ = panel.displayState.asObservable();
-
-                panels.push(panel);
-
-                if (isEmpty(record?.fields) || isEmpty(tabDef?.displayLogic)) {
-                    return;
-                }
-
-                Object.values(tabDef.displayLogic).forEach((logicDef) => {
-                    if (isEmpty(logicDef?.params?.fieldDependencies)) {
-                        return;
-                    }
-
-                    logicDef.params.fieldDependencies.forEach(fieldKey => {
-                        const field = record.fields[fieldKey] || null;
-                        if (isEmpty(field)) {
-                            return;
-                        }
-
-                        this.fieldSubs.push(
-                            field.valueChanges$.subscribe(() => {
-                                this.panelLogicManager.runLogic(logicDef.key, field, panel, record, this.getMode());
-                            }),
-                        );
-                    });
-                });
-            });
-            this.panelsSubject.next(this.panels = panels);
-            return panels;
-        });
-
-        this.subs.push(panelSub);
-    }
-
     protected clearSubpanels(): void {
         if (this.subpanels) {
             Object.keys(this.subpanels).forEach((key: string) => {
@@ -694,6 +639,22 @@ export class RecordViewStore extends ViewStore implements StateStore, BaseRecord
         this.showBottomWidgets = true;
 
         this.widgets = show;
+    }
+
+    /**
+     * Calculate current layout
+     */
+    protected calculateCurrentLayout(): void {
+        const recordViewMeta = this.getRecordViewMetadata();
+        const layouts = recordViewMeta?.layouts ?? {};
+        const layoutKeys = Object.keys(layouts);
+
+        if (!layouts || !layoutKeys.length) {
+            this.setLayout('');
+            return;
+        }
+
+        this.setLayout(layoutKeys[0]);
     }
 
     /**
