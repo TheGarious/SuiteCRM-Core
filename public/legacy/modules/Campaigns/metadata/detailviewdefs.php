@@ -80,6 +80,8 @@ $viewdefs ['Campaigns'] = [
                     'recordTable' => [
                         'name' => 'campaign_interactions',
                         'type' => 'collection',
+                        'sort_order' => 'desc',
+                        'sort_by' => 'date_start',
                         'labelKey' => 'LBL_CAMPAIGN_ACTIONS',
                         'title_key' => 'LBL_CAMPAIGN_ACTIONS',
                         'headerModule' => 'Campaigns',
@@ -91,6 +93,9 @@ $viewdefs ['Campaigns'] = [
                                 'action' => 'create',
                                 'key' => 'create',
                                 'module' => 'email-marketing',
+                                'params' => [
+                                    'expanded' => true,
+                                ],
                                 'extraParams' => [
                                     'type' => 'marketing',
                                 ],
@@ -102,6 +107,9 @@ $viewdefs ['Campaigns'] = [
                                 'acl' => ['edit'],
                                 'action' => 'create',
                                 'key' => 'create',
+                                'params' => [
+                                    'expanded' => true,
+                                ],
                                 'module' => 'surveys',
                                 'labelKey' => 'LBL_NEW_SURVEY',
                                 'widget_class' => 'SubPanelTopButtonQuickCreate',
@@ -162,6 +170,11 @@ $viewdefs ['Campaigns'] = [
                                 'fieldDefinition' => [
                                     'options' => 'email_marketing_type_dom',
                                 ]
+                            ],
+                            [
+                                'name' => 'date_start',
+                                'label' => 'LBL_SEND_DATE',
+                                'type' => 'datetime',
                             ]
                         ],
                     ]
