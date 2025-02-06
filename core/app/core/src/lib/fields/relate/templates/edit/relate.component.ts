@@ -24,7 +24,7 @@
  * the words "Supercharged by SuiteCRM".
  */
 
-import {Component, ElementRef, ViewChild} from '@angular/core';
+import {Component, ElementRef, signal, ViewChild, WritableSignal} from '@angular/core';
 import {emptyObject} from '../../../../common/utils/object-utils';
 import {ButtonInterface} from '../../../../common/components/button/button.model';
 import {Field} from '../../../../common/record/field.model';
@@ -61,6 +61,7 @@ export class RelateEditFieldComponent extends BaseRelateComponent {
     selectButton: ButtonInterface;
     idField: Field;
     selectedValue: AttributeMap = {};
+    currentOptions: WritableSignal<AttributeMap[]> = signal([]);
 
     placeholderLabel: string = '';
     emptyFilterLabel: string = '';
@@ -152,6 +153,7 @@ export class RelateEditFieldComponent extends BaseRelateComponent {
         }
 
         this.selectedValue = this.field.valueObject;
+        this.currentOptions.set([this.field.valueObject]);
         this.options = [this.field.valueObject];
     }
 
@@ -231,6 +233,7 @@ export class RelateEditFieldComponent extends BaseRelateComponent {
             })))
         ).subscribe(filteredOptions => {
             this.options = filteredOptions;
+            this.currentOptions.set(filteredOptions);
 
             if (!this?.selectedValue || !this?.selectedValue?.id) {
                 return;
@@ -290,6 +293,7 @@ export class RelateEditFieldComponent extends BaseRelateComponent {
         }
 
         this.options = [this.selectedValue];
+        this.currentOptions.set([this.selectedValue])
     }
 
     /**
@@ -376,6 +380,10 @@ export class RelateEditFieldComponent extends BaseRelateComponent {
     }
 
     focusFilterInput() {
-        this.dropdownFilterInput.nativeElement.focus()
+        this.dropdownFilterInput.nativeElement.focus();
+
+        if (this.field?.definition?.filterOnEmpty ?? false) {
+            this.tag.onLazyLoad.emit();
+        }
     }
 }
