@@ -47,6 +47,7 @@ import {
     RecordLayoutTabActionDisplayTypeLogic
 } from "../actions/layout-tab-actions/action-logic/display-type/display-type.logic";
 import {RecordLayoutTabActionManager} from "../actions/layout-tab-actions/layout-tab-action-manager.service";
+import {toObservable} from "@angular/core/rxjs-interop";
 
 @Injectable()
 export class RecordLayoutTabActionsAdapter extends BaseRecordActionsAdapter<RecordLayoutTabActionData> {
@@ -83,8 +84,8 @@ export class RecordLayoutTabActionsAdapter extends BaseRecordActionsAdapter<Reco
     getActions(context?: ActionContext): Observable<Action[]> {
 
         return this.store.metadata$.pipe(
-            combineLatestWith(this.store.mode$, this.store.record$, this.store.language$, this.store.widgets$),
-            map(([meta, mode]: [Metadata, ViewMode, Record, LanguageStrings, boolean]) => {
+            combineLatestWith(this.store.mode$, this.store.record$, this.store.language$, this.store.widgets$, this.store.layout$),
+            map(([meta, mode]: [Metadata, ViewMode, Record, LanguageStrings, boolean, string]) => {
                 const recordViewMetadata = meta?.recordView;
 
 

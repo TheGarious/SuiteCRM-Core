@@ -27,23 +27,23 @@
 import {Injectable} from '@angular/core';
 import {combineLatestWith} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {MetadataStore, RecordViewMetadata} from '../../../store/metadata/metadata.store.service';
+import {MetadataStore, RecordViewLayoutMetadata} from '../../../store/metadata/metadata.store.service';
 import {RecordViewStore} from '../store/record-view/record-view.store';
 
 @Injectable()
 export class TopWidgetAdapter {
 
-    config$ = this.metadata.recordViewMetadata$.pipe(
+    config$ = this.store.layoutMetadata$.pipe(
         combineLatestWith(this.store.showTopWidget$),
-        map(([metadata, show]: [RecordViewMetadata, boolean]) => {
-
-            if (metadata.topWidget && metadata.topWidget.refreshOn === 'data-update') {
-                metadata.topWidget.reload$ = this.store.record$.pipe(map(() => true));
+        map(([metadata, show]: [RecordViewLayoutMetadata, boolean]) => {
+            const topWidget = metadata.topWidget ?? null;
+            if (topWidget && topWidget.refreshOn === 'data-update') {
+                topWidget.reload$ = this.store.record$.pipe(map(() => true));
             }
 
             return {
-                widget: metadata.topWidget,
-                show
+                widget: topWidget,
+                show: !!(show && topWidget && topWidget.type)
             };
         })
     );

@@ -27,11 +27,10 @@
 -->
 <!-- Start Record View Container Section -->
 
-<div *ngIf="(vm$ | async) as vm"
-     class="record-view-container view-container container-fluid pt-0 pb-3 small-font">
+<div class="record-view-container view-container container-fluid pt-0 pb-3 small-font">
     <div class="row">
-        <ng-container *ngIf="!swapWidgets || (swapWidgets && !displayWidgets)">
-            <div class="col-lg-9" [ngClass]="{ 'col-lg-12': !sidebarWidgetConfig.show }">
+        <ng-container *ngIf="!swapWidgets() || (swapWidgets() && !displaySidebar())">
+            <div class="col-lg-9" [ngClass]="{ 'col-lg-12': !displaySidebar() }">
 
                 <div class="container-fluid pl-0 pr-0">
 
@@ -58,10 +57,10 @@
                         </div>
                     </div>
 
-                    <div *ngIf="vm.bottomWidgetConfig.show && vm.bottomWidgetConfig.widgets && vm.bottomWidgetConfig.widgets.length"
+                    <div *ngIf="showBottomWidgets()"
                          class="row no-gutters mt-2">
                         <div class="col">
-                            <div *ngFor="let widget of vm.bottomWidgetConfig.widgets" class="mb-3">
+                            <div *ngFor="let widget of bottomWidgetConfig().widgets" class="mb-3">
                                 <scrm-sidebar-widget [config]="widget"
                                                      [context$]="getViewContext$()"
                                                      [context]="getViewContext()"
@@ -71,7 +70,7 @@
                         </div>
                     </div>
 
-                    <div *ngIf="vm.showSubpanels"
+                    <div *ngIf="displayedSubpanelsKeys().length"
                          class="row no-gutters pt-3 pb-4">
                         <div class="col">
                             <scrm-subpanel-container [config]="getSubpanelsConfig()"></scrm-subpanel-container>
@@ -81,10 +80,10 @@
             </div>
         </ng-container>
 
-        <ng-container *ngIf="!swapWidgets || (swapWidgets && displayWidgets)">
+        <ng-container *ngIf="!swapWidgets() || (swapWidgets() && displaySidebar())">
             <div class="col-lg-3 record-widget-container pl-0"
-                 [class.mt-0]="swapWidgets"
-                 *ngIf="displayWidgets">
+                 [class.mt-0]="swapWidgets()"
+                 *ngIf="displaySidebar()">
                 <div *ngIf="loading" class="row no-gutters">
                     <div class="col pb-3">
                         <div class="d-flex justify-content-center widget-bar rounded  pb-1 pt-3 box-loading">
@@ -94,17 +93,17 @@
                     </div>
                 </div>
                 <ng-container *ngIf="!loading">
-                    <div *ngIf="vm.topWidgetConfig.show && hasTopWidgetMetadata(vm.topWidgetConfig.widget)"
+                    <div *ngIf="showTopWidget() && hasTopWidgetMetadata(topWidgetConfig().widget)"
                          class="mb-3">
                         <div class="">
-                            <scrm-top-widget [config]="vm.topWidgetConfig.widget"
+                            <scrm-top-widget [config]="topWidgetConfig().widget"
                                              [context]="getViewContext()"
-                                             [type]="vm.topWidgetConfig.widget.type">
+                                             [type]="topWidgetConfig().widget.type">
                             </scrm-top-widget>
                         </div>
                     </div>
                 </ng-container>
-                <div class="mb-3" *ngFor="let widget of sidebarWidgetConfig.widgets">
+                <div class="mb-3" *ngFor="let widget of sidebarWidgetConfig().widgets">
                     <scrm-sidebar-widget [type]="widget.type"
                                          [context]="getViewContext()"
                                          [context$]="getViewContext$()"
