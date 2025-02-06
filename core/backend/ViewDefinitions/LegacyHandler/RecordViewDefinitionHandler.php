@@ -200,6 +200,7 @@ class RecordViewDefinitionHandler extends LegacyHandler
             'summaryTemplates' => [],
             'vardefs' => $vardefs,
             'metadata' => [],
+            'layouts' => [],
         ];
 
         $this->addTemplateMeta($recordViewDefs, $metadata);
@@ -211,6 +212,28 @@ class RecordViewDefinitionHandler extends LegacyHandler
         $this->addActionConfig($module, $recordViewDefs, $metadata);
         $this->addSummaryTemplates($recordViewDefs, $metadata);
         $this->addBackButton($recordViewDefs, $metadata);
+
+        if (!empty($recordViewDefs['layouts']) && is_array($recordViewDefs['layouts'])) {
+            foreach ($recordViewDefs['layouts'] as $index => $layout) {
+                $metadata['layouts'][$index] = [
+                    'templateMeta' => [],
+                    'metadata' => [],
+                    'sidebarWidgets' => [],
+                    'topWidget' => [],
+                    'panels' => [],
+                    'subpanels' => [],
+                    'order' => $layout['order'] ?? 0,
+                    'tabAction' => $layout['tabAction'] ?? '',
+                ];
+                $this->addTemplateMeta($layout,  $metadata['layouts'][$index]);
+                $this->addMetadata($layout,  $metadata['layouts'][$index]);
+                $this->addTopWidgetConfig($module, $layout,  $metadata['layouts'][$index]);
+                $this->addSidebarWidgetConfig($module, $layout,  $metadata['layouts'][$index]);
+                $this->addBottomWidgetConfig($module, $layout,  $metadata['layouts'][$index]);
+                $this->addPanelDefinitions($layout, [], $vardefs,  $metadata['layouts'][$index]);
+            }
+
+        }
 
         return $metadata;
     }
