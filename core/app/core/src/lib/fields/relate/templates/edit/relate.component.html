@@ -30,7 +30,7 @@
         <div class="flex-grow-1 w-100 mr-1">
             <p-dropdown
                 #tag
-                [options]="options"
+                [options]="currentOptions()"
                 [(ngModel)]="selectedValue"
                 [optionLabel]="getRelateFieldName()"
                 (onChange)="onAdd($event.value, $event)"
