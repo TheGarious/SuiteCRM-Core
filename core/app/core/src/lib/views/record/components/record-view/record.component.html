@@ -36,6 +36,6 @@
     </div>
 
     <scrm-status-bar *ngIf="showStatusBar"></scrm-status-bar>
-    <scrm-record-container></scrm-record-container>
+    <scrm-record-container [layout]="recordStore.layout()"></scrm-record-container>
 </div>
 <!-- End Record View Section -->

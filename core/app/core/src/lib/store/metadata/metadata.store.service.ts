@@ -76,6 +76,23 @@ export interface RecordViewMetadata {
     vardefs?: FieldDefinitionMap;
     metadata?: ObjectMap;
     header?: HeaderMetadata;
+    layouts?: RecordViewLayoutMetadataMap;
+}
+
+export interface RecordViewLayoutMetadataMap {
+    [key: string]: RecordViewLayoutMetadata;
+}
+
+export interface RecordViewLayoutMetadata {
+    order?: number;
+    tabAction?: Action;
+    topWidget?: WidgetMetadata;
+    sidebarWidgets?: WidgetMetadata[];
+    bottomWidgets?: WidgetMetadata[];
+    templateMeta?: RecordTemplateMetadata;
+    panels?: Panel[];
+    subpanels?: any[];
+    metadata?: ObjectMap;
 }
 
 export interface RecordModalMetadata {
@@ -528,7 +545,8 @@ export class MetadataStore implements StateStore {
             summaryTemplates: 'summaryTemplates',
             vardefs: 'vardefs',
             metadata: 'metadata',
-            header: 'header'
+            header: 'header',
+            layouts: 'layouts'
         };
 
         this.addDefinedMeta(recordViewMeta, receivedMeta, entries);

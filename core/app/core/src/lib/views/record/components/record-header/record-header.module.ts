@@ -34,6 +34,7 @@ import {
     FavoriteToggleModule
 } from '../../../../containers/favorite-toggle/components/favorite-toggle/favorite-toggle.module';
 import {ButtonModule} from "../../../../components/button/button.module";
+import {ButtonGroupModule} from "../../../../components/button-group/button-group.module";
 
 @NgModule({
     declarations: [RecordHeaderComponent],
@@ -44,7 +45,8 @@ import {ButtonModule} from "../../../../components/button/button.module";
         DynamicLabelModule,
         ActionGroupMenuModule,
         FavoriteToggleModule,
-        ButtonModule
+        ButtonModule,
+        ButtonGroupModule
     ]
 })
 export class RecordHeaderModule {

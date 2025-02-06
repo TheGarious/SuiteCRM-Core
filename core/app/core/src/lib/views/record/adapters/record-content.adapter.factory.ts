@@ -1,6 +1,6 @@
 /**
  * SuiteCRM is a customer relationship management program developed by SalesAgility Ltd.
- * Copyright (C) 2021 SalesAgility Ltd.
+ * Copyright (C) 2023 SalesAgility Ltd.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by the
@@ -24,35 +24,40 @@
  * the words "Supercharged by SuiteCRM".
  */
 
-import {Record} from '../../../../common/record/record.model';
-import {ViewMode} from '../../../../common/views/view.model';
-import {AppData} from '../../../../store/view/view.store';
-import {Metadata} from '../../../../store/metadata/metadata.store.service';
+import {Injectable} from '@angular/core';
+import {LanguageStore} from '../../../store/language/language.store';
+import {MetadataStore} from '../../../store/metadata/metadata.store.service';
+import {RecordViewStore} from '../../../views/record/store/record-view/record-view.store';
+import {RecordContentAdapter} from "./record-content.adapter";
+import {RecordActionManager} from "../actions/record-action-manager.service";
+import {PanelLogicManager} from "../../../components/panel-logic/panel-logic.manager";
+import {Observable} from "rxjs";
+import {Panel} from "../../../common/metadata/metadata.model";
 
-export interface RecordViewModel {
-    data: RecordViewData;
-    appData: AppData;
-    metadata: Metadata;
-}
+@Injectable({
+    providedIn: 'root',
+})
+export class RecordContentAdapterFactory {
 
-export interface RecordViewData {
-    module?: string;
-    recordID?: string;
-    mode?: ViewMode;
-    record: Record;
-    loading: boolean;
-}
+    constructor(
+        protected metadata: MetadataStore,
+        protected language: LanguageStore,
+        protected actions: RecordActionManager,
+        protected logicManager: PanelLogicManager
+    ) {
+    }
 
-export interface RecordViewState {
-    module: string;
-    recordID: string;
-    loading: boolean;
-    widgets: boolean;
-    showSidebarWidgets: boolean;
-    showBottomWidgets: boolean;
-    showTopWidget: boolean;
-    showSubpanels: boolean;
-    mode: ViewMode;
-    layout: string;
-    params: { [key: string]: string };
+    create(
+        store: RecordViewStore,
+        panels$: Observable<Panel[]>
+    ): RecordContentAdapter {
+        return new RecordContentAdapter(
+            store,
+            this.metadata,
+            this.language,
+            this.actions,
+            this.logicManager,
+            panels$
+        );
+    }
 }
