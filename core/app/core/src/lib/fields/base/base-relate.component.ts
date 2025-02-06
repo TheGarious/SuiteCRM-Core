@@ -107,7 +107,7 @@ export class BaseRelateComponent extends BaseFieldComponent implements OnInit, O
 
     search = (text: string): Observable<any> => {
 
-        if(text === '') {
+        if(text === '' && !(this.field.definition.filterOnEmpty ?? false)) {
             return of([]);
         }
 
