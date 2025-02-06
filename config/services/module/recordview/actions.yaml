@@ -64,13 +64,15 @@ parameters:
             - edit
             - create
           displayLogic:
-            hide-on-scheduled:
-              modes: ['edit']
+            name:
+              modes: ['edit', 'create']
               params:
                 activeOnFields:
                   status:
-                    operator: 'not-equal'
-                    value: 'inactive'
+                    -
+                     operator: 'not-equal'
+                     values:
+                      - 'inactive'
           acl:
             - edit
         delete:
