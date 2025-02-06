@@ -29,8 +29,8 @@ import {BehaviorSubject, combineLatest, combineLatestWith, Observable, Subscript
 import {filter, map} from 'rxjs/operators';
 import {ViewContext} from '../../../../common/views/view.model';
 import {WidgetMetadata} from '../../../../common/metadata/widget.metadata';
-import {MetadataStore} from '../../../../store/metadata/metadata.store.service';
-import {LanguageStore, LanguageStrings} from '../../../../store/language/language.store';
+import {MetadataStore, RecordViewLayoutMetadata} from '../../../../store/metadata/metadata.store.service';
+import {LanguageStore} from '../../../../store/language/language.store';
 import {
     SubpanelContainerConfig
 } from '../../../../containers/subpanel/components/subpanel-container/subpanel-container.model';
@@ -49,6 +49,7 @@ import {isEmpty} from "lodash-es";
 import {FieldActionsAdapterFactory} from "../../../../components/field-layout/adapters/field.actions.adapter.factory";
 import {PanelLogicManager} from "../../../../components/panel-logic/panel-logic.manager";
 import {RecordContentAdapterFactory} from "../../adapters/record-content.adapter.factory";
+import {SubpanelStoreMap} from "../../../../containers/subpanel/store/subpanel/subpanel.store";
 
 @Component({
     selector: 'scrm-record-container',
@@ -64,42 +65,27 @@ export class RecordContainerComponent implements OnInit, OnDestroy {
     saveAction: Action;
     context: ActionContext;
     loading: boolean = true;
-    language$: Observable<LanguageStrings> = this.language.vm$;
     isOffsetExist: boolean = false;
-    displayWidgets: boolean = true;
-    swapWidgets: boolean = false;
-    sidebarWidgetConfig: any;
+    displaySidebar: WritableSignal<boolean> = signal(true);
+    showTopWidget: WritableSignal<boolean> = signal(true);
+    showSidebarWidgets: WritableSignal<boolean> = signal(true);
+    showBottomWidgets: WritableSignal<boolean> = signal(true);
+    showSubpanels: WritableSignal<boolean> = signal(true);
+    swapWidgets: WritableSignal<boolean> = signal(false);
+    topWidgetConfig: WritableSignal<any> = signal(null);
+    sidebarWidgetConfig: WritableSignal<any> = signal(null);
+    bottomWidgetConfig: WritableSignal<any> = signal(null);
 
     panels: WritableSignal<Panel[]> = signal([]);
     panels$: Observable<Panel[]>;
+    displayedSubpanelsKeys: WritableSignal<string[]> = signal([]);
+    displayedSubpanels$: Observable<SubpanelStoreMap>;
     protected panelsSubject: BehaviorSubject<Panel[]> = new BehaviorSubject(this.panels());
     protected fieldsActionAdaptorFactory: FieldActionsAdapterFactory;
     protected fieldSubs: Subscription[] = [];
     protected panelLogicManager: PanelLogicManager;
     protected contentAdapter: RecordContentAdapter;
     protected contentAdapterFactory: RecordContentAdapterFactory;
-
-
-    vm$ = this.language$.pipe(
-        combineLatestWith(
-            this.bottomWidgetAdapter.config$,
-            this.topWidgetAdapter.config$,
-            this.recordViewStore.showSubpanels$
-        ),
-        map((
-            [
-                language,
-                bottomWidgetConfig,
-                topWidgetConfig,
-                showSubpanels
-            ]
-        ) => ({
-            language,
-            bottomWidgetConfig,
-            topWidgetConfig,
-            showSubpanels
-        }))
-    );
 
     actionConfig$ = this.recordViewStore.mode$.pipe(
         combineLatestWith(
@@ -160,14 +146,56 @@ export class RecordContainerComponent implements OnInit, OnDestroy {
             })
         );
 
+        this.subs.push(this.topWidgetAdapter.config$.subscribe(topWidgetConfig => {
+            this.topWidgetConfig.set({...topWidgetConfig});
+            this.showTopWidget.set(topWidgetConfig?.show ?? false);
+            this.displaySidebar.set(this.showSidebarWidgets() || this.showTopWidget());
+        }));
+
         this.subs.push(this.sidebarWidgetAdapter.config$.subscribe(sidebarWidgetConfig => {
-            this.sidebarWidgetConfig = sidebarWidgetConfig;
-            this.displayWidgets = this.sidebarWidgetConfig.show && this.sidebarWidgetConfig.widgets;
+            this.sidebarWidgetConfig.set({...sidebarWidgetConfig});
+            this.showSidebarWidgets.set(sidebarWidgetConfig?.show ?? false);
+            this.displaySidebar.set(this.showSidebarWidgets() || this.showTopWidget());
+        }));
+
+        this.subs.push(this.bottomWidgetAdapter.config$.subscribe(bottomWidgetConfig => {
+            this.bottomWidgetConfig.set({...bottomWidgetConfig});
+            this.showBottomWidgets.set(bottomWidgetConfig?.show ?? false);
         }));
 
         this.subs.push(this.sidebarWidgetHandler.widgetSwap$.subscribe(swap => {
-            this.swapWidgets = swap;
+            this.swapWidgets.set(swap);
         }));
+
+        this.subs.push(this.recordViewStore.showSubpanels$.subscribe(showSubpanels => {
+            this.showSubpanels.set(showSubpanels);
+        }));
+
+        this.displayedSubpanels$ = this.recordViewStore.subpanels$.pipe(
+            combineLatestWith(this.recordViewStore.layoutMetadata$),
+            map(([subpanels, layoutMetadata] : [SubpanelStoreMap, RecordViewLayoutMetadata]) => {
+
+                const filteredSubpanels = {} as SubpanelStoreMap;
+                const subpanelsToDisplay = layoutMetadata?.subpanels ?? [];
+
+
+                if (!subpanelsToDisplay.length) {
+                    this.displayedSubpanelsKeys.set([]);
+                    return filteredSubpanels;
+                }
+
+                subpanelsToDisplay.forEach(subpanelKey => {
+                    if (subpanels[subpanelKey]) {
+                        filteredSubpanels[subpanelKey] = subpanels[subpanelKey];
+                    }
+                });
+
+                this.displayedSubpanelsKeys.set(Object.keys(filteredSubpanels));
+                return filteredSubpanels;
+            })
+        );
+
+        this.subs.push(this.displayedSubpanels$.subscribe());
     }
 
     ngOnDestroy() {
@@ -183,7 +211,7 @@ export class RecordContainerComponent implements OnInit, OnDestroy {
     getSubpanelsConfig(): SubpanelContainerConfig {
         return {
             parentModule: this.recordViewStore.getModuleName(),
-            subpanels$: this.recordViewStore.subpanels$,
+            subpanels$: this.displayedSubpanels$,
             sidebarActive$: this.recordViewStore.widgets$
         } as SubpanelContainerConfig;
     }

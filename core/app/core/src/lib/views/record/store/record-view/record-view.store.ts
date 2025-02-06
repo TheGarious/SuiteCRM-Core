@@ -69,6 +69,7 @@ import {RecordValidationHandler} from "../../../../services/record/validation/re
 import {ObjectMap} from "../../../../common/types/object-map";
 import {WidgetMetadata} from "../../../../common/metadata/widget.metadata";
 import {BaseRecordContainerStoreInterface} from "../../../../common/containers/record/record-container.store.model";
+import {toObservable} from "@angular/core/rxjs-interop";
 
 const initialState: RecordViewState = {
     module: '',
@@ -107,7 +108,7 @@ export class RecordViewStore extends ViewStore implements StateStore, BaseRecord
     viewContext$: Observable<ViewContext>;
     subpanelReload$: Observable<BooleanMap>;
     layout: WritableSignal<string> = signal('');
-
+    layout$: Observable<string> = toObservable(this.layout);
 
 
     /**
@@ -165,9 +166,6 @@ export class RecordViewStore extends ViewStore implements StateStore, BaseRecord
         this.showSubpanels$ = this.state$.pipe(map(state => state.showSubpanels));
         this.mode$ = this.state$.pipe(map(state => state.mode));
         this.subpanelReload$ = this.subpanelReloadSubject.asObservable();
-
-
-
 
         const data$ = this.record$.pipe(
             combineLatestWith(this.loading$),
@@ -286,6 +284,9 @@ export class RecordViewStore extends ViewStore implements StateStore, BaseRecord
         if (layout && layouts[layout]) {
             this.layoutMetadataSubject.next(layouts[layout]);
         } else {
+
+            const subpanelKeys = Object.keys(this.subpanels ?? {});
+
             this.layoutMetadataSubject.next({
                 topWidget: recordViewMetadata?.topWidget,
                 sidebarWidgets: recordViewMetadata?.sidebarWidgets,
@@ -293,7 +294,7 @@ export class RecordViewStore extends ViewStore implements StateStore, BaseRecord
                 templateMeta: recordViewMetadata?.templateMeta,
                 panels: recordViewMetadata?.panels,
                 metadata: recordViewMetadata?.metadata,
-                subpanels: []
+                subpanels: subpanelKeys,
             } as RecordViewLayoutMetadata);
         }
 
@@ -321,8 +322,8 @@ export class RecordViewStore extends ViewStore implements StateStore, BaseRecord
         this.internalState.module = module;
         this.internalState.recordID = recordID;
         this.setMode(mode);
-        this.calculateCurrentLayout();
         this.initSubpanels(module, recordID);
+        this.calculateCurrentLayout();
 
         this.calculateShowWidgets();
 

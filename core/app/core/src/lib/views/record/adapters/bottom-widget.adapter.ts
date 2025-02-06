@@ -27,15 +27,15 @@
 import {Injectable} from '@angular/core';
 import {combineLatestWith} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {MetadataStore, RecordViewMetadata} from '../../../store/metadata/metadata.store.service';
+import {MetadataStore, RecordViewLayoutMetadata} from '../../../store/metadata/metadata.store.service';
 import {RecordViewStore} from '../store/record-view/record-view.store';
 
 @Injectable()
 export class BottomWidgetAdapter {
 
-    config$ = this.metadata.recordViewMetadata$.pipe(
+    config$ = this.store.layoutMetadata$.pipe(
         combineLatestWith(this.store.showBottomWidgets$),
-        map(([metadata, show]: [RecordViewMetadata, boolean]) => {
+        map(([metadata, show]: [RecordViewLayoutMetadata, boolean]) => {
 
             let filteredWidgets = [];
 
@@ -58,9 +58,11 @@ export class BottomWidgetAdapter {
                 }
             }
 
+            filteredWidgets = filteredWidgets || [];
+
             return {
-                widgets: filteredWidgets || [],
-                show
+                widgets: filteredWidgets,
+                show: show && filteredWidgets.length > 0
             };
         })
     );

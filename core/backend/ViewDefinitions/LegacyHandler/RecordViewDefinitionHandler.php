@@ -219,9 +219,10 @@ class RecordViewDefinitionHandler extends LegacyHandler
                     'templateMeta' => [],
                     'metadata' => [],
                     'sidebarWidgets' => [],
+                    'bottomWidgets' => [],
                     'topWidget' => [],
                     'panels' => [],
-                    'subpanels' => [],
+                    'subpanels' => $layout['subpanels'] ?? [],
                     'order' => $layout['order'] ?? 0,
                     'tabAction' => $layout['tabAction'] ?? '',
                 ];
