@@ -129,7 +129,7 @@ $dictionary['EmailMarketing'] = [
         ],
         'date_start' => [
             'name' => 'date_start',
-            'vname' => 'LBL_DATE_START',
+            'vname' => 'LBL_SEND_DATE',
             'type' => 'datetime',
             'importable' => 'required',
             'required' => true
