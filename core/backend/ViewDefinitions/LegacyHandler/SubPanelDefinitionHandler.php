@@ -185,6 +185,11 @@ class SubPanelDefinitionHandler extends LegacyHandler implements SubPanelDefinit
         $resultingTabs = [];
 
         foreach ($tabs as $key => $tab) {
+
+            if (($tab['hidden'] ?? false) === true) {
+                continue;
+            }
+
             try {
                 /** @var aSubPanel $subpanel */
                 $subpanel = $spd->load_subpanel($key);
