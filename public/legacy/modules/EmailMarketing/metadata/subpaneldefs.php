@@ -164,6 +164,7 @@ $layout_defs['EmailMarketing'] = [
             'order' => 10,
             'sort_order' => 'asc',
             'sort_by' => 'name',
+            'hidden' => true,
             'module' => 'ProspectLists',
             'get_subpanel_data' => 'prospectlists',
             'set_subpanel_data' => 'prospectlists',
@@ -173,6 +174,7 @@ $layout_defs['EmailMarketing'] = [
         ],
         'allprospectlists' => [
             'order' => 20,
+            'hidden' => true,
             'module' => 'ProspectLists',
             'sort_order' => 'asc',
             'sort_by' => 'name',
