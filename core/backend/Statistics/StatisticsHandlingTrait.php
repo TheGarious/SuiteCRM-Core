@@ -249,7 +249,8 @@ trait StatisticsHandlingTrait
         string $nameField,
         string $valueField,
         array $fields = [],
-        array $defaultValues = []
+        array $defaultValues = [],
+        bool $showEmpty = false
     ): Series|SeriesResult
     {
         $seriesMap = [];
@@ -280,7 +281,7 @@ trait StatisticsHandlingTrait
             $seriesMap[$nameFieldValue]->value = $valueFieldValue;
         }
 
-        if (empty($result)){
+        if (empty($result) && !$showEmpty){
             $series = new SeriesResult();
             $series->singleSeries = array_values($seriesMap);
 
