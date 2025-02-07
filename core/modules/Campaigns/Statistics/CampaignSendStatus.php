@@ -133,7 +133,7 @@ class CampaignSendStatus extends LegacyHandler implements StatisticsProviderInte
         $nameField = 'activity_type';
         $valueField = 'hits';
 
-        $series = $this->buildSingleSeries($result, $nameField, $valueField, $activities);
+        $series = $this->buildSingleSeries($result, $nameField, $valueField, $activities, [], true);
 
         $chartOptions = new ChartOptions();
 

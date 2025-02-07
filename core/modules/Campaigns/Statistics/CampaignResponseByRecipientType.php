@@ -133,7 +133,7 @@ class CampaignResponseByRecipientType extends LegacyHandler implements Statistic
         $nameField = 'activity_type';
         $valueField = 'hits';
 
-        $series = $this->buildSingleSeries($result, $nameField, $valueField, $activities);
+        $series = $this->buildSingleSeries($result, $nameField, $valueField, $activities, [], true);
 
         $chartOptions = new ChartOptions();
 
