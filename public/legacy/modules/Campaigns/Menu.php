@@ -47,7 +47,7 @@ global $mod_strings, $app_strings;
 
 if(ACLController::checkAccess('Campaigns', 'edit', true))
     $module_menu[]=	array(
-        "index.php?module=Campaigns&action=EditView&return_module=Campaigns&return_action=index",
+        "index.php?module=Campaigns&action=EditView",
         $mod_strings['LNK_NEW_CAMPAIGN'],"CreateCampaigns"
     );
 
