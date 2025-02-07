@@ -77,6 +77,7 @@ class Campaign extends SugarBean
     public $tracker_count;
     public $refer_url;
     public $impressions;
+    public $propects_lists;
 
     // These are related
     public $assigned_user_name;
