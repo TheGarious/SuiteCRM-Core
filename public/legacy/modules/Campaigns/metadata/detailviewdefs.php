@@ -230,7 +230,7 @@ $viewdefs ['Campaigns'] = [
                 ],
                 [
                     [
-                        'name' => 'prospectlists',
+                        'name' => 'propects_lists',
                         'label' => 'LBL_PROSPECT_LISTS'
                     ]
                 ],

@@ -198,6 +198,16 @@ $dictionary['Campaign'] = array('audited' => true,
             'comment' => 'The campaign description',
             'inline_edit' => false
         ),
+        'propects_lists' => [
+            'name' => 'propects_lists',
+            'type' => 'multirelate',
+            'vname' => 'LBL_PROSPECT_LISTS',
+            'link' => 'prospectlists',
+            'source' => 'non-db',
+            'module' => 'ProspectLists',
+            'filterOnEmpty' => true,
+            'rname' => 'name',
+        ],
         'prospectlists' => array(
             'name' => 'prospectlists',
             'vname' => 'LBL_PROSPECT_LISTS',
