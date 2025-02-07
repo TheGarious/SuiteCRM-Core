@@ -174,7 +174,7 @@ $dictionary['EmailMarketing'] = [
                 'date_start',
                 'status',
                 'type',
-                'prospectslists',
+                'prospect_list_name',
                 'survey',
             ],
             'layout' => [
@@ -184,7 +184,7 @@ $dictionary['EmailMarketing'] = [
                 'date_start',
                 'status',
                 'type',
-                'prospectslists',
+                'prospect_list_name',
                 'survey',
             ],
             'display' => 'vertical',
@@ -350,9 +350,12 @@ $dictionary['EmailMarketing'] = [
         'prospect_list_name' => [
             'name' => 'prospect_list_name',
             'vname' => 'LBL_PROSPECT_LIST_NAME',
-            'type' => 'varchar',
-            'len' => 100,
+            'type' => 'multirelate',
+            'link' => 'prospectlists',
             'source' => 'non-db',
+            'module' => 'ProspectLists',
+            'filterOnEmpty' => true,
+            'rname' => 'name',
         ],
         //related fields.
         'prospectlists' => [
