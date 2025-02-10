@@ -43,6 +43,7 @@ import {LanguageStore} from '../../../../store/language/language.store';
 import {RecordListModalResult} from './record-list-modal.model';
 import {UserPreferenceStore} from "../../../../store/user-preference/user-preference.store";
 import {SystemConfigStore} from "../../../../store/system-config/system-config.store";
+import {SavedFilter} from "../../../../store/saved-filters/saved-filter.model";
 
 @Component({
     selector: 'scrm-record-list-modal',
@@ -66,6 +67,7 @@ export class RecordListModalComponent implements OnInit, OnDestroy {
     @Input() multiSelectButtonLabel = 'LBL_SAVE';
     @Input() adapter: RecordListModalTableAdapterInterface = null;
     @Input() filterAdapter: ModalRecordFilterAdapter = null;
+    @Input() presetFilter: SavedFilter = {} as SavedFilter;
 
     loading$: Observable<boolean>;
 
@@ -165,7 +167,7 @@ export class RecordListModalComponent implements OnInit, OnDestroy {
     }
 
     protected initStore(): void {
-        this.store.init(this.module, this.parentModule ?? '');
+        this.store.init(this.module, this.parentModule ?? '', this.presetFilter);
         this.loading$ = this.store.metadataLoading$;
 
         this.subs.push(this.store.linkClicked$.pipe(distinctUntilChanged(), skip(1)).subscribe(clicked => {
