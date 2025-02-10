@@ -347,7 +347,7 @@ export class RecordListStore implements StateStore, DataSource<Record>, Selectio
 
         this.updateState({...this.internalState, activeFilters: deepClone(filters), openFilter: deepClone(filter)});
 
-        if (filter.criteria) {
+        if (filter?.criteria ?? false) {
             let orderBy = filter.criteria.orderBy ?? '';
             const sortOrder = filter.criteria.sortOrder ?? 'desc';
             let direction = this.mapSortOrder(sortOrder);
