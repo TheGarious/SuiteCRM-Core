@@ -36,6 +36,7 @@ import {MetadataStore} from '../../../../store/metadata/metadata.store.service';
 import {RecordList, RecordListStore} from '../../../../store/record-list/record-list.store';
 import {StateStore} from '../../../../store/state';
 import {UserPreferenceStore} from '../../../../store/user-preference/user-preference.store';
+import {SavedFilter} from "../../../../store/saved-filters/saved-filter.model";
 
 @Injectable()
 export class RecordListModalStore implements StateStore {
@@ -88,8 +89,9 @@ export class RecordListModalStore implements StateStore {
      *
      * @param {string} module name
      * @param {string} parentModule
+     * @param filter
      */
-    public init(module: string, parentModule: string = ''): void {
+    public init(module: string, parentModule: string = '', filter: SavedFilter = null): void {
         this.module = module;
         this.parentModule = parentModule;
 
@@ -106,7 +108,7 @@ export class RecordListModalStore implements StateStore {
         );
         this.listMetadata$ = meta$.pipe(map(meta => meta.listView));
         this.searchMetadata$ = meta$.pipe(map(meta => meta.search));
-        this.recordList.init(module, false, 'list_max_entries_per_modal');
+        this.recordList.init(module, false, 'list_max_entries_per_modal', filter);
         this.columns$ = this.listMetadata$.pipe(map(metadata => metadata.fields));
     }
 
