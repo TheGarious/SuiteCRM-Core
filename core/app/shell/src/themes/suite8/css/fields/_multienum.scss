@@ -29,6 +29,19 @@ p-multiselect {
     font-size: .875rem;
   }
 
+  .p-multiselect-trigger {
+    .pi-spin {
+      border: 2px solid #495057;
+      border-bottom-color: transparent;
+      border-radius: 50%;
+      display: table-cell;
+      box-sizing: border-box;
+      animation: rotation 1s linear infinite;
+      width: 15px;
+      height: 15px;
+    }
+  }
+
   .p-multiselect-trigger-icon {
     font-size: .875rem;
 

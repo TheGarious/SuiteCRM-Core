@@ -31,6 +31,19 @@
       font-size: .875rem;
     }
 
+    .p-dropdown-trigger {
+      .pi-spin {
+        border: 2px solid #495057;
+        border-bottom-color: transparent;
+        border-radius: 50%;
+        display: table-cell;
+        box-sizing: border-box;
+        animation: rotation 1s linear infinite;
+        width: 15px;
+        height: 15px;
+      }
+    }
+
     .p-dropdown-trigger-icon {
       font-size: .875rem;
       svg {
