@@ -45,6 +45,7 @@ import {ButtonInterface} from "../../../../common/components/button/button.model
 import {deepClone} from "../../../../common/utils/object-utils";
 import {ObjectMap} from "../../../../common/types/object-map";
 import {AttributeMap, Record} from "../../../../common/record/record.model";
+import {SearchCriteria} from "../../../../common/views/list/search-criteria.model";
 
 @Component({
     selector: 'scrm-multirelate-edit',
@@ -101,13 +102,13 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
      */
     ngOnInit(): void {
         this.selectAll = false;
+        super.ngOnInit();
         const relatedFieldName = this.getRelateFieldName();
-         if ((this.field?.valueList ?? []).length > 0) {
+        if ((this.field?.valueList ?? []).length > 0) {
             this.field.valueObjectArray = deepClone(this.field.valueList);
             this.currentOptions.set([this.field.valueObjectArray]);
-            this.field.valueList = [];
-            this.selectedValues = this.field.valueObjectArray.map( valueElement => {
-                const relateValue = valueElement['attributes'][relatedFieldName] ?? '';
+            this.selectedValues = this.field.valueObjectArray.map(valueElement => {
+                const relateValue = valueElement[relatedFieldName] ?? '';
                 const relateId = valueElement['id'] ?? '';
                 return {
                     id: relateId,
@@ -118,10 +119,9 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
             this.selectedValues = [];
             this.field.valueObjectArray = [];
             this.field.valueList = [];
-             this.currentOptions.set([]);
+            this.currentOptions.set([]);
         }
 
-        super.ngOnInit();
 
         this.options = this.options ?? [];
 
@@ -197,6 +197,7 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
 
     onFilter(): void {
         const relateName = this.getRelateFieldName();
+        const criteria = this.buildCriteria();
         this.filterValue = this.filterValue ?? '';
 
         const matches = this.filterValue.match(/^\s*$/g);
@@ -205,7 +206,7 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
         }
 
         let term = this.filterValue;
-        this.search(term).pipe(
+        this.search(term, criteria).pipe(
             take(1),
             map(data => data.filter((item: ObjectMap) => item[relateName] !== '')),
             map(filteredData => filteredData.map((item: ObjectMap) => ({
@@ -222,6 +223,7 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
 
     protected updateFieldValues(): void {
         this.field.valueObjectArray = deepClone(this.selectedValues ?? []);
+        this.field.valueList = deepClone(this.selectedValues ?? []);
         this.field.value = deepClone(this.selectedValues ?? []);
     }
 
@@ -231,7 +233,13 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
     protected showSelectModal(): void {
         const modal = this.modalService.open(RecordListModalComponent, {size: 'xl', scrollable: true});
 
+        const criteria = this.buildCriteria();
+        const filter = this.buildFilter(criteria);
+
         modal.componentInstance.module = this.getRelatedModule();
+        modal.componentInstance.presetFilter = filter;
+        modal.componentInstance.multiSelect = true;
+        modal.componentInstance.multiSelectButtonLabel = 'LBL_LINK';
 
         modal.result.then((data: RecordListModalResult) => {
 
@@ -239,41 +247,20 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
                 return;
             }
 
-            const record = this.getSelectedRecord(data);
+            const records = this.getSelectedRecords(data);
 
-            const found = this.field.valueObjectArray.find(element => element.id === record.id);
+            records.forEach((record) => {
+                const found = this.field.valueObjectArray.find(element => element.id === record.id);
 
-            if (found) {
-                return;
-            }
-            this.setItem(record);
+                if (found) {
+                    return;
+                }
+
+                this.setItem(record);
+            })
+
             this.tag.updateModel(this.selectedValues);
         });
-    }
-
-    /**
-     * Get Selected Record
-     *
-     * @param {object} data RecordListModalResult
-     * @returns {object} Record
-     */
-    protected getSelectedRecord(data: RecordListModalResult): Record {
-        let id = '';
-        Object.keys(data.selection.selected).some(selected => {
-            id = selected;
-            return true;
-        });
-
-        let record: Record = null;
-
-        data.records.some(rec => {
-            if (rec && rec.id === id) {
-                record = rec;
-                return true;
-            }
-        });
-
-        return record;
     }
 
     /**
@@ -312,6 +299,8 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
                 this.options.push(selectedValue);
             }
         });
+
+        this.currentOptions.set(this.options);
     }
 
     protected isInList(filteredOptions: AttributeMap[], selectedValue: AttributeMap): boolean {
@@ -331,7 +320,7 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
 
     protected calculateSelectAll(): void {
         const visibleOptions = this?.tag?.visibleOptions() ?? [];
-        const selectedValuesKeys = (this?.selectedValues ?? []).map(item => item.value);
+        const selectedValuesKeys = (this?.selectedValues ?? []).map(item => item.id);
 
         if (!visibleOptions.length || !selectedValuesKeys.length) {
             this.selectAll = false;
@@ -343,6 +332,73 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
             return;
         }
 
-        this.selectAll = visibleOptions.every(item => selectedValuesKeys.includes(item.value));
+        this.selectAll = visibleOptions.every(item => selectedValuesKeys.includes(item.id));
+    }
+
+    protected buildCriteria(): SearchCriteria {
+
+        if (!this.field?.definition?.filter) {
+            return {} as SearchCriteria;
+        }
+
+        const filter = this.field?.definition?.filter;
+
+        const criteria = {
+            name: 'default',
+            filters: {}
+        } as SearchCriteria;
+
+        if (filter?.preset ?? false) {
+            criteria.preset = filter.preset;
+            criteria.preset.params.module = this.module;
+        }
+
+        if (filter?.attributes ?? false){
+            Object.keys(filter.attributes).forEach((key) => {
+                criteria.preset.params[key] = this.record.attributes[filter.attributes[key]];
+            })
+        }
+
+
+        const fields = filter.static ?? [];
+
+        Object.keys(fields).forEach((field) => {
+            criteria.filters[field] = {
+                field: field,
+                operator: '=',
+                values: [fields[field]],
+                rangeSearch: false
+            };
+        })
+
+        return criteria;
+    }
+
+    protected buildFilter(criteria) {
+        return {
+            key: 'default',
+            module: 'saved-search',
+            attributes: {
+                contents: ''
+            },
+            criteria
+        };
+    }
+
+    protected getSelectedRecords(data: RecordListModalResult) {
+        let ids = [];
+        Object.keys(data.selection.selected).some(selected => {
+            ids[selected] = selected;
+        });
+
+        let records: Record[] = [];
+
+        data.records.some(rec => {
+            if (ids[rec.id]){
+                records.push(rec);
+            }
+        });
+
+        return records;
     }
 }
