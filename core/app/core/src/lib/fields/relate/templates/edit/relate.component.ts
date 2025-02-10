@@ -62,6 +62,7 @@ export class RelateEditFieldComponent extends BaseRelateComponent {
     idField: Field;
     selectedValue: AttributeMap = {};
     currentOptions: WritableSignal<AttributeMap[]> = signal([]);
+    loading: WritableSignal<boolean> = signal(false);
 
     placeholderLabel: string = '';
     emptyFilterLabel: string = '';
@@ -218,6 +219,7 @@ export class RelateEditFieldComponent extends BaseRelateComponent {
     }
 
     filterResults(filterValue: string): void {
+        this.loading.set(true);
         const relateName = this.getRelateFieldName();
         const matches = filterValue.match(/^\s*$/g);
         if (matches && matches.length) {
@@ -232,6 +234,7 @@ export class RelateEditFieldComponent extends BaseRelateComponent {
                 [relateName]: item[relateName]
             })))
         ).subscribe(filteredOptions => {
+            this.loading.set(false);
             this.options = filteredOptions;
             this.currentOptions.set(filteredOptions);
 
@@ -252,6 +255,7 @@ export class RelateEditFieldComponent extends BaseRelateComponent {
             if (found === false && this.selectedValue) {
                 this.options.push(this.selectedValue);
             }
+
         })
     }
 
