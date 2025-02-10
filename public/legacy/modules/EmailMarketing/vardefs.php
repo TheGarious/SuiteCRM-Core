@@ -356,6 +356,18 @@ $dictionary['EmailMarketing'] = [
             'module' => 'ProspectLists',
             'filterOnEmpty' => true,
             'rname' => 'name',
+            'filter' => [
+                'attributes' => [
+                    'id' => 'campaign_id'
+                ],
+                'preset' => [
+                    'type' => 'prospectlists',
+                    'params' => [
+                        'parent_field' => 'propects_lists',
+                        'parent_module' => 'Campaigns',
+                    ]
+                ],
+            ],
         ],
         //related fields.
         'prospectlists' => [
