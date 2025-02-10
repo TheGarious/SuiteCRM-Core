@@ -65,6 +65,7 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
     selectAll: boolean = false;
     filterValue: string | undefined = '';
     currentOptions: WritableSignal<AttributeMap[]> = signal([]);
+    loading: WritableSignal<boolean> = signal(false);
 
     /**
      * Constructor
@@ -196,6 +197,7 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
     }
 
     onFilter(): void {
+        this.loading.set(true);
         const relateName = this.getRelateFieldName();
         const criteria = this.buildCriteria();
         this.filterValue = this.filterValue ?? '';
@@ -214,6 +216,7 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
                 [relateName]: item[relateName]
             })))
         ).subscribe(filteredOptions => {
+            this.loading.set(false);
             this.options = filteredOptions;
             this.currentOptions.set(filteredOptions);
             this.addCurrentlySelectedToOptions(filteredOptions);
