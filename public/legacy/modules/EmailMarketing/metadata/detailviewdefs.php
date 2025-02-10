@@ -177,6 +177,11 @@ $viewdefs ['EmailMarketing'] = [
                                         'filterOnEmpty' => true,
                                         'module' => 'ProspectLists',
                                         'rname' => 'name',
+                                        'filter' => [
+                                            'static' => [
+                                                'list_type' => 'test'
+                                            ]
+                                        ],
                                     ],
                                 ],
                                 'email_marketing_users' => [
