@@ -63,7 +63,7 @@ export class RecordTableWidgetComponent extends BaseWidgetComponent implements O
         this.store = this.subpanelFactory.create();
         const parentModule = this.context.module;
         const parentRecordId = this.context.id;
-        const contextRecord$ = this.context$.pipe(map(context => this.context.record));
+        const contextRecord$ = this.context$.pipe(map(context => context.record));
         this.store.init(parentModule, parentRecordId, recordTableConfig, contextRecord$);
         this.store.recordList.setLoading(true);
         this.initPanelTitleKey(recordTableConfig);
