@@ -36,6 +36,7 @@ import {LanguageStore} from '../../store/language/language.store';
 import {RelateService} from '../../services/record/relate/relate.service';
 import {FieldLogicManager} from '../field-logic/field-logic.manager';
 import {FieldLogicDisplayManager} from '../field-logic-display/field-logic-display.manager';
+import {SearchCriteria} from "../../common/views/list/search-criteria.model";
 
 @Component({template: ''})
 export class BaseRelateComponent extends BaseFieldComponent implements OnInit, OnDestroy {
@@ -105,7 +106,7 @@ export class BaseRelateComponent extends BaseFieldComponent implements OnInit, O
         }
     }
 
-    search = (text: string): Observable<any> => {
+    search = (text: string, criteria: SearchCriteria = {}): Observable<any> => {
 
         if(text === '' && !(this.field.definition.filterOnEmpty ?? false)) {
             return of([]);
@@ -113,7 +114,7 @@ export class BaseRelateComponent extends BaseFieldComponent implements OnInit, O
 
         this.status = 'searching';
 
-        return this.relateService.search(text, this.getRelateFieldName()).pipe(
+        return this.relateService.search(text, this.getRelateFieldName(), criteria).pipe(
             tap(() => this.status = 'found'),
             catchError(() => {
                 this.status = 'error';
