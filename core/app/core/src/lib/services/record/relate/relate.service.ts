@@ -30,6 +30,7 @@ import {RecordListStore} from '../../../store/record-list/record-list.store';
 import {map, shareReplay, take} from 'rxjs/operators';
 import {Record} from '../../../common/record/record.model';
 import {Observable} from 'rxjs';
+import {SearchCriteria} from "../../../common/views/list/search-criteria.model";
 
 @Injectable()
 export class RelateService {
@@ -43,9 +44,14 @@ export class RelateService {
         this.recordList.init(module, false);
     }
 
-    search(term: string, field: string): Observable<Record[]> {
+    search(term: string, field: string, criteria: SearchCriteria): Observable<Record[]> {
 
-        const criteria = this.recordList.criteria;
+        const recordListCriteria = this.recordList.criteria;
+
+        criteria = {
+            ...recordListCriteria,
+            ...criteria
+        }
 
         if (!term.startsWith('%')) {
             term = '%' + term;
