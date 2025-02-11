@@ -4218,3 +4218,4 @@ $app_strings['LBL_INCORRECT_RECORD_ID'] = 'Incorrect record id';
 $app_strings['LBL_TEST_ENTRIES_DELETED'] = 'Test Entries Deleted.';
 $app_strings['LBL_UNABLE_TO_GET_ID'] = 'Unable to retrieve Email Marketing ID';
 $app_strings['LBL_UNABLE_TO_DELETE_TEST_ENTRIES'] = 'Error Deleting Test Entries. See logs for more info';
+$app_strings['LBL_SECTION_KEY_NOT_DEFINED'] = 'Section key not defined';
