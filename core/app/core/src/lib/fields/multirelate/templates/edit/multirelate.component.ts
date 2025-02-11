@@ -107,15 +107,15 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
         const relatedFieldName = this.getRelateFieldName();
         if ((this.field?.valueList ?? []).length > 0) {
             this.field.valueObjectArray = deepClone(this.field.valueList);
-            this.currentOptions.set(this.field.valueObjectArray);
             this.selectedValues = this.field.valueObjectArray.map(valueElement => {
-                const relateValue = valueElement[relatedFieldName] ?? '';
+                const relateValue = valueElement[relatedFieldName] ?? valueElement.attributes[relatedFieldName] ?? '';
                 const relateId = valueElement['id'] ?? '';
                 return {
                     id: relateId,
                     [relatedFieldName]: relateValue
                 };
             });
+            this.currentOptions.set(this.selectedValues);
         } else {
             this.selectedValues = [];
             this.field.valueObjectArray = [];
@@ -152,6 +152,7 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
         this.selectedValues = [];
         this.selectAll = false;
         this.filterValue = '';
+        this.currentOptions.set([]);
         this.onRemove();
     }
 
@@ -226,7 +227,6 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
 
     protected updateFieldValues(): void {
         this.field.valueObjectArray = deepClone(this.selectedValues ?? []);
-        this.field.valueList = deepClone(this.selectedValues ?? []);
         this.field.value = deepClone(this.selectedValues ?? []);
     }
 
@@ -260,9 +260,11 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
                 }
 
                 this.setItem(record);
-            })
+            });
 
-            this.tag.updateModel(this.selectedValues);
+            this.onAdd();
+            this.currentOptions.set(deepClone(this.selectedValues ?? []));
+            this.tag.updateModel(this.currentOptions());
         });
     }
 
@@ -287,8 +289,6 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
         this.selectedValues.push(newItem)
 
         this.addCurrentlySelectedToOptions(this.options);
-
-        this.onAdd();
     }
 
     protected addCurrentlySelectedToOptions(filteredOptions) {
@@ -302,8 +302,6 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
                 this.options.push(selectedValue);
             }
         });
-
-        this.currentOptions.set(this.options);
     }
 
     protected isInList(filteredOptions: AttributeMap[], selectedValue: AttributeMap): boolean {
@@ -323,7 +321,11 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
 
     protected calculateSelectAll(): void {
         const visibleOptions = this?.tag?.visibleOptions() ?? [];
-        const selectedValuesKeys = (this?.selectedValues ?? []).map(item => item.id);
+        const selected = this?.selectedValues ?? [];
+        let selectedValuesKeys = [];
+        if (selected.length){
+            selectedValuesKeys = selected.map(item => item.id);
+        }
 
         if (!visibleOptions.length || !selectedValuesKeys.length) {
             this.selectAll = false;

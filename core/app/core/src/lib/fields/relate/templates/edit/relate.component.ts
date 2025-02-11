@@ -148,14 +148,13 @@ export class RelateEditFieldComponent extends BaseRelateComponent {
             return;
         }
 
+        const rname = this.field?.definition?.rname ?? 'name';
+
         if (this.field?.metadata?.relateSearchField) {
-            const rname = this.field?.definition?.rname ?? 'name';
             this.field.valueObject[this.field.metadata.relateSearchField] = this.field.valueObject[rname];
         }
 
-        this.selectedValue = this.field.valueObject;
-        this.currentOptions.set([this.field.valueObject]);
-        this.options = [this.field.valueObject];
+        this.setValue(this.field.valueObject.id, this.field.valueObject[rname])
     }
 
     /**
@@ -211,6 +210,7 @@ export class RelateEditFieldComponent extends BaseRelateComponent {
         this.selectedValue = {};
         this.filterValue = '';
         this.options = [];
+        this.currentOptions.set([]);
         this.onRemove();
     }
 
