@@ -23,23 +23,34 @@
  * feasible for technical reasons, the Appropriate Legal Notices must display
  * the words "Supercharged by SuiteCRM".
  */
-import {Injectable} from "@angular/core";
-import {BaseActionManager} from "../../../../services/actions/base-action-manager.service";
-import {RecordLayoutTabActionData} from "./layout-tab.action";
-import {RecordLayoutTabToggleAction} from "./toggle/layout-tab-toggle-action.service";
+import {Action, ActionData, ActionHandler} from "../../../../common/actions/action.model";
+import {RecordViewStore} from "../../store/record-view/record-view.store";
 
 
-@Injectable({
-    providedIn: 'root',
-})
-export class RecordLayoutTabActionManager extends BaseActionManager<RecordLayoutTabActionData> {
+export interface RecordSectionTabActionData extends ActionData {
+    store: RecordViewStore;
+    action?: Action;
+}
 
-    constructor(
-        protected toggle: RecordLayoutTabToggleAction,
-        protected async: RecordLayoutTabToggleAction,
-    ) {
-        super();
-        toggle.modes.forEach(mode => this.actions[mode][toggle.key] = toggle);
-        async.modes.forEach(mode => this.actions[mode][async.key] = async);
+export abstract class RecordSectionTabActionHandler extends ActionHandler<RecordSectionTabActionData> {
+
+    abstract run(data: RecordSectionTabActionData): void;
+
+    abstract shouldDisplay(data: RecordSectionTabActionData): boolean;
+
+    checkRecordAccess(data: RecordSectionTabActionData, defaultAcls: string[] = []): boolean {
+
+        const record = data.store.recordStore.getBaseRecord();
+        const acls = record.acls ?? [];
+
+        if (!acls || !acls.length) {
+            return false;
+        }
+
+        const action = data.action ?? null;
+
+        return this.checkAccess(action, acls, defaultAcls);
     }
+
+
 }

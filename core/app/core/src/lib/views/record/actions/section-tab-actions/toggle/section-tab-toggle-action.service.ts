@@ -25,30 +25,41 @@
  */
 
 import {Injectable} from '@angular/core';
-import {RecordLayoutTabActionData, RecordLayoutTabActionHandler} from "../layout-tab.action";
-import {ALL_VIEW_MODES} from "../../../../../common/views/view.model";
+import {RecordSectionTabActionData} from "../section-tab.action";
+import {ViewMode} from "../../../../../common/views/view.model";
+import {MessageService} from "../../../../../services/message/message.service";
+import {RecordSectionTabActionHandler} from "../section-tab.action";
 
 @Injectable({
     providedIn: 'root'
 })
-export class RecordLayoutTabAsyncProcessAction extends RecordLayoutTabActionHandler {
+export class RecordSectionTabToggleAction extends RecordSectionTabActionHandler {
 
-    key = 'async-process';
-    modes = ALL_VIEW_MODES;
+    key = 'toggle';
+    modes = ['detail' as ViewMode, 'edit' as ViewMode, 'create' as ViewMode];
 
-    constructor() {
+    constructor(
+        protected messages: MessageService,
+    ) {
         super();
     }
 
-    run(data: RecordLayoutTabActionData): void {
-    }
-
-    shouldDisplay(data: RecordLayoutTabActionData): boolean {
-        const defaultAcls = data?.action?.acl ?? [];
-        if (!defaultAcls.length) {
-            return true;
+    run(data: RecordSectionTabActionData): void {
+        const sectionKey = data?.action?.params?.sectionKey ?? '';
+        if (!sectionKey) {
+            this.messages.addDangerMessageByKey('LBL_SECTION_KEY_NOT_DEFINED', 'Error: Missing section key');
+            return
         }
 
-        return this.checkRecordAccess(data, defaultAcls);
+        data.store.setSection(sectionKey);
+    }
+
+    shouldDisplay(data: RecordSectionTabActionData): boolean {
+        return true;
+    }
+
+    getStatus(data: RecordSectionTabActionData): string {
+        const sectionKey = data?.action?.params?.sectionKey ?? '';
+        return (data.store.section() === sectionKey) ? 'active' : '';
     }
 }

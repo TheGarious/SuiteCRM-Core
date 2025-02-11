@@ -27,15 +27,15 @@
 import {Injectable} from '@angular/core';
 import {combineLatestWith} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {MetadataStore, RecordViewLayoutMetadata} from '../../../store/metadata/metadata.store.service';
+import {MetadataStore, RecordViewSectionMetadata} from '../../../store/metadata/metadata.store.service';
 import {RecordViewStore} from '../store/record-view/record-view.store';
 
 @Injectable()
 export class SidebarWidgetAdapter {
 
-    config$ = this.store.layoutMetadata$.pipe(
+    config$ = this.store.sectionMetadata$.pipe(
         combineLatestWith(this.store.showSidebarWidgets$),
-        map(([metadata, show]: [RecordViewLayoutMetadata, boolean]) => {
+        map(([metadata, show]: [RecordViewSectionMetadata, boolean]) => {
 
             let filteredWidgets = [];
 

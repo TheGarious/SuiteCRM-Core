@@ -25,7 +25,7 @@
  */
 import {ActionLogicHandler} from "../../../../../../services/actions/action-logic-handler";
 import {Injectable} from "@angular/core";
-import {RecordLayoutTabActionData} from "../../layout-tab.action";
+import {RecordSectionTabActionData} from "../../section-tab.action";
 import {ViewMode} from "../../../../../../common/views/view.model";
 import {ActiveFieldsChecker} from "../../../../../../services/condition-operators/active-fields-checker.service";
 import {LogicDefinitions} from "../../../../../../common/metadata/metadata.model";
@@ -37,7 +37,7 @@ import {StringArrayMatrix} from "../../../../../../common/types/string-matrix";
 @Injectable({
     providedIn: 'root'
 })
-export class RecordLayoutTabActionDisplayTypeLogic extends ActionLogicHandler<RecordLayoutTabActionData> {
+export class RecordSectionTabActionDisplayTypeLogic extends ActionLogicHandler<RecordSectionTabActionData> {
 
     key = 'displayType';
     modes = ['edit', 'detail', 'list', 'create', 'massupdate', 'filter'] as ViewMode[];
@@ -46,7 +46,7 @@ export class RecordLayoutTabActionDisplayTypeLogic extends ActionLogicHandler<Re
         super();
     }
 
-    runAll(displayLogic: LogicDefinitions, data: RecordLayoutTabActionData): boolean {
+    runAll(displayLogic: LogicDefinitions, data: RecordSectionTabActionData): boolean {
         let toDisplay = true;
 
         const validModeLogic = Object.values(displayLogic).filter(logic => {
@@ -75,7 +75,7 @@ export class RecordLayoutTabActionDisplayTypeLogic extends ActionLogicHandler<Re
         return toDisplay;
     }
 
-    run(data: RecordLayoutTabActionData, logic: Action): boolean {
+    run(data: RecordSectionTabActionData, logic: Action): boolean {
 
         const record = data.store.recordStore.getStaging();
         if (!record || !logic) {

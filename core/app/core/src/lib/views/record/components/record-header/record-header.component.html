@@ -73,12 +73,12 @@
                 </div>
             </div>
         </div>
-        <div *ngIf="!loading && recordViewStore.layout() !== ''" class="row m-0 d-flex justify-content-center ml-1 mr-1">
+        <div *ngIf="!loading && recordViewStore.section() !== ''" class="row m-0 d-flex justify-content-center ml-1 mr-1">
             <div class="col-xs-12 align-items-center record-view-action-header">
                 <div class="row mr-1 ml-1 justify-content-center justify-content-md-end">
                     <div *ngIf="record" class="">
                         <scrm-action-group-menu
-                                [config]="layoutTabActionsAdapter"
+                                [config]="sectionTabActionsAdapter"
                                 [actionContext]="getActionContext(record)"
                                 [klass]="isScrolled ?  'record-view-actions-scrolled float-right' : 'record-view-actions float-right'"
                                 buttonClass="settings-button"

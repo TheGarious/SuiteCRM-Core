@@ -53,6 +53,6 @@ export interface RecordViewState {
     showTopWidget: boolean;
     showSubpanels: boolean;
     mode: ViewMode;
-    layout: string;
+    section?: string;
     params: { [key: string]: string };
 }

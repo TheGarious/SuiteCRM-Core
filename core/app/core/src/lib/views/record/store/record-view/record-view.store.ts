@@ -48,7 +48,7 @@ import {ModuleNavigation} from '../../../../services/navigation/module-navigatio
 import {
     Metadata,
     MetadataStore,
-    RecordViewLayoutMetadata,
+    RecordViewSectionMetadata,
     RecordViewMetadata,
     SummaryTemplates
 } from '../../../../store/metadata/metadata.store.service';
@@ -81,7 +81,7 @@ const initialState: RecordViewState = {
     showTopWidget: false,
     showSubpanels: false,
     mode: 'detail',
-    layout: '',
+    section: '',
     params: {
         returnModule: '',
         returnId: '',
@@ -107,8 +107,8 @@ export class RecordViewStore extends ViewStore implements StateStore, BaseRecord
     subpanels$: Observable<SubpanelStoreMap>;
     viewContext$: Observable<ViewContext>;
     subpanelReload$: Observable<BooleanMap>;
-    layout: WritableSignal<string> = signal('');
-    layout$: Observable<string> = toObservable(this.layout);
+    section: WritableSignal<string> = signal('');
+    section$: Observable<string> = toObservable(this.section);
 
 
     /**
@@ -128,8 +128,8 @@ export class RecordViewStore extends ViewStore implements StateStore, BaseRecord
     protected subpanelsState: BehaviorSubject<SubpanelStoreMap>;
     protected subpanelReloadSubject = new BehaviorSubject<BooleanMap>({} as BooleanMap);
     protected subpanelReloadSub: Subscription[] = [];
-    protected layoutMetadataSubject = new BehaviorSubject<RecordViewLayoutMetadata>({} as RecordViewLayoutMetadata);
-    layoutMetadata$: Observable<RecordViewLayoutMetadata> = this.layoutMetadataSubject.asObservable();
+    protected sectionMetadataSubject = new BehaviorSubject<RecordViewSectionMetadata>({} as RecordViewSectionMetadata);
+    sectionMetadata$: Observable<RecordViewSectionMetadata> = this.sectionMetadataSubject.asObservable();
     protected subs: Subscription[] = [];
 
     protected recordValidationHandler: RecordValidationHandler;
@@ -278,16 +278,16 @@ export class RecordViewStore extends ViewStore implements StateStore, BaseRecord
         return this.subpanels;
     }
 
-    setLayout(layout: string): void {
+    setSection(section: string): void {
         const recordViewMetadata = this.getRecordViewMetadata() ?? {} as RecordViewMetadata;
-        const layouts = recordViewMetadata.layouts ?? {};
-        if (layout && layouts[layout]) {
-            this.layoutMetadataSubject.next(layouts[layout]);
+        const sections = recordViewMetadata.sections ?? {};
+        if (section && sections[section]) {
+            this.sectionMetadataSubject.next(sections[section]);
         } else {
 
             const subpanelKeys = Object.keys(this.subpanels ?? {});
 
-            this.layoutMetadataSubject.next({
+            this.sectionMetadataSubject.next({
                 topWidget: recordViewMetadata?.topWidget,
                 sidebarWidgets: recordViewMetadata?.sidebarWidgets,
                 bottomWidgets: recordViewMetadata?.bottomWidgets,
@@ -295,10 +295,10 @@ export class RecordViewStore extends ViewStore implements StateStore, BaseRecord
                 panels: recordViewMetadata?.panels,
                 metadata: recordViewMetadata?.metadata,
                 subpanels: subpanelKeys,
-            } as RecordViewLayoutMetadata);
+            } as RecordViewSectionMetadata);
         }
 
-        this.layout.set(layout);
+        this.section.set(section);
     }
 
     /**
@@ -323,7 +323,7 @@ export class RecordViewStore extends ViewStore implements StateStore, BaseRecord
         this.internalState.recordID = recordID;
         this.setMode(mode);
         this.initSubpanels(module, recordID);
-        this.calculateCurrentLayout();
+        this.calculateCurrentSection();
 
         this.calculateShowWidgets();
 
@@ -643,19 +643,19 @@ export class RecordViewStore extends ViewStore implements StateStore, BaseRecord
     }
 
     /**
-     * Calculate current layout
+     * Calculate current section
      */
-    protected calculateCurrentLayout(): void {
+    protected calculateCurrentSection(): void {
         const recordViewMeta = this.getRecordViewMetadata();
-        const layouts = recordViewMeta?.layouts ?? {};
-        const layoutKeys = Object.keys(layouts);
+        const sections = recordViewMeta?.sections ?? {};
+        const sectionKeys = Object.keys(sections);
 
-        if (!layouts || !layoutKeys.length) {
-            this.setLayout('');
+        if (!sections || !sectionKeys.length) {
+            this.setSection('');
             return;
         }
 
-        this.setLayout(layoutKeys[0]);
+        this.setSection(sectionKeys[0]);
     }
 
     /**
