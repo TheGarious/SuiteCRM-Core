@@ -158,13 +158,18 @@ export class CreateViewStore extends RecordViewStore {
                 assigned_user_id: user.id,
                 assigned_user_name: {
                     id: user.id,
-                    user_name: user.userName
                 },
                 relate_to: params?.return_relationship,
                 relate_id: params?.parent_id
             }
             /* eslint-enable camelcase,@typescript-eslint/camelcase */
         } as Record;
+
+        if (this.preferences.getUserPreference('use_real_names')) {
+            blankRecord.attributes.assigned_user_name.full_name = (user?.firstName ?? '') + (user?.lastName ?? '');
+        } else {
+            blankRecord.attributes.assigned_user_name.user_name = user.userName;
+        }
 
         this.recordManager.injectParamFields(params, blankRecord, this.getVardefs());
 
