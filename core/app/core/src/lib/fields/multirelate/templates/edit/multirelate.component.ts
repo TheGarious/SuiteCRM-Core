@@ -107,7 +107,7 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
         const relatedFieldName = this.getRelateFieldName();
         if ((this.field?.valueList ?? []).length > 0) {
             this.field.valueObjectArray = deepClone(this.field.valueList);
-            this.currentOptions.set([this.field.valueObjectArray]);
+            this.currentOptions.set(this.field.valueObjectArray);
             this.selectedValues = this.field.valueObjectArray.map(valueElement => {
                 const relateValue = valueElement[relatedFieldName] ?? '';
                 const relateId = valueElement['id'] ?? '';
