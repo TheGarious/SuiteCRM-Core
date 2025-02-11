@@ -188,7 +188,7 @@ export class BaseEnumComponent extends BaseFieldComponent implements OnInit, OnD
 
         this.selectedValues = [];
 
-        if (this.field.criteria) {
+        if (this.field?.criteria ?? false) {
             this.initValueLabel();
             return;
         }
