@@ -200,7 +200,7 @@ class RecordViewDefinitionHandler extends LegacyHandler
             'summaryTemplates' => [],
             'vardefs' => $vardefs,
             'metadata' => [],
-            'layouts' => [],
+            'sections' => [],
         ];
 
         $this->addTemplateMeta($recordViewDefs, $metadata);
@@ -213,25 +213,25 @@ class RecordViewDefinitionHandler extends LegacyHandler
         $this->addSummaryTemplates($recordViewDefs, $metadata);
         $this->addBackButton($recordViewDefs, $metadata);
 
-        if (!empty($recordViewDefs['layouts']) && is_array($recordViewDefs['layouts'])) {
-            foreach ($recordViewDefs['layouts'] as $index => $layout) {
-                $metadata['layouts'][$index] = [
+        if (!empty($recordViewDefs['sections']) && is_array($recordViewDefs['sections'])) {
+            foreach ($recordViewDefs['sections'] as $index => $section) {
+                $metadata['sections'][$index] = [
                     'templateMeta' => [],
                     'metadata' => [],
                     'sidebarWidgets' => [],
                     'bottomWidgets' => [],
                     'topWidget' => [],
                     'panels' => [],
-                    'subpanels' => $layout['subpanels'] ?? [],
-                    'order' => $layout['order'] ?? 0,
-                    'tabAction' => $layout['tabAction'] ?? '',
+                    'subpanels' => $section['subpanels'] ?? [],
+                    'order' => $section['order'] ?? 0,
+                    'tabAction' => $section['tabAction'] ?? '',
                 ];
-                $this->addTemplateMeta($layout,  $metadata['layouts'][$index]);
-                $this->addMetadata($layout,  $metadata['layouts'][$index]);
-                $this->addTopWidgetConfig($module, $layout,  $metadata['layouts'][$index]);
-                $this->addSidebarWidgetConfig($module, $layout,  $metadata['layouts'][$index]);
-                $this->addBottomWidgetConfig($module, $layout,  $metadata['layouts'][$index]);
-                $this->addPanelDefinitions($layout, [], $vardefs,  $metadata['layouts'][$index]);
+                $this->addTemplateMeta($section,  $metadata['sections'][$index]);
+                $this->addMetadata($section,  $metadata['sections'][$index]);
+                $this->addTopWidgetConfig($module, $section,  $metadata['sections'][$index]);
+                $this->addSidebarWidgetConfig($module, $section,  $metadata['sections'][$index]);
+                $this->addBottomWidgetConfig($module, $section,  $metadata['sections'][$index]);
+                $this->addPanelDefinitions($section, [], $vardefs,  $metadata['sections'][$index]);
             }
 
         }

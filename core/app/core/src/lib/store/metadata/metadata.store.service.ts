@@ -76,14 +76,14 @@ export interface RecordViewMetadata {
     vardefs?: FieldDefinitionMap;
     metadata?: ObjectMap;
     header?: HeaderMetadata;
-    layouts?: RecordViewLayoutMetadataMap;
+    sections?: RecordViewSectionMetadataMap;
 }
 
-export interface RecordViewLayoutMetadataMap {
-    [key: string]: RecordViewLayoutMetadata;
+export interface RecordViewSectionMetadataMap {
+    [key: string]: RecordViewSectionMetadata;
 }
 
-export interface RecordViewLayoutMetadata {
+export interface RecordViewSectionMetadata {
     order?: number;
     tabAction?: Action;
     topWidget?: WidgetMetadata;
@@ -546,7 +546,7 @@ export class MetadataStore implements StateStore {
             vardefs: 'vardefs',
             metadata: 'metadata',
             header: 'header',
-            layouts: 'layouts'
+            sections: 'sections'
         };
 
         this.addDefinedMeta(recordViewMeta, receivedMeta, entries);

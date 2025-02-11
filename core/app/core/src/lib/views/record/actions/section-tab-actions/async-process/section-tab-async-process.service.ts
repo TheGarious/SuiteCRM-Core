@@ -23,34 +23,32 @@
  * feasible for technical reasons, the Appropriate Legal Notices must display
  * the words "Supercharged by SuiteCRM".
  */
-import {Action, ActionData, ActionHandler} from "../../../../common/actions/action.model";
-import {RecordViewStore} from "../../store/record-view/record-view.store";
 
+import {Injectable} from '@angular/core';
+import {RecordSectionTabActionData, RecordSectionTabActionHandler} from "../section-tab.action";
+import {ALL_VIEW_MODES} from "../../../../../common/views/view.model";
 
-export interface RecordLayoutTabActionData extends ActionData {
-    store: RecordViewStore;
-    action?: Action;
-}
+@Injectable({
+    providedIn: 'root'
+})
+export class RecordSectionTabAsyncProcessAction extends RecordSectionTabActionHandler {
 
-export abstract class RecordLayoutTabActionHandler extends ActionHandler<RecordLayoutTabActionData> {
+    key = 'async-process';
+    modes = ALL_VIEW_MODES;
 
-    abstract run(data: RecordLayoutTabActionData): void;
-
-    abstract shouldDisplay(data: RecordLayoutTabActionData): boolean;
-
-    checkRecordAccess(data: RecordLayoutTabActionData, defaultAcls: string[] = []): boolean {
-
-        const record = data.store.recordStore.getBaseRecord();
-        const acls = record.acls ?? [];
-
-        if (!acls || !acls.length) {
-            return false;
-        }
-
-        const action = data.action ?? null;
-
-        return this.checkAccess(action, acls, defaultAcls);
+    constructor() {
+        super();
     }
 
+    run(data: RecordSectionTabActionData): void {
+    }
 
+    shouldDisplay(data: RecordSectionTabActionData): boolean {
+        const defaultAcls = data?.action?.acl ?? [];
+        if (!defaultAcls.length) {
+            return true;
+        }
+
+        return this.checkRecordAccess(data, defaultAcls);
+    }
 }

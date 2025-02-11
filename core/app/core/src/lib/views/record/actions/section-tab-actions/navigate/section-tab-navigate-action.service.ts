@@ -25,14 +25,14 @@
  */
 
 import {Injectable} from '@angular/core';
-import {RecordLayoutTabActionData, RecordLayoutTabActionHandler} from "../layout-tab.action";
+import {RecordSectionTabActionData, RecordSectionTabActionHandler} from "../section-tab.action";
 import {ViewMode} from "../../../../../common/views/view.model";
 import {MessageService} from "../../../../../services/message/message.service";
 
 @Injectable({
     providedIn: 'root'
 })
-export class RecordLayoutTabNavigateAction extends RecordLayoutTabActionHandler {
+export class RecordSectionTabNavigateAction extends RecordSectionTabActionHandler {
 
     key = 'navigate';
     modes = ['detail' as ViewMode, 'edit' as ViewMode, 'create' as ViewMode];
@@ -43,22 +43,22 @@ export class RecordLayoutTabNavigateAction extends RecordLayoutTabActionHandler 
         super();
     }
 
-    run(data: RecordLayoutTabActionData): void {
-        const layoutKey = data?.action?.params?.layoutKey ?? '';
-        if (!layoutKey) {
-            this.messages.addDangerMessageByKey('LBL_LAYOUT_KEY_NOT_DEFINED', 'Error: Missing layout key');
+    run(data: RecordSectionTabActionData): void {
+        const sectionKey = data?.action?.params?.sectionKey ?? '';
+        if (!sectionKey) {
+            this.messages.addDangerMessageByKey('LBL_SECTION_KEY_NOT_DEFINED', 'Error: Missing section key');
             return
         }
 
-        data.store.setLayout(layoutKey);
+        data.store.setSection(sectionKey);
     }
 
-    shouldDisplay(data: RecordLayoutTabActionData): boolean {
+    shouldDisplay(data: RecordSectionTabActionData): boolean {
         return true;
     }
 
-    getStatus(data: RecordLayoutTabActionData): string {
-        const layoutKey = data?.action?.params?.layoutKey ?? '';
-        return (data.store.layout() === layoutKey) ? 'active' : '';
+    getStatus(data: RecordSectionTabActionData): string {
+        const sectionKey = data?.action?.params?.sectionKey ?? '';
+        return (data.store.section() === sectionKey) ? 'active' : '';
     }
 }

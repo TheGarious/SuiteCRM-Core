@@ -37,7 +37,7 @@ import {ViewMode} from '../../../../common/views/view.model';
 import {AppStateStore} from "../../../../store/app-state/app-state.store";
 import {Router} from "@angular/router";
 import {ModuleNameMapper} from "../../../../services/navigation/module-name-mapper/module-name-mapper.service";
-import {RecordLayoutTabActionsAdapter} from "../../adapters/layout-tab-actions.adapter";
+import {RecordSectionTabActionsAdapter} from "../../adapters/section-tab-actions.adapter";
 
 @Component({
     selector: 'scrm-record-header',
@@ -70,7 +70,7 @@ export class RecordHeaderComponent implements OnInit, OnDestroy {
 
     constructor(
         public actionsAdapter: RecordActionsAdapter,
-        public layoutTabActionsAdapter: RecordLayoutTabActionsAdapter,
+        public sectionTabActionsAdapter: RecordSectionTabActionsAdapter,
         protected recordViewStore: RecordViewStore,
         protected moduleNavigation: ModuleNavigation,
         protected appState: AppStateStore,

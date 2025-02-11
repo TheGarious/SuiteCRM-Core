@@ -31,7 +31,7 @@ import {Action} from '../../../common/actions/action.model';
 import {ViewMode} from '../../../common/views/view.model';
 import {Record} from '../../../common/record/record.model';
 import {Panel} from '../../../common/metadata/metadata.model';
-import {MetadataStore, RecordViewLayoutMetadata} from '../../../store/metadata/metadata.store.service';
+import {MetadataStore, RecordViewSectionMetadata} from '../../../store/metadata/metadata.store.service';
 import {RecordContentConfig, RecordContentDataSource} from '../../../components/record-content/record-content.model';
 import {RecordActionManager} from '../actions/record-action-manager.service';
 import {RecordActionData} from '../actions/record.action';
@@ -72,9 +72,9 @@ export class RecordContentAdapter implements RecordContentDataSource {
 
     getDisplayConfig(): Observable<RecordContentConfig> {
 
-        return this.store.layoutMetadata$.pipe(
+        return this.store.sectionMetadata$.pipe(
             combineLatestWith(this.store.mode$),
-            map(([meta, mode]: [RecordViewLayoutMetadata, ViewMode]) => {
+            map(([meta, mode]: [RecordViewSectionMetadata, ViewMode]) => {
                 const layout = this.getPanelDisplayType(meta);
                 const maxColumns = meta.templateMeta.maxColumns || 2;
                 const colClasses = meta?.templateMeta?.colClasses ?? [];
@@ -113,9 +113,9 @@ export class RecordContentAdapter implements RecordContentDataSource {
         );
     }
 
-    protected getPanelDisplayType(layoutMetadata: RecordViewLayoutMetadata): string {
+    protected getPanelDisplayType(sectionMetadata: RecordViewSectionMetadata): string {
         let panelDisplayType = 'panels';
-        if (layoutMetadata?.templateMeta?.useTabs) {
+        if (sectionMetadata?.templateMeta?.useTabs) {
             panelDisplayType = 'tabs';
         }
 

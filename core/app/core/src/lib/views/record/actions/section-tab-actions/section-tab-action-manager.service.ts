@@ -23,42 +23,24 @@
  * feasible for technical reasons, the Appropriate Legal Notices must display
  * the words "Supercharged by SuiteCRM".
  */
+import {Injectable} from "@angular/core";
+import {BaseActionManager} from "../../../../services/actions/base-action-manager.service";
+import {RecordSectionTabActionData} from "./section-tab.action";
+import {RecordSectionTabToggleAction} from "./toggle/section-tab-toggle-action.service";
+import {RecordSectionTabAsyncProcessAction} from "./async-process/section-tab-async-process.service";
 
-import {Injectable} from '@angular/core';
-import {RecordLayoutTabActionData, RecordLayoutTabActionHandler} from "../layout-tab.action";
-import {ViewMode} from "../../../../../common/views/view.model";
-import {MessageService} from "../../../../../services/message/message.service";
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
-export class RecordLayoutTabToggleAction extends RecordLayoutTabActionHandler {
-
-    key = 'toggle';
-    modes = ['detail' as ViewMode, 'edit' as ViewMode, 'create' as ViewMode];
+export class RecordSectionTabActionManager extends BaseActionManager<RecordSectionTabActionData> {
 
     constructor(
-        protected messages: MessageService,
+        protected toggle: RecordSectionTabToggleAction,
+        protected async: RecordSectionTabAsyncProcessAction,
     ) {
         super();
-    }
-
-    run(data: RecordLayoutTabActionData): void {
-        const layoutKey = data?.action?.params?.layoutKey ?? '';
-        if (!layoutKey) {
-            this.messages.addDangerMessageByKey('LBL_LAYOUT_KEY_NOT_DEFINED', 'Error: Missing layout key');
-            return
-        }
-
-        data.store.setLayout(layoutKey);
-    }
-
-    shouldDisplay(data: RecordLayoutTabActionData): boolean {
-        return true;
-    }
-
-    getStatus(data: RecordLayoutTabActionData): string {
-        const layoutKey = data?.action?.params?.layoutKey ?? '';
-        return (data.store.layout() === layoutKey) ? 'active' : '';
+        toggle.modes.forEach(mode => this.actions[mode][toggle.key] = toggle);
+        async.modes.forEach(mode => this.actions[mode][async.key] = async);
     }
 }

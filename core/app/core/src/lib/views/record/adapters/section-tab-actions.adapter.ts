@@ -31,7 +31,7 @@ import {Action, ActionContext, ActionHandler, ModeActions} from '../../../common
 import {LogicDefinitions} from '../../../common/metadata/metadata.model';
 import {Record} from '../../../common/record/record.model';
 import {ViewMode} from '../../../common/views/view.model';
-import {Metadata, MetadataStore, RecordViewLayoutMetadataMap} from '../../../store/metadata/metadata.store.service';
+import {Metadata, MetadataStore, RecordViewSectionMetadataMap} from '../../../store/metadata/metadata.store.service';
 import {RecordViewStore} from '../store/record-view/record-view.store';
 import {AsyncActionInput, AsyncActionService,} from '../../../services/process/processes/async-action/async-action';
 import {LanguageStore, LanguageStrings} from '../../../store/language/language.store';
@@ -41,16 +41,16 @@ import {ConfirmationModalService} from '../../../services/modals/confirmation-mo
 import {BaseRecordActionsAdapter} from '../../../services/actions/base-record-action.adapter';
 import {SelectModalService} from '../../../services/modals/select-modal.service';
 import {AppMetadataStore} from "../../../store/app-metadata/app-metadata.store.service";
-import {RecordLayoutTabActionData} from "../actions/layout-tab-actions/layout-tab.action";
+import {RecordSectionTabActionData} from "../actions/section-tab-actions/section-tab.action";
 import {deepClone} from "../../../common/utils/object-utils";
 import {
-    RecordLayoutTabActionDisplayTypeLogic
-} from "../actions/layout-tab-actions/action-logic/display-type/display-type.logic";
-import {RecordLayoutTabActionManager} from "../actions/layout-tab-actions/layout-tab-action-manager.service";
+    RecordSectionTabActionDisplayTypeLogic
+} from "../actions/section-tab-actions/action-logic/display-type/display-type.logic";
+import {RecordSectionTabActionManager} from "../actions/section-tab-actions/section-tab-action-manager.service";
 import {toObservable} from "@angular/core/rxjs-interop";
 
 @Injectable()
-export class RecordLayoutTabActionsAdapter extends BaseRecordActionsAdapter<RecordLayoutTabActionData> {
+export class RecordSectionTabActionsAdapter extends BaseRecordActionsAdapter<RecordSectionTabActionData> {
 
     defaultActions: ModeActions = {
         detail: [],
@@ -61,12 +61,12 @@ export class RecordLayoutTabActionsAdapter extends BaseRecordActionsAdapter<Reco
         protected store: RecordViewStore,
         protected metadata: MetadataStore,
         protected language: LanguageStore,
-        protected actionManager: RecordLayoutTabActionManager,
+        protected actionManager: RecordSectionTabActionManager,
         protected asyncActionService: AsyncActionService,
         protected message: MessageService,
         protected confirmation: ConfirmationModalService,
         protected selectModalService: SelectModalService,
-        protected displayTypeLogic: RecordLayoutTabActionDisplayTypeLogic,
+        protected displayTypeLogic: RecordSectionTabActionDisplayTypeLogic,
         protected appMetadataStore: AppMetadataStore
     ) {
         super(
@@ -84,25 +84,25 @@ export class RecordLayoutTabActionsAdapter extends BaseRecordActionsAdapter<Reco
     getActions(context?: ActionContext): Observable<Action[]> {
 
         return this.store.metadata$.pipe(
-            combineLatestWith(this.store.mode$, this.store.record$, this.store.language$, this.store.widgets$, this.store.layout$),
+            combineLatestWith(this.store.mode$, this.store.record$, this.store.language$, this.store.widgets$, this.store.section$),
             map(([meta, mode]: [Metadata, ViewMode, Record, LanguageStrings, boolean, string]) => {
                 const recordViewMetadata = meta?.recordView;
 
 
-                const layouts = recordViewMetadata?.layouts ?? {};
-                const layoutKeys = Object.keys(layouts);
+                const sections = recordViewMetadata?.sections ?? {};
+                const sectionKeys = Object.keys(sections);
 
                 if (!recordViewMetadata) {
                     return [];
                 }
 
 
-                if (!layoutKeys.length) {
+                if (!sectionKeys.length) {
                     return [];
                 }
 
-                const orderedLayoutKeys = this.orderLayoutsKeys(layoutKeys, layouts);
-                const actions = this.getTabActionsFromLayouts(orderedLayoutKeys, layouts);
+                const orderedSectionKeys = this.orderSectionKeys(sectionKeys, sections);
+                const actions = this.getTabActionsFromSections(orderedSectionKeys, sections);
 
                 return this.parseModeActions(actions, mode, this.store.getViewContext());
             })
@@ -110,11 +110,11 @@ export class RecordLayoutTabActionsAdapter extends BaseRecordActionsAdapter<Reco
 
     }
 
-    protected buildActionData(action: Action, context?: ActionContext): RecordLayoutTabActionData {
+    protected buildActionData(action: Action, context?: ActionContext): RecordSectionTabActionData {
         return {
             store: this.store,
             action,
-        } as RecordLayoutTabActionData;
+        } as RecordSectionTabActionData;
     }
 
     /**
@@ -151,7 +151,7 @@ export class RecordLayoutTabActionsAdapter extends BaseRecordActionsAdapter<Reco
         this.store.load(false).pipe(take(1)).subscribe();
     }
 
-    protected shouldDisplay(actionHandler: ActionHandler<RecordLayoutTabActionData>, data: RecordLayoutTabActionData): boolean {
+    protected shouldDisplay(actionHandler: ActionHandler<RecordSectionTabActionData>, data: RecordSectionTabActionData): boolean {
 
         const displayLogic: LogicDefinitions | null = data?.action?.displayLogic ?? null;
         let toDisplay = true;
@@ -167,23 +167,23 @@ export class RecordLayoutTabActionsAdapter extends BaseRecordActionsAdapter<Reco
         return actionHandler && actionHandler.shouldDisplay(data);
     }
 
-    protected getTabActionsFromLayouts(orderedLayoutKeys: string[], layouts: RecordViewLayoutMetadataMap): Action[] {
+    protected getTabActionsFromSections(orderedSectionKeys: string[], sections: RecordViewSectionMetadataMap): Action[] {
         const actions = [];
-        orderedLayoutKeys.forEach((layoutKey: string) => {
-            const layout = layouts[layoutKey];
+        orderedSectionKeys.forEach((sectionKey: string) => {
+            const section = sections[sectionKey];
 
-            if (!layout?.tabAction) {
+            if (!section?.tabAction) {
                 return;
             }
 
-            const action = deepClone(layout.tabAction)
+            const action = deepClone(section.tabAction)
 
             if (!action?.key) {
                 action.key = 'toggle';
             }
 
             if (!action?.labelKey) {
-                action.labelKey = layoutKey;
+                action.labelKey = sectionKey;
             }
 
             if (!action?.params) {
@@ -191,7 +191,7 @@ export class RecordLayoutTabActionsAdapter extends BaseRecordActionsAdapter<Reco
                 action.params.expanded = true;
             }
 
-            action.params.layoutKey = layoutKey;
+            action.params.sectionKey = sectionKey;
 
             if (!action?.modes) {
                 action.modes = ['detail', 'edit'];
@@ -202,9 +202,9 @@ export class RecordLayoutTabActionsAdapter extends BaseRecordActionsAdapter<Reco
         return actions;
     }
 
-    protected orderLayoutsKeys(layoutKeys: string[], layouts: RecordViewLayoutMetadataMap): string[] {
-        return layoutKeys.sort((a, b) => {
-            return (layouts[a]?.order ?? 0) - (layouts[b]?.order ?? 0);
+    protected orderSectionKeys(sectionKeys: string[], sections: RecordViewSectionMetadataMap): string[] {
+        return sectionKeys.sort((a, b) => {
+            return (sections[a]?.order ?? 0) - (sections[b]?.order ?? 0);
         });
     }
 }

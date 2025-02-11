@@ -29,7 +29,7 @@ import {BehaviorSubject, combineLatest, combineLatestWith, Observable, Subscript
 import {filter, map} from 'rxjs/operators';
 import {ViewContext} from '../../../../common/views/view.model';
 import {WidgetMetadata} from '../../../../common/metadata/widget.metadata';
-import {MetadataStore, RecordViewLayoutMetadata} from '../../../../store/metadata/metadata.store.service';
+import {MetadataStore, RecordViewSectionMetadata} from '../../../../store/metadata/metadata.store.service';
 import {LanguageStore} from '../../../../store/language/language.store';
 import {
     SubpanelContainerConfig
@@ -58,7 +58,7 @@ import {SubpanelStoreMap} from "../../../../containers/subpanel/store/subpanel/s
 })
 export class RecordContainerComponent implements OnInit, OnDestroy {
 
-    @Input() layout: string = '';
+    @Input() section: string = '';
 
     protected subs: Subscription[] = [];
 
@@ -172,11 +172,11 @@ export class RecordContainerComponent implements OnInit, OnDestroy {
         }));
 
         this.displayedSubpanels$ = this.recordViewStore.subpanels$.pipe(
-            combineLatestWith(this.recordViewStore.layoutMetadata$),
-            map(([subpanels, layoutMetadata] : [SubpanelStoreMap, RecordViewLayoutMetadata]) => {
+            combineLatestWith(this.recordViewStore.sectionMetadata$),
+            map(([subpanels, sectionMetadata] : [SubpanelStoreMap, RecordViewSectionMetadata]) => {
 
                 const filteredSubpanels = {} as SubpanelStoreMap;
-                const subpanelsToDisplay = layoutMetadata?.subpanels ?? [];
+                const subpanelsToDisplay = sectionMetadata?.subpanels ?? [];
 
 
                 if (!subpanelsToDisplay.length) {
@@ -230,7 +230,7 @@ export class RecordContainerComponent implements OnInit, OnDestroy {
 
     protected initPanels(): void {
         const panelSub = combineLatest([
-            this.recordViewStore.layoutMetadata$,
+            this.recordViewStore.sectionMetadata$,
             this.recordViewStore.stagingRecord$,
             this.languageStore.vm$,
         ]).subscribe(([meta, record, languages]) => {
