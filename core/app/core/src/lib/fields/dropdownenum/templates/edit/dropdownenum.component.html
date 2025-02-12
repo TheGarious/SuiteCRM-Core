@@ -30,7 +30,8 @@
         <ng-container *ngIf="this.options && this.options.length">
             <option *ngFor="let item of this.options;"
                     class="{{getId(item)}}"
-                    [ngValue]="item.value">
+                    [selected]="(field?.valueSignal() && field?.valueSignal()) === item.value"
+                    [value]="item.value">
                 {{item.label}}
             </option>
         </ng-container>
