@@ -24,7 +24,7 @@
  * the words "Supercharged by SuiteCRM".
  */
 
-import {Component, ElementRef, signal, ViewChild, WritableSignal} from '@angular/core';
+import {Component, computed, ElementRef, Signal, signal, ViewChild, WritableSignal} from '@angular/core';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ModuleNameMapper} from '../../../../services/navigation/module-name-mapper/module-name-mapper.service';
 import {DataTypeFormatter} from '../../../../services/formatters/data-type.formatter.service';
@@ -60,7 +60,7 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
 
     placeholderLabel: string = '';
     selectedItemsLabel: string = '';
-    emptyFilterLabel: string = '';
+    emptyFilterLabel: Signal<string> = signal('');
     maxSelectedLabels: number = 20;
     selectAll: boolean = false;
     filterValue: string | undefined = '';
@@ -174,8 +174,13 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
     getTranslatedLabels(): void {
         this.placeholderLabel = this.languages.getAppString('LBL_SELECT_ITEM') || '';
         this.selectedItemsLabel = this.languages.getAppString('LBL_ITEMS_SELECTED') || '';
-        this.emptyFilterLabel = this.languages.getAppString('ERR_SEARCH_NO_RESULTS') || '';
+        this.emptyFilterLabel = computed(() => {
+            if (!this.loading()){
+                return this.languages.getAppString('ERR_SEARCH_NO_RESULTS') || '';
+            }
 
+            return this.languages.getAppString('LBL_LOADING') || '';
+        });
     }
 
     onPanelShow(): void {

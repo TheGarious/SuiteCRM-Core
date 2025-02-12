@@ -24,7 +24,7 @@
  * the words "Supercharged by SuiteCRM".
  */
 
-import {Component, ElementRef, signal, ViewChild, WritableSignal} from '@angular/core';
+import {Component, computed, ElementRef, Signal, signal, ViewChild, WritableSignal} from '@angular/core';
 import {emptyObject} from '../../../../common/utils/object-utils';
 import {ButtonInterface} from '../../../../common/components/button/button.model';
 import {Field} from '../../../../common/record/field.model';
@@ -65,7 +65,7 @@ export class RelateEditFieldComponent extends BaseRelateComponent {
     loading: WritableSignal<boolean> = signal(false);
 
     placeholderLabel: string = '';
-    emptyFilterLabel: string = '';
+    emptyFilterLabel: Signal<string> = signal('');
     filterValue: string | undefined = '';
 
     protected filterInputBuffer = new Subject<any>();
@@ -367,7 +367,13 @@ export class RelateEditFieldComponent extends BaseRelateComponent {
 
     public getTranslatedLabels(): void {
         this.placeholderLabel = this.languages.getAppString('LBL_SELECT_ITEM') || '';
-        this.emptyFilterLabel = this.languages.getAppString('ERR_SEARCH_NO_RESULTS') || '';
+        this.emptyFilterLabel = computed(() => {
+            if (!this.loading()){
+                return this.languages.getAppString('ERR_SEARCH_NO_RESULTS') || '';
+            }
+
+            return this.languages.getAppString('LBL_LOADING') || '';
+        });
     }
 
     /**
