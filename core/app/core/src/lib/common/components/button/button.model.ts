@@ -52,6 +52,7 @@ export interface ButtonInterface {
     type?: string;
     metadata?: ObjectMap;
     active?: boolean;
+    maxWidth?: string;
 }
 
 export interface ButtonInterfaceMap {
