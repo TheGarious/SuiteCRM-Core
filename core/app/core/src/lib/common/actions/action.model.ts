@@ -109,6 +109,8 @@ export interface ActionDataSource {
     getActions(context?: ActionContext): Observable<Action[]>;
 
     runAction(action: Action, context?: ActionContext): void;
+
+    isActive(action: Action): boolean;
 }
 
 export type ActionDataSourceBuilderFunction = (options?: ObjectMap) => ActionDataSource;

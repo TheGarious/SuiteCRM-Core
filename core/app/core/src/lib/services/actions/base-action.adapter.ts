@@ -422,4 +422,10 @@ export abstract class BaseActionsAdapter<D extends ActionData> implements Action
     protected runValidations(action: Action, context: ActionContext = null) {
         return true;
     }
+
+    isActive(action: Action, context: ActionContext = null): boolean {
+        const data: D = this.buildActionData(action, context);
+        const actionHandler = this.actionManager.getHandler(action, this.getMode());
+        return actionHandler.getStatus(data) === 'active';
+    }
 }
