@@ -31,6 +31,7 @@
         (click)="runClick($event)"
         [disabled]="config?.disabled || ''"
         [style]="config?.style || ''"
+        [style.max-width]="config?.maxWidth ? config?.maxWidth + 'px': null"
         [title]="(language.getFieldLabel(config.titleKey) || config?.title) || ''">
     <scrm-image *ngIf="config.icon"
                 [image]="config.icon"
