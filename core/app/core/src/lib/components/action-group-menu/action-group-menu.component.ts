@@ -24,19 +24,30 @@
  * the words "Supercharged by SuiteCRM".
  */
 
-import {Component, Input, OnInit, signal, WritableSignal} from '@angular/core';
+import {
+    AfterViewInit,
+    Component,
+    ElementRef,
+    HostListener,
+    Input,
+    OnDestroy,
+    OnInit,
+    signal,
+    ViewChild,
+    WritableSignal
+} from '@angular/core';
 import {Action, ActionContext, ActionDataSource} from '../../common/actions/action.model';
 import {Button, ButtonInterface} from '../../common/components/button/button.model';
 import {ButtonGroupInterface} from '../../common/components/button/button-group.model';
 import {isFalse} from '../../common/utils/value-utils';
-import {BehaviorSubject, combineLatestWith, Observable, Subscription} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {BehaviorSubject, Observable, Subscription} from 'rxjs';
 import {SystemConfigStore} from '../../store/system-config/system-config.store';
 import {
     ScreenSize,
     ScreenSizeObserverService
 } from '../../services/ui/screen-size-observer/screen-size-observer.service';
 import {LanguageStore, LanguageStrings} from '../../store/language/language.store';
+import {floor} from "mathjs";
 
 export interface ActionGroupMenuViewModel {
     actions: Action[];
@@ -48,33 +59,48 @@ export interface ActionGroupMenuViewModel {
     selector: 'scrm-action-group-menu',
     templateUrl: './action-group-menu.component.html',
 })
-export class ActionGroupMenuComponent implements OnInit {
+export class ActionGroupMenuComponent implements OnInit, AfterViewInit, OnDestroy {
 
     @Input() klass = '';
     @Input() buttonClass = 'btn btn-sm';
     @Input() buttonGroupClass = '';
+    @Input() dropdownLabelKey = 'LBL_ACTIONS';
+    @Input() dropdownIcon = '';
     @Input() actionContext: ActionContext;
     @Input() config: ActionDataSource;
-    @Input() dropdownLabelKey = 'LBL_ACTIONS';
     @Input() actionLimitConfig: string = 'recordview_actions_limits';
+    @Input() screenSizeMeasures: string = 'default';
+    @Input() buttonGroupDropdownClass = 'dropdown-button-secondary';
+    @Input() dynamicBreakpoint = false;
+    @Input() dynamicBreakpointButtonMax = 100;
+    @Input() pushActiveToExpanded = false;
+
+    @ViewChild('container') containerElement: ElementRef;
+    protected screenSize$: Observable<ScreenSize>;
+    protected screenSizeState: BehaviorSubject<ScreenSize>;
+
+    @HostListener('window:resize', ['$event'])
+    onResize(): void {
+        if (this.dynamicBreakpoint && this.actions().length) {
+            this.configState.next(this.getButtonGroupConfig(this.actions()));
+        }
+    }
+
     configState = new BehaviorSubject<ButtonGroupInterface>({buttons: []});
     config$ = this.configState.asObservable();
 
-    vm$: Observable<ActionGroupMenuViewModel>;
-
-    inlineConfirmationEnabled: WritableSignal<boolean> =  signal(false);
+    inlineConfirmationEnabled: WritableSignal<boolean> = signal(false);
     confirmationLabel = '';
     confirmationDynamicLabel = '';
     inlineCancelButton: ButtonInterface = null;
     inlineConfirmButton: ButtonInterface = null;
     loading: WritableSignal<boolean> = signal(false);
 
-    protected buttonGroupDropdownClass = 'dropdown-button-secondary';
-
-    protected subs: Subscription[];
+    protected subs: Subscription[] = [];
     protected screen: ScreenSize = ScreenSize.Medium;
     protected defaultBreakpoint = 4;
     protected breakpoint: number;
+    protected actions: WritableSignal<Action[]> = signal([]);
 
     constructor(
         protected languages: LanguageStore,
@@ -84,20 +110,35 @@ export class ActionGroupMenuComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.vm$ = this.config?.getActions().pipe(
-            combineLatestWith(
-                this.screenSize.screenSize$,
-                this.languages.vm$
-            ),
-            map(([actions, screenSize, languages]) => {
-                if (screenSize) {
-                    this.screen = screenSize;
-                }
-                this.configState.next(this.getButtonGroupConfig(actions));
+        this.subs = [];
+        this.screenSize$ = this.screenSize.screenSize$;
+        this.screenSizeState = this.screenSize.screenSize;
+        if (this.screenSizeMeasures === 'bootstrap') {
+            this.screenSize$ = this.screenSize.bootstrapScreenSize$;
+            this.screenSizeState = this.screenSize.bootstrapScreenSize;
+        }
 
-                return {actions, screenSize, languages};
-            })
-        );
+        this.subs.push(this.config?.getActions().subscribe(actions => {
+            this.actions.set(actions);
+            this.screen = this.screenSizeState.value;
+            this.configState.next(this.getButtonGroupConfig(actions));
+        }));
+    }
+
+    ngOnDestroy(): void {
+        this.subs.forEach(sub => sub && sub.unsubscribe());
+        this.subs = [];
+    }
+
+    ngAfterViewInit(): void {
+
+        this.subs.push(this.screenSize$.subscribe(screenSize => {
+            if (screenSize) {
+                this.screen = screenSize;
+            }
+
+            this.configState.next(this.getButtonGroupConfig(this.actions()));
+        }));
     }
 
     isXSmallScreen(): boolean {
@@ -111,6 +152,7 @@ export class ActionGroupMenuComponent implements OnInit {
 
         actions.forEach((action: Action) => {
             const button = this.buildButton(action);
+            button.active = this.config.isActive(action) ?? false;
 
             if (action.params && action.params.collapsedMobile && this.isXSmallScreen()) {
                 collapsed.push(button);
@@ -125,11 +167,11 @@ export class ActionGroupMenuComponent implements OnInit {
             collapsed.push(button);
         });
 
-        const collapseButtons = this.config.collapseButtons ?? true;
+        const collapseButtons = this?.config?.collapseButtons ?? true;
 
         let breakpoint = actions.length;
         if (collapseButtons === true) {
-            breakpoint = this.getBreakpoint();
+            breakpoint = this.getBreakpoint(expanded.length, collapsed.length);
             if (expanded.length < breakpoint) {
                 breakpoint = expanded.length;
             }
@@ -143,15 +185,34 @@ export class ActionGroupMenuComponent implements OnInit {
             breakpoint,
             dropdownOptions: {
                 placement: ['bottom-right'],
-                wrapperKlass: [(this.buttonGroupDropdownClass)]
+                wrapperKlass: [(this.buttonGroupDropdownClass)],
+                icon: this.dropdownIcon
             },
-            buttons
+            buttons,
+            pushActiveToExpanded: this.pushActiveToExpanded
         } as ButtonGroupInterface;
     }
 
-    getBreakpoint(): number {
+    getBreakpoint(totalExpandedActions: number, totalCollapsed: number): number {
 
-        const breakpointMap = this.systemConfigStore.getConfigValue(this.actionLimitConfig);
+        let dynamicBreakpoint = this.dynamicBreakpoint;
+        const limitConfig = this.systemConfigStore.getConfigValue(this.actionLimitConfig);
+        if (limitConfig && limitConfig?.type === 'dynamicBreakpoint') {
+            dynamicBreakpoint = true;
+        } else if (limitConfig && limitConfig?.type === 'fixedLimits') {
+            dynamicBreakpoint = false;
+        }
+
+        if (dynamicBreakpoint) {
+            return this.calculateDynamicBreakpoint(limitConfig, totalCollapsed, totalExpandedActions);
+        }
+
+        let breakpointMap = {} as any;
+        if (limitConfig?.fixedLimits) {
+            breakpointMap = limitConfig.fixedLimits;
+        } else if (!limitConfig?.type) {
+            breakpointMap = limitConfig
+        }
 
         if (this.screen && breakpointMap && breakpointMap[this.screen]) {
             this.breakpoint = breakpointMap[this.screen];
@@ -163,6 +224,42 @@ export class ActionGroupMenuComponent implements OnInit {
         }
 
         return this.defaultBreakpoint;
+    }
+
+    protected calculateDynamicBreakpoint(limitConfig, totalCollapsed: number, totalExpandedActions: number): number {
+        let buttonMax = this.dynamicBreakpointButtonMax;
+
+        if (limitConfig?.dynamicBreakpoint?.buttonMax) {
+            buttonMax = limitConfig?.dynamicBreakpoint?.buttonMax;
+        }
+
+        let dropdownWidth = 80;
+        if (limitConfig?.dynamicBreakpoint?.dropdownMax) {
+            dropdownWidth = limitConfig?.dynamicBreakpoint?.dropdownMax;
+        }
+
+        const containerWidth = this?.containerElement?.nativeElement?.parentElement?.parentElement?.offsetWidth;
+
+        if (!containerWidth || containerWidth < buttonMax) {
+            return 1;
+        }
+
+        if (!this.dropdownLabelKey) {
+            dropdownWidth = 20;
+        }
+
+        const fitting = floor(containerWidth / buttonMax);
+        const fittingWithDropdown = floor((containerWidth - dropdownWidth) / buttonMax);
+
+        if (totalCollapsed) {
+            return fittingWithDropdown;
+        }
+
+        if (totalExpandedActions <= fitting) {
+            return fitting;
+        }
+
+        return fittingWithDropdown;
     }
 
     protected buildButton(action: Action): ButtonInterface {
@@ -189,7 +286,7 @@ export class ActionGroupMenuComponent implements OnInit {
             }
         } as ButtonInterface;
 
-        if (!button.label){
+        if (!button.label) {
             button.labelKey = action.labelKey ?? '';
         }
 
@@ -275,4 +372,5 @@ export class ActionGroupMenuComponent implements OnInit {
         this.inlineConfirmButton = null;
         this.inlineCancelButton = null;
     }
+
 }
