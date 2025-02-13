@@ -25,8 +25,8 @@
 * the words "Supercharged by SuiteCRM".
 */
 -->
-<ng-container *ngIf="(vm$ | async) as vm">
-    <div class="{{klass}} float-right action-group-menu">
+<ng-container>
+    <div class="{{klass}} float-right action-group-menu" #container>
         <ng-container *ngIf="!inlineConfirmationEnabled() && !loading()">
             <scrm-button-group *ngIf="config$" [config$]="config$" [klass]="buttonGroupClass"></scrm-button-group>
         </ng-container>
