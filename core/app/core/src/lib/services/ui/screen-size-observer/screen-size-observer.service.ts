@@ -44,6 +44,8 @@ export class ScreenSizeObserverService {
 
     screenSize = new BehaviorSubject<ScreenSize>(ScreenSize.Medium);
     screenSize$ = this.screenSize.asObservable();
+    bootstrapScreenSize = new BehaviorSubject<ScreenSize>(ScreenSize.Medium);
+    bootstrapScreenSize$ = this.bootstrapScreenSize.asObservable();
 
     constructor(protected breakpointObserver: BreakpointObserver) {
         this.initScreenSizeObservable();
@@ -89,6 +91,48 @@ export class ScreenSizeObserverService {
         ).subscribe((value) => {
             if (value) {
                 this.screenSize.next(value);
+            }
+        });
+
+        merge(
+            this.breakpointObserver.observe([
+               '(max-width: 575px)',
+            ]).pipe(map((result: BreakpointState) => {
+                if (result.matches) {
+                    return ScreenSize.XSmall;
+                }
+            })),
+            this.breakpointObserver.observe([
+                '(min-width: 576px) and (max-width: 766px)',
+            ]).pipe(map((result: BreakpointState) => {
+                if (result.matches) {
+                    return ScreenSize.Small;
+                }
+            })),
+            this.breakpointObserver.observe([
+                '(min-width: 768px) and (max-width: 991px)',
+            ]).pipe(map((result: BreakpointState) => {
+                if (result.matches) {
+                    return ScreenSize.Medium;
+                }
+            })),
+            this.breakpointObserver.observe([
+                '(min-width: 992px) and (max-width: 1199px)',
+            ]).pipe(map((result: BreakpointState) => {
+                if (result.matches) {
+                    return ScreenSize.Large;
+                }
+            })),
+            this.breakpointObserver.observe([
+                '(min-width: 1200px)',
+            ]).pipe(map((result: BreakpointState) => {
+                if (result.matches) {
+                    return ScreenSize.XLarge;
+                }
+            }))
+        ).subscribe((value) => {
+            if (value) {
+                this.bootstrapScreenSize.next(value);
             }
         });
     }
