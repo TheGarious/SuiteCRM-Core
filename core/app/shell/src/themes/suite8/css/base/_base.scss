@@ -267,4 +267,11 @@ ul li::marker {
   }
 }
 
-
+.after-no-content {
+  &:after {
+    content: none;
+  }
+  :after {
+    content: none;
+  }
+}
