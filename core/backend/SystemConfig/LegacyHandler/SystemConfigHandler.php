@@ -98,6 +98,7 @@ class SystemConfigHandler extends LegacyHandler implements SystemConfigProviderI
      * @param array $listViewSettingsLimits
      * @param array $listViewActionsLimits
      * @param array $recordViewActionLimits
+     * @param array $recordViewSectionTabLimits
      * @param array $subpanelViewActionLimits
      * @param array $listViewLineActionsLimits
      * @param array $listViewUrlQueryFilterMapping
@@ -134,6 +135,7 @@ class SystemConfigHandler extends LegacyHandler implements SystemConfigProviderI
         array $listViewSettingsLimits,
         array $listViewActionsLimits,
         array $recordViewActionLimits,
+        array $recordViewSectionTabLimits,
         array $subpanelViewActionLimits,
         array $listViewLineActionsLimits,
         array $listViewUrlQueryFilterMapping,
@@ -170,6 +172,7 @@ class SystemConfigHandler extends LegacyHandler implements SystemConfigProviderI
         $this->injectedSystemConfigs['listview_settings_limits'] = $listViewSettingsLimits;
         $this->injectedSystemConfigs['listview_actions_limits'] = $listViewActionsLimits;
         $this->injectedSystemConfigs['recordview_actions_limits'] = $recordViewActionLimits;
+        $this->injectedSystemConfigs['recordview_section_tab_limits'] = $recordViewSectionTabLimits;
         $this->injectedSystemConfigs['recordview_subpanel_button_limits'] = $recordViewSubpanelButtonLimits;
         $this->injectedSystemConfigs['convert_ignore'] = $recordViewConvertIgnore;
         $this->injectedSystemConfigs['subpanelview_actions_limits'] = $subpanelViewActionLimits;
