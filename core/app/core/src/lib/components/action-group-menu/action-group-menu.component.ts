@@ -100,6 +100,7 @@ export class ActionGroupMenuComponent implements OnInit, AfterViewInit, OnDestro
     protected screen: ScreenSize = ScreenSize.Medium;
     protected defaultBreakpoint = 4;
     protected breakpoint: number;
+    protected maxButtonWidth?: string;
     protected actions: WritableSignal<Action[]> = signal([]);
 
     constructor(
@@ -123,6 +124,9 @@ export class ActionGroupMenuComponent implements OnInit, AfterViewInit, OnDestro
             this.screen = this.screenSizeState.value;
             this.configState.next(this.getButtonGroupConfig(actions));
         }));
+
+        const limitConfig = this.systemConfigStore.getConfigValue(this.actionLimitConfig) ?? {} as any;
+        this.maxButtonWidth = limitConfig?.dynamicBreakpoint?.buttonMax ?? null;
     }
 
     ngOnDestroy(): void {
@@ -263,6 +267,8 @@ export class ActionGroupMenuComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     protected buildButton(action: Action): ButtonInterface {
+
+
         const button = {
             label: action.label || '',
             labelModule: this?.actionContext?.module ?? '',
@@ -288,6 +294,10 @@ export class ActionGroupMenuComponent implements OnInit, AfterViewInit, OnDestro
 
         if (!button.label) {
             button.labelKey = action.labelKey ?? '';
+        }
+
+        if (this.maxButtonWidth) {
+            button.maxWidth = this.maxButtonWidth;
         }
 
         const debounceClick = action?.params?.debounceClick ?? null;
