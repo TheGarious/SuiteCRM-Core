@@ -27,7 +27,7 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {Button} from '../../common/components/button/button.model';
 import {ButtonGroupInterface} from '../../common/components/button/button-group.model';
-import {DropdownButtonInterface, AnyButtonInterface} from '../../common/components/button/dropdown-button.model';
+import {AnyButtonInterface, DropdownButtonInterface} from '../../common/components/button/dropdown-button.model';
 
 import {Observable, Subscription} from 'rxjs';
 
@@ -129,14 +129,16 @@ export class ButtonGroupComponent implements OnInit, OnDestroy {
         let count = 0;
 
         const showAfterBreakpoint = this.internalConfig.showAfterBreakpoint ?? true;
+        const breakPoint = this.getBreakpoint();
 
+        const pushToExpanded = [];
         this.internalConfig.buttons.forEach(button => {
 
             if (!button) {
                 return;
             }
 
-            if (count < this.getBreakpoint()) {
+            if (count < breakPoint) {
                 let classes = ['button-group-button'];
                 if (this.internalConfig.buttonKlass && this.internalConfig.buttonKlass.length > 0) {
                     classes = classes.concat(this.internalConfig.buttonKlass);
@@ -145,14 +147,50 @@ export class ButtonGroupComponent implements OnInit, OnDestroy {
                 Button.appendClasses(newButton, [...classes]);
 
                 this.buttons.expanded.push(newButton);
-            } else if(showAfterBreakpoint === true) {
+            } else if (showAfterBreakpoint === true) {
+                if (this.internalConfig.pushActiveToExpanded && button?.active) {
+                    pushToExpanded.push({...button});
+                    count++;
+                    return;
+                }
                 this.buttons.collapsed.push({...button});
             }
 
             count++;
         });
 
+        this.applyPushActiveToExpanded(pushToExpanded);
+
         this.buildDropdownConfig();
     }
 
+    protected applyPushActiveToExpanded(pushToExpanded: any[]): void {
+        const pushToExpandedLength = pushToExpanded?.length;
+
+        if (!pushToExpandedLength) {
+            return;
+        }
+
+        const expandedLength = this?.buttons?.expanded?.length ?? 0;
+        const pushToCollapsedCount = expandedLength - pushToExpandedLength;
+
+        if (pushToCollapsedCount < 0) {
+            const overflow = pushToExpanded.slice(pushToCollapsedCount);
+            const pushToCollapsed = overflow.concat([...this.buttons.expanded]);
+            this.buttons.expanded = pushToExpanded.slice(this.buttons.expanded.length);
+            this.buttons.collapsed = pushToCollapsed.concat(this.buttons.collapsed);
+            return;
+        }
+
+        if (pushToCollapsedCount === 0) {
+            this.buttons.expanded = [...pushToExpanded];
+            this.buttons.collapsed = [...this.buttons.expanded].concat(this.buttons.collapsed);
+            return;
+        }
+
+        const pushToCollapsed = this.buttons.expanded.slice(-1 * pushToExpandedLength);
+        const keepOnExpanded = this.buttons.expanded.slice(0, pushToCollapsedCount);
+        this.buttons.expanded = keepOnExpanded.concat([...pushToExpanded])
+        this.buttons.collapsed = pushToCollapsed.concat(this.buttons.collapsed);
+    }
 }

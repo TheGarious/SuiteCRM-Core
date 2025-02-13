@@ -38,6 +38,7 @@ export interface ButtonGroupInterface {
     wrapperKlass?: string[];
     buttonKlass?: string[];
     buttons?: ButtonInterface[];
+    pushActiveToExpanded?: boolean;
     dropdownLabel?: string;
     dropdownOptions?: DropdownOptions;
     breakpoint?: number;

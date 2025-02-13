@@ -51,6 +51,7 @@ export interface ButtonInterface {
     disabled?: boolean;
     type?: string;
     metadata?: ObjectMap;
+    active?: boolean;
 }
 
 export interface ButtonInterfaceMap {
