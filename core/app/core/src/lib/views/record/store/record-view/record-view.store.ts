@@ -108,6 +108,7 @@ export class RecordViewStore extends ViewStore implements StateStore, BaseRecord
     viewContext$: Observable<ViewContext>;
     subpanelReload$: Observable<BooleanMap>;
     section: WritableSignal<string> = signal('');
+    sectionKeys: WritableSignal<string[]> = signal([]);
     section$: Observable<string> = toObservable(this.section);
 
 
@@ -654,6 +655,8 @@ export class RecordViewStore extends ViewStore implements StateStore, BaseRecord
             this.setSection('');
             return;
         }
+
+        this.sectionKeys.set(sectionKeys);
 
         this.setSection(sectionKeys[0]);
     }

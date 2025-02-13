@@ -31,7 +31,7 @@
     <div class="record-view-position-sticky">
         <scrm-record-header></scrm-record-header>
     </div>
-    <div class="record-view-hr-container">
+    <div class="record-view-hr-container" [class.pt-0]="recordStore.section() !== ''">
         <hr class="record-view-hr">
     </div>
 
