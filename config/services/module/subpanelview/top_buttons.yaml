@@ -65,16 +65,15 @@ parameters:
         - edit
       module: calls
     SubPanelTopComposeEmailButton:
-      key: create
+      key: modal-create
       labelKey: LNK_NEW_EMAIL
-      action: create
+      action: modal-create
       modes:
         - list
       acl:
         - edit
       module: emails
-      moduleAction:
-        - composeView
+      metadataView: composeView
     SubPanelTopCreateNoteButton:
       key: create
       labelKey: LNK_NEW_NOTE
