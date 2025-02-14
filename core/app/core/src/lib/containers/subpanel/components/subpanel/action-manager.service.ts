@@ -32,6 +32,7 @@ import {AsyncProcessSubpanelAction} from '../../actions/async-process/async-proc
 import {SubpanelShowFilterAction} from "../../actions/show-filter/show-filter.action";
 import {BaseActionManager} from "../../../../services/actions/base-action-manager.service";
 import {SubpanelClearFilterAction} from "../../actions/clear-filter/clear-filter.action";
+import {SubpanelModalCreateAction} from "../../actions/modal-create/modal-create.action";
 
 @Injectable({
     providedIn: 'root',
@@ -43,7 +44,8 @@ export class SubpanelActionManager extends BaseActionManager<SubpanelActionData>
         protected select: SubpanelSelectAction,
         protected async: AsyncProcessSubpanelAction,
         protected showFilter: SubpanelShowFilterAction,
-        protected clearFilter: SubpanelClearFilterAction
+        protected clearFilter: SubpanelClearFilterAction,
+        protected modalCreate: SubpanelModalCreateAction
     ) {
         super();
         async.modes.forEach(mode => this.actions[mode][async.key] = async);
@@ -51,5 +53,7 @@ export class SubpanelActionManager extends BaseActionManager<SubpanelActionData>
         select.modes.forEach(mode => this.actions[mode][select.key] = select);
         showFilter.modes.forEach(mode => this.actions[mode][showFilter.key] = showFilter);
         clearFilter.modes.forEach(mode => this.actions[mode][clearFilter.key] = clearFilter);
+        clearFilter.modes.forEach(mode => this.actions[mode][clearFilter.key] = clearFilter);
+        modalCreate.modes.forEach(mode => this.actions[mode][modalCreate.key] = modalCreate);
     }
 }
