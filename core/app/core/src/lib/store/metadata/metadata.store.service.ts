@@ -90,6 +90,7 @@ export interface Metadata {
     recentlyViewed?: RecentlyViewed[];
     favorites?: Favorite[];
     fieldActions?: FieldActions;
+    extra?: ObjectMap;
 }
 
 export interface MetadataMap {
@@ -337,6 +338,11 @@ export class MetadataStore implements StateStore {
         this.parseRecentlyViewedMetadata(data, metadata);
         this.parseFavoritesMetadata(data, metadata);
         this.parseFieldViewMetada(data, metadata);
+
+        if (data.extra) {
+            metadata.extra = data.extra;
+        }
+
         return metadata;
     }
 

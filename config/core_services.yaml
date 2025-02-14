@@ -41,6 +41,7 @@ services:
       $listViewColumnLimits: '%module.listview.column_limits%'
       $listViewSettingsLimits: '%module.listview.settings_limits%'
       $listViewActionsLimits: '%module.listview.actions_limits%'
+      $metadataEntries: '%module.metadata.entries%'
       $recordViewActions: '%module.recordview.actions%'
       $recordViewActionLimits: '%module.recordview.actions_limits%'
       $recordModalActions: '%module.recordmodal.actions%'
