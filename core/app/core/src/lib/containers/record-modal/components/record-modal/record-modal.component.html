@@ -28,25 +28,30 @@
 <scrm-modal [closable]="true"
             [close]="closeButton"
             [title]="titleKey"
-            bodyKlass="m-0 small-font"
+            bodyKlass="m-0 p-0 small-font"
             footerKlass="border-0"
             headerKlass="border-0"
             klass="record-modal">
+    <div modal-body *ngIf="modalStore">
 
-    <div modal-body>
-        <div *ngIf="record" class="row pr-1 justify-content-center justify-content-md-end record-modal-position-sticky">
-                <scrm-action-group-menu
-                        [config]="actionsAdapter"
-                        [actionContext]="viewContext"
-                        buttonClass="settings-button">
-                </scrm-action-group-menu>
-        </div>
-        <div *ngIf="record" class="pt-3">
-            <scrm-record-content [dataSource]="contentAdapter"></scrm-record-content>
-        </div>
+        <ng-container >
+            <div *ngIf="record">
+                <scrm-record-content [dataSource]="contentAdapter"></scrm-record-content>
+            </div>
 
-        <ng-container *ngIf="(loading$ | async) as loading">
-            <scrm-loading-spinner *ngIf="loading" [overlay]="true"></scrm-loading-spinner>
+            <ng-container *ngIf="(loading$ | async) as loading">
+                <scrm-loading-spinner *ngIf="loading" [overlay]="true"></scrm-loading-spinner>
+            </ng-container>
         </ng-container>
+
+    </div>
+    <div modal-footer *ngIf="modalStore">
+        <div *ngIf="record && modalStore" class="h-100 d-flex justify-content-end">
+            <scrm-action-group-menu
+                    [config]="actionsAdapter"
+                    [actionContext]="viewContext"
+                    buttonClass="settings-button">
+            </scrm-action-group-menu>
+        </div>
     </div>
 </scrm-modal>
