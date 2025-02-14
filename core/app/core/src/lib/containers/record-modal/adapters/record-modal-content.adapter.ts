@@ -24,8 +24,8 @@
  * the words "Supercharged by SuiteCRM".
  */
 
-import {BehaviorSubject, combineLatestWith, Observable, Subscription} from 'rxjs';
-import {inject, Injectable} from '@angular/core';
+import {combineLatestWith, Observable, Subscription} from 'rxjs';
+import {Injectable} from '@angular/core';
 import {map} from 'rxjs/operators';
 import {MetadataStore, RecordViewMetadata} from '../../../store/metadata/metadata.store.service';
 import {RecordContentConfig, RecordContentDataSource} from "../../../components/record-content/record-content.model";
@@ -43,15 +43,14 @@ export class RecordModalContentAdapter implements RecordContentDataSource {
     inlineEdit: true;
 
     protected fieldSubs: Subscription[] = [];
-    protected recordValidationHandler: RecordValidationHandler;
 
     constructor(
         protected store: RecordModalStore,
         protected metadata: MetadataStore,
         protected language: LanguageStore,
-        protected actions: RecordModalActionManager
+        protected actions: RecordModalActionManager,
+        protected recordValidationHandler: RecordValidationHandler
     ) {
-        this.recordValidationHandler = inject(RecordValidationHandler);
     }
 
     getEditAction(): void {
@@ -67,7 +66,7 @@ export class RecordModalContentAdapter implements RecordContentDataSource {
     }
 
     getDisplayConfig(): Observable<RecordContentConfig> {
-        return this.metadata.recordViewMetadata$.pipe(
+        return this.store.recordViewMetadata$.pipe(
             combineLatestWith(this.store.mode$),
             map(([meta, mode]: [RecordViewMetadata, ViewMode]) => {
                 const layout = this.getLayout(meta);

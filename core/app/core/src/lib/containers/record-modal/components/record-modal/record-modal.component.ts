@@ -71,6 +71,7 @@ export class RecordModalComponent implements OnInit, OnDestroy {
 
     @Input() titleKey = '';
     @Input() module: string;
+    @Input() metadataView: string = 'recordView';
     @Input() mode: ViewMode;
     @Input() recordId: string = '';
     @Input() contentAdapter: any = null;
@@ -90,19 +91,34 @@ export class RecordModalComponent implements OnInit, OnDestroy {
         protected activeModal: NgbActiveModal,
         protected storeFactory: RecordModalStoreFactory,
         protected recordModalContentAdapterFactory: RecordModalContentAdapterFactory,
-        protected recordModalActionsAdapterFactory: RecordModalActionsAdapterFactory,
+        protected recordModalActionsAdapterFactory: RecordModalActionsAdapterFactory
     ) {
-        this.modalStore = this.storeFactory.create();
+    }
+
+    ngOnInit(): void {
+
+        this.modalStore = this.storeFactory.create(this.metadataView);
         if (!this.contentAdapter) {
             this.contentAdapter = this.recordModalContentAdapterFactory.create(this.modalStore);
         }
         if (!this.actionsAdapter) {
             this.actionsAdapter = this.recordModalActionsAdapterFactory.create(this.modalStore);
         }
-    }
 
-    ngOnInit(): void {
-        this.initStore();
+        this.subs.push(
+            this.modalStore.loadMetadata(this.module).pipe(take(1)).subscribe(() => {
+                this.initStore();
+                this.subs.push(
+                    combineLatest([this.modalStore.record$, this.modalStore.loading$, this.modalStore.viewContext$]).pipe(
+                        filter(([record, loading, viewContext]) => !!record && !loading),
+                        take(1)
+                    ).subscribe(([record, loading, viewContext]): void => {
+                        this.record = record;
+                        this.viewContext = viewContext;
+                    })
+                );
+            })
+        );
 
         this.closeButton = {
             klass: ['btn', 'btn-outline-light', 'btn-sm'],
@@ -113,15 +129,6 @@ export class RecordModalComponent implements OnInit, OnDestroy {
             }
         } as ButtonInterface;
 
-        this.subs.push(
-            combineLatest([this.modalStore.record$, this.modalStore.loading$, this.modalStore.viewContext$]).pipe(
-                filter(([record, loading, viewContext]) => !!record && !loading),
-                take(1)
-            ).subscribe(([record, loading, viewContext]): void => {
-                this.record = record;
-                this.viewContext = viewContext;
-            })
-        );
     }
 
     ngOnDestroy(): void {

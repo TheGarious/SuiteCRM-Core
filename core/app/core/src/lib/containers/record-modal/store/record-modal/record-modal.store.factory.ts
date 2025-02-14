@@ -35,6 +35,8 @@ import {AppStateStore} from "../../../../store/app-state/app-state.store";
 import {MessageService} from "../../../../services/message/message.service";
 import {NavigationStore} from "../../../../store/navigation/navigation.store";
 import {ModuleNavigation} from "../../../../services/navigation/module-navigation/module-navigation.service";
+import {FieldActionsAdapterFactory} from "../../../../components/field-layout/adapters/field.actions.adapter.factory";
+import {RecordValidationHandler} from "../../../../services/record/validation/record-validation.handler";
 
 @Injectable({
     providedIn: 'root',
@@ -50,12 +52,15 @@ export class RecordModalStoreFactory {
         protected panelLogicManager: PanelLogicManager,
         protected message: MessageService,
         protected navigationStore: NavigationStore,
-        protected moduleNavigation: ModuleNavigation
+        protected moduleNavigation: ModuleNavigation,
+        protected actionAdaptorFactory: FieldActionsAdapterFactory,
+        protected recordValidationHandler: RecordValidationHandler
     ) {
     }
 
-    create(): RecordModalStore {
+    create(metadataView: string): RecordModalStore {
         return new RecordModalStore(
+            metadataView,
             this.storeFactory,
             this.appStateStore,
             this.preferences,
@@ -64,7 +69,9 @@ export class RecordModalStoreFactory {
             this.panelLogicManager,
             this.message,
             this.navigationStore,
-            this.moduleNavigation
+            this.moduleNavigation,
+            this.actionAdaptorFactory,
+            this.recordValidationHandler
         );
     }
 }
