@@ -92,6 +92,7 @@ export interface TabDefinition {
     panelDefault: 'expanded' | 'collapsed';
     display?: boolean;
     displayLogic?: LogicDefinitions;
+    showHeader?: boolean;
 }
 
 export interface LogicDefinitions {
