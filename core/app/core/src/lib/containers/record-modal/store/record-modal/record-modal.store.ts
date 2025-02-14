@@ -24,20 +24,16 @@
  * the words "Supercharged by SuiteCRM".
  */
 
-import {inject, Injectable} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {BehaviorSubject, combineLatest, combineLatestWith, Observable, of, Subscription} from 'rxjs';
 import {catchError, distinctUntilChanged, finalize, map, take, tap} from 'rxjs/operators';
-import {MetadataStore, RecordViewMetadata} from '../../../../store/metadata/metadata.store.service';
+import {Metadata, MetadataStore, RecordViewMetadata} from '../../../../store/metadata/metadata.store.service';
 import {StateStore} from '../../../../store/state';
 import {UserPreferenceStore} from '../../../../store/user-preference/user-preference.store';
 import {RecordStoreFactory} from "../../../../store/record/record.store.factory";
 import {RecordStore} from "../../../../store/record/record.store";
 import {isEmpty} from "lodash-es";
-import {
-    RecordViewData,
-    RecordViewModel,
-    RecordViewState
-} from "../../../../views/record/store/record-view/record-view.store.model";
+import {RecordViewData, RecordViewState} from "../../../../views/record/store/record-view/record-view.store.model";
 import {FieldActionsAdapterFactory} from "../../../../components/field-layout/adapters/field.actions.adapter.factory";
 import {RecordValidationHandler} from "../../../../services/record/validation/record-validation.handler";
 import {Params} from "@angular/router";
@@ -45,7 +41,6 @@ import {LanguageStore} from "../../../../store/language/language.store";
 import {PanelLogicManager} from "../../../../components/panel-logic/panel-logic.manager";
 import {AppStateStore} from "../../../../store/app-state/app-state.store";
 import {MessageService} from "../../../../services/message/message.service";
-import {ViewStore} from "../../../../store/view/view.store";
 import {NavigationStore} from "../../../../store/navigation/navigation.store";
 import {ModuleNavigation} from "../../../../services/navigation/module-navigation/module-navigation.service";
 import {Record} from "../../../../common/record/record.model";
@@ -70,13 +65,15 @@ const initialState: any = {
 };
 
 @Injectable()
-export class RecordModalStore extends ViewStore implements StateStore {
+export class RecordModalStore implements StateStore {
 
     record$: Observable<Record>;
     stagingRecord$: Observable<Record>;
     loading$: Observable<boolean>;
     mode$: Observable<ViewMode>;
     viewContext$: Observable<ViewContext>;
+    metadata$: Observable<Metadata>;
+    recordViewMetadata$: Observable<RecordViewMetadata>;
 
     panels$: Observable<Panel[]>;
     panels: Panel[] = [];
@@ -100,50 +97,38 @@ export class RecordModalStore extends ViewStore implements StateStore {
     protected subs: Subscription[] = [];
     protected fieldSubs: Subscription[] = [];
     protected panelsSubject: BehaviorSubject<Panel[]> = new BehaviorSubject(this.panels);
-    protected actionAdaptorFactory: FieldActionsAdapterFactory;
-    protected recordValidationHandler: RecordValidationHandler;
+    protected metadataState: BehaviorSubject<Metadata>;
 
     constructor(
+        protected metadataView: string,
         protected recordStoreFactory: RecordStoreFactory,
         protected appStateStore: AppStateStore,
         protected preferences: UserPreferenceStore,
-        protected metadataStore: MetadataStore,
+        protected meta: MetadataStore,
         protected languageStore: LanguageStore,
         protected panelLogicManager: PanelLogicManager,
         protected message: MessageService,
         protected navigationStore: NavigationStore,
         protected moduleNavigation: ModuleNavigation,
+        protected actionAdaptorFactory: FieldActionsAdapterFactory,
+        protected recordValidationHandler: RecordValidationHandler
     ) {
-        super(appStateStore, languageStore, navigationStore, moduleNavigation, metadataStore);
+        this.metadataState = new BehaviorSubject<Metadata>({});
+        this.metadata$ = this.metadataState.asObservable();
+        this.recordViewMetadata$ = this.metadata$.pipe(map(meta => {
+            if (meta?.extra[metadataView]) {
+                return meta?.extra[metadataView] as RecordViewMetadata;
+            }
 
-        this.actionAdaptorFactory = inject(FieldActionsAdapterFactory);
-        this.panels$ = this.panelsSubject.asObservable();
-        this.recordStore = recordStoreFactory.create(this.getViewFieldsObservable(), this.getRecordMetadata$());
-        this.record$ = this.recordStore.state$.pipe(distinctUntilChanged());
-        this.stagingRecord$ = this.recordStore.staging$.pipe(distinctUntilChanged());
+            return meta?.recordView ?? {} as RecordViewMetadata;
+        }));
+
+
         this.loading$ = this.state$.pipe(map(state => state.loading));
+
         this.metadataLoadingState = new BehaviorSubject(false);
         this.metadataLoading$ = this.metadataLoadingState.asObservable();
         this.mode$ = this.state$.pipe(map(state => state.mode));
-
-        const data$ = this.record$.pipe(
-            combineLatestWith(this.loading$),
-            map(([record, loading]: [Record, boolean]) => {
-                this.data = {record, loading} as RecordViewData;
-                return this.data;
-            })
-        );
-
-        this.vm$ = data$.pipe(
-            combineLatestWith(this.appData$, this.metadata$),
-            map(([data, appData, metadata]) => {
-                this.vm = {data, appData, metadata} as RecordViewModel;
-                return this.vm;
-            }));
-
-        this.viewContext$ = this.record$.pipe(map(() => this.getViewContext()));
-        this.initPanels();
-        this.recordValidationHandler = inject(RecordValidationHandler);
     }
 
     clear(): void {
@@ -173,31 +158,53 @@ export class RecordModalStore extends ViewStore implements StateStore {
         this.setMode(mode);
         this.metadataLoadingState.next(true);
 
-        if (mode === 'create') {
-            this.recordStore.init(
-                {
-                    id: '',
-                    type: '',
-                    module: module,
-                    attributes: {
-                        assigned_user_id: this.appStateStore.getCurrentUser().id,
-                        assigned_user_name: {
-                            id: this.appStateStore.getCurrentUser().id,
-                            user_name: this.appStateStore.getCurrentUser().userName
-                        },
-                    },
-                } as Record,
-                true
-            );
-            this.metadataLoadingState.next(false);
-        } else {
-            this.load().pipe(
-                take(1),
-                tap(() => {
-                    this.metadataLoadingState.next(false);
-                    this.parseParams(params);
-                })).subscribe();
-        }
+        this.meta.getMetadata(module).pipe(
+            tap((metadata) => {
+                this.metadataState.next(metadata ?? {});
+                this.metadataLoadingState.next(false);
+
+                this.panels$ = this.panelsSubject.asObservable();
+                this.recordStore = this.recordStoreFactory.create(this.getViewFieldsObservable(), this.getRecordMetadata$());
+                this.record$ = this.recordStore.state$.pipe(distinctUntilChanged());
+                this.stagingRecord$ = this.recordStore.staging$.pipe(distinctUntilChanged());
+
+                const data$ = this.record$.pipe(
+                    combineLatestWith(this.loading$),
+                    map(([record, loading]: [Record, boolean]) => {
+                        this.data = {record, loading} as RecordViewData;
+                        return this.data;
+                    })
+                );
+
+                this.viewContext$ = this.record$.pipe(map(() => this.getViewContext()));
+
+                this.initPanels();
+
+                if (mode === 'create') {
+                    this.recordStore.init(
+                        {
+                            id: '',
+                            type: '',
+                            module: module,
+                            attributes: {
+                                assigned_user_id: this.appStateStore.getCurrentUser().id,
+                                assigned_user_name: {
+                                    id: this.appStateStore.getCurrentUser().id,
+                                    user_name: this.appStateStore.getCurrentUser().userName
+                                },
+                            },
+                        } as Record,
+                        true
+                    );
+                } else {
+                    this.load().pipe(
+                        take(1),
+                        tap(() => {
+                            this.parseParams(params);
+                        })).subscribe();
+                }
+            })
+        ).subscribe();
     }
 
 
@@ -228,6 +235,10 @@ export class RecordModalStore extends ViewStore implements StateStore {
                 });
             })
         );
+    }
+
+    public loadMetadata(module: string): Observable<Metadata> {
+        return this.meta.getMetadata(module);
     }
 
     save(): Observable<Record> {
@@ -287,7 +298,7 @@ export class RecordModalStore extends ViewStore implements StateStore {
      * @returns {object} Observable<ViewFieldDefinition[]>
      */
     protected getViewFieldsObservable(): Observable<ViewFieldDefinition[]> {
-        return this.metadataStore.recordViewMetadata$.pipe(map((recordMetadata: RecordViewMetadata) => {
+        return this.recordViewMetadata$.pipe(map((recordMetadata: RecordViewMetadata) => {
             const fieldsMap: ViewFieldDefinitionMap = {};
 
             recordMetadata.panels.forEach(panel => {
@@ -331,7 +342,7 @@ export class RecordModalStore extends ViewStore implements StateStore {
     }
 
     protected getRecordMetadata$(): Observable<ObjectMap> {
-        return this.metadataStore.recordViewMetadata$.pipe(map((recordMetadata: RecordViewMetadata) => {
+        return this.recordViewMetadata$.pipe(map((recordMetadata: RecordViewMetadata) => {
             return recordMetadata?.metadata ?? {};
         }));
     }
@@ -389,7 +400,7 @@ export class RecordModalStore extends ViewStore implements StateStore {
 
     protected initPanels(): void {
         const panelSub = combineLatest([
-            this.metadataStore.recordViewMetadata$,
+            this.recordViewMetadata$,
             this.stagingRecord$,
             this.languageStore.vm$,
         ]).subscribe(([meta, record, languages]) => {
@@ -464,8 +475,7 @@ export class RecordModalStore extends ViewStore implements StateStore {
      * @returns {object} metadata RecordViewMetadata
      */
     protected getRecordViewMetadata(): RecordViewMetadata {
-        const meta = this.metadataStore.get() || {};
-        return meta.recordView || {} as RecordViewMetadata;
+        return deepClone(this?.metadataState?.value?.recordView || {}) as RecordViewMetadata;
     }
 
     /**
