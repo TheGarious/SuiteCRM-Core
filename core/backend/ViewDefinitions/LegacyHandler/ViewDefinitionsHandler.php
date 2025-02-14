@@ -29,6 +29,7 @@ namespace App\ViewDefinitions\LegacyHandler;
 
 use App\Engine\LegacyHandler\LegacyHandler;
 use App\Engine\LegacyHandler\LegacyScopeState;
+use App\Engine\Service\DefinitionEntryHandlingTrait;
 use App\FieldDefinitions\Entity\FieldDefinition;
 use App\FieldDefinitions\Service\FieldDefinitionsProviderInterface;
 use App\Module\Service\ModuleNameMapperInterface;
@@ -48,6 +49,8 @@ use function in_array;
  */
 class ViewDefinitionsHandler extends LegacyHandler implements ViewDefinitionsProviderInterface
 {
+    use DefinitionEntryHandlingTrait;
+
     public const HANDLER_KEY = 'view-definitions';
 
     /**
@@ -68,7 +71,7 @@ class ViewDefinitionsHandler extends LegacyHandler implements ViewDefinitionsPro
     /**
      * @var array
      */
-    private $defaultFields = [
+    protected $defaultFields = [
         'type' => 'type',
         'label' => 'vname',
     ];
@@ -76,17 +79,17 @@ class ViewDefinitionsHandler extends LegacyHandler implements ViewDefinitionsPro
     /**
      * @var LoggerInterface
      */
-    private $logger;
+    protected $logger;
 
     /**
      * @var FieldDefinitionsProviderInterface
      */
-    private $fieldDefinitionProvider;
+    protected $fieldDefinitionProvider;
 
     /**
      * @var ModuleNameMapperInterface
      */
-    private $moduleNameMapper;
+    protected $moduleNameMapper;
 
     /**
      * @var RecordViewDefinitionHandler
@@ -96,32 +99,33 @@ class ViewDefinitionsHandler extends LegacyHandler implements ViewDefinitionsPro
     /**
      * @var RecordModalDefinitionHandler
      */
-    private $recordModalDefinitionHandler;
+    protected $recordModalDefinitionHandler;
 
     /**
      * @var SubPanelDefinitionHandler
      */
-    private $subPanelDefinitionHandler;
+    protected $subPanelDefinitionHandler;
 
     /**
      * @var ListViewDefinitionHandler
      */
-    private $listViewDefinitionsHandler;
+    protected $listViewDefinitionsHandler;
 
     /**
      * @var ViewDefinitionMappers
      */
-    private $mappers;
+    protected $mappers;
 
     /**
      * @var MassUpdateDefinitionProviderInterface
      */
-    private $massUpdateDefinitionProvider;
+    protected $massUpdateDefinitionProvider;
 
     /**
      * @var FieldAliasMapper
      */
-    private $fieldAliasMapper;
+    protected $fieldAliasMapper;
+    protected array $metadataEntries;
 
     /**
      * ViewDefinitionsHandler constructor.
@@ -141,26 +145,27 @@ class ViewDefinitionsHandler extends LegacyHandler implements ViewDefinitionsPro
      * @param LoggerInterface $logger
      * @param ViewDefinitionMappers $mappers
      * @param RequestStack $session
+     * @param array $metadataEntries
      */
     public function __construct(
-        string                                $projectDir,
-        string                                $legacyDir,
-        string                                $legacySessionName,
-        string                                $defaultSessionName,
-        LegacyScopeState                      $legacyScopeState,
-        ModuleNameMapperInterface             $moduleNameMapper,
-        FieldDefinitionsProviderInterface     $fieldDefinitionProvider,
-        RecordViewDefinitionHandler           $recordViewDefinitionHandler,
-        RecordModalDefinitionHandler          $recordModalDefinitionHandler,
-        SubPanelDefinitionProviderInterface   $subPanelDefinitionHandler,
-        ListViewDefinitionHandler             $listViewDefinitionsHandler,
+        string $projectDir,
+        string $legacyDir,
+        string $legacySessionName,
+        string $defaultSessionName,
+        LegacyScopeState $legacyScopeState,
+        ModuleNameMapperInterface $moduleNameMapper,
+        FieldDefinitionsProviderInterface $fieldDefinitionProvider,
+        RecordViewDefinitionHandler $recordViewDefinitionHandler,
+        RecordModalDefinitionHandler $recordModalDefinitionHandler,
+        SubPanelDefinitionProviderInterface $subPanelDefinitionHandler,
+        ListViewDefinitionHandler $listViewDefinitionsHandler,
         MassUpdateDefinitionProviderInterface $massUpdateDefinitionProvider,
-        FieldAliasMapper                      $fieldAliasMapper,
-        LoggerInterface                       $logger,
-        ViewDefinitionMappers                 $mappers,
-        RequestStack                          $session
-    )
-    {
+        FieldAliasMapper $fieldAliasMapper,
+        LoggerInterface $logger,
+        ViewDefinitionMappers $mappers,
+        RequestStack $session,
+        array $metadataEntries
+    ) {
         parent::__construct(
             $projectDir,
             $legacyDir,
@@ -179,6 +184,7 @@ class ViewDefinitionsHandler extends LegacyHandler implements ViewDefinitionsPro
         $this->logger = $logger;
         $this->mappers = $mappers;
         $this->fieldAliasMapper = $fieldAliasMapper;
+        $this->metadataEntries = $metadataEntries;
     }
 
     /**
@@ -217,6 +223,16 @@ class ViewDefinitionsHandler extends LegacyHandler implements ViewDefinitionsPro
         $viewDef = new ViewDefinition();
         $viewDef->setId($moduleName);
 
+        $metadataEntries = $this->getMetadataEntries($moduleName);
+        $defaultEntries = [
+            'listView',
+            'search',
+            'recordView',
+            'recordModal',
+            'subPanel',
+            'massUpdate',
+        ];
+        $nonDefaultEntries = array_diff_key($metadataEntries, array_flip($defaultEntries));
 
         if (in_array('listView', $views, true)) {
             $listViewDef = $this->listViewDefinitionsHandler->fetch($moduleName, $legacyModuleName, $fieldDefinition);
@@ -254,6 +270,25 @@ class ViewDefinitionsHandler extends LegacyHandler implements ViewDefinitionsPro
         if (in_array('massUpdate', $views, true)) {
             $massUpdateDefinitions = $this->massUpdateDefinitionProvider->getDefinitions($moduleName);
             $viewDef->setMassUpdate($massUpdateDefinitions);
+        }
+
+
+        foreach ($nonDefaultEntries as $entryKey => $entry) {
+            $entryType = $entry['type'] ?? '';
+            if (!$entryType) {
+                continue;
+            }
+
+            $legacyType = $entry['legacyType'] ?? '';
+            if ($entryType === 'record' && $legacyType !== '') {
+                $entryDefinition = $this->recordViewDefinitionHandler->fetch(
+                    $moduleName,
+                    $legacyModuleName,
+                    $fieldDefinition,
+                    $legacyType
+                );
+                $viewDef->setExtraEntry($entryKey, $entryDefinition);
+            }
         }
 
         $mappers = $this->mappers->get($moduleName) ?? [];
@@ -614,5 +649,24 @@ class ViewDefinitionsHandler extends LegacyHandler implements ViewDefinitionsPro
         $merged['fieldDefinition']['metadata'] = $metadata;
 
         return $merged;
+    }
+
+    protected function getMetadataEntries(string $module): array
+    {
+        $config = $this->metadataEntries ?? [];
+        $config['modules'][$module] = $config['modules'][$module] ?? [];
+        $config['modules'][$module]['entries'] = $config['modules'][$module]['entries'] ?? [];
+        $config['modules'][$module]['exclude'] = $config['modules'][$module]['exclude'] ?? [];
+
+        $config['modules'][$module]['entries'] = array_merge(
+            $moduleDefaults['entries'] ?? [],
+            $config['modules'][$module]['entries']
+        );
+        $config['modules'][$module]['exclude'] = array_merge(
+            $moduleDefaults['exclude'] ?? [],
+            $config['modules'][$module]['exclude']
+        );
+
+        return $this->filterDefinitionEntries($module, 'entries', $config, null);
     }
 }

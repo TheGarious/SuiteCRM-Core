@@ -88,6 +88,19 @@ class ModuleMetadata
     public array $editView;
 
     /**
+     * Edit View metadata
+     *
+     * @var array
+     */
+    #[ApiProperty(
+        openapiContext: [
+            'type' => 'array',
+            'description' => 'Extra metadata entries',
+        ]
+    )]
+    public array $extra;
+
+    /**
      * List View metadata
      *
      * @var array
@@ -198,6 +211,24 @@ class ModuleMetadata
     }
 
     /**
+     * Get extra metadata
+     * @return array|null
+     */
+    public function getExtra(): ?array
+    {
+        return $this->extra ?? null;
+    }
+
+    /**
+     * Set extra metadata
+     * @param array|null $extra
+     */
+    public function setExtra(?array $extra): void
+    {
+        $this->extra = $extra;
+    }
+
+    /**
      * @return array
      */
     public function toArray(): array
@@ -213,6 +244,7 @@ class ModuleMetadata
             'massUpdate' => $this->getMassUpdate() ?? [],
             'recentlyViewed' => $this->getRecentlyViewed() ?? [],
             'favorites' => $this->getFavorites() ?? [],
+            'extra' => $this->getExtra() ?? [],
         ];
     }
 

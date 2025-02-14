@@ -103,6 +103,14 @@ class ViewDefinition
     )]
     public array $massUpdate;
 
+    #[ApiProperty(
+        openapiContext: [
+            'type' => 'array',
+            'description' => 'Extra metadata entries'
+        ]
+    )]
+    public array $extra;
+
     /**
      * The module
      */
@@ -265,5 +273,51 @@ class ViewDefinition
         $this->massUpdate = $massUpdate;
 
         return $this;
+    }
+
+    /**
+     * Get extra metadata entries
+     * @return array|null
+     */
+    public function getExtraEntries(): ?array
+    {
+        return $this->extra ?? null;
+    }
+
+    /**
+     * Set extra metadata entries
+     * @param array $extraEntries
+     */
+    public function setExtraEntries(array $extraEntries): void
+    {
+        $this->extra = $extraEntries;
+    }
+
+    /**
+     * Get extra metadata entry
+     * @param $key
+     * @return array|null
+     */
+    public function getExtraEntry($key): ?array
+    {
+        if (empty($this->extra[$key])) {
+            return null;
+        }
+
+        return $this->extra[$key] ?? null;
+    }
+
+    /**
+     * Set extra metadata entry
+     * @param string $key
+     * @param array $definition
+     */
+    public function setExtraEntry(string$key, array $definition): void
+    {
+        if (empty($this->extra)) {
+            $this->extra = [];
+        }
+
+        $this->extra[$key] = $definition;
     }
 }
