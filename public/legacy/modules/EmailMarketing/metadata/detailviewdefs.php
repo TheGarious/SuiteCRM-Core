@@ -167,35 +167,6 @@ $viewdefs ['EmailMarketing'] = [
                             'descriptionKey' => 'LBL_SEND_TEST_EMAIL_DESC',
                             'centered' => true,
                             'fields' => [
-                                'prospect_list_name' => [
-                                    'name' => 'prospect_list_name',
-                                    'label' => 'LBL_PROSPECT_LIST_NAME',
-                                    'type' => 'multirelate',
-                                    'fieldDefinition' => [
-                                        'link' => 'prospectlists',
-                                        'source' => 'non-db',
-                                        'filterOnEmpty' => true,
-                                        'module' => 'ProspectLists',
-                                        'rname' => 'name',
-                                        'filter' => [
-                                            'static' => [
-                                                'list_type' => 'test'
-                                            ]
-                                        ],
-                                    ],
-                                ],
-                                'email_marketing_users' => [
-                                    'name' => 'email_marketing_users',
-                                    'label' => 'LBL_USERS',
-                                    'type' => 'multirelate',
-                                    'fieldDefinition' => [
-                                        'source' => 'non-db',
-                                        'filterOnEmpty' => true,
-                                        'module' => 'Users',
-                                        'link' => 'emailmarketing_users',
-                                        'rname' => 'name',
-                                    ],
-                                ],
                                 'email_address' => [
                                     'name' => 'email_address',
                                     'module' => 'EmailAddress',
@@ -219,6 +190,35 @@ $viewdefs ['EmailMarketing'] = [
                                             ]
                                         ]
                                     ]
+                                ],
+                                'email_marketing_users' => [
+                                    'name' => 'email_marketing_users',
+                                    'label' => 'LBL_USERS',
+                                    'type' => 'multirelate',
+                                    'fieldDefinition' => [
+                                        'source' => 'non-db',
+                                        'filterOnEmpty' => true,
+                                        'module' => 'Users',
+                                        'link' => 'emailmarketing_users',
+                                        'rname' => 'name',
+                                    ],
+                                ],
+                                'prospect_list_name' => [
+                                    'name' => 'prospect_list_name',
+                                    'label' => 'LBL_PROSPECT_LIST_NAME',
+                                    'type' => 'multirelate',
+                                    'fieldDefinition' => [
+                                        'link' => 'prospectlists',
+                                        'source' => 'non-db',
+                                        'filterOnEmpty' => true,
+                                        'module' => 'ProspectLists',
+                                        'rname' => 'name',
+                                        'filter' => [
+                                            'static' => [
+                                                'list_type' => 'test'
+                                            ]
+                                        ],
+                                    ],
                                 ],
                             ]
                         ],
