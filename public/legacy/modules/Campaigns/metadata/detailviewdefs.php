@@ -279,13 +279,13 @@ $viewdefs ['Campaigns'] = [
                     [
                         'name' => 'propects_lists',
                         'label' => 'LBL_PROSPECT_LISTS'
-                    ]
-                ],
-                [
+                    ],
                     [
                         'name' => 'content',
                         'label' => 'LBL_CAMPAIGN_CONTENT',
-                    ],
+                    ]
+                ],
+                [
                     [
                         'name' => 'assigned_user_name',
                         'label' => 'LBL_ASSIGNED_TO',
