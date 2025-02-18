@@ -145,6 +145,7 @@ $layout_defs['Campaigns'] = array(
                 ),
             ),
             'order' => 20,
+            'hidden' => true,
             'sort_order' => 'desc',
             'sort_by' => 'date_start',
             'module' => 'EmailMarketing',
