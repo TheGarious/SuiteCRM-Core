@@ -38,12 +38,14 @@
                  [class.h-100]="direction() === 'flex-row'">
 
                 <!-- LABEL -->
-                <span *ngIf="groupField.labelKey && showLabel(groupField.definition.name)"
-                      class="field-group-label pt-2 pr-1 font-weight-bold">
-                        <label>
-                            <scrm-label [labelKey]="groupField.labelKey" [module]="getModule()"></scrm-label>
-                        </label>
-                    </span>
+                <span class="field-group-label pt-2 pr-1 font-weight-bold">
+                <label *ngIf="groupField.labelKey && showLabel(groupField.definition.name)">
+                    <scrm-label [labelKey]="groupField.labelKey" [module]="getModule()"></scrm-label>
+                    <ng-container *ngIf="groupField?.required() && (['edit', 'create'].includes(mode))">
+                        <span class="required">*</span>
+                    </ng-container>
+                </label>
+                </span>
 
                 <!-- VALUE -->
                 <span *ngIf="groupField.type" class="field-group-field pr-1">
