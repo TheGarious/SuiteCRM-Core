@@ -204,13 +204,13 @@ export class RelateEditFieldComponent extends BaseRelateComponent {
         this.setValue('', '');
         this.selectedValue = {};
         this.options = [];
+        this.currentOptions.set([]);
     }
 
     onClear(event): void {
         this.selectedValue = {};
         this.filterValue = '';
         this.options = [];
-        this.currentOptions.set([]);
         this.onRemove();
     }
 
@@ -297,7 +297,9 @@ export class RelateEditFieldComponent extends BaseRelateComponent {
         }
 
         this.options = [this.selectedValue];
-        this.currentOptions.set([this.selectedValue])
+        if (this.selectedValue !== null){
+            this.currentOptions.set(this.options)
+        }
     }
 
     /**
