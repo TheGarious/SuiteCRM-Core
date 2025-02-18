@@ -106,6 +106,7 @@ $viewdefs ['Campaigns'] = [
                                 ],
                                 'params' => [
                                     'expanded' => true,
+                                    'collapsedMobile' => true,
                                 ],
                                 'extraParams' => [
                                     'type' => 'marketing',
@@ -124,6 +125,7 @@ $viewdefs ['Campaigns'] = [
                                 'key' => 'create',
                                 'params' => [
                                     'expanded' => true,
+                                    'collapsedMobile' => true,
                                 ],
                                 'module' => 'surveys',
                                 'labelKey' => 'LBL_NEW_SURVEY',
