@@ -48,7 +48,7 @@ global $mod_strings, $app_strings;
 if(ACLController::checkAccess('Campaigns', 'edit', true))
     $module_menu[]=	array(
         "index.php?module=Campaigns&action=EditView",
-        $mod_strings['LNK_NEW_CAMPAIGN'],"CreateCampaigns"
+        $mod_strings['LNK_NEW_CAMPAIGN'], "Create", 'Campaigns'
     );
 
 if (ACLController::checkAccess('Campaigns', 'list', true)) {
@@ -74,12 +74,7 @@ if (ACLController::checkAccess('EmailTemplates', 'list', true)) {
         $mod_strings['LNK_EMAIL_TEMPLATE_LIST'],"View_Email_Templates", 'Emails'
     );
 }
-if (ACLController::checkAccess('Campaigns', 'edit', true)) {
-    $module_menu[] = array(
-        "index.php?module=Campaigns&action=CampaignDiagnostic&return_module=Campaigns&return_action=index",
-        $mod_strings['LBL_DIAGNOSTIC_WIZARD'],"View_Diagnostics"
-    );
-}
+
 if (ACLController::checkAccess('Campaigns', 'edit', true)) {
     $module_menu[] = array(
         "index.php?module=Campaigns&action=WebToLeadCreation&return_module=Campaigns&return_action=index" . (isset($_REQUEST['record']) ? ('&campaign_id=' . $_REQUEST['record']) : ''),
