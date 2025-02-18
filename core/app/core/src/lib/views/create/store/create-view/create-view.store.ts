@@ -165,7 +165,7 @@ export class CreateViewStore extends RecordViewStore {
             /* eslint-enable camelcase,@typescript-eslint/camelcase */
         } as Record;
 
-        if (this.preferences.getUserPreference('use_real_names')) {
+        if (this.preferences.getUserPreference('use_real_names') !== 'off') {
             blankRecord.attributes.assigned_user_name.full_name = (user?.firstName ?? '') + (user?.lastName ?? '');
         } else {
             blankRecord.attributes.assigned_user_name.user_name = user.userName;
