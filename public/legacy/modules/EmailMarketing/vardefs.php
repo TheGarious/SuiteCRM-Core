@@ -168,7 +168,6 @@ $dictionary['EmailMarketing'] = [
             'source' => 'non-db',
             'groupFields' => [
                 'name',
-                'campaign_name',
                 'outbound_email_name',
                 'template_name',
                 'date_start',
@@ -176,10 +175,10 @@ $dictionary['EmailMarketing'] = [
                 'type',
                 'prospect_list_name',
                 'survey',
+                'campaign_name',
             ],
             'layout' => [
                 'name',
-                'campaign_name',
                 'outbound_email_name',
                 'template_name',
                 'date_start',
@@ -187,6 +186,7 @@ $dictionary['EmailMarketing'] = [
                 'type',
                 'prospect_list_name',
                 'survey',
+                'campaign_name',
             ],
             'display' => 'vertical',
             'showLabel' => [
