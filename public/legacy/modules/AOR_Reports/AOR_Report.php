@@ -1242,8 +1242,6 @@ class AOR_Report extends Basic
 
                 $path = unserialize(base64_decode($field->module_path));
 
-                $data = $field_module->field_defs[$field->field] ?? [];
-
                 $field_module = $module;
                 $table_alias = $field_module->table_name;
                 $oldAlias = $table_alias;
@@ -1266,6 +1264,7 @@ class AOR_Report extends Basic
                     }
                 }
 
+                $data = $field_module->field_defs[$field->field] ?? [];
 
                 if (!empty($data)){
                     if ($data['type'] == 'relate' && isset($data['id_name'])) {
