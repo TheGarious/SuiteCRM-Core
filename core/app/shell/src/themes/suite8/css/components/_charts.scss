@@ -44,6 +44,10 @@
 
 .widget-background {
   background-color: white;
+
+  .login-form {
+    position: static!important;
+  }
 }
 
 .widget .chart-legend .legend-wrap {
