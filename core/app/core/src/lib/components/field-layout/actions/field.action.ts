@@ -24,11 +24,11 @@
  * the words "Supercharged by SuiteCRM".
  */
 
-import {RecordViewStore} from '../../../views/record/store/record-view/record-view.store';
 import {Action, ActionData, ActionHandler} from "../../../common/actions/action.model";
+import {BaseRecordContainerStore} from "../../../common/containers/record/record-container.store.model";
 
 export interface FieldActionData extends ActionData {
-    store: RecordViewStore;
+    store: BaseRecordContainerStore;
     action?: Action;
 }
 
