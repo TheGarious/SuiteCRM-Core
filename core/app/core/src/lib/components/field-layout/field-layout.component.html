@@ -35,7 +35,8 @@
 
             <ng-container *ngIf="col.field && col.field.display() !== 'none'">
                 <div class="field-layout-field-group-wrapper form-group row">
-                    <div class="{{col?.headerColumnClass}} field-layout-field-label-wrapper col-form-label label-container">
+                    <div *ngIf="col?.field?.metadata?.labelDisplay !== 'none'"
+                            class="{{col?.headerColumnClass}} field-layout-field-label-wrapper col-form-label label-container">
                         <strong>
                             <ng-container
                                 *ngIf="col.field?.required()  && (['edit', 'create'].includes(config.mode))">
