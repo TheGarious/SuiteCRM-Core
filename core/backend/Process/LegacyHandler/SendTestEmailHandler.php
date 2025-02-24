@@ -30,12 +30,18 @@ namespace App\Process\LegacyHandler;
 
 
 use ApiPlatform\Exception\InvalidArgumentException;
+use App\Emails\LegacyHandler\EmailBuilderHandler;
+use App\Emails\LegacyHandler\EmailProcessProcessor;
+use App\Emails\LegacyHandler\FilterEmailListHandler;
+use App\Emails\LegacyHandler\SendEmailHandler;
 use App\Engine\LegacyHandler\LegacyHandler;
 use App\Engine\LegacyHandler\LegacyScopeState;
-use App\Module\ProspectLists\Service\MultiRelate\ProspectListsEmailMapper;
+use App\Module\Service\ModuleNameMapperInterface;
 use App\Process\Entity\Process;
 use App\Process\Service\ProcessHandlerInterface;
+use App\SystemConfig\LegacyHandler\SystemConfigHandler;
 use BeanFactory;
+use PHPMailer\PHPMailer\Exception;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class SendTestEmailHandler extends LegacyHandler implements ProcessHandlerInterface
@@ -43,20 +49,42 @@ class SendTestEmailHandler extends LegacyHandler implements ProcessHandlerInterf
     protected const MSG_OPTIONS_NOT_FOUND = 'Process options is not defined';
     protected const PROCESS_TYPE = 'record-send-test-email';
 
-    protected ProspectListsEmailMapper $prospectListsEmailMapper;
+    protected FilterEmailListHandler $filterEmailListHandler;
+    protected EmailBuilderHandler $emailBuilderHandler;
+    protected ModuleNameMapperInterface $moduleNameMapper;
+    protected SendEmailHandler $sendEmailHandler;
+    protected SystemConfigHandler $systemConfigHandler;
+    protected EmailProcessProcessor $emailProcessProcessor;
 
     public function __construct(
-        string                   $projectDir,
-        string                   $legacyDir,
-        string                   $legacySessionName,
-        string                   $defaultSessionName,
-        LegacyScopeState         $legacyScopeState,
-        RequestStack             $requestStack,
-        ProspectListsEmailMapper $prospectListsEmailMapper,
+        string $projectDir,
+        string $legacyDir,
+        string $legacySessionName,
+        string $defaultSessionName,
+        LegacyScopeState $legacyScopeState,
+        RequestStack $requestStack,
+        FilterEmailListHandler $filterEmailListHandler,
+        EmailBuilderHandler $emailBuilderHandler,
+        ModuleNameMapperInterface $moduleNameMapper,
+        SendEmailHandler $sendEmailHandler,
+        SystemConfigHandler $systemConfigHandler,
+        EmailProcessProcessor $emailProcessProcessor
     )
     {
-        parent::__construct($projectDir, $legacyDir, $legacySessionName, $defaultSessionName, $legacyScopeState, $requestStack);
-        $this->prospectListsEmailMapper = $prospectListsEmailMapper;
+        parent::__construct(
+            $projectDir,
+            $legacyDir,
+            $legacySessionName,
+            $defaultSessionName,
+            $legacyScopeState,
+            $requestStack
+        );
+        $this->filterEmailListHandler = $filterEmailListHandler;
+        $this->emailBuilderHandler = $emailBuilderHandler;
+        $this->moduleNameMapper = $moduleNameMapper;
+        $this->sendEmailHandler = $sendEmailHandler;
+        $this->systemConfigHandler = $systemConfigHandler;
+        $this->emailProcessProcessor = $emailProcessProcessor;
     }
 
     /**
@@ -113,44 +141,59 @@ class SendTestEmailHandler extends LegacyHandler implements ProcessHandlerInterf
 
     /**
      * @inheritDoc
+     * @throws Exception
      */
     public function run(Process $process): void
     {
         $options = $process->getOptions();
 
         $fields = $options['params']['fields'];
+        $module = $options['module'];
+        $id = $options['id'];
 
         $this->init();
+        $this->startLegacyApp();
 
-        $emails = [];
+        $module = $this->moduleNameMapper->toLegacy($module);
 
-        foreach ($fields as $field) {
-            $module = $field['module'];
-            $value = $field['value'];
+        $bean = BeanFactory::getBean($module, $id);
 
-            if ($value === null) {
-                continue;
-            }
+        $max = $this->systemConfigHandler->getSystemConfig('test_email_limit')?->getValue();
 
-            if ($module === 'ProspectLists') {
-                $this->prospectListsEmailMapper->getEmailFromMultiRelate($emails, $module, $value);
-                continue;
-            }
+        $emails = $this->filterEmailListHandler->getEmails($fields, $max, true);
 
-            if ($module === 'Users') {
-                foreach ($value as $key => $item) {
-                    $id = $item['id'];
-                    $bean = BeanFactory::getBean($module, $id);
-                    $emails[$bean->email1] = $bean->email1;
-                }
-                continue;
-            }
-
-            foreach ($value as $key => $item) {
-                $emails[$item] = $item;
-            }
+        if ($emails === null) {
+            $process->setStatus('error');
+            $process->setMessages(['LBL_TOO_MANY_ADDRESSES']);
+            $process->setData([]);
         }
 
-    }
+        $outboundEmail = BeanFactory::getBean('OutboundEmailAccounts', $bean->outbound_email_id);
 
+        $from = $outboundEmail->mail_smtpuser;
+        $fromName = $outboundEmail->smtp_from_name;
+        $subject = $bean->subject;
+        $body = $bean->body;
+
+        $allSent = true;
+
+        foreach ($emails as $email) {
+            $success = $this->emailProcessProcessor->processEmail($email, $subject, $body, $from, $fromName, true);
+            if ($success){
+                continue;
+            }
+            $allSent = false;
+        }
+
+        if (!$allSent) {
+            $process->setStatus('error');
+            $process->setMessages(['LBL_NOT_ALL_SENT']);
+            $process->setData([]);
+            return;
+        }
+
+        $process->setStatus('success');
+        $process->setMessages(['LBL_ALL_EMAILS_SENT']);
+        $process->setData([]);
+    }
 }
