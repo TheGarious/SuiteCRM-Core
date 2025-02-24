@@ -172,6 +172,7 @@ export interface Field {
     value?: string;
     valueList?: string[];
     valueObject?: any;
+    valueSignal?: WritableSignal<string>;
     valueObjectArray?: ObjectMap[];
     name?: string;
     vardefBased?: boolean;
@@ -225,6 +226,7 @@ export class BaseField implements Field {
     default?: string;
     defaultValueModes?: ViewMode[];
     source?: FieldSource;
+    valueSignal?: WritableSignal<string>;
     metadata?: FieldMetadata;
     definition?: FieldDefinition;
     criteria?: SearchCriteriaFieldFilter;
@@ -253,6 +255,7 @@ export class BaseField implements Field {
         this.valueChanges$ = this.valueSubject.asObservable();
         this.display = signal('default');
         this.required = signal(false);
+        this.valueSignal = signal('');
     }
 
     get value(): string {
