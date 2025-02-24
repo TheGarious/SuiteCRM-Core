@@ -193,6 +193,7 @@ function make_sugar_config(&$sugar_config)
             'special_query_modules' => array('AOR_Reports', 'Export', 'Import', 'Administration', 'Sync'),
             'default_limit' => 1000,
         ),
+        'test_email_limit' => 50,
         'require_accounts' => empty($requireAccounts) ? true : $requireAccounts,
         'rss_cache_time' => empty($RSS_CACHE_TIME) ? '10800' : $RSS_CACHE_TIME,
         'session_dir' => $session_dir, // this must be set!!
@@ -415,6 +416,7 @@ function get_sugar_config_defaults(): array
         'email_warning_notifications' => true,
         'email_enable_auto_send_opt_in' => false,
         'email_enable_confirm_opt_in' => SugarEmailAddress::COI_STAT_DISABLED,
+        'test_email_limit' => 50,
         'filter_module_fields' => [
             'Users' => [
                 'show_on_employees',
