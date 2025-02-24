@@ -39,7 +39,7 @@ import {isVoid} from "../../../../common/utils/value-utils";
     selector: 'scrm-multirelate-detail',
     templateUrl: './multirelate.component.html',
     styleUrls: [],
-    providers: [RelateService]
+    providers: []
 })
 export class MultiRelateDetailFieldComponent extends BaseMultiEnumComponent {
 

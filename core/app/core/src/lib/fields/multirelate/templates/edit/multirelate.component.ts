@@ -239,7 +239,7 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
      * Show record selection modal
      */
     protected showSelectModal(): void {
-        const modal = this.modalService.open(RecordListModalComponent, {size: 'xl', scrollable: true});
+        const modal = this.modalService.open(RecordListModalComponent, {size: 'xl', scrollable: false});
 
         const criteria = this.buildCriteria();
         const filter = this.buildFilter(criteria);
