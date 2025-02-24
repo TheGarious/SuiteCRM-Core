@@ -32,7 +32,6 @@ import {ButtonInterface} from "../../../../common/components/button/button.model
 import {NgbActiveModal} from "@ng-bootstrap/ng-bootstrap";
 import {ModalFieldBuilder} from "../../../../services/record/field/modal-field.builder";
 import {ButtonModule} from "../../../button/button.module";
-import {SendTestEmail} from "../../../../services/process/processes/send-test-email/send-test-email";
 import {FieldModule} from "../../../../fields/field.module";
 import {deepClone} from "../../../../common/utils/object-utils";
 import {MessageService} from "../../../../services/message/message.service";
@@ -79,8 +78,10 @@ export class FieldGridModalComponent {
   @Input() titleKey: string = '';
   @Input() descriptionKey: string = '';
   @Input() module: string;
+  @Input() limit = '';
+  @Input() limitEndLabel = '';
   @Input() fieldGridOptions: FieldGridOptions = deepClone(fieldGridDefaultOptions);
-  @Input() dropdownLabelKey: string = 'LBL_ACTIONS';
+  @Input() actionLabelKey: string = 'LBL_ACTIONS';
 
   cancelButton: ButtonInterface;
   mappedFields: Field[];
@@ -122,7 +123,7 @@ export class FieldGridModalComponent {
 
     this.actionButton = {
       klass: 'btn btn-primary btn-sm mt-3 mb-2',
-      labelKey: this.dropdownLabelKey,
+      labelKey: this.actionLabelKey,
       onClick: (): void => {
         this.activeModal.close({
           fields: this.mappedFields,
