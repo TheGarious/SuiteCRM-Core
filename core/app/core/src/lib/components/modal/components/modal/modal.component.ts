@@ -40,6 +40,9 @@ export class ModalComponent{
     @Input() footerKlass = '';
     @Input() titleKey = '';
     @Input() descriptionKey = '';
+    @Input() limit = '';
+    @Input() limitEndLabel = '';
+    @Input() limitLabel = 'LBL_LIMIT';
     @Input() closable:boolean = false;
     @Input() close: ButtonInterface = {
         klass: ['btn', 'btn-outline-light', 'btn-sm']
