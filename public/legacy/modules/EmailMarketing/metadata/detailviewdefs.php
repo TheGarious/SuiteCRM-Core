@@ -162,6 +162,11 @@ $viewdefs ['EmailMarketing'] = [
                             'fieldGridOptions' => [
                                 'maxColumns' => 1,
                             ],
+                            'limit' => [
+                                'showLimit' => true,
+                                'limit_key' => 'test_email_limit',
+                                'limitEndLabel' => 'LBL_EMAIL_ADDRESSES'
+                            ],
                             'actionLabelKey' => 'LBL_SEND',
                             'titleKey' => 'LBL_SEND_TEST_EMAIL',
                             'descriptionKey' => 'LBL_SEND_TEST_EMAIL_DESC',
