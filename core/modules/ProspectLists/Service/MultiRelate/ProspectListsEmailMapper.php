@@ -27,19 +27,55 @@
 
 namespace App\Module\ProspectLists\Service\MultiRelate;
 
+use App\Emails\LegacyHandler\EmailToQueueHandler;
 use App\Engine\LegacyHandler\LegacyHandler;
+use App\Engine\LegacyHandler\LegacyScopeState;
 use BeanFactory;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class ProspectListsEmailMapper extends LegacyHandler {
+
+    protected EmailToQueueHandler $emailToQueueHandler;
+
+
+    public function __construct(
+        string $projectDir,
+        string $legacyDir,
+        string $legacySessionName,
+        string $defaultSessionName,
+        LegacyScopeState $legacyScopeState,
+        RequestStack $requestStack,
+        EmailToQueueHandler $emailToQueueHandler
+    )
+    {
+        parent::__construct(
+            $projectDir,
+            $legacyDir,
+            $legacySessionName,
+            $defaultSessionName,
+            $legacyScopeState,
+            $requestStack
+        );
+        $this->emailToQueueHandler = $emailToQueueHandler;
+    }
 
     public function getHandlerKey(): string
     {
         return 'prospectlists-email-mapper';
     }
 
-    public function getEmailFromMultiRelate(&$emails, $module, $value)
+    public function getEmailFromMultiRelate(&$emails, &$count, $module, $value, $isTest = false)
     {
         $this->init();
+
+        $this->getEmails($emails, $count, $module, $value, $isTest);
+
+        return $emails;
+    }
+
+
+    protected function getEmails(&$emails, &$count, $module, $value, $isTest): array {
+
         foreach ($value as $key => $item) {
             $id = $item['id'];
             $bean = BeanFactory::getBean($module, $id);
@@ -59,18 +95,25 @@ class ProspectListsEmailMapper extends LegacyHandler {
             }
 
             if (!empty($beans)){
-                $this->getEmails($beans, $emails);
+                $this->getBeanEmails($beans, $emails, $count, $isTest);
             }
         }
 
         return $emails;
     }
 
-    protected function getEmails(array $beans, &$emails)
+    protected function getBeanEmails(array $beans, &$emails, &$count, $isTest)
     {
         foreach($beans as $bean) {
             foreach ($bean as $key => $value) {
                 $emails[$value->email1] = $value->email1;
+
+                if (!$isTest) {
+                    $this->emailToQueueHandler->sendToQueue();
+                    continue;
+                }
+
+                $count++;
             }
         }
     }
