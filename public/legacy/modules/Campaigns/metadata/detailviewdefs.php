@@ -222,6 +222,15 @@ $viewdefs ['Campaigns'] = [
                                 'name' => 'date_start',
                                 'label' => 'LBL_SEND_DATE',
                                 'type' => 'datetime',
+                            ],
+                            [
+                                'name' => 'created_by_name',
+                                'label' => 'LBL_CREATED_BY',
+                                'type' => 'relate',
+                                'fieldDefinition' => [
+                                    'rname' => 'user_name',
+                                    'source' => 'non-db'
+                                ]
                             ]
                         ],
                     ]
