@@ -68,7 +68,7 @@ export interface SubPanelDefinition {
     lineActions?: Action[];
     get_subpanel_data?: string;
     showFilter?: boolean;
-    actionLabelKey?: string;
+    topButtonsDropdownLabelKey?: string;
     parameters?: {
         [key: string]: any;
     };
