@@ -116,6 +116,8 @@ class User extends Person implements EmailInterface
     public $sugar_login;
     public $external_auth_only;
     public $show_on_employees;
+    public $email_opt_out;
+    public $invalid_email;
 
     /**
      * @var bool
