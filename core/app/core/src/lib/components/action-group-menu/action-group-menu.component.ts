@@ -55,7 +55,7 @@ export class ActionGroupMenuComponent implements OnInit {
     @Input() buttonGroupClass = '';
     @Input() actionContext: ActionContext;
     @Input() config: ActionDataSource;
-    @Input() actionLabelKey = 'LBL_ACTIONS';
+    @Input() dropdownLabelKey = 'LBL_ACTIONS';
     @Input() actionLimitConfig: string = 'recordview_actions_limits';
     configState = new BehaviorSubject<ButtonGroupInterface>({buttons: []});
     config$ = this.configState.asObservable();
@@ -139,7 +139,7 @@ export class ActionGroupMenuComponent implements OnInit {
 
         return {
             buttonKlass: [this.buttonClass],
-            dropdownLabel: this.languages.getAppString(this.actionLabelKey) ?? '',
+            dropdownLabel: this.languages.getAppString(this.dropdownLabelKey) ?? '',
             breakpoint,
             dropdownOptions: {
                 placement: ['bottom-right'],

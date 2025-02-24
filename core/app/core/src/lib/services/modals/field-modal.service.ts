@@ -38,7 +38,7 @@ import {Record} from "../../common/record/record.model";
 export interface FieldModalOptions {
     fields: Field[];
     titleKey: string;
-    actionLabelKey: string;
+    topButtonsDropdownLabelKey: string;
     descriptionKey?: string;
     module?: string;
     maxColumns?: number;
@@ -86,7 +86,7 @@ export class FieldModalService {
         modal.componentInstance.titleKey = options?.titleKey ?? '';
         modal.componentInstance.descriptionKey = options?.descriptionKey ?? '';
         modal.componentInstance.module = options?.module ?? 'default';
-        modal.componentInstance.actionLabelKey = options.actionLabelKey;
+        modal.componentInstance.topButtonsDropdownLabelKey = options.topButtonsDropdownLabelKey ?? 'LBL_ACTIONS';
         modal.componentInstance.fieldGridOptions = options.fieldGridOptions;
 
         modal.result.then((result: FieldModalResult) => {

@@ -80,7 +80,7 @@ export class FieldGridModalComponent {
   @Input() descriptionKey: string = '';
   @Input() module: string;
   @Input() fieldGridOptions: FieldGridOptions = deepClone(fieldGridDefaultOptions);
-  @Input() actionLabelKey: string;
+  @Input() dropdownLabelKey: string = 'LBL_ACTIONS';
 
   cancelButton: ButtonInterface;
   mappedFields: Field[];
@@ -90,7 +90,6 @@ export class FieldGridModalComponent {
   constructor(
       public activeModal: NgbActiveModal,
       protected modalFieldBuilder: ModalFieldBuilder,
-      protected emailProcess: SendTestEmail,
       protected message: MessageService
       ) {
   }
@@ -123,12 +122,12 @@ export class FieldGridModalComponent {
 
     this.actionButton = {
       klass: 'btn btn-primary btn-sm mt-3 mb-2',
-      labelKey: this.actionLabelKey,
+      labelKey: this.dropdownLabelKey,
       onClick: (): void => {
         this.activeModal.close({
           fields: this.mappedFields,
           module: this.module,
-          type: 'run'
+          type: 'run',
         } as FieldModalResult);
       }
     } as ButtonInterface;
