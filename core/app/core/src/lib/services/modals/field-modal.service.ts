@@ -33,6 +33,7 @@ import {Field} from "../../common/record/field.model";
 import {FieldGridOptions} from "../../components/field-grid/field-grid.model";
 import {emptyObject} from "../../common/utils/object-utils";
 import {Record} from "../../common/record/record.model";
+import {SystemConfigStore} from "../../store/system-config/system-config.store";
 
 
 export interface FieldModalOptions {
@@ -45,7 +46,9 @@ export interface FieldModalOptions {
     centered?: boolean;
     scrollable?: boolean;
     size?: 'sm' | 'lg' | 'xl';
-    fieldGridOptions: FieldGridOptions
+    fieldGridOptions: FieldGridOptions;
+
+    [key: string]: any;
 }
 
 export interface FieldModalResult {
@@ -63,7 +66,8 @@ export class FieldModalService {
     constructor(
         protected languageStore: LanguageStore,
         protected message: MessageService,
-        protected modalService: NgbModal
+        protected modalService: NgbModal,
+        protected systemConfigs: SystemConfigStore
     ) {
     }
 
@@ -86,8 +90,13 @@ export class FieldModalService {
         modal.componentInstance.titleKey = options?.titleKey ?? '';
         modal.componentInstance.descriptionKey = options?.descriptionKey ?? '';
         modal.componentInstance.module = options?.module ?? 'default';
-        modal.componentInstance.topButtonsDropdownLabelKey = options.topButtonsDropdownLabelKey ?? 'LBL_ACTIONS';
+        modal.componentInstance.actionLabelKey = options.actionLabelKey ?? 'LBL_ACTIONS';
         modal.componentInstance.fieldGridOptions = options.fieldGridOptions;
+
+        if ((options?.limit ?? false) && (options?.limit?.showLimit ?? false)) {
+            modal.componentInstance.limit = this.systemConfigs.getConfigValue(options.limit.limit_key);
+            modal.componentInstance.limitEndLabel = options.limit.limitEndLabel;
+        }
 
         modal.result.then((result: FieldModalResult) => {
 
