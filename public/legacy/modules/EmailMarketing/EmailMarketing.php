@@ -247,6 +247,10 @@ class EmailMarketing extends SugarBean
         return $errors;
     }
 
+    public function fill_in_additional_list_fields(): void {
+        $this->created_by_name = get_assigned_user_name($this->created_by);
+    }
+
     public function trackLogLeads()
     {
         $this->load_relationship('log_entries');
