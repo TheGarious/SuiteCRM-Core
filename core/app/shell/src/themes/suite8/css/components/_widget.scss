@@ -135,4 +135,10 @@
   .chart-loading {
     height: 100px;
   }
+
+  .chart-select {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    padding-right: 1.5rem !important;
+  }
 }
