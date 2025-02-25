@@ -55,6 +55,14 @@
   padding-top: 5px !important;
 }
 
+.field-group-label {
+  span.required {
+    color: $amaranth;
+    float: inline-start;
+    position: static !important;
+  }
+}
+
 span.required {
   color: $amaranth;
   position: absolute;

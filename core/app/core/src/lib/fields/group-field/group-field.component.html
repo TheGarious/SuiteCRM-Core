@@ -40,7 +40,11 @@
                 <!-- LABEL -->
                 <span class="field-group-label pt-2 pr-1 font-weight-bold">
                 <label *ngIf="groupField.labelKey && showLabel(groupField.definition.name)">
-                    <scrm-label [labelKey]="groupField.labelKey" [module]="getModule()"></scrm-label>
+                    <scrm-label
+                            [labelKey]="groupField.labelKey"
+                            [module]="getModule()"
+                            [ngClass]="groupField?.required() ? 'pl-1' : ''"
+                    ></scrm-label>
                     <ng-container *ngIf="groupField?.required() && (['edit', 'create'].includes(mode))">
                         <span class="required">*</span>
                     </ng-container>
