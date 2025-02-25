@@ -29,7 +29,6 @@ import {DataTypeFormatter} from '../../../../services/formatters/data-type.forma
 import {FieldLogicManager} from '../../../field-logic/field-logic.manager';
 import {FieldLogicDisplayManager} from '../../../field-logic-display/field-logic-display.manager';
 import {LanguageStore} from "../../../../store/language/language.store";
-import {RelateService} from "../../../../services/record/relate/relate.service";
 import {BaseMultiEnumComponent} from "../../../base/base-multienum.component";
 import {isEmpty, isEqual, isNull, isObject, uniqBy} from "lodash-es";
 import {Option} from "../../../../common/record/field.model";
