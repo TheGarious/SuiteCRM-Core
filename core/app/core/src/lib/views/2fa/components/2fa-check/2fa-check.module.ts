@@ -31,6 +31,7 @@ import {LabelModule} from "../../../../components/label/label.module";
 import {PaginatorModule} from "primeng/paginator";
 import {LogoUiModule} from "../../../../components/logo/logo.module";
 import {ButtonModule} from "../../../../components/button/button.module";
+import {FormsModule} from "@angular/forms";
 
 @NgModule({
     declarations: [
@@ -43,7 +44,8 @@ import {ButtonModule} from "../../../../components/button/button.module";
         LabelModule,
         PaginatorModule,
         LogoUiModule,
-        ButtonModule
+        ButtonModule,
+        FormsModule
     ]
 })
 export class TwoFactorCheckModule {

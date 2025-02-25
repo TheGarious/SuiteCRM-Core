@@ -43,6 +43,7 @@ import {PaginatorModule} from "primeng/paginator";
 import {TwoFactorCheckModule} from "../2fa-check/2fa-check.module";
 import {RecordThreadModule} from "../../../../containers/record-thread/components/record-thread/record-thread.module";
 import {WidgetPanelModule} from "../../../../components/widget-panel/widget-panel.module";
+import {FormsModule} from "@angular/forms";
 
 @NgModule({
     declarations: [
@@ -68,7 +69,8 @@ import {WidgetPanelModule} from "../../../../components/widget-panel/widget-pane
         PaginatorModule,
         TwoFactorCheckModule,
         RecordThreadModule,
-        WidgetPanelModule
+        WidgetPanelModule,
+        FormsModule
     ]
 })
 export class TwoFactorModule {
