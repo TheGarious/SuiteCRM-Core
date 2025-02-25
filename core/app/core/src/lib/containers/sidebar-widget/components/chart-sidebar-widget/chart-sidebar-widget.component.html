@@ -34,7 +34,7 @@
                         <div class="col pr-2 pl-2">
                             <form class="login-form mb-0 mt-2 w-100">
 
-                                <select (ngModelChange)="onChartSelect($event)" [(ngModel)]="selectedChart" class="m-0 w-100"
+                                <select (ngModelChange)="onChartSelect($event)" [(ngModel)]="selectedChart" class="m-0 w-100 chart-select"
                                         name="chart">
                                     <option *ngFor="let chart of configuredCharts; index as i"
                                             [value]="getKey(chart)">
