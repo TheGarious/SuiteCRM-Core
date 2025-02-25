@@ -242,8 +242,24 @@ export class CreateViewStore extends RecordViewStore {
      * Calculate if widgets are to display
      */
     protected calculateShowWidgets(): void {
-        const show = false;
-        this.showSidebarWidgets = show;
+        let show = false;
+        const recordViewMeta = this.getRecordViewMetadata();
+        const sidebarWidgetsConfig = recordViewMeta.sidebarWidgets || [];
+
+        if (sidebarWidgetsConfig && sidebarWidgetsConfig.length > 0) {
+            show = true;
+        }
+
+        const showSidebarWidgets = this.loadPreference(this.getModuleName(), 'show-sidebar-widgets') ?? null;
+
+        if (showSidebarWidgets !== null) {
+            this.showSidebarWidgets = showSidebarWidgets;
+        } else {
+            this.showSidebarWidgets = show;
+        }
+
+        this.showBottomWidgets = true;
+
         this.widgets = show;
     }
 }
