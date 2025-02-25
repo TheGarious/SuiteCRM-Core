@@ -162,10 +162,10 @@ $dictionary['Surveys'] = array(
         'email_template_survey' => [
             'rhs_module' => 'EmailTemplates',
             'rhs_table' => 'email_templates',
-            'rhs_key' => 'id',
+            'rhs_key' => 'survey_id',
             'lhs_module' => 'Surveys',
             'lhs_table' => 'surveys',
-            'lhs_key' => 'survey_id',
+            'lhs_key' => 'id',
             'relationship_type' => 'one-to-many'
         ],
         'surveys_surveyquestions' => array(

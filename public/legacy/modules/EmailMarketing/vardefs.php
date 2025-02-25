@@ -174,7 +174,7 @@ $dictionary['EmailMarketing'] = [
                 'status',
                 'type',
                 'prospect_list_name',
-                'survey',
+                'survey_name',
                 'campaign_name',
             ],
             'layout' => [
@@ -185,7 +185,7 @@ $dictionary['EmailMarketing'] = [
                 'status',
                 'type',
                 'prospect_list_name',
-                'survey',
+                'survey_name',
                 'campaign_name',
             ],
             'display' => 'vertical',
@@ -403,16 +403,26 @@ $dictionary['EmailMarketing'] = [
         ],
         'survey' => [
             'name' => 'survey',
-            'vname' => 'LBL_SURVEY',
-            'rname' => 'name',
-            'id_name' => 'survey_id',
-            'type' => 'relate',
-            'table' => 'surveys',
-            'isnull' => 'true',
-            'module' => 'Surveys',
-            'link' => 'surveylink',
-            'len' => '255',
+            'type' => 'link',
+            'relationship' => 'email_template_survey',
             'source' => 'non-db',
+            'module' => 'Surveys',
+            'bean_name' => 'Surveys',
+            'id_name' => 'survey_id',
+            'link_type' => 'one',
+            'side' => 'left',
+        ],
+        'survey_name' => [
+            'name' => 'survey_name',
+            'type' => 'relate',
+            'source' => 'non-db',
+            'vname' => 'LBL_SURVEY',
+            'save' => true,
+            'id_name' => 'survey_id',
+            'link' => 'survey',
+            'table' => 'surveys',
+            'module' => 'Surveys',
+            'rname' => 'name',
             'displayLogic' => [
                 'show_for_survey_emails' => [
                     'key' => 'displayType',
@@ -436,6 +446,11 @@ $dictionary['EmailMarketing'] = [
                     ]
                 ]
             ]
+        ],
+        'survey_id' => [
+            'name' => 'survey_id',
+            'type' => 'id',
+            'reportable' => false,
         ],
         'outbound_email' => [
             'name' => 'outbound_email',
@@ -465,12 +480,39 @@ $dictionary['EmailMarketing'] = [
             'type' => 'link',
             'relationship' => 'email_template_survey',
             'source' => 'non-db',
+            'bean_name' => 'Surveys',
+            'id_name' => 'survey_id'
         ],
     ],
     'indices' => [
-        ['name' => 'emmkpk', 'type' => 'primary', 'fields' => ['id']],
-        ['name' => 'idx_emmkt_name', 'type' => 'index', 'fields' => ['name']],
-        ['name' => 'idx_emmkit_del', 'type' => 'index', 'fields' => ['deleted']],
+        [
+            'name' => 'emmkpk',
+            'type' => 'primary',
+            'fields' => [
+                'id'
+            ]
+        ],
+        [
+            'name' => 'idx_emmkt_name',
+            'type' => 'index',
+            'fields' => [
+                'name'
+            ]
+        ],
+        [
+            'name' => 'idx_emmkit_del',
+            'type' => 'index',
+            'fields' => [
+                'deleted'
+            ]
+        ],
+        [
+            'name' => 'idx_survey_id',
+            'type' => 'index',
+            'fields' => [
+                'survey_id'
+            ]
+        ],
     ],
     'relationships' => [
         'email_template_email_marketings' => [
