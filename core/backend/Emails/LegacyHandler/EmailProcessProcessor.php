@@ -68,9 +68,16 @@ class EmailProcessProcessor extends LegacyHandler
     }
 
     /**
+     * @param $emailTo
+     * @param $subject
+     * @param $body
+     * @param $from
+     * @param $fromName
+     * @param bool $isTest
+     * @return bool
      * @throws Exception
      */
-    public function processEmail($emailTo, $subject, $body, $from, $fromName, $isTest = false)
+    public function processEmail($emailTo, $subject, $body, $from, $fromName, bool $isTest = false): bool
     {
         $email = $this->emailBuilderHandler->buildEmail($subject, $body, $emailTo, $from, $fromName);
         $success = $this->sendEmailHandler->sendEmail($email, $isTest);
