@@ -69,7 +69,13 @@ class FilterEmailListHandler extends LegacyHandler
         return self::HANDLER_KEY;
     }
 
-    public function getEmails(array $fields, $max, $isTest = false)
+    /**
+     * @param array $fields
+     * @param $max
+     * @param bool $isTest
+     * @return array|null
+     */
+    public function getEmails(array $fields, $max, bool $isTest = false): ?array
     {
         $emails = [];
         $count = 0;
@@ -124,7 +130,15 @@ class FilterEmailListHandler extends LegacyHandler
         return $emails;
     }
 
-    public function getUserEmails(array &$emails, &$count, string $module, mixed $value, $isTest)
+    /**
+     * @param array $emails
+     * @param $count
+     * @param string $module
+     * @param mixed $value
+     * @param $isTest
+     * @return void
+     */
+    public function getUserEmails(array &$emails, &$count, string $module, mixed $value, $isTest): void
     {
         foreach ($value as $key => $item) {
             $id = $item['id'];

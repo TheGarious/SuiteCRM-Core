@@ -64,7 +64,15 @@ class ProspectListsEmailMapper extends LegacyHandler {
         return 'prospectlists-email-mapper';
     }
 
-    public function getEmailFromMultiRelate(&$emails, &$count, $module, $value, $isTest = false)
+    /**
+     * @param $emails
+     * @param $count
+     * @param $module
+     * @param $value
+     * @param $isTest
+     * @return array|null
+     */
+    public function getEmailFromMultiRelate(&$emails, &$count, $module, $value, $isTest = false): ?array
     {
         $this->init();
 
@@ -74,6 +82,14 @@ class ProspectListsEmailMapper extends LegacyHandler {
     }
 
 
+    /**
+     * @param $emails
+     * @param $count
+     * @param $module
+     * @param $value
+     * @param $isTest
+     * @return array
+     */
     protected function getEmails(&$emails, &$count, $module, $value, $isTest): array {
 
         foreach ($value as $key => $item) {
@@ -102,7 +118,14 @@ class ProspectListsEmailMapper extends LegacyHandler {
         return $emails;
     }
 
-    protected function getBeanEmails(array $beans, &$emails, &$count, $isTest)
+    /**
+     * @param array $beans
+     * @param $emails
+     * @param $count
+     * @param $isTest
+     * @return void
+     */
+    protected function getBeanEmails(array $beans, &$emails, &$count, $isTest): void
     {
         foreach($beans as $bean) {
             foreach ($bean as $key => $value) {
