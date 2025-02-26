@@ -166,6 +166,7 @@ class SendTestEmailHandler extends LegacyHandler implements ProcessHandlerInterf
             $process->setStatus('error');
             $process->setMessages(['LBL_TOO_MANY_ADDRESSES']);
             $process->setData([]);
+            return;
         }
 
         $outboundEmail = BeanFactory::getBean('OutboundEmailAccounts', $bean->outbound_email_id);
