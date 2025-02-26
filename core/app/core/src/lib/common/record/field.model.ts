@@ -25,7 +25,7 @@
  */
 
 import {SearchCriteriaFieldFilter} from '../views/list/search-criteria.model';
-import {BehaviorSubject, Observable} from 'rxjs';
+import {asapScheduler, BehaviorSubject, Observable} from 'rxjs';
 import {AsyncValidatorFn, UntypedFormArray, UntypedFormControl, ValidatorFn} from '@angular/forms';
 import {Record} from './record.model';
 import {FieldLogicMap} from '../actions/field-logic-action.model';
@@ -266,7 +266,11 @@ export class BaseField implements Field {
         const changed = value !== this.valueState;
 
         this.valueState = value;
-
+        if (typeof value === 'string') {
+            asapScheduler.schedule(() => {
+                this.valueSignal.set(value)
+            })
+        }
         if (changed) {
             this.emitValueChanges();
         }
