@@ -36,11 +36,12 @@ use App\Engine\LegacyHandler\LegacyHandler;
 use App\Engine\LegacyHandler\LegacyScopeState;
 use App\Module\Service\ModuleNameMapperInterface;
 use BeanFactory;
+use SubpanelDataPort;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class ProspectListDataHandler extends LegacyHandler implements PresetListDataHandlerInterface
 {
-    public const HANDLER_KEY = 'prospectlists-data-handler';
+    public const HANDLER_KEY = 'prospectlists-data-handlers';
 
     protected ModuleNameMapperInterface $moduleNameMapper;
     protected RecordMapper $recordMapper;
@@ -80,39 +81,6 @@ class ProspectListDataHandler extends LegacyHandler implements PresetListDataHan
     }
 
     /**
-     * @param string $module
-     * @param array $criteria
-     * @param int $offset
-     * @param int $limit
-     * @param array $sort
-     * @return ListData
-     */
-    public function fetch(string $module, array $criteria = [], int $offset = -1, int $limit = -1, array $sort = []): ListData
-    {
-
-        $params = $criteria['preset']['params'];
-
-        $parentId = $params['id'];
-        $parentField = $params['parent_field'];
-        $parentModule = $params['parent_module'];
-
-        $this->init();
-
-        $parentRecord = BeanFactory::getBean($parentModule, $parentId);
-
-        $parentFieldDef = $parentRecord->field_defs[$parentField];
-
-        $link = $parentFieldDef['link'];
-        $parentRecord->load_relationship($link);
-
-        $beans = $parentRecord->$link->getBeans();
-
-        $records =  $this->mapBeans($beans);
-
-        return $this->buildListData($records);
-    }
-
-    /**
      * @return string
      */
     public function getType(): string
@@ -121,31 +89,53 @@ class ProspectListDataHandler extends LegacyHandler implements PresetListDataHan
     }
 
     /**
-     * @param array $resultData
-     * @return ListData
+     * @inheritDoc
      */
-    protected function buildListData(array $records): ListData
-    {
+    public function fetch(
+        string $module,
+        array $criteria = [],
+        int $offset = -1,
+        int $limit = -1,
+        array $sort = []
+    ): ListData {
+
+        $params = $criteria['preset']['params'];
+
+        $parentId = $params['id'];
+        $parentField = $params['parent_field'];
+        $parentModule = $params['parent_module'];
+
+
+        $subpanel = 'prospectlists';
+        $parentModule = 'Campaigns';
+        $type = 'subpanel';
+
+        if ($parentModule) {
+            $parentModule = $this->moduleNameMapper->toLegacy($parentModule);
+        }
+
+        $this->initController($parentModule, $parentId);
+
+        $parentBean = BeanFactory::getBean($parentModule, $parentId);
+
+        require_once 'include/portability/Subpanels/SubpanelDataPort.php';
+
+        $data = (new SubpanelDataPort())->fetch(
+            $parentBean,
+            $subpanel,
+            $offset,
+            $limit,
+            $sort['orderBy'] ?? '',
+            $sort['sortOrder'] ?? '',
+            $criteria
+        );
+
         $listData = new ListData();
-        $listData->setOffsets([]);
-        $listData->setOrdering([]);
-        $listData->setRecords($this->recordMapper->mapRecords($records));
+        $listData->setOffsets($data['offsets'] ?? []);
+        $listData->setOrdering($data['ordering'] ?? []);
+        $listData->setRecords($this->recordMapper->mapRecords($data['data'] ?? [], $data['pageData'] ?? []));
 
         return $listData;
     }
 
-    /**
-     * @param $beans
-     * @return array
-     */
-    protected function mapBeans($beans): array
-    {
-        $records = [];
-        require_once 'include/portability/ApiBeanMapper/ApiBeanMapper.php';
-        $mapper = new ApiBeanMapper();
-        foreach ($beans as $bean) {
-            $records[] = $mapper->toApi($bean);
-        }
-        return $records;
-    }
 }
