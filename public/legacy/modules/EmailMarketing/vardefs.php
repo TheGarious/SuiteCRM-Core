@@ -421,6 +421,7 @@ $dictionary['EmailMarketing'] = [
             'id_name' => 'survey_id',
             'link' => 'survey',
             'table' => 'surveys',
+            'filterOnEmpty' => true,
             'module' => 'Surveys',
             'rname' => 'name',
             'displayLogic' => [
