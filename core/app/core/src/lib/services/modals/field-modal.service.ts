@@ -132,13 +132,13 @@ export class FieldModalService {
             module: module,
         };
 
-        Object.entries(fields).forEach(([_, field]) => {
+        Object.entries(fields).forEach(([key, field]) => {
 
             if (field.type === 'line-items') {
                 const items = field.items;
-                const key = field.definition?.lineItems?.definition?.name ?? '';
+                const fieldKey = field.definition?.lineItems?.definition?.name ?? '';
 
-                let values = this.getFieldFromItem(field.name, items, key);
+                let values = this.getFieldFromItem(field.name, items, fieldKey);
 
                 if (emptyObject(values)) {
                     return;
@@ -173,16 +173,16 @@ export class FieldModalService {
      *
      * @param fieldName
      * @param items
-     * @param key
+     * @param fieldKey
      * @protected
      */
-    protected getFieldFromItem(fieldName, items: Record[], key) {
+    protected getFieldFromItem(fieldName, items: Record[], fieldKey) {
 
         const values = [];
 
-        Object.entries(items).forEach(([_, item]) => {
-            if (item.fields[key].attributes[fieldName].value !== ''){
-                values.push(item.fields[key].attributes[fieldName].value);
+        Object.entries(items).forEach(([key, item]) => {
+            if (item.fields[fieldKey].attributes[fieldName].value !== ''){
+                values.push(item.fields[fieldKey].attributes[fieldName].value);
             }
         })
 
