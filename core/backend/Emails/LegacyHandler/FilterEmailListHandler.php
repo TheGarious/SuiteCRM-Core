@@ -112,7 +112,7 @@ class FilterEmailListHandler extends LegacyHandler
             }
 
             foreach ($value as $key => $item) {
-                if ($isTest && $count > $max){
+                if ($isTest && $count >= $max){
                     return null;
                 }
 
