@@ -76,7 +76,8 @@
 
   .panel-title {
     .title {
-      line-height: 80%
+      line-height: 80% !important;
+      margin-top: .25rem;
     }
   }
 }
