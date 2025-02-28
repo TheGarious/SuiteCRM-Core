@@ -50,7 +50,8 @@ class EmailBuilderHandler extends LegacyHandler {
         require_once('include/SugarPHPMailer.php');
 
         $mail = new SugarPHPMailer();
-        $mail->Body = $body;
+        $mail->Body_html = $body;
+        $mail->Body = from_html($body);
         $mail->Subject = from_html($subject);
         $emailObj = BeanFactory::newBean('Emails');
         $defaults = $emailObj->getSystemDefaultEmail();
