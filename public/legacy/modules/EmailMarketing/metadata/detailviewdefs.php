@@ -159,6 +159,7 @@ $viewdefs ['EmailMarketing'] = [
                     'params' => [
                         'expanded' => true,
                         'fieldModal' => [
+                            'validationProcess' => 'send-test-email-validation',
                             'fieldGridOptions' => [
                                 'maxColumns' => 1,
                             ],
