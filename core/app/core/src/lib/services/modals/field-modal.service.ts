@@ -28,7 +28,10 @@ import {Injectable} from '@angular/core';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {LanguageStore} from '../../store/language/language.store';
 import {MessageService} from '../message/message.service';
-import {FieldGridModalComponent} from "../../components/modal/components/field-grid-modal/field-grid-modal.component";
+import {
+    FieldGridModalComponent,
+    FieldModalValidationFunction
+} from "../../components/modal/components/field-grid-modal/field-grid-modal.component";
 import {Field} from "../../common/record/field.model";
 import {FieldGridOptions} from "../../components/field-grid/field-grid.model";
 import {emptyObject} from "../../common/utils/object-utils";
@@ -46,7 +49,8 @@ export interface FieldModalOptions {
     centered?: boolean;
     scrollable?: boolean;
     size?: 'sm' | 'lg' | 'xl';
-    fieldGridOptions: FieldGridOptions;
+    fieldGridOptions?: FieldGridOptions;
+    validation?: FieldModalValidationFunction
 
     [key: string]: any;
 }
@@ -92,6 +96,7 @@ export class FieldModalService {
         modal.componentInstance.module = options?.module ?? 'default';
         modal.componentInstance.actionLabelKey = options.actionLabelKey ?? 'LBL_ACTIONS';
         modal.componentInstance.fieldGridOptions = options.fieldGridOptions;
+        modal.componentInstance.validation = options?.validation ?? null;
 
         if ((options?.limit ?? false) && (options?.limit?.showLimit ?? false)) {
             modal.componentInstance.limit = this.systemConfigs.getConfigValue(options.limit.limit_key);
@@ -125,7 +130,7 @@ export class FieldModalService {
      * @param module
      * @protected
      */
-    protected getValues(fields: Field[], module: string) {
+    public getValues(fields: Field[], module: string) {
 
         let response = {
             fields: {},

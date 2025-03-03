@@ -369,7 +369,26 @@ export abstract class BaseActionsAdapter<D extends ActionData> implements Action
      */
     protected showFieldModal(action: Action, context: ActionContext): void {
 
-        const options = action.params.fieldModal;
+        const options = {...action?.params?.fieldModal ?? {}};
+
+        const validation = action.params.fieldModal.validationProcess ?? false;
+
+        if (validation) {
+            options.validation = (fields: Field[]) => {
+                const validationAction = {...action};
+                const moduleName = this.getModuleName(context);
+
+                if (fields) {
+                    const response = this.fieldModalService.getValues(fields, moduleName)
+                    validationAction.params.fields = response.fields;
+                }
+                const actionName = validation;
+
+                this.message.removeMessages();
+                const asyncData = this.buildActionInput(validationAction, actionName, moduleName, context);
+                return this.asyncActionService.run(actionName, asyncData).pipe(take(1));
+            }
+        }
 
         this.fieldModalService.showFieldModal(options, (fields: Field[]) => {
             if (fields) {
