@@ -56,6 +56,7 @@ export class FieldGridOptions {
 
     maxColumns?: number;
     sizeMap?: ScreenSizeMap;
+    validationProcess?: string;
 }
 
 export type LabelDisplay = 'top' | 'inline' | 'none';

@@ -39,6 +39,9 @@ import {ViewFieldDefinition} from "../../../../common/metadata/metadata.model";
 import {FieldGridOptions} from "../../../field-grid/field-grid.model";
 import {FieldModalResult} from "../../../../services/modals/field-modal.service";
 import {Field} from "../../../../common/record/field.model";
+import {Observable} from "rxjs";
+import {Process} from "../../../../services/process/process.service";
+import {take} from "rxjs/operators";
 
 
 const fieldGridDefaultOptions = {
@@ -61,6 +64,8 @@ const fieldGridDefaultOptions = {
 } as FieldGridOptions;
 
 
+export declare type FieldModalValidationFunction = (fields) => Observable<Process>;
+
 @Component({
   selector: 'scrm-field-grid-modal',
   standalone: true,
@@ -74,84 +79,102 @@ const fieldGridDefaultOptions = {
 })
 export class FieldGridModalComponent {
 
-  @Input() fields: ViewFieldDefinition[];
-  @Input() titleKey: string = '';
-  @Input() descriptionKey: string = '';
-  @Input() module: string;
-  @Input() limit = '';
-  @Input() limitEndLabel = '';
-  @Input() fieldGridOptions: FieldGridOptions = deepClone(fieldGridDefaultOptions);
-  @Input() actionLabelKey: string = 'LBL_ACTIONS';
+    @Input() fields: ViewFieldDefinition[];
+    @Input() titleKey: string = '';
+    @Input() descriptionKey: string = '';
+    @Input() module: string;
+    @Input() limit = '';
+    @Input() limitEndLabel = '';
+    @Input() fieldGridOptions: FieldGridOptions = deepClone(fieldGridDefaultOptions);
+    @Input() actionLabelKey: string = 'LBL_ACTIONS';
+    @Input() validation: FieldModalValidationFunction;
 
-  cancelButton: ButtonInterface;
-  mappedFields: Field[];
-  crossButton: ButtonInterface;
-  actionButton: ButtonInterface;
+    cancelButton: ButtonInterface;
+    mappedFields: Field[];
+    crossButton: ButtonInterface;
+    actionButton: ButtonInterface;
 
-  constructor(
-      public activeModal: NgbActiveModal,
-      protected modalFieldBuilder: ModalFieldBuilder,
-      protected message: MessageService
-      ) {
-  }
+    constructor(
+        public activeModal: NgbActiveModal,
+        protected modalFieldBuilder: ModalFieldBuilder,
+        protected message: MessageService
+    ) {
+    }
 
-  ngOnInit(): void {
-    this.buildFields();
-    this.initFieldGridOptions();
-    this.initButtons();
-  }
+    ngOnInit(): void {
+        this.buildFields();
+        this.initFieldGridOptions();
+        this.initButtons();
+    }
 
-  protected initButtons() {
-    this.cancelButton = {
-      klass: 'btn btn-primary btn-sm mt-3 mb-2',
-      labelKey: 'LBL_CANCEL',
-      onClick: (): void => {
-        this.activeModal.close({
-          type: 'close-button'
-        } as ModalCloseFeedBack);
-      }
-    } as ButtonInterface;
+    protected initButtons() {
+        this.cancelButton = {
+            klass: 'btn btn-primary btn-sm mt-3 mb-2',
+            labelKey: 'LBL_CANCEL',
+            onClick: (): void => {
+                this.activeModal.close({
+                    type: 'close-button'
+                } as ModalCloseFeedBack);
+            }
+        } as ButtonInterface;
 
-    this.crossButton = {
-      klass: ['btn', 'btn-outline-light', 'btn-sm'],
-      onClick: (): void => {
-        this.activeModal.close({
-          type: 'close-button'
-        } as ModalCloseFeedBack);
-      }
-    } as ButtonInterface;
+        this.crossButton = {
+            klass: ['btn', 'btn-outline-light', 'btn-sm'],
+            onClick: (): void => {
+                this.activeModal.close({
+                    type: 'close-button'
+                } as ModalCloseFeedBack);
+            }
+        } as ButtonInterface;
 
-    this.actionButton = {
-      klass: 'btn btn-primary btn-sm mt-3 mb-2',
-      labelKey: this.actionLabelKey,
-      onClick: (): void => {
-        this.activeModal.close({
-          fields: this.mappedFields,
-          module: this.module,
-          type: 'run',
-        } as FieldModalResult);
-      }
-    } as ButtonInterface;
-  }
+        this.actionButton = {
+            klass: 'btn btn-primary btn-sm mt-3 mb-2',
+            labelKey: this.actionLabelKey,
+            onClick: (): void => {
+                if (this.validation) {
+                    this.validation(this.mappedFields).pipe(take(1)).subscribe((process) => {
 
-  protected buildFields() {
-    const fields = [];
+                        if ((process?.status ?? false) === 'success') {
+                            this.activeModal.close({
+                                fields: this.mappedFields,
+                                module: this.module,
+                                type: 'run',
+                            } as FieldModalResult);
+                        }
 
-    Object.entries(this.fields).forEach(([key, field]) => {
-      fields.push(this.modalFieldBuilder.buildModalField(this.module, field))
-    })
+                        return false;
+                    });
 
-    this.mappedFields = fields;
-  }
+                    return;
+                }
+                this.activeModal.close({
+                    fields: this.mappedFields,
+                    module: this.module,
+                    type: 'run',
+                } as FieldModalResult);
+            }
+        } as ButtonInterface;
+    }
 
-  protected initFieldGridOptions() {
-    const options = fieldGridDefaultOptions;
-    Object.entries(fieldGridDefaultOptions).forEach(([key, value]) => {
-      if (this.fieldGridOptions[key]) {
-        options[key] = this.fieldGridOptions[key];
-      }
-    })
+    protected buildFields() {
+        const fields = [];
 
-    this.fieldGridOptions = options;
-  }
+        Object.entries(this.fields).forEach(([key, field]) => {
+            fields.push(this.modalFieldBuilder.buildModalField(this.module, field))
+        })
+
+        this.mappedFields = fields;
+    }
+
+    protected initFieldGridOptions() {
+        const options = fieldGridDefaultOptions;
+        Object.entries(fieldGridDefaultOptions).forEach(([key, value]) => {
+            if (this.fieldGridOptions[key]) {
+                options[key] = this.fieldGridOptions[key];
+            }
+        })
+
+        this.fieldGridOptions = options;
+    }
+
 }
