@@ -212,6 +212,10 @@ export class RelateEditFieldComponent extends BaseRelateComponent {
         this.filterValue = '';
         this.options = [];
         this.onRemove();
+
+        if (this.field?.definition?.filterOnEmpty ?? false) {
+            this.tag.onLazyLoad.emit();
+        }
     }
 
     onFilter(): void {
