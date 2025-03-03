@@ -182,7 +182,7 @@ export class FieldLogicManager extends BaseActionManager<FieldLogicActionData> {
 
         availableActions[mode].forEach(action => {
 
-            const dependentFieldsKeys = Object.keys(action?.params?.activeOnFields ?? {});
+            const dependentFieldsKeys = Object.values(action?.params?.fieldDependencies ?? {});
 
             const frontendActionTriggeringStatus = this?.actions[mode][action.key]?.getTriggeringStatus() ?? null;
 
