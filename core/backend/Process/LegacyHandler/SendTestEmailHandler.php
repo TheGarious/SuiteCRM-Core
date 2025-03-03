@@ -171,7 +171,7 @@ class SendTestEmailHandler extends LegacyHandler implements ProcessHandlerInterf
 
         $outboundEmail = BeanFactory::getBean('OutboundEmailAccounts', $bean->outbound_email_id);
 
-        $from = $outboundEmail->mail_smtpuser;
+        $from = $outboundEmail->smtp_from_addr;
         $fromName = $outboundEmail->smtp_from_name;
         $subject = $bean->subject;
         $body = $bean->body;
