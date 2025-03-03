@@ -154,6 +154,10 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
         this.filterValue = '';
         this.currentOptions.set([]);
         this.onRemove();
+
+        if (this.field?.definition?.filterOnEmpty ?? false) {
+            this.tag.onLazyLoad.emit();
+        }
     }
 
     onSelectAll(): void {
