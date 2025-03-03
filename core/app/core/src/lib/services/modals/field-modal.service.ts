@@ -181,7 +181,8 @@ export class FieldModalService {
         const values = [];
 
         Object.entries(items).forEach(([key, item]) => {
-            if (item.fields[fieldKey].attributes[fieldName].value !== ''){
+            if (item.fields[fieldKey].attributes[fieldName].value !== ''
+            && item?.attributes?.deleted !== 1){
                 values.push(item.fields[fieldKey].attributes[fieldName].value);
             }
         })
