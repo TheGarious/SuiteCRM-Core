@@ -1,6 +1,6 @@
 /**
  * SuiteCRM is a customer relationship management program developed by SalesAgility Ltd.
- * Copyright (C) 2024 SalesAgility Ltd.
+ * Copyright (C) 2025 SalesAgility Ltd.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by the
@@ -25,25 +25,30 @@
  */
 
 import {Injectable} from '@angular/core';
-import {RecordModalActionData} from './record-modal.action';
-import {BaseActionManager} from '../../../services/actions/base-action-manager.service';
-import {RecordModalCancelAction} from "./cancel/record-modal-cancel.action";
-import {RecordModalSaveAction} from "./save/record-modal-save.action";
-import {AsyncProcessRecordModalAction} from "./async-process/async-process.service";
+import {RecordModalActionData, RecordModalActionHandler} from "../record-modal.action";
+import {ALL_VIEW_MODES} from "../../../../common/views/view.model";
 
 @Injectable({
-    providedIn: 'root',
+    providedIn: 'root'
 })
-export class RecordModalActionManager extends BaseActionManager<RecordModalActionData> {
+export class AsyncProcessRecordModalAction extends RecordModalActionHandler {
 
-    constructor(
-        protected cancel: RecordModalCancelAction,
-        protected save: RecordModalSaveAction,
-        protected async: AsyncProcessRecordModalAction,
-    ) {
+    key = 'async-process';
+    modes = ALL_VIEW_MODES;
+
+    constructor() {
         super();
-        cancel.modes.forEach(mode => this.actions[mode][cancel.key] = cancel);
-        save.modes.forEach(mode => this.actions[mode][save.key] = save);
-        async.modes.forEach(mode => this.actions[mode][async.key] = async);
+    }
+
+    run(data: RecordModalActionData): void {
+    }
+
+    shouldDisplay(data: RecordModalActionData): boolean {
+        const defaultAcls = data?.action?.acl ?? [];
+        if (!defaultAcls.length) {
+            return true;
+        }
+
+        return this.checkRecordAccess(data, defaultAcls);
     }
 }
