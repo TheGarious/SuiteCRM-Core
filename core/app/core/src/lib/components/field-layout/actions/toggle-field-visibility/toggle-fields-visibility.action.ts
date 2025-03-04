@@ -1,6 +1,6 @@
 /**
  * SuiteCRM is a customer relationship management program developed by SalesAgility Ltd.
- * Copyright (C) 2023 SalesAgility Ltd.
+ * Copyright (C) 2025 SalesAgility Ltd.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by the
@@ -25,29 +25,41 @@
  */
 
 import {Injectable} from '@angular/core';
-import {FieldActionData} from './field.action';
-import {BaseActionManager} from '../../../services/actions/base-action-manager.service';
-import {FieldClearAction} from './clear/field-clear.action';
-import {FieldCopyAction} from "./copy/field-copy.action";
-import {CalculateValueBackendAction} from "./calculate-value-backend/calculate-value-backend.action";
-import {ToggleFieldsVisibilityAction} from "./toggle-field-visibility/toggle-fields-visibility.action";
+import {FieldActionData, FieldActionHandler} from '../field.action';
+import {Clipboard} from '@angular/cdk/clipboard';
+import {ALL_VIEW_MODES} from "../../../../common/views/view.model";
 
 @Injectable({
-    providedIn: 'root',
+    providedIn: 'root'
 })
-export class FieldActionManager extends BaseActionManager<FieldActionData> {
+export class ToggleFieldsVisibilityAction extends FieldActionHandler {
 
-    constructor(
-        protected calculate: CalculateValueBackendAction,
-        protected clear: FieldClearAction,
-        protected copy: FieldCopyAction,
-        protected toggleFieldsVisibility: ToggleFieldsVisibilityAction
-    ) {
+    key = 'toggle-fields-visibility';
+    modes = ALL_VIEW_MODES;
+
+    constructor() {
         super();
-
-        calculate.modes.forEach(mode => this.actions[mode][calculate.key] = calculate);
-        clear.modes.forEach(mode => this.actions[mode][clear.key] = clear);
-        copy.modes.forEach(mode => this.actions[mode][copy.key] = copy);
-        toggleFieldsVisibility.modes.forEach(mode => this.actions[mode][toggleFieldsVisibility.key] = toggleFieldsVisibility);
     }
+
+    run(data: FieldActionData): void {
+        let staging = data.store.recordStore.getStaging();
+        if (!staging) {
+            return;
+        }
+
+        const fields = data?.action?.params?.fields ?? [];
+
+        if (!fields || !fields.length) {
+            return;
+        }
+
+        fields.forEach((fieldName: string) => {
+            const field = staging?.fields[fieldName] ?? null;
+            if (!field) {
+                return;
+            }
+            field.display.set(field.display() === 'none' ? 'show' : 'none');
+        });
+    }
+
 }
