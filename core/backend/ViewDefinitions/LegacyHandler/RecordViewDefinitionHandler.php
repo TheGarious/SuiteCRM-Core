@@ -519,6 +519,7 @@ class RecordViewDefinitionHandler extends LegacyHandler
                     $definition = $cell;
 
                     if (empty($cell)) {
+                        $newRow['cols'][] = ['name' => '', 'fieldDefinition' => []];
                         continue;
                     }
 
@@ -530,6 +531,10 @@ class RecordViewDefinitionHandler extends LegacyHandler
 
                     if (is_string($cell)) {
                         $definition = $this->getBaseFieldCellDefinition($cell);
+                    }
+
+                    if (isset($cell['name'])  && empty($cell['name'])) {
+                        $newRow['cols'][] = ['name' => '', 'fieldDefinition' => []];
                     }
 
                     $this->addCell($newRow, $definition, $vardefs, $editViewFields);
