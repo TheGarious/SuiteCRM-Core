@@ -26,10 +26,10 @@
 
 import {ModuleNavigation} from '../../../services/navigation/module-navigation/module-navigation.service';
 import {RecordModalStore} from "../store/record-modal/record-modal.store";
-import {Action, ActionData, ActionHandler} from "../../../common/actions/action.model";
+import {Action, ActionHandler, RecordBasedActionData} from "../../../common/actions/action.model";
 import {Record} from "../../../common/record/record.model";
 
-export interface RecordModalActionData extends ActionData {
+export interface RecordModalActionData extends RecordBasedActionData {
     store: RecordModalStore;
     action?: Action;
 }

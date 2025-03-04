@@ -26,20 +26,20 @@
 
 import {Injectable} from '@angular/core';
 import {Action, ActionContext} from '../../../common/actions/action.model';
-import {AsyncActionService} from '../../../services/process/processes/async-action/async-action';
+import {AsyncActionInput, AsyncActionService} from '../../../services/process/processes/async-action/async-action';
 import {MessageService} from '../../../services/message/message.service';
 import {LineActionActionManager} from '../line-actions/line-action-manager.service';
 import {LineActionData} from '../line-actions/line.action';
 import {ConfirmationModalService} from '../../../services/modals/confirmation-modal.service';
-import {BaseRecordActionsAdapter} from '../../../services/actions/base-record-action.adapter';
 import {LanguageStore} from '../../../store/language/language.store';
 import {SelectModalService} from '../../../services/modals/select-modal.service';
 import {MetadataStore} from '../../../store/metadata/metadata.store.service';
 import {AppMetadataStore} from "../../../store/app-metadata/app-metadata.store.service";
 import {FieldModalService} from "../../../services/modals/field-modal.service";
+import {BaseActionsAdapter} from "../../../services/actions/base-action.adapter";
 
 @Injectable()
-export abstract class BaseLineActionsAdapter extends BaseRecordActionsAdapter<LineActionData> {
+export abstract class BaseLineActionsAdapter<D extends LineActionData> extends BaseActionsAdapter<D> {
 
     protected constructor(
         protected actionManager: LineActionActionManager,
@@ -65,10 +65,35 @@ export abstract class BaseLineActionsAdapter extends BaseRecordActionsAdapter<Li
         )
     }
 
-    protected buildActionData(action: Action, context?: ActionContext): LineActionData {
+    protected buildActionData(action: Action, context?: ActionContext): D {
         return {
             record: (context && context.record) || null,
             action: action
-        } as LineActionData;
+        } as D;
+    }
+
+    /**
+     * Get action name
+     * @param action
+     */
+    protected getActionName(action: Action) {
+        return `record-${action.key}`;
+    }
+
+    /**
+     * Build backend process input
+     *
+     * @param action
+     * @param actionName
+     * @param moduleName
+     * @param context
+     */
+    protected buildActionInput(action: Action, actionName: string, moduleName: string, context: ActionContext = null): AsyncActionInput {
+        return {
+            action: actionName,
+            module: moduleName,
+            id: (context && context.record && context.record.id) || '',
+            params: (action && action.params) || [],
+        } as AsyncActionInput;
     }
 }

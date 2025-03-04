@@ -24,13 +24,13 @@
  * the words "Supercharged by SuiteCRM".
  */
 
-import {Action, ActionData, ActionHandler} from '../../../../common/actions/action.model';
+import {Action, ActionHandler, RecordBasedActionData} from '../../../../common/actions/action.model';
 import {Record} from '../../../../common/record/record.model';
 import {ModuleNavigation} from '../../../../services/navigation/module-navigation/module-navigation.service';
 import {RecordThreadStore} from '../../store/record-thread/record-thread.store';
 import {RecordThreadItemStore} from '../../store/record-thread/record-thread-item.store';
 
-export interface RecordThreadItemActionData extends ActionData {
+export interface RecordThreadItemActionData extends RecordBasedActionData {
     itemStore?: RecordThreadItemStore;
     threadStore?: RecordThreadStore;
     action?: Action;

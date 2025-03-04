@@ -29,12 +29,20 @@ import {ViewMode} from '../views/view.model';
 import {Record} from '../record/record.model';
 import {SearchCriteria} from '../views/list/search-criteria.model';
 import {StringMap} from '../types/string-map';
-import { LogicDefinitions } from '../metadata/metadata.model';
+import {LogicDefinitions} from '../metadata/metadata.model';
+import {ObjectMap} from "../types/object-map";
+import {AsyncActionInput} from "../../services/process/processes/async-action/async-action";
+import {BaseRecordContainerStoreInterface} from "../containers/record/record-container.store.model";
 
 export interface ActionData {
     [key: string]: any;
 
     action?: Action;
+    asyncData?: AsyncActionInput;
+}
+
+export interface RecordBasedActionData extends ActionData {
+    store?: BaseRecordContainerStoreInterface;
 }
 
 export interface ActionHandlerMap<D extends ActionData> {

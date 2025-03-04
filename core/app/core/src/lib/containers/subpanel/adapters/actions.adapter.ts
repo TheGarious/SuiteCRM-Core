@@ -31,7 +31,7 @@ import {SubPanelDefinition} from '../../../common/metadata/subpanel.metadata.mod
 import {ViewMode} from '../../../common/views/view.model';
 import {combineLatestWith, Observable} from 'rxjs';
 import {map, take} from 'rxjs/operators';
-import {AsyncActionService} from '../../../services/process/processes/async-action/async-action';
+import {AsyncActionInput, AsyncActionService} from '../../../services/process/processes/async-action/async-action';
 import {LanguageStore, LanguageStrings} from '../../../store/language/language.store';
 import {MessageService} from '../../../services/message/message.service';
 import {Process} from '../../../services/process/process.service';
@@ -44,9 +44,10 @@ import {SubpanelActionData} from "../actions/subpanel.action";
 import {SubpanelStore} from "../store/subpanel/subpanel.store";
 import {AppMetadataStore} from "../../../store/app-metadata/app-metadata.store.service";
 import {FieldModalService} from "../../../services/modals/field-modal.service";
+import {BaseActionsAdapter} from "../../../services/actions/base-action.adapter";
 
 @Injectable()
-export class SubpanelActionsAdapter extends BaseRecordActionsAdapter<SubpanelActionData> {
+export class SubpanelActionsAdapter extends BaseActionsAdapter<SubpanelActionData> {
 
     constructor(
         protected store: SubpanelStore,
@@ -107,5 +108,22 @@ export class SubpanelActionsAdapter extends BaseRecordActionsAdapter<SubpanelAct
 
     protected reload(action: Action, process: Process, context?: ActionContext): void {
         this.store.load(false).pipe(take(1)).subscribe();
+    }
+
+    /**
+     * Build backend process input
+     *
+     * @param action
+     * @param actionName
+     * @param moduleName
+     * @param context
+     */
+    protected buildActionInput(action: Action, actionName: string, moduleName: string, context: ActionContext = null): AsyncActionInput {
+        return {
+            action: actionName,
+            module: moduleName,
+            id: (context && context.record && context.record.id) || '',
+            params: (action && action.params) || [],
+        } as AsyncActionInput;
     }
 }
