@@ -218,6 +218,8 @@ export class FieldBuilder {
             field.formControl = new UntypedFormControl(formattedValue);
         }
 
+        field.displayType =  viewField?.displayType ?? definition?.displayType ?? '';
+
         field.useFullColumn = viewField?.useFullColumn || definition?.useFullColumn || null;
         field.attributes = {};
         field.source = 'field';
