@@ -154,12 +154,13 @@ class SendTestEmailHandler extends LegacyHandler implements ProcessHandlerInterf
         $this->init();
         $this->startLegacyApp();
 
+        $outboundEmail = null;
+        $from = '';
+        $fromName = '';
+
         $module = $this->moduleNameMapper->toLegacy($module);
-
         $bean = BeanFactory::getBean($module, $id);
-
         $max = $this->systemConfigHandler->getSystemConfig('test_email_limit')?->getValue();
-
         $emails = $this->filterEmailListHandler->getEmails($fields, $max, true);
 
         if ($emails === null) {
@@ -169,17 +170,19 @@ class SendTestEmailHandler extends LegacyHandler implements ProcessHandlerInterf
             return;
         }
 
-        $outboundEmail = BeanFactory::getBean('OutboundEmailAccounts', $bean->outbound_email_id);
+        if ($bean?->outbound_email_id ?? false) {
+            $outboundEmail = BeanFactory::getBean('OutboundEmailAccounts', $bean->outbound_email_id);
+            $from = $outboundEmail->smtp_from_addr;
+            $fromName = $outboundEmail->smtp_from_name;
+        }
 
-        $from = $outboundEmail->smtp_from_addr;
-        $fromName = $outboundEmail->smtp_from_name;
         $subject = $bean->subject;
         $body = $bean->body;
 
         $allSent = true;
 
         foreach ($emails as $email) {
-            $success = $this->emailProcessProcessor->processEmail($email, $subject, $body, $from, $fromName, true);
+            $success = $this->emailProcessProcessor->processEmail($email, $subject, $body, $from, $fromName, $outboundEmail, true);
             if ($success){
                 continue;
             }
