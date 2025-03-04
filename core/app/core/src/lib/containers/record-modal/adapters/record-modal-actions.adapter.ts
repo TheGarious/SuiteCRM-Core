@@ -27,7 +27,7 @@
 import {Injectable} from '@angular/core';
 import {combineLatestWith, Observable} from 'rxjs';
 import {map, take} from 'rxjs/operators';
-import {MetadataStore, RecordModalMetadata} from '../../../store/metadata/metadata.store.service';
+import {MetadataStore, RecordViewMetadata} from '../../../store/metadata/metadata.store.service';
 import {AsyncActionInput, AsyncActionService,} from '../../../services/process/processes/async-action/async-action';
 import {AppMetadataStore} from "../../../store/app-metadata/app-metadata.store.service";
 import {LanguageStore} from '../../../store/language/language.store';
@@ -44,6 +44,7 @@ import {Action, ActionContext, ActionHandler} from "../../../common/actions/acti
 import {ViewMode} from "../../../common/views/view.model";
 import {LogicDefinitions, Panel} from "../../../common/metadata/metadata.model";
 import {Record} from "../../../common/record/record.model";
+import {FieldModalService} from "../../../services/modals/field-modal.service";
 
 @Injectable()
 export class RecordModalActionsAdapter extends BaseRecordActionsAdapter<RecordModalActionData> {
@@ -58,7 +59,8 @@ export class RecordModalActionsAdapter extends BaseRecordActionsAdapter<RecordMo
         protected confirmation: ConfirmationModalService,
         protected selectModalService: SelectModalService,
         protected displayTypeLogic: RecordActionDisplayTypeLogic,
-        protected appMetadataStore: AppMetadataStore
+        protected appMetadataStore: AppMetadataStore,
+        protected fieldModalService: FieldModalService,
     ) {
         super(
             actionManager,
@@ -67,15 +69,16 @@ export class RecordModalActionsAdapter extends BaseRecordActionsAdapter<RecordMo
             confirmation,
             language,
             selectModalService,
+            fieldModalService,
             metadata,
             appMetadataStore
         );
     }
 
     getActions(context?: ActionContext): Observable<Action[]> {
-        return this.metadata.recordModalMetadata$.pipe(
+        return this.store.recordViewMetadata$.pipe(
             combineLatestWith(this.store.mode$, this.store.record$, this.store.panels$),
-            map(([meta, mode]: [RecordModalMetadata, ViewMode, Record, Panel[]]) => {
+            map(([meta, mode]: [RecordViewMetadata, ViewMode, Record, Panel[]]) => {
                 if (!mode || !meta) {
                     return [];
                 }
