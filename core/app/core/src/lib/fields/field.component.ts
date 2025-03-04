@@ -70,7 +70,7 @@ export class FieldComponent implements OnInit {
     get componentType(): any {
         let module = (this.record && this.record.module) || 'default';
 
-        const displayType = (this.field.definition && this.field.definition.displayType) || '';
+        const displayType = this?.field?.displayType ?? this?.field?.definition?.displayType ?? '';
 
         return this.registry.getDisplayType(module, this.type, displayType, this.componentMode, this.field.name);
     }

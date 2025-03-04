@@ -187,6 +187,7 @@ export interface Field {
     display?: WritableSignal<DisplayType>;
     required?: WritableSignal<boolean>;
     defaultDisplay?: string;
+    displayType?: string;
     default?: string;
     defaultValueModes?: ViewMode[];
     source?: FieldSource;
@@ -223,6 +224,7 @@ export class BaseField implements Field {
     display?: WritableSignal<DisplayType>;
     required?: WritableSignal<boolean>;
     defaultDisplay?: string;
+    displayType?: string;
     default?: string;
     defaultValueModes?: ViewMode[];
     source?: FieldSource;
