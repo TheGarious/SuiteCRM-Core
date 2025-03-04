@@ -22,7 +22,8 @@
             "polyfills": "core/app/shell/src/polyfills.ts",
             "tsConfig": "core/app/shell/tsconfig.app.json",
             "scripts": [
-              "node_modules/tinymce/tinymce.min.js"
+              "node_modules/tinymce/tinymce.min.js",
+              "node_modules/dompurify/dist/purify.min.js"
             ],
             "styles": [
               "node_modules/bootstrap-css-only/css/bootstrap.min.css",
