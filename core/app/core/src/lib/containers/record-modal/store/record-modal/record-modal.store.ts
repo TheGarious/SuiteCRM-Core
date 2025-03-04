@@ -34,7 +34,6 @@ import {RecordStoreFactory} from "../../../../store/record/record.store.factory"
 import {RecordStore} from "../../../../store/record/record.store";
 import {isEmpty} from "lodash-es";
 import {RecordViewData, RecordViewState} from "../../../../views/record/store/record-view/record-view.store.model";
-import {FieldActionsAdapterFactory} from "../../../../components/field-layout/adapters/field.actions.adapter.factory";
 import {RecordValidationHandler} from "../../../../services/record/validation/record-validation.handler";
 import {Params} from "@angular/router";
 import {LanguageStore} from "../../../../store/language/language.store";
@@ -45,12 +44,23 @@ import {NavigationStore} from "../../../../store/navigation/navigation.store";
 import {ModuleNavigation} from "../../../../services/navigation/module-navigation/module-navigation.service";
 import {Record} from "../../../../common/record/record.model";
 import {ViewContext, ViewMode} from "../../../../common/views/view.model";
-import {Panel, PanelRow, ViewFieldDefinition, ViewFieldDefinitionMap} from "../../../../common/metadata/metadata.model";
+import {
+    FieldActionsArrayMap,
+    Panel,
+    PanelRow,
+    ViewFieldDefinition,
+    ViewFieldDefinitionMap
+} from "../../../../common/metadata/metadata.model";
 import {deepClone} from "../../../../common/utils/object-utils";
 import {isVoid} from "../../../../common/utils/value-utils";
-import {FieldDefinitionMap, FieldMetadata} from "../../../../common/record/field.model";
+import {Field, FieldDefinitionMap, FieldMetadata} from "../../../../common/record/field.model";
 import {FieldLogicMap} from "../../../../common/actions/field-logic-action.model";
 import {ObjectMap} from "../../../../common/types/object-map";
+import {RecordModalFieldActionsAdapterFactory} from "../../adapters/record-modal-field-actions.adapter.factory";
+import {
+    BaseRecordContainerStoreInterface
+} from "../../../../common/containers/record/record-container.store.model";
+import {ActionDataSource, ActionDataSourceBuilderFunction} from "../../../../common/actions/action.model";
 
 const initialState: any = {
     module: '',
@@ -65,7 +75,7 @@ const initialState: any = {
 };
 
 @Injectable()
-export class RecordModalStore implements StateStore {
+export class RecordModalStore implements StateStore, BaseRecordContainerStoreInterface {
 
     record$: Observable<Record>;
     stagingRecord$: Observable<Record>;
@@ -80,6 +90,8 @@ export class RecordModalStore implements StateStore {
 
     metadataLoading$: Observable<boolean>;
     protected metadataLoadingState: BehaviorSubject<boolean>;
+    protected fieldActionsState = new BehaviorSubject<FieldActionsArrayMap>({});
+    fieldActions$: Observable<FieldActionsArrayMap> = this.fieldActionsState.asObservable();
 
     /**
      * View-model that resolves once all the data is ready (or updated).
@@ -110,13 +122,14 @@ export class RecordModalStore implements StateStore {
         protected message: MessageService,
         protected navigationStore: NavigationStore,
         protected moduleNavigation: ModuleNavigation,
-        protected actionAdaptorFactory: FieldActionsAdapterFactory,
+        protected fieldActionAdaptorFactory: RecordModalFieldActionsAdapterFactory,
         protected recordValidationHandler: RecordValidationHandler
     ) {
         this.metadataState = new BehaviorSubject<Metadata>({});
         this.metadata$ = this.metadataState.asObservable();
         this.recordViewMetadata$ = this.metadata$.pipe(map(meta => {
-            if (meta?.extra[metadataView]) {
+            const extra = meta?.extra ?? {};
+            if (extra[metadataView] ?? null) {
                 return meta?.extra[metadataView] as RecordViewMetadata;
             }
 
@@ -158,53 +171,65 @@ export class RecordModalStore implements StateStore {
         this.setMode(mode);
         this.metadataLoadingState.next(true);
 
-        this.meta.getMetadata(module).pipe(
-            tap((metadata) => {
-                this.metadataState.next(metadata ?? {});
-                this.metadataLoadingState.next(false);
 
-                this.panels$ = this.panelsSubject.asObservable();
-                this.recordStore = this.recordStoreFactory.create(this.getViewFieldsObservable(), this.getRecordMetadata$());
-                this.record$ = this.recordStore.state$.pipe(distinctUntilChanged());
-                this.stagingRecord$ = this.recordStore.staging$.pipe(distinctUntilChanged());
+        this.subs.push(
+            this.meta.getMetadata(module).pipe(
+                tap((metadata) => {
+                    this.metadataState.next(metadata ?? {});
+                    this.metadataLoadingState.next(false);
 
-                const data$ = this.record$.pipe(
-                    combineLatestWith(this.loading$),
-                    map(([record, loading]: [Record, boolean]) => {
-                        this.data = {record, loading} as RecordViewData;
-                        return this.data;
-                    })
-                );
 
-                this.viewContext$ = this.record$.pipe(map(() => this.getViewContext()));
+                })
+            ).subscribe()
+        );
 
-                this.initPanels();
+        this.recordStore = this.recordStoreFactory.create(this.getViewFieldsObservable(), this.getRecordMetadata$());
 
-                if (mode === 'create') {
-                    this.recordStore.init(
-                        {
-                            id: '',
-                            type: '',
-                            module: module,
-                            attributes: {
-                                assigned_user_id: this.appStateStore.getCurrentUser().id,
-                                assigned_user_name: {
-                                    id: this.appStateStore.getCurrentUser().id,
-                                    user_name: this.appStateStore.getCurrentUser().userName
-                                },
-                            },
-                        } as Record,
-                        true
-                    );
-                } else {
-                    this.load().pipe(
-                        take(1),
-                        tap(() => {
-                            this.parseParams(params);
-                        })).subscribe();
+        if (mode === 'create') {
+            this.recordStore.init(
+                {
+                    id: '',
+                    type: '',
+                    module: module,
+                    attributes: {
+                        assigned_user_id: this.appStateStore.getCurrentUser().id,
+                        assigned_user_name: {
+                            id: this.appStateStore.getCurrentUser().id,
+                            user_name: this.appStateStore.getCurrentUser().userName
+                        },
+                    },
+                } as Record,
+                true,
+                {
+                    initVardefBasedFieldActions: true,
+                    buildFieldActionAdapter: ((options?: ObjectMap): ActionDataSource => {
+                        return this.fieldActionAdaptorFactory.create('recordView', ((options?.field) as Field)?.name ?? '', this);
+                    }) as ActionDataSourceBuilderFunction
                 }
+            );
+        } else {
+            this.load().pipe(
+                take(1),
+                tap(() => {
+                    this.parseParams(params);
+                })).subscribe();
+        }
+
+        this.panels$ = this.panelsSubject.asObservable();
+        this.record$ = this.recordStore.state$.pipe(distinctUntilChanged());
+        this.stagingRecord$ = this.recordStore.staging$.pipe(distinctUntilChanged());
+        this.viewContext$ = this.record$.pipe(map(() => this.getViewContext()));
+
+        const data$ = this.record$.pipe(
+            combineLatestWith(this.loading$),
+            map(([record, loading]: [Record, boolean]) => {
+                this.data = {record, loading} as RecordViewData;
+                return this.data;
             })
-        ).subscribe();
+        );
+
+        this.initPanels();
+        this.initFieldActions();
     }
 
 
@@ -407,6 +432,10 @@ export class RecordModalStore implements StateStore {
             const panels = [];
             const module = (record && record.module) || '';
 
+            if (!meta || !meta.panels) {
+                return;
+            }
+
             this.safeUnsubscription(this.fieldSubs);
             meta.panels.forEach(panelDefinition => {
                 const label = (panelDefinition.label)
@@ -424,11 +453,12 @@ export class RecordModalStore implements StateStore {
                     const row = {cols: []} as PanelRow;
                     rowDefinition.cols.forEach(cellDefinition => {
                         const cellDef = {...cellDefinition};
-                        const fieldActions = cellDefinition.fieldActions || null;
+                        const fieldActions = cellDefinition?.fieldActions ?? cellDefinition?.fieldDefinition?.fieldActions ?? null;
                         if (fieldActions) {
-                            adaptor = this.actionAdaptorFactory.create('recordView', cellDef.name, this);
+                            adaptor = this.fieldActionAdaptorFactory.create('recordView', cellDef.name, this);
                             cellDef.adaptor = adaptor;
                         }
+
                         row.cols.push(cellDef);
                     });
                     panel.rows.push(row);
@@ -476,6 +506,38 @@ export class RecordModalStore implements StateStore {
      */
     protected getRecordViewMetadata(): RecordViewMetadata {
         return deepClone(this?.metadataState?.value?.recordView || {}) as RecordViewMetadata;
+    }
+
+    protected initFieldActions(): void {
+
+        const fieldActionsSub = this.recordViewMetadata$.subscribe(metadata => {
+            const fieldActions: FieldActionsArrayMap = {};
+
+            const panels = metadata?.panels ?? [];
+
+            panels.forEach(panel => {
+                if (panel.rows) {
+                    panel.rows.forEach(row => {
+                        if (row.cols) {
+                            row.cols.forEach(col => {
+                                if (col.fieldActions && col.fieldActions.actions) {
+                                    Object.values(col.fieldActions.actions).forEach(action => {
+                                        action['fieldName'] = col.name;
+                                        const viewFieldActions = fieldActions[col.name] ?? [];
+                                        viewFieldActions.push(action);
+                                        fieldActions[col.name] = viewFieldActions;
+                                    });
+                                }
+                            });
+                        }
+                    })
+                }
+            });
+
+            this.fieldActionsState.next(fieldActions);
+        });
+
+        this.subs.push(fieldActionsSub);
     }
 
     /**
