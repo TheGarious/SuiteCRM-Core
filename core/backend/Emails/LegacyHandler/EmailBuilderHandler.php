@@ -31,6 +31,7 @@ namespace App\Emails\LegacyHandler;
 use App\Engine\LegacyHandler\LegacyHandler;
 use BeanFactory;
 use PHPMailer\PHPMailer\Exception;
+use SugarBean;
 use SugarPHPMailer;
 
 class EmailBuilderHandler extends LegacyHandler {
@@ -45,8 +46,18 @@ class EmailBuilderHandler extends LegacyHandler {
     /**
      * @throws Exception
      */
-    public function buildEmail($subject, $body, $emailTo, $from, $fromName = '', $altEmailBody = '', $emailCc = [], $emailBcc = [], $attachments = []) {
-
+    public function buildEmail(
+        $subject,
+        $body,
+        $emailTo,
+        $from = '',
+        $fromName = '',
+        $outboundEmail = null,
+        $altEmailBody = '',
+        $emailCc = [],
+        $emailBcc = [],
+        $attachments = []
+    ) {
         require_once('include/SugarPHPMailer.php');
 
         $mail = new SugarPHPMailer();
@@ -61,10 +72,15 @@ class EmailBuilderHandler extends LegacyHandler {
             $fromName = $defaults['name'];
         }
 
+        if ($outboundEmail !== null) {
+            $this->setMailer($mail, $outboundEmail);
+        } else {
+            $mail->setMailerForSystem();
+        }
+
         isValidEmailAddress($from);
         $mail->From = $from;
         $mail->FromName = $fromName;
-        $mail->setMailerForSystem();
 
         if (!empty($altEmailBody)) {
             $mail->AltBody = $altEmailBody;
@@ -97,6 +113,32 @@ class EmailBuilderHandler extends LegacyHandler {
 
         foreach ($emailCc as $cc) {
             $mail->AddCC($cc);
+        }
+    }
+
+    protected function setMailer($mail, SugarBean $outboundEmail)
+    {
+        $mail->protocol = $outboundEmail->mail_smtpssl ? 'ssl://' : 'tcp://';
+
+        if (isSmtp($outboundEmail->mail_sendtype ?? '')) {
+            $mail->Mailer = 'smtp';
+            $mail->Host = $outboundEmail->mail_smtpserver;
+            $mail->Port = $outboundEmail->mail_smtpport;
+            if ($outboundEmail->mail_smtpssl === 1) {
+                $mail->SMTPSecure = 'ssl';
+            }
+
+            if ($outboundEmail->mail_smtpssl === 2) {
+                $mail->SMTPSecure = 'tls';
+            }
+
+            if ($outboundEmail->mail_smtpauth_req) {
+                $mail->SMTPAuth = true;
+                $mail->Username = $outboundEmail->mail_smtpuser;
+                $mail->Password = $outboundEmail->mail_smtppass;
+            }
+        } else {
+            $mail->Mailer = 'sendmail';
         }
     }
 }
