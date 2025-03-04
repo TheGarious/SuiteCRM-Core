@@ -104,6 +104,8 @@ import {TinymceDetailFieldModule} from './tinymce/templates/detail/tinymce.modul
 import {TinymceEditFieldModule} from './tinymce/templates/edit/tinymce.module';
 import {TinymceDetailFieldComponent} from './tinymce/templates/detail/tinymce.component';
 import {TinymceEditFieldComponent} from './tinymce/templates/edit/tinymce.component';
+import {SquireEditFieldModule} from './squire/templates/edit/squire.module';
+import {SquireEditFieldComponent} from './squire/templates/edit/squire.component';
 import {IconListFieldModule} from "./icon/templates/detail/icon.module";
 import {IconDetailFieldComponent} from "./icon/templates/detail/icon.component";
 import {TextListFieldModule} from './text/templates/list/text.module';
@@ -158,7 +160,8 @@ export const baseFieldModules = [
     BooleanCheckboxFilterFieldModule,
     HtmlDetailFieldModule,
     TinymceDetailFieldModule,
-    TinymceEditFieldModule
+    TinymceEditFieldModule,
+    SquireEditFieldModule,
 ];
 export const baseFieldComponents = [
     VarcharDetailFieldComponent,
@@ -204,7 +207,8 @@ export const baseFieldComponents = [
     BooleanCheckboxFilterFieldComponent,
     HtmlDetailFieldComponent,
     TinymceDetailFieldComponent,
-    TinymceEditFieldComponent
+    TinymceEditFieldComponent,
+    SquireEditFieldComponent
 ];
 
 export const baseViewFieldsMap: FieldComponentMap = {
@@ -291,5 +295,6 @@ export const baseViewFieldsMap: FieldComponentMap = {
     'bool-checkbox.filter': BooleanCheckboxFilterFieldComponent,
     'html-native.detail': HtmlDetailFieldComponent,
     'html.detail': TinymceDetailFieldComponent,
-    'html.edit': TinymceEditFieldComponent
+    'html.edit': TinymceEditFieldComponent,
+    'html-squire.edit': SquireEditFieldComponent
 };
