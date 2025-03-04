@@ -61,11 +61,13 @@ class EmailBuilderHandler extends LegacyHandler {
         require_once('include/SugarPHPMailer.php');
 
         $mail = new SugarPHPMailer();
-        $mail->Body_html = $body;
-        $mail->Body = from_html($body);
-        $mail->Subject = from_html($subject);
+
         $emailObj = BeanFactory::newBean('Emails');
         $defaults = $emailObj->getSystemDefaultEmail();
+
+        $mail->Subject = from_html($subject);
+
+        $this->handleBodyInHTMLformat($mail, $body);
 
         if (!$from){
             $from = $defaults['email'];
@@ -140,5 +142,17 @@ class EmailBuilderHandler extends LegacyHandler {
         } else {
             $mail->Mailer = 'sendmail';
         }
+    }
+
+    protected function handleBodyInHTMLformat(SugarPHPMailer $mail, $body)
+    {
+        $mail->IsHTML(true);
+        $body = from_html(wordwrap($body, 996));
+        $mail->Body = $body;
+
+        $plainText = from_html($body);
+        $plainText = strip_tags(br2nl($plainText));
+        $mail->AltBody = $plainText;
+        $mail->description = $plainText;
     }
 }
