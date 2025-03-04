@@ -102,7 +102,8 @@ class GroupedFieldDefinitionMapper implements FieldDefinitionMapperInterface, Gr
             $mappedDefinition['groupFields'] = $this->getGroupedFieldDefinitions(
                 $groupedFields,
                 $vardefs,
-                $groupedType
+                $groupedType,
+                $fieldDefinition
             );
 
             $mappedDefinition['type'] = 'grouped-field';
@@ -247,7 +248,7 @@ class GroupedFieldDefinitionMapper implements FieldDefinitionMapperInterface, Gr
      * @param array $groupedType
      * @return array
      */
-    public function getGroupedFieldDefinitions(array $groupedFields, ?array $vardefs, array $groupedType): array
+    public function getGroupedFieldDefinitions(array $groupedFields, ?array $vardefs, array $groupedType, array $groupFieldDefinition = []): array
     {
         $definitions = [];
         foreach ($groupedFields as $groupedField) {
@@ -257,7 +258,7 @@ class GroupedFieldDefinitionMapper implements FieldDefinitionMapperInterface, Gr
                 continue;
             }
 
-            $mappedDef = $this->injectOverrides($groupedType, $groupedField, $definition);
+            $mappedDef = $this->injectOverrides($groupedType, $groupedField, $definition, $groupFieldDefinition);
 
             $definitions[$groupedField] = $mappedDef;
         }
@@ -273,9 +274,9 @@ class GroupedFieldDefinitionMapper implements FieldDefinitionMapperInterface, Gr
      * @param array $definition
      * @return array
      */
-    protected function injectOverrides(array $groupedType, $groupedField, array $definition): array
+    protected function injectOverrides(array $groupedType, $groupedField, array $definition, array $groupFieldDefinition = []): array
     {
-        $definitionOverrides = $groupedType['definition'][$groupedField] ?? [];
+        $definitionOverrides = $groupedType['definition'][$groupedField] ?? $groupFieldDefinition['definition'][$groupedField] ?? [];
         if (empty($definitionOverrides)) {
             return $definition;
         }
