@@ -25,14 +25,16 @@
 * the words "Supercharged by SuiteCRM".
 */
 -->
-<scrm-modal [closable]="true"
+<scrm-modal *ngIf="modalStore"
+            [closable]="true"
             [close]="closeButton"
-            [title]="titleKey"
-            bodyKlass="m-0 p-0 small-font"
-            footerKlass="border-0"
-            headerKlass="border-0"
-            klass="record-modal">
-    <div modal-body *ngIf="modalStore">
+            [titleKey]="titleKey"
+            [minimizable]="minimizable"
+            bodyKlass="m-0 p-0 small-font {{bodyClass}}"
+            footerKlass="border-0 {{footerClass}}"
+            headerKlass="border-bottom {{headerClass}} "
+            klass="record-modal rounded {{wrapperClass}}">
+    <div modal-body>
 
         <ng-container >
             <div *ngIf="record">
@@ -45,7 +47,7 @@
         </ng-container>
 
     </div>
-    <div modal-footer *ngIf="modalStore">
+    <div modal-footer>
         <div *ngIf="record && modalStore" class="h-100 d-flex justify-content-end">
             <scrm-action-group-menu
                     [config]="actionsAdapter"
