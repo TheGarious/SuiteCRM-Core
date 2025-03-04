@@ -67,8 +67,8 @@ export class UpdateFlexRelateModuleAction extends FieldLogicActionHandler {
     }
 
     protected updateValue(field: Field, valueObject: any, value: string, record: Record): void {
-        field.value = value;
         field.valueObject = valueObject;
+        field.value = value;
         field.formControl.setValue(value);
         // re-validate the parent form-control after value update
         record.formGroup.updateValueAndValidity({onlySelf: true, emitEvent: true});
