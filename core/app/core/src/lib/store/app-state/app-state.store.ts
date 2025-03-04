@@ -34,6 +34,7 @@ import {StateStore} from '../state';
 import {LoadingBufferFactory} from '../../services/ui/loading-buffer/loading-buffer.factory';
 import {LoadingBuffer} from '../../services/ui/loading-buffer/loading-buffer.service';
 import {SystemConfigStore} from '../system-config/system-config.store';
+import {NgbModalRef} from "@ng-bootstrap/ng-bootstrap/modal/modal-ref";
 
 export interface AppState {
     loading?: boolean;
@@ -93,6 +94,7 @@ export class AppStateStore implements StateStore {
     protected loadingQueue = {};
     protected loadingBuffer: LoadingBuffer;
     protected subs: Subscription[] = [];
+    protected activeModals: NgbModalRef[] = [];
 
     private isLoginWizardCompleted: WritableSignal<boolean> = signal<boolean>(true);
 
@@ -135,6 +137,7 @@ export class AppStateStore implements StateStore {
         this.loadingQueue = {};
         this.updateState(deepClone(initialState));
         this.subs.forEach(sub => sub.unsubscribe());
+        this.closeAllModals();
     }
 
     public clearAuthBased(): void {
@@ -169,6 +172,38 @@ export class AppStateStore implements StateStore {
             this.onLogout();
         }
         this.updateState({...internalState, currentUser: user});
+    }
+
+    public addModalRef(modalRef: NgbModalRef): void {
+        this.activeModals.push(modalRef);
+        if (this.activeModals.length > 0) {
+            window.document.body.classList.add('detached-modal-open');
+        }
+    }
+
+    public removeModalRef(modalRef: NgbModalRef): void {
+        const index = this.activeModals.indexOf(modalRef);
+        if (index > -1) {
+            this.activeModals.splice(index, 1);
+        }
+        if (this.activeModals.length < 1) {
+            window.document.body.classList.remove('detached-modal-open');
+        }
+    }
+
+    public closeAllModals(): void {
+        this.activeModals.forEach(modal => {
+            try {
+                modal.close();
+            } catch (error) {
+                console.error('Error closing modal:', error);
+            }
+        });
+        this.activeModals = [];
+    }
+
+    public getActiveModals(): NgbModalRef[] {
+        return [...this.activeModals];
     }
 
     /**
