@@ -73,9 +73,16 @@ export class RecordModalComponent implements OnInit, OnDestroy {
     @Input() module: string;
     @Input() metadataView: string = 'recordView';
     @Input() mode: ViewMode;
+    @Input() minimizable: boolean = false;
     @Input() recordId: string = '';
+    @Input() parentId: string = '';
+    @Input() parentModule: string = '';
     @Input() contentAdapter: any = null;
     @Input() actionsAdapter: any = null;
+    @Input() headerClass: string = '';
+    @Input() bodyClass: string = '';
+    @Input() footerClass: string = '';
+    @Input() wrapperClass: string = '';
 
     record: Record;
     modalStore: RecordModalStore;
@@ -87,7 +94,6 @@ export class RecordModalComponent implements OnInit, OnDestroy {
     protected subs: Subscription[] = [];
 
     constructor(
-        protected route: ActivatedRoute,
         protected activeModal: NgbActiveModal,
         protected storeFactory: RecordModalStoreFactory,
         protected recordModalContentAdapterFactory: RecordModalContentAdapterFactory,
@@ -133,6 +139,7 @@ export class RecordModalComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
         this.subs.forEach(sub => sub.unsubscribe());
+
         this.modalStore.clear();
     }
 
