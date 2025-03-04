@@ -24,28 +24,77 @@
  * the words "Supercharged by SuiteCRM".
  */
 
-import {Component, Input} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, signal, WritableSignal} from '@angular/core';
 import {ButtonInterface} from '../../../../common/components/button/button.model';
+import {MinimiseButtonStatus} from "../../../minimise-button/minimise-button.component";
+import {Observable, Subscription} from "rxjs";
+import {StringMap} from "../../../../common/types/string-map";
+import {FieldMap} from "../../../../common/record/field.model";
 
 @Component({
     selector: 'scrm-modal',
     templateUrl: './modal.component.html',
     styleUrls: [],
 })
-export class ModalComponent{
+export class ModalComponent implements OnInit, OnDestroy{
 
     @Input() klass = '';
     @Input() headerKlass = '';
     @Input() bodyKlass = '';
     @Input() footerKlass = '';
     @Input() titleKey = '';
+    @Input() dynamicTitleKey = '';
+    @Input() dynamicTitleContext: StringMap = {};
+    @Input() dynamicTitleFields: FieldMap = {};
     @Input() descriptionKey = '';
+    @Input() dynamicDescriptionKey = '';
+    @Input() dynamicDescriptionContext: StringMap = {};
+    @Input() dynamicDescriptionFields: FieldMap = {};
     @Input() limit = '';
     @Input() limitEndLabel = '';
     @Input() limitLabel = 'LBL_LIMIT';
     @Input() closable:boolean = false;
+    @Input() minimizable:boolean = false;
+    @Input() isMinimized$: Observable<boolean>;
     @Input() close: ButtonInterface = {
         klass: ['btn', 'btn-outline-light', 'btn-sm']
     } as ButtonInterface;
+
+    isMinimized: WritableSignal<boolean> = signal(false);
+    minimiseButton: ButtonInterface;
+    minimiseStatus: MinimiseButtonStatus;
+    protected subs: Subscription[] = [];
+    ngOnInit(): void {
+        if (this.isMinimized$) {
+            this.subs.push(this.isMinimized$.subscribe(minimize => {
+                this.isMinimized.set(minimize);
+                this.initMinimiseButton();
+            }));
+        }
+        this.initMinimiseButton();
+    }
+
+    ngOnDestroy(): void {
+        this.subs.forEach(sub => sub.unsubscribe());
+    }
+
+    initMinimiseButton(): void {
+        this.minimiseButton = {
+            klass: ['btn', 'btn-outline-light', 'btn-sm'],
+            onClick: () => {
+                this.isMinimized.set(!this.isMinimized());
+                this.initMinimiseStatus();
+            },
+        } as ButtonInterface;
+        this.initMinimiseStatus();
+    }
+
+    initMinimiseStatus(): void {
+        if (this.isMinimized()) {
+            this.minimiseStatus = 'minimised';
+            return;
+        }
+        this.minimiseStatus = 'maximised';
+    }
 
 }
