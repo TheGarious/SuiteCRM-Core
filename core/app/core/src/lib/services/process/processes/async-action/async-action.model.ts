@@ -23,6 +23,8 @@
  * feasible for technical reasons, the Appropriate Legal Notices must display
  * the words "Supercharged by SuiteCRM".
  */
+import {ActionData} from "../../../../common/actions/action.model";
+import {Process} from "../../process.service";
 
 export interface AsyncActionData {
     [key: string]: any;
@@ -31,5 +33,5 @@ export interface AsyncActionData {
 export abstract class AsyncActionHandler {
     abstract key: string;
 
-    abstract run(data: AsyncActionData): void;
+    abstract run(data: AsyncActionData, processResult?: Process, actionData?: ActionData): void;
 }
