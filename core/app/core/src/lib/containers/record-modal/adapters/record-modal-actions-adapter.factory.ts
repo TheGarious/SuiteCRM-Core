@@ -36,6 +36,7 @@ import {MessageService} from "../../../services/message/message.service";
 import {RecordActionDisplayTypeLogic} from "../../../views/record/action-logic/display-type/display-type.logic";
 import {RecordModalActionManager} from "../actions/record-modal-action-manager.service";
 import {RecordModalActionsAdapter} from "./record-modal-actions.adapter";
+import {FieldModalService} from "../../../services/modals/field-modal.service";
 
 @Injectable({
     providedIn: 'root',
@@ -51,7 +52,8 @@ export class RecordModalActionsAdapterFactory {
         protected confirmation: ConfirmationModalService,
         protected selectModalService: SelectModalService,
         protected displayTypeLogic: RecordActionDisplayTypeLogic,
-        protected appMetadataStore: AppMetadataStore
+        protected appMetadataStore: AppMetadataStore,
+        protected fieldModalService: FieldModalService,
     ) {
     }
 
@@ -66,7 +68,8 @@ export class RecordModalActionsAdapterFactory {
             this.confirmation,
             this.selectModalService,
             this.displayTypeLogic,
-            this.appMetadataStore
+            this.appMetadataStore,
+            this.fieldModalService
         );
     }
 }
