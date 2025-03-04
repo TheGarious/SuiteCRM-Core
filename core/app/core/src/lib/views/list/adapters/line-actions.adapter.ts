@@ -42,9 +42,10 @@ import {SelectModalService} from '../../../services/modals/select-modal.service'
 import {MetadataStore} from '../../../store/metadata/metadata.store.service';
 import {AppMetadataStore} from "../../../store/app-metadata/app-metadata.store.service";
 import {FieldModalService} from "../../../services/modals/field-modal.service";
+import {LineActionData} from "../../../components/table/line-actions/line.action";
 
 @Injectable()
-export class LineActionsAdapter extends BaseLineActionsAdapter {
+export class LineActionsAdapter extends BaseLineActionsAdapter<LineActionData> {
 
     constructor(
         protected store: ListViewStore,

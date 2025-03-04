@@ -24,11 +24,11 @@
  * the words "Supercharged by SuiteCRM".
  */
 
-import {ActionData, ActionHandler} from '../../../common/actions/action.model';
+import {ActionHandler, RecordBasedActionData} from '../../../common/actions/action.model';
 import {SavedFilterStore} from '../store/saved-filter/saved-filter.store';
 import {ListFilterStore} from '../store/list-filter/list-filter.store';
 
-export interface SavedFilterActionData extends ActionData {
+export interface SavedFilterActionData extends RecordBasedActionData {
     store: SavedFilterStore;
     listFilterStore: ListFilterStore;
 }

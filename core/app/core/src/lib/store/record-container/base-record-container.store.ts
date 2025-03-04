@@ -25,11 +25,10 @@
  */
 
 import {BehaviorSubject, forkJoin, Observable, of, Subscription} from 'rxjs';
-import {ViewContext} from '../../common/views/view.model';
+import {ViewContext, ViewMode} from '../../common/views/view.model';
 import {deepClone} from '../../common/utils/object-utils';
 import {Record} from '../../common/record/record.model';
 import {ViewFieldDefinition} from '../../common/metadata/metadata.model';
-import {ViewMode} from '../../common/views/view.model';
 import {catchError, distinctUntilChanged, finalize, map, take, tap} from 'rxjs/operators';
 import {RecordStore} from '../record/record.store';
 import {AppStateStore} from '../app-state/app-state.store';
@@ -40,6 +39,7 @@ import {LanguageStore} from '../language/language.store';
 import {RecordStoreFactory} from '../record/record.store.factory';
 import {StateStore} from '../state';
 import {RecordContainerState} from './record-container.store.model';
+import {BaseRecordContainerStoreInterface} from "../../common/containers/record/record-container.store.model";
 
 const initialState: RecordContainerState = {
     module: '',
@@ -51,7 +51,7 @@ const initialState: RecordContainerState = {
     mode: 'detail',
 };
 
-export abstract class BaseRecordContainerStore<M> implements StateStore {
+export abstract class BaseRecordContainerStore<M> implements StateStore, BaseRecordContainerStoreInterface {
 
     /**
      * Public long-lived observable streams

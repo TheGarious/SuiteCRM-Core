@@ -34,7 +34,6 @@ import {MessageService} from '../../../services/message/message.service';
 import {Process} from '../../../services/process/process.service';
 import {ConfirmationModalService} from '../../../services/modals/confirmation-modal.service';
 import {LanguageStore} from '../../../store/language/language.store';
-import {BaseRecordActionsAdapter} from '../../../services/actions/base-record-action.adapter';
 import {SubpanelLineActionData} from '../line-actions/line.action';
 import {SubpanelStore} from '../store/subpanel/subpanel.store';
 import {SubpanelLineActionManager} from '../line-actions/line-action-manager.service';
@@ -42,11 +41,12 @@ import {SelectModalService} from "../../../services/modals/select-modal.service"
 import {MetadataStore} from '../../../store/metadata/metadata.store.service';
 import {AppMetadataStore} from "../../../store/app-metadata/app-metadata.store.service";
 import {FieldModalService} from "../../../services/modals/field-modal.service";
+import {BaseActionsAdapter} from "../../../services/actions/base-action.adapter";
 
 @Injectable({
     providedIn: 'root',
 })
-export class SubpanelLineActionsAdapter extends BaseRecordActionsAdapter<SubpanelLineActionData> {
+export class SubpanelLineActionsAdapter extends BaseActionsAdapter<SubpanelLineActionData> {
 
     constructor(
         protected store: SubpanelStore,
@@ -71,6 +71,14 @@ export class SubpanelLineActionsAdapter extends BaseRecordActionsAdapter<Subpane
             metadata,
             appMetadataStore
         )
+    }
+
+    /**
+     * Get action name
+     * @param action
+     */
+    protected getActionName(action: Action) {
+        return `record-${action.key}`;
     }
 
     getActions(context: ActionContext = null): Observable<Action[]> {
@@ -122,13 +130,13 @@ export class SubpanelLineActionsAdapter extends BaseRecordActionsAdapter<Subpane
 
         let linkField: string = metadata.get_subpanel_data;
 
-        if(collectionList && collectionList[module] && collectionList[module].get_subpanel_data){
+        if (collectionList && collectionList[module] && collectionList[module].get_subpanel_data) {
             linkField = collectionList[module].get_subpanel_data;
         }
 
-        if(linkField && action && action.params && action.params.linkFieldMapping){
+        if (linkField && action && action.params && action.params.linkFieldMapping) {
             Object.keys(action.params.linkFieldMapping).some(key => {
-                if (linkField.includes(key)){
+                if (linkField.includes(key)) {
                     linkField = action.params.linkFieldMapping[key];
                     return true;
                 }

@@ -24,14 +24,14 @@
  * the words "Supercharged by SuiteCRM".
  */
 
-import {Action, ActionData, ActionHandler} from '../../../common/actions/action.model';
+import {Action, ActionHandler, RecordBasedActionData} from '../../../common/actions/action.model';
 import {Record} from '../../../common/record/record.model';
 import {RecordViewStore} from '../store/record-view/record-view.store';
 import {ModuleNavigation} from '../../../services/navigation/module-navigation/module-navigation.service';
 import {Router} from "@angular/router";
 import {RecordPaginationService} from "../store/record-pagination/record-pagination.service";
 
-export interface RecordActionData extends ActionData {
+export interface RecordActionData extends RecordBasedActionData {
     store: RecordViewStore;
     action?: Action;
 }

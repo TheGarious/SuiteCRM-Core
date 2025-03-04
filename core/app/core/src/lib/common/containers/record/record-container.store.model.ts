@@ -25,6 +25,6 @@
  */
 import {RecordStore} from "../../../store/record/record.store";
 
-export interface BaseRecordContainerStore {
+export interface BaseRecordContainerStoreInterface {
     recordStore: RecordStore;
 }

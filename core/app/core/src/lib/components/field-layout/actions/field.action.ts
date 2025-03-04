@@ -25,10 +25,10 @@
  */
 
 import {Action, ActionData, ActionHandler} from "../../../common/actions/action.model";
-import {BaseRecordContainerStore} from "../../../common/containers/record/record-container.store.model";
+import {BaseRecordContainerStoreInterface} from "../../../common/containers/record/record-container.store.model";
 
 export interface FieldActionData extends ActionData {
-    store: BaseRecordContainerStore;
+    store: BaseRecordContainerStoreInterface;
     action?: Action;
 }
 

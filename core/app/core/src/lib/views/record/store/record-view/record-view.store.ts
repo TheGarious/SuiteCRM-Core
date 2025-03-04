@@ -69,7 +69,7 @@ import {FieldActionsAdapterFactory} from "../../../../components/field-layout/ad
 import {RecordValidationHandler} from "../../../../services/record/validation/record-validation.handler";
 import {ObjectMap} from "../../../../common/types/object-map";
 import {WidgetMetadata} from "../../../../common/metadata/widget.metadata";
-import {BaseRecordContainerStore} from "../../../../common/containers/record/record-container.store.model";
+import {BaseRecordContainerStoreInterface} from "../../../../common/containers/record/record-container.store.model";
 
 const initialState: RecordViewState = {
     module: '',
@@ -89,7 +89,7 @@ const initialState: RecordViewState = {
 };
 
 @Injectable()
-export class RecordViewStore extends ViewStore implements StateStore, BaseRecordContainerStore {
+export class RecordViewStore extends ViewStore implements StateStore, BaseRecordContainerStoreInterface {
 
     /**
      * Public long-lived observable streams
