@@ -24,7 +24,7 @@
  * the words "Supercharged by SuiteCRM".
  */
 
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, signal, WritableSignal} from '@angular/core';
 import {Observable, of} from 'rxjs';
 import {catchError, map, tap} from 'rxjs/operators';
 import {AttributeMap} from '../../common/record/record.model';
@@ -44,7 +44,7 @@ export class BaseRelateComponent extends BaseFieldComponent implements OnInit, O
     options: AttributeMap[] = [];
 
     status: '' | 'searching' | 'not-found' | 'error' | 'found' | 'no-module' = '';
-    initModule = '';
+    initModule: WritableSignal<string> = signal('');
 
     constructor(
         protected languages: LanguageStore,
@@ -82,14 +82,15 @@ export class BaseRelateComponent extends BaseFieldComponent implements OnInit, O
     }
 
     onModuleChange(): void {
-        const currentModule = this.initModule;
+
+        const currentModule = this.initModule();
         const newModule = this?.field?.definition?.module ?? '';
 
         if (currentModule === newModule) {
             return;
         }
 
-        this.initModule = newModule;
+        this.initModule.set(newModule);
 
         if (currentModule === '' && currentModule !== newModule) {
             this.init();
@@ -102,7 +103,6 @@ export class BaseRelateComponent extends BaseFieldComponent implements OnInit, O
             this.status = '';
             this.selectedValues = [];
             this.options = [];
-
         }
     }
 
@@ -204,7 +204,7 @@ export class BaseRelateComponent extends BaseFieldComponent implements OnInit, O
 
     protected init(): void {
 
-        this.initModule = this?.field?.definition?.module ?? '';
+        this.initModule.set(this?.field?.definition?.module ?? '');
 
         if (this.relateService) {
             this.relateService.init(this.getRelatedModule());
