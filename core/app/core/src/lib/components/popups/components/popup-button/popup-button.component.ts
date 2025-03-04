@@ -35,6 +35,8 @@ export class PopupButtonComponent implements OnInit{
 
     @Input() icon: string;
     @Input() klass: string = 'line-action-item line-action float-right';
+    @Input() placement: string = 'right';
+    @Input() popoverClass: string = 'popover-wrapper';
 
     buttonConfig = signal<ButtonInterface>({});
 
