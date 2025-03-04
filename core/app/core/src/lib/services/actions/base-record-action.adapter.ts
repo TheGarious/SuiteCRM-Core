@@ -25,7 +25,7 @@
  */
 
 import {Injectable} from '@angular/core';
-import {Action, ActionContext, ActionManager} from '../../common/actions/action.model';
+import {Action, ActionContext, ActionManager, RecordBasedActionData} from '../../common/actions/action.model';
 import {AsyncActionInput, AsyncActionService} from '../process/processes/async-action/async-action';
 import {MessageService} from '../message/message.service';
 import {ConfirmationModalService} from '../modals/confirmation-modal.service';
@@ -35,9 +35,10 @@ import {SelectModalService} from '../modals/select-modal.service';
 import {MetadataStore} from '../../store/metadata/metadata.store.service';
 import {AppMetadataStore} from "../../store/app-metadata/app-metadata.store.service";
 import {FieldModalService} from "../modals/field-modal.service";
+import {take} from "rxjs/operators";
 
 @Injectable()
-export abstract class BaseRecordActionsAdapter<D> extends BaseActionsAdapter<D> {
+export abstract class BaseRecordActionsAdapter<D extends RecordBasedActionData> extends BaseActionsAdapter<D> {
 
 
     protected constructor(
@@ -62,6 +63,36 @@ export abstract class BaseRecordActionsAdapter<D> extends BaseActionsAdapter<D> 
             metadata,
             appMetadataStore
         )
+    }
+
+    runAction(action: Action, context: ActionContext = null): void {
+        const validate = action?.params?.validate ?? false;
+        const actionData: D = this.buildActionData(action, context);
+        const recordStore = actionData?.store?.recordStore ?? null;
+
+        if (validate && recordStore) {
+            const isFieldLoading = Object.keys(recordStore.getStaging().fields).some(fieldKey => {
+                const field = recordStore.getStaging().fields[fieldKey];
+                return field.loading ?? false;
+            });
+
+            if (isFieldLoading) {
+                this.message.addWarningMessageByKey('LBL_LOADING_IN_PROGRESS');
+                return;
+            }
+
+            recordStore.validate().pipe(take(1)).subscribe(valid => {
+                if (valid) {
+                    super.runAction(action, context);
+                    return;
+                }
+                this.message.addWarningMessageByKey('LBL_VALIDATION_ERRORS');
+            });
+
+            return;
+        }
+
+        super.runAction(action, context);
     }
 
     /**
