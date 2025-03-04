@@ -115,6 +115,8 @@ import {MultiRelateDetailFieldComponent} from "./multirelate/templates/detail/mu
 import {MultiRelateEditFieldModule} from "./multirelate/templates/edit/multirelate.module";
 import {MultiRelateDetailFieldModule} from "./multirelate/templates/detail/multirelate.module";
 import {CurrencyEditFieldModule} from "./currency/templates/edit/currency.module";
+import {MultiFlexRelateEditFieldModule} from "./multiflexrelate/templates/edit/multiflexrelate.module";
+import {MultiFlexRelateEditFieldComponent} from "./multiflexrelate/templates/edit/multiflexrelate.component";
 
 export const baseFieldModules = [
     VarcharDetailFieldModule,
@@ -155,6 +157,7 @@ export const baseFieldModules = [
     MultiEnumFilterFieldModule,
     MultiRelateDetailFieldModule,
     MultiRelateEditFieldModule,
+    MultiFlexRelateEditFieldModule,
     BooleanDetailFieldModule,
     BooleanEditFieldModule,
     BooleanCheckboxFilterFieldModule,
@@ -192,6 +195,7 @@ export const baseFieldComponents = [
     RelateFilterFieldComponent,
     MultiRelateEditFieldComponent,
     MultiRelateDetailFieldComponent,
+    MultiFlexRelateEditFieldComponent,
     FullNameDetailFieldsComponent,
     EnumDetailFieldComponent,
     EnumEditFieldComponent,
@@ -258,6 +262,7 @@ export const baseViewFieldsMap: FieldComponentMap = {
     'relate.filter': RelateFilterFieldComponent,
     'multirelate.edit': MultiRelateEditFieldComponent,
     'multirelate.detail': MultiRelateDetailFieldComponent,
+    'multiflexrelate.edit': MultiFlexRelateEditFieldComponent,
     'fullname.list': FullNameDetailFieldsComponent,
     'fullname.detail': FullNameDetailFieldsComponent,
     'enum-radio.list': RadioEnumDetailFieldComponent,
