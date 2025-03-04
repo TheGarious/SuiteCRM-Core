@@ -43,6 +43,10 @@ export interface ButtonInterface {
     disabled?: boolean;
 }
 
+export interface ButtonInterfaceMap {
+    [key:string]: ButtonInterface;
+}
+
 export class Button implements ButtonInterface {
 
     constructor(
