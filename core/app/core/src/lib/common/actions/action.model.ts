@@ -111,6 +111,8 @@ export interface ActionDataSource {
     runAction(action: Action, context?: ActionContext): void;
 }
 
+export type ActionDataSourceBuilderFunction = (options?: ObjectMap) => ActionDataSource;
+
 export interface ActionManager<D extends ActionData> {
 
     run(action: Action, mode: ViewMode, data: D): void;
