@@ -37,6 +37,7 @@ export interface FieldGridColumn {
     fieldActions?: FieldActions;
     headerColumnClass?: string;
     valueColumnClass?: string;
+    colClasses?: string;
 }
 
 export interface FieldGridRow {

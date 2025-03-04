@@ -102,14 +102,34 @@ export class FieldLayoutComponent extends BaseFieldGridComponent {
                 const fieldName = layoutCol.name;
                 const field = this.fields[fieldName] || null;
                 const fieldActions = layoutCol.fieldActions || null;
-                const adaptor = layoutCol.adaptor ?? null;
+                const fieldActionsAdapter = layoutCol.fieldActionsAdapter ?? null;
                 const useFullColumn = field?.useFullColumn ?? field?.definition?.useFullColumn ?? [];
+                const headerColSizesConfig = field?.metadata?.headerColSizes ?? field?.definition?.headerColSizes ?? null;
+                const valuesColSizesConfig = field?.metadata?.valuesColSizes ?? field?.definition?.valuesColSizes ?? null;
+                const headerColumnClassConfig = field?.metadata?.headerColumnClass ?? field?.definition?.headerColumnClass ?? null;
+                const valueColumnClassConfig = field?.metadata?.valueColumnClass ?? field?.definition?.valueColumnClass ?? null;
 
                 let headerColumnClass = 'col-sm-12 col-md-12 col-lg-3';
                 let valueColumnClass = 'col-sm-12 col-md-12 col-lg-9';
 
-                const headerColSizes = {'xs': '12', 'sm': '12', 'md': '12', 'lg': '3', 'xl': '3'};
-                const valuesColSizes = {'xs': '12', 'sm': '12', 'md': '12', 'lg': '9', 'xl': '9'};
+                if (headerColumnClassConfig) {
+                    headerColumnClass = headerColumnClassConfig;
+                }
+
+                if (valueColumnClassConfig) {
+                    valueColumnClass = valueColumnClassConfig;
+                }
+
+                let headerColSizes = {'xs': '12', 'sm': '12', 'md': '12', 'lg': '3', 'xl': '3'};
+                let valuesColSizes = {'xs': '12', 'sm': '12', 'md': '12', 'lg': '9', 'xl': '9'};
+
+                if (headerColSizesConfig && Object.keys(headerColSizesConfig).length) {
+                    headerColSizes = headerColSizesConfig;
+                }
+
+                if (valuesColSizesConfig && Object.keys(valuesColSizesConfig).length) {
+                    valuesColSizes = valuesColSizesConfig;
+                }
                 const useFullColumnsMaps = useFullColumn.reduce((ac,a) => ({...ac,[a]:true}),{});
 
                 if (useFullColumn.length) {
@@ -135,12 +155,17 @@ export class FieldLayoutComponent extends BaseFieldGridComponent {
                     return;
                 }
 
+                if (fieldActions && fieldActionsAdapter) {
+                    field.fieldActions = {...fieldActions};
+                    field.fieldActions.adapter = fieldActionsAdapter;
+                }
+
                 row.cols.push({
                     field,
                     fieldActions,
-                    adaptor,
                     valueColumnClass,
-                    headerColumnClass
+                    headerColumnClass,
+                    colClasses: this.config?.colClasses[colIndex] ?? ''
                 } as FieldGridColumn);
 
                 if (this.colNumber === 1 && colIndex < layoutRow.cols.length - 1) {
@@ -152,7 +177,9 @@ export class FieldLayoutComponent extends BaseFieldGridComponent {
                 }
             });
 
-            if (row.cols.length < this.colNumber) {
+            if (row.cols.length === 1 && row.cols.length < this.colNumber) {
+                row.cols[0].colClasses = row.cols[0].colClasses + ' col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12';
+            } else if (row.cols.length < this.colNumber) {
                 this.fillRow(row);
             }
 
