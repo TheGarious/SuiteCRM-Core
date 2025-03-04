@@ -32,6 +32,7 @@ import {FieldLogicMap} from '../actions/field-logic-action.model';
 import {ObjectMap} from '../types/object-map';
 import {ViewMode} from '../views/view.model';
 import {signal, WritableSignal} from "@angular/core";
+import {FieldActions} from "../metadata/metadata.model";
 
 export type DisplayType = 'none' | 'show' | 'readonly' | 'inline' | 'disabled' | 'default';
 
@@ -209,6 +210,8 @@ export interface Field {
     previousValue?: string;
     useFullColumn?: string[];
 
+    fieldActions?: FieldActions;
+
     initDefaultValue?: DefaultValueInitCallback;
 }
 
@@ -245,6 +248,8 @@ export class BaseField implements Field {
     logic?: FieldLogicMap;
     displayLogic?: FieldLogicMap;
     useFullColumn?: string[];
+
+    fieldActions?: FieldActions;
 
     protected valueState?: string;
     protected valueListState?: string[];

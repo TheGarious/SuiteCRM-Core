@@ -27,9 +27,10 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {RouterModule} from '@angular/router';
-import {DynamicModule} from 'ng-dynamic-component';
+import {DynamicAttributesDirective, DynamicModule} from 'ng-dynamic-component';
 import {DynamicFieldComponent} from './dynamic-field.component';
 import {DynamicLabelModule} from '../../components/dynamic-label/dynamic-label.module';
+import {ActionGroupMenuModule} from "../../components/action-group-menu/action-group-menu.module";
 
 @NgModule({
     declarations: [DynamicFieldComponent],
@@ -41,6 +42,8 @@ import {DynamicLabelModule} from '../../components/dynamic-label/dynamic-label.m
         RouterModule,
         DynamicLabelModule,
         DynamicModule,
+        ActionGroupMenuModule,
+        DynamicAttributesDirective,
     ]
 })
 export class DynamicFieldModule {

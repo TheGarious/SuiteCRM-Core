@@ -26,7 +26,7 @@
 
 import {Injectable} from '@angular/core';
 import {ViewFieldDefinition} from '../../common/metadata/metadata.model';
-import {FieldMap, FieldDefinitionMap} from '../../common/record/field.model';
+import {FieldDefinitionMap, FieldMap} from '../../common/record/field.model';
 import {Record} from '../../common/record/record.model';
 import {isVoid} from '../../common/utils/value-utils';
 import {UntypedFormGroup} from '@angular/forms';
@@ -34,6 +34,8 @@ import {LanguageStore} from '../../store/language/language.store';
 import {FieldManager} from './field/field.manager';
 import {Params} from '@angular/router';
 import {FieldHandlerRegistry} from "./field/handler/field-handler.registry";
+import {ActionDataSourceBuilderFunction} from "../../common/actions/action.model";
+import {ObjectMap} from "../../common/types/object-map";
 
 @Injectable({
     providedIn: 'root'
@@ -251,5 +253,15 @@ export class RecordManager {
                 }
             });
         }
+    }
+
+    initVardefBasedFieldActions(record: Record, buildFieldActionAdapter: ActionDataSourceBuilderFunction): void {
+        Object.values(record.fields).forEach(field => {
+            if (field?.fieldActions || field?.definition?.fieldActions) {
+                const fieldActions = field.fieldActions ?? field?.definition?.fieldActions;
+                fieldActions.adapter = buildFieldActionAdapter({field} as ObjectMap);
+            }
+        });
+
     }
 }

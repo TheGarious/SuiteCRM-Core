@@ -104,14 +104,14 @@ export class RecordStore {
 
     }
 
-    init(record: Record, initDefaultValues = false): void {
+    init(record: Record, initDefaultValues = false, options: ObjectMap = null): void {
         const newRecord = {
             ...record,
         };
 
         this.initFieldDefaults = initDefaultValues;
 
-        this.initRecord(newRecord);
+        this.initRecord(newRecord, false, options);
 
         this.updateState(newRecord);
     }
@@ -303,8 +303,9 @@ export class RecordStore {
      *
      * @param {object} record Record
      * @param {boolean} initDefaultValues
+     * @param options
      */
-    protected initRecord(record: Record, initDefaultValues: boolean = false): void {
+    protected initRecord(record: Record, initDefaultValues: boolean = false, options: ObjectMap = null): void {
 
         if (this.metadata) {
             record.metadata = this.metadata;
@@ -321,6 +322,10 @@ export class RecordStore {
         if (initDefaultValues) {
             this.recordManager.initFieldDefaults(record);
             this.fieldDefaultsInitialized = true;
+        }
+
+        if (options?.initVardefBasedFieldActions && options?.buildFieldActionAdapter) {
+            this.recordManager.initVardefBasedFieldActions(record, options.buildFieldActionAdapter);
         }
     }
 

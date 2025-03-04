@@ -26,7 +26,7 @@
 
 import {FieldDefinition, FieldMetadata, LineItemsMetadata} from '../record/field.model';
 import {FieldLogicMap} from '../actions/field-logic-action.model';
-import {Action} from '../actions/action.model';
+import {Action, ActionDataSource} from '../actions/action.model';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {ViewMode} from "../views/view.model";
 
@@ -47,7 +47,7 @@ export interface ViewFieldDefinition {
     metadata?: FieldMetadata;
     logic?: FieldLogicMap;
     fieldActions?: FieldActions;
-    adaptor?: any;
+    fieldActionsAdapter?: any;
     displayLogic?: FieldLogicMap;
 
     [key: string]: any;
@@ -81,6 +81,12 @@ export interface FieldActions {
     klass: string;
     containerKlass: string;
     position: string;
+    adapter?: ActionDataSource;
+}
+
+
+export interface FieldActionsArrayMap {
+    [key: string]: Action[];
 }
 
 export interface TabDefinitions {
