@@ -38,6 +38,8 @@ import {RedirectAsyncAction} from './actions/redirect/redirect.async-action';
 import {ExportAsyncAction} from './actions/export/export.async-action';
 import {NoopAsyncAction} from './actions/noop/noop.async-action';
 import {ChangelogAsyncAction} from './actions/changelog/changelog.async-action';
+import {UpdateFieldsAsyncAction} from "./actions/update-fields/update-fields.async-action";
+import {ActionData} from "../../../../common/actions/action.model";
 
 export interface AsyncActionInput {
     action?: string;
@@ -67,12 +69,14 @@ export class AsyncActionService {
         protected redirectAction: RedirectAsyncAction,
         protected exportAction: ExportAsyncAction,
         protected noopAction: NoopAsyncAction,
-        protected changelogAction: ChangelogAsyncAction
+        protected changelogAction: ChangelogAsyncAction,
+        protected updateFields: UpdateFieldsAsyncAction
     ) {
         this.registerHandler(redirectAction);
         this.registerHandler(exportAction);
         this.registerHandler(noopAction);
         this.registerHandler(changelogAction);
+        this.registerHandler(updateFields);
     }
 
     public registerHandler(handler: AsyncActionHandler): void {
@@ -86,9 +90,10 @@ export class AsyncActionService {
      * @param {string} data to send
      * @param {string} presetHandlerKey to use
      * @param params
+     * @param actionData
      * @returns {object} Observable<Process>
      */
-    public run(actionName: string, data: AsyncActionInput, presetHandlerKey: string = null, params: any = null): Observable<Process> {
+    public run(actionName: string, data: AsyncActionInput, presetHandlerKey: string = null, params: any = null, actionData?: ActionData): Observable<Process> {
         const options = {
             ...data
         };
@@ -132,7 +137,7 @@ export class AsyncActionService {
                         return;
                     }
 
-                    actionHandler.run(process.data.params);
+                    actionHandler.run(process.data.params, process, actionData);
 
                 }),
                 catchError((err) => {
