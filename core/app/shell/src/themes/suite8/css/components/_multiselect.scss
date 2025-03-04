@@ -49,13 +49,35 @@
       }
     }
 
+    .p-multiselect-items-wrapper {
+      overflow-y: auto;
+
+      &::-webkit-scrollbar {
+        width: 5px;
+      }
+
+      &::-webkit-scrollbar-track {
+        box-shadow: inset 0 0 6px transparent;
+        background: transparent;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: $light-grey;
+        border-radius: 51px;
+      }
+
+      &::-webkit-scrollbar-thumb:hover {
+        background: $light-grey;
+      }
+    }
+
     ul.p-multiselect-items {
       padding-inline-start: 0em;
     }
   }
 
   .p-overlay {
-    z-index: 1!important;
+    z-index: 1 !important;
   }
 }
 
