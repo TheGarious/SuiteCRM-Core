@@ -35,6 +35,7 @@ import {BaseMultiEnumComponent} from './base-multienum.component';
 import {BaseNameComponent} from './base-name.component';
 import {BaseRelateComponent} from './base-relate.component';
 import {BaseDateComponent} from './datetime/base-date.component';
+import {BaseMultiFlexRelateComponent} from "./base-multi-flex-relate.component";
 
 @NgModule({
     exports: [
@@ -45,6 +46,7 @@ import {BaseDateComponent} from './datetime/base-date.component';
         BaseNameComponent,
         BaseNumberComponent,
         BaseRelateComponent,
+        BaseMultiFlexRelateComponent,
         BaseDateTimeComponent,
         BaseDateComponent
     ],
@@ -56,6 +58,7 @@ import {BaseDateComponent} from './datetime/base-date.component';
         BaseNameComponent,
         BaseNumberComponent,
         BaseRelateComponent,
+        BaseMultiFlexRelateComponent,
         BaseDateTimeComponent,
         BaseDateComponent
     ],
