@@ -44,7 +44,7 @@ export interface SearchCriteriaFilter {
 
 export interface FilterPresetHandler {
     type: string;
-    params: { [key: string]: string | number };
+    params: { [key: string]: string | number | string[] | ObjectMap[] };
 }
 
 export interface SearchCriteria {
