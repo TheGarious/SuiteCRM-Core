@@ -30,11 +30,12 @@ import {RecordModalComponent} from "../../../record-modal/components/record-moda
 import {AppStateStore} from "../../../../store/app-state/app-state.store";
 import {ViewMode} from "../../../../common/views/view.model";
 import {SubpanelActionData, SubpanelActionHandler} from "../subpanel.action";
+import {NgbModalOptions} from "@ng-bootstrap/ng-bootstrap/modal/modal-config";
 
 @Injectable({
     providedIn: 'root'
 })
-export class  SubpanelModalCreateAction extends SubpanelActionHandler {
+export class SubpanelModalCreateAction extends SubpanelActionHandler {
 
     key = 'modal-create';
     modes = ['list' as ViewMode];
@@ -47,7 +48,24 @@ export class  SubpanelModalCreateAction extends SubpanelActionHandler {
     }
 
     run(data: SubpanelActionData): void {
-        const modal = this.modalService.open(RecordModalComponent, {size: 'lg', scrollable: false});
+
+        let backdrop = data?.action?.params?.backdrop ?? true;
+        const detached = data?.action?.params?.detached ?? false;
+
+        const modalOptions = {
+            size: 'lg',
+            scrollable: false,
+            backdrop,
+        } as NgbModalOptions;
+
+        if (detached) {
+            modalOptions.backdrop = false;
+            modalOptions.windowClass = 'detached-modal';
+            modalOptions.animation = true;
+            modalOptions.container = '#detached-modals';
+        }
+
+        const modal = this.modalService.open(RecordModalComponent, modalOptions);
         const mode = 'create' as ViewMode;
 
         const moduleName = data.module;
@@ -55,10 +73,31 @@ export class  SubpanelModalCreateAction extends SubpanelActionHandler {
         const parentId = data?.parentId ?? '';
         const parentModule = data.parentModule ?? '';
 
+        let minimizable = data?.action?.params?.minimizable ?? false;
+        if (detached) {
+            minimizable = true;
+        }
+
         modal.componentInstance.metadataView = data?.action?.metadataView ?? 'recordView';
         modal.componentInstance.module = moduleName;
         modal.componentInstance.mode = mode;
-        modal.componentInstance.titleKey = data?.action?.labelKey ?? '';
+        modal.componentInstance.minimizable = minimizable;
+        modal.componentInstance.titleKey = data?.action?.params?.headerLabelKey ?? data?.action?.labelKey ?? '';
+        modal.componentInstance.parentId = parentId;
+        modal.componentInstance.parentModule = parentModule;
+        modal.componentInstance.headerClass = data?.action?.params?.headerClass ?? '';
+        modal.componentInstance.bodyClass = data?.action?.params?.bodyClass ?? '';
+        modal.componentInstance.footerClass = data?.action?.params?.footerClass ?? '';
+        modal.componentInstance.wrapperClass = data?.action?.params?.wrapperClass ?? '';
+
+        // Store modal reference to handle cleanup
+        this.appState.addModalRef(modal);
+
+        // Handle modal close/dismiss
+        modal.result.then(
+            () => this.appState.removeModalRef(modal),
+            () => this.appState.removeModalRef(modal)
+        );
     }
 
     shouldDisplay(data: SubpanelActionData): boolean {
