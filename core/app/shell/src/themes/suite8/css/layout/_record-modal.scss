@@ -25,13 +25,74 @@
  */
 
 .record-modal {
-  background-color: $off-white;
+  background-color: $white;
+
   .modal-header {
-    background-color: $off-white;
+    background-color: $white;
+    padding-bottom: 0;
+    padding-top: 0;
+
+    &.left-aligned-title {
+      justify-content: space-between;
+
+      .modal-title {
+        margin-left: 0rem;
+        margin-right: 0rem;
+      }
+    }
+
+    .modal-title {
+      margin-top: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .close-button {
+      font-size: 1.3em;
+      height: 1em;
+    }
   }
+
   .modal-body {
-   padding-top: 0;
+    padding-top: 0;
+    overflow-y: auto;
+    max-height: max-content;
+
+    .record-content.panel-layout {
+
+      .row:first-child {
+        margin-bottom: 0 !important;
+
+        .card-body {
+          padding-bottom: 0 !important;
+
+          .field-layout.edit,
+          .field-layout.create {
+
+            .form-row > .col, .form-row > [class*=col-] {
+              padding-bottom: 0rem !important;
+              padding-right: 0.8rem !important;
+              padding-left: 0.8rem !important;
+
+              .field-layout-field-group-wrapper {
+                margin-bottom: 0.3rem !important;
+              }
+            }
+            .form-row:last-child > .col, .form-row:last-child > [class*=col-] {
+              padding-bottom: 0rem !important;
+            }
+
+
+            .col-form-label-sm {
+              font-size: .65rem;
+            }
+          }
+        }
+      }
+
+    }
+
   }
+
   .tab-content {
     background-color: $white;
   }
@@ -43,5 +104,88 @@
   z-index: 11;
   padding: 0.5em 0 1em 0;
   background-color: $off-white;
-  border-bottom: 1px solid rgba(0,0,0,.1);
+  border-bottom: 1px solid rgba(0, 0, 0, .1);
+}
+
+body.modal-open.detached-modal-open {
+  overflow: auto !important;
+}
+
+#detached-modals {
+  position: fixed !important;
+  right: 45px;
+  bottom: 0;
+  margin: 0;
+  transform: translate(0) !important;
+  width: max-content;
+  display: flex;
+  align-items: flex-end;
+
+  .detached-modal {
+    position: relative;
+    width: auto;
+    box-shadow: 0 0 0.8rem #0000005c !important;
+    margin-left: 0.5rem;
+
+
+    &:first-child {
+      margin-left: 0;
+    }
+
+    .modal-header {
+      background-color: $main;
+      .minimise-button {
+        border: 0;
+        color: $white;
+        fill: $white;
+        background-color: transparent;
+      }
+      .close-button {
+        color: $white;
+      }
+      .modal-title {
+        color: $white;
+      }
+    }
+
+    .modal-dialog {
+      margin: 0;
+    }
+
+    .modal-content {
+      border-bottom-right-radius: 0;
+      border-bottom-left-radius: 0;
+      animation: none;
+    }
+
+    .record-modal {
+      //width: 600px;
+    }
+
+    .record-modal.minimized {
+      width: 300px;
+
+      .modal-header {
+        margin-bottom: 0;
+        border-bottom: 0 !important;
+      }
+    }
+  }
+}
+
+@media (min-width: 992px) {
+  .detached-modal {
+    .modal-dialog.modal-lg, .modal-dialog.modal-xl {
+      max-width: 600px;
+    }
+  }
+}
+
+@media (max-width: 575px) {
+  .detached-modal {
+    .modal-dialog {
+      right: 7px;
+      left: 7px;
+    }
+  }
 }

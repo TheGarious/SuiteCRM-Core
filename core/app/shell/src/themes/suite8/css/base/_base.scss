@@ -222,3 +222,16 @@ ul li::marker {
 .lh-100 {
   line-height: 100%;
 }
+
+.w-max-content {
+  width: max-content !important;
+}
+
+
+@media (min-width: 992px) {
+  .border-right-lg {
+    border-right: 1px solid $extra-light-grey !important;
+  }
+}
+
+
