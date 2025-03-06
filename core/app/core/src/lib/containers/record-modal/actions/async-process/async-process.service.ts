@@ -45,7 +45,16 @@ export class AsyncProcessRecordModalAction extends RecordModalActionHandler {
 
     shouldDisplay(data: RecordModalActionData): boolean {
         const defaultAcls = data?.action?.acl ?? [];
+        const aclModule = data?.action?.aclModule ?? '';
         if (!defaultAcls.length) {
+            return true;
+        }
+
+        if (aclModule !== data?.store?.getModuleName()) {
+            return true
+        }
+
+        if (data?.store?.getMode() === 'create') {
             return true;
         }
 
