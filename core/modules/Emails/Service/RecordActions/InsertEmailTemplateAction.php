@@ -203,7 +203,7 @@ class InsertEmailTemplateAction extends LegacyHandler implements ProcessHandlerI
             'params' => [
                 'values' => [
                     'name' => ['value' => $bean->subject ?? ''],
-                    'description_html' => ['value' => nl2br($bean->body) ?? ''],
+                    'description_html' => ['value' => html_entity_decode($bean->body_html) ?? ''],
                 ]
             ]
         ];
