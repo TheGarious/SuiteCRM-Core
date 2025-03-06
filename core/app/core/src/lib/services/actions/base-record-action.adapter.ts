@@ -36,6 +36,11 @@ import {MetadataStore} from '../../store/metadata/metadata.store.service';
 import {AppMetadataStore} from "../../store/app-metadata/app-metadata.store.service";
 import {FieldModalService} from "../modals/field-modal.service";
 import {take} from "rxjs/operators";
+import {Record} from "../../common/record/record.model";
+import {deepClone} from "../../common/utils/object-utils";
+import {MapEntry} from "../../common/types/overridable-map";
+import {RecordMapper} from "../../common/record/record-mappers/record-mapper.model";
+import {RecordMapperRegistry} from "../../common/record/record-mappers/record-mapper.registry";
 
 @Injectable()
 export abstract class BaseRecordActionsAdapter<D extends RecordBasedActionData> extends BaseActionsAdapter<D> {
@@ -50,7 +55,8 @@ export abstract class BaseRecordActionsAdapter<D extends RecordBasedActionData> 
         protected selectModalService: SelectModalService,
         protected fieldModalService: FieldModalService,
         protected metadata: MetadataStore,
-        protected appMetadataStore: AppMetadataStore
+        protected appMetadataStore: AppMetadataStore,
+        protected recordMappers: RecordMapperRegistry
     ) {
         super(
             actionManager,
@@ -73,7 +79,7 @@ export abstract class BaseRecordActionsAdapter<D extends RecordBasedActionData> 
         if (validate && recordStore) {
             const isFieldLoading = Object.keys(recordStore.getStaging().fields).some(fieldKey => {
                 const field = recordStore.getStaging().fields[fieldKey];
-                return field.loading ?? false;
+                return field.loading() ?? false;
             });
 
             if (isFieldLoading) {
@@ -110,13 +116,51 @@ export abstract class BaseRecordActionsAdapter<D extends RecordBasedActionData> 
      * @param actionName
      * @param moduleName
      * @param context
+     * @param actionData
      */
-    protected buildActionInput(action: Action, actionName: string, moduleName: string, context: ActionContext = null): AsyncActionInput {
+    protected buildActionInput(action: Action, actionName: string, moduleName: string, context: ActionContext = null, actionData?: D): AsyncActionInput {
+        const record = (actionData && actionData?.store?.recordStore?.getStaging()) || null;
+        let baseRecord = null;
+        if (record) {
+            baseRecord = this.getBaseRecord(record);
+        }
+
         return {
             action: actionName,
             module: moduleName,
-            id: (context && context.record && context.record.id) || '',
+            id: baseRecord?.id ?? (context && context.record && context.record.id) ?? '',
             params: (action && action.params) || [],
+            record: baseRecord ?? null
         } as AsyncActionInput;
+    }
+
+    getBaseRecord(record: Record): Record {
+        if (!record) {
+            return null;
+        }
+
+        this.mapRecordFields(record);
+
+        const baseRecord = {
+            id: record.id,
+            type: record.type,
+            module: record.module,
+            attributes: record.attributes,
+            acls: record.acls
+        } as Record;
+
+        return deepClone(baseRecord);
+    }
+
+    /**
+     * Map staging fields
+     */
+    protected mapRecordFields(record: Record): void {
+        const mappers: MapEntry<RecordMapper> = this.recordMappers.get(record.module);
+
+        Object.keys(mappers).forEach(key => {
+            const mapper = mappers[key];
+            mapper.map(record);
+        });
     }
 }

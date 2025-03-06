@@ -45,6 +45,7 @@ import {ViewMode} from "../../../common/views/view.model";
 import {LogicDefinitions, Panel} from "../../../common/metadata/metadata.model";
 import {Record} from "../../../common/record/record.model";
 import {FieldModalService} from "../../../services/modals/field-modal.service";
+import {RecordMapperRegistry} from "../../../common/record/record-mappers/record-mapper.registry";
 
 @Injectable()
 export class RecordModalActionsAdapter extends BaseRecordActionsAdapter<RecordModalActionData> {
@@ -61,6 +62,7 @@ export class RecordModalActionsAdapter extends BaseRecordActionsAdapter<RecordMo
         protected displayTypeLogic: RecordActionDisplayTypeLogic,
         protected appMetadataStore: AppMetadataStore,
         protected fieldModalService: FieldModalService,
+        protected recordMappers: RecordMapperRegistry
     ) {
         super(
             actionManager,
@@ -71,7 +73,8 @@ export class RecordModalActionsAdapter extends BaseRecordActionsAdapter<RecordMo
             selectModalService,
             fieldModalService,
             metadata,
-            appMetadataStore
+            appMetadataStore,
+            recordMappers
         );
     }
 
@@ -92,28 +95,6 @@ export class RecordModalActionsAdapter extends BaseRecordActionsAdapter<RecordMo
             store: this.store,
             action,
         } as RecordModalActionData;
-    }
-
-    /**
-     * Build backend process input
-     *
-     * @param {Action} action Action
-     * @param {string} actionName Action Name
-     * @param {string} moduleName Module Name
-     * @param {ActionContext|null} context Context
-     * @returns {AsyncActionInput} Built backend process input
-     */
-    protected buildActionInput(action: Action, actionName: string, moduleName: string, context: ActionContext = null): AsyncActionInput {
-        const baseRecord = this.store.getBaseRecord();
-
-        this.message.removeMessages();
-
-        return {
-            action: actionName,
-            module: baseRecord.module,
-            id: baseRecord.id,
-            params: (action && action.params) || []
-        } as AsyncActionInput;
     }
 
     protected getMode(): ViewMode {

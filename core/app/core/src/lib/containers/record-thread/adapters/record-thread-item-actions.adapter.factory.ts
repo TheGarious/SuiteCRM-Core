@@ -38,6 +38,8 @@ import {MetadataStore} from '../../../store/metadata/metadata.store.service';
 import {RecordThreadItemConfig} from '../components/record-thread-item/record-thread-item.model';
 import {AppMetadataStore} from "../../../store/app-metadata/app-metadata.store.service";
 import {FieldModalService} from "../../../services/modals/field-modal.service";
+import {RecordMapperRegistry} from "../../../common/record/record-mappers/record-mapper.registry";
+import {BaseSaveRecordMapper} from "../../../store/record/record-mappers/base-save.record-mapper";
 
 @Injectable({
     providedIn: 'root',
@@ -53,8 +55,11 @@ export class RecordThreadItemActionsAdapterFactory {
         protected selectModalService: SelectModalService,
         protected fieldModalService: FieldModalService,
         protected metadata: MetadataStore,
-        protected appMetadataStore: AppMetadataStore
+        protected appMetadataStore: AppMetadataStore,
+        protected recordMappers: RecordMapperRegistry,
+        protected baseMapper: BaseSaveRecordMapper
     ) {
+        recordMappers.register('default', baseMapper.getKey(), baseMapper);
     }
 
     create(itemStore: RecordThreadItemStore, threadStore: RecordThreadStore, config: RecordThreadItemConfig = null): RecordThreadItemActionsAdapter {
@@ -69,7 +74,8 @@ export class RecordThreadItemActionsAdapterFactory {
             this.selectModalService,
             this.fieldModalService,
             this.metadata,
-            this.appMetadataStore
+            this.appMetadataStore,
+            this.recordMappers
         );
 
         const collapseButtons = config?.metadata?.collapseActions ?? null;
