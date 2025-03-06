@@ -83,21 +83,21 @@ $dictionary['Email'] = array(
         'to_addrs_names' => array(
             'name' => 'to_addrs_names',
             'type' => 'varchar',
-            'vname' => 'to_addrs_names',
+            'vname' => 'LBL_TO',
             'source' => 'non-db',
             'inline_edit' => false,
         ),
         'cc_addrs_names' => array(
             'name' => 'cc_addrs_names',
             'type' => 'varchar',
-            'vname' => 'cc_addrs_names',
+            'vname' => 'LBL_CC',
             'source' => 'non-db',
             'inline_edit' => false,
         ),
         'bcc_addrs_names' => array(
             'name' => 'bcc_addrs_names',
             'type' => 'varchar',
-            'vname' => 'bcc_addrs_names',
+            'vname' => 'LBL_BCC',
             'source' => 'non-db',
             'inline_edit' => false,
         ),
@@ -118,10 +118,14 @@ $dictionary['Email'] = array(
         ),
         'description_html' => array(
             'name' => 'description_html',
-            'type' => 'emailbody',
-            'vname' => 'description_html',
+            'type' => 'html',
+            'vname' => 'LBL_BODY',
             'source' => 'non-db',
             'inline_edit' => false,
+
+            'displayType' => 'html',
+            'rows' => 5,
+            'cols' => 150,
         ),
         'description' => array(
             'name' => 'description',
@@ -129,9 +133,6 @@ $dictionary['Email'] = array(
             'vname' => 'description',
             'source' => 'non-db',
             'inline_edit' => false,
-            'rows' => 6,
-            'cols' => 80,
-
         ),
         'date_sent_received' => array(
             'name' => 'date_sent_received',
@@ -158,7 +159,6 @@ $dictionary['Email'] = array(
             'len' => '255',
             'comment' => 'The subject of the email',
             'inline_edit' => false,
-
         ),
         'type' => array(
             'name' => 'type',
@@ -620,6 +620,53 @@ $dictionary['Email'] = array(
                 'onListView' =>  true
             ),
         ),
+        'outbound_email_id' => [
+            'name' => 'outbound_email_id',
+            'vname' => 'LBL_OUTBOUND_EMAIL_ACOUNT_ID',
+            'type' => 'id',
+            'isnull' => true,
+            'required' => false,
+        ],
+        'outbound_email_name' => [
+            'name' => 'outbound_email_name',
+            'rname' => 'from_addr',
+            'id_name' => 'outbound_email_id',
+            'vname' => 'LBL_FROM',
+            'join_name' => 'outbound_email',
+            'type' => 'relate',
+            'filterOnEmpty' => true,
+            'link' => 'outbound_email',
+            'table' => 'outbound_email',
+            'isnull' => 'true',
+            'module' => 'OutboundEmailAccounts',
+            'dbType' => 'varchar',
+            'len' => '255',
+            'source' => 'non-db',
+            'reportable' => false,
+            'required' => true,
+            'massupdate' => false,
+            'inline_edit' => false,
+            'importable' => false,
+            'exportable' => false,
+            'unified_search' => false,
+        ],
+        'outbound_email' => [
+            'name' => 'outbound_email',
+            'type' => 'link',
+            'relationship' => 'email_outbound_email_accounts',
+            'link_type' => 'one',
+            'source' => 'non-db',
+            'vname' => 'LBL_OUTBOUND_EMAIL_ACCOUNT',
+            'duplicate_merge' => 'disabled',
+            'reportable' => false,
+            'massupdate' => false,
+            'inline_edit' => false,
+            'importable' => false,
+            'exportable' => false,
+            'unified_search' => false,
+        ],
+
+
     ), /* end fields() array */
     'relationships' => array(
         'emails_assigned_user' => array(
@@ -729,6 +776,15 @@ $dictionary['Email'] = array(
             'relationship_role_column' => 'bean_module',
             'relationship_role_column_value' => 'Meetings',
         ),
+        'email_outbound_email_accounts' => [
+            'lhs_module' => 'OutboundEmailAccounts',
+            'lhs_table' => 'outbound_email',
+            'lhs_key' => 'id',
+            'rhs_module' => 'Email',
+            'rhs_table' => 'email',
+            'rhs_key' => 'outbound_email_id',
+            'relationship_type' => 'one-to-many'
+        ],
     ), // end relationships
     'indices' => array(
         array(

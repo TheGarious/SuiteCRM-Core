@@ -38,113 +38,189 @@
  * display the words "Powered by SugarCRM" and "Supercharged by SuiteCRM".
  */
 
-$viewdefs['Emails']['ComposeView'] = array(
-    'templateMeta' => array(
-        'maxColumns' => '2',
-        'widths' => array(
-            array('label' => '10', 'field' => '30'),
-            array('label' => '10', 'field' => '30')
-        ),
-        'form' => array(
-            'headerTpl' => 'modules/Emails/include/ComposeView/ComposeViewBlank.tpl',
-            'footerTpl' => 'modules/Emails/include/ComposeView/ComposeViewToolbar.tpl',
-            'buttons' => array(
-                array('customCode' => '<button class="btn btn-send-email" title="{$MOD.LBL_SEND_BUTTON_TITLE}"><span class="glyphicon glyphicon-send"></span></button>'),
-                array('customCode' => '<button class="vertical-separator"></button>'),
-                array('customCode' => '<button class="btn btn-attach-file" title="{$MOD.LBL_ATTACH_FILES}"><span class="glyphicon glyphicon-paperclip"></span></button>'),
-                array('customCode' => '<button class="btn btn-attach-document" title="{$MOD.LBL_ATTACH_DOCUMENTS}"><span class="glyphicon suitepicon suitepicon-module-documents"></span></button>'),
-                array('customCode' => '<button class="vertical-separator"></button>'),
-                array('customCode' => '<button class="btn btn-save-draft" title="{$MOD.LBL_SAVE_AS_DRAFT_BUTTON_TITLE}"><span class="glyphicon glyphicon-floppy-save"></span></button>'),
-                array('customCode' => '<button class="btn btn-disregard-draft" title="{$MOD.LBL_DISREGARD_DRAFT_BUTTON_TITLE}"><span class="glyphicon glyphicon-trash"></span></button>'),
-            )
-        ),
-        'includes' => array(
-            array(
-                'file' => 'modules/Emails/include/ComposeView/EmailsComposeView.js',
-            ),
-            array(
-                'file' => 'vendor/tinymce/tinymce/tinymce.min.js'
-            ),
-            array(
-                'file' => 'include/javascript/qtip/jquery.qtip.min.js'
-            )
-        ),
-    ),
-    'panels' => array(
-        'LBL_COMPOSE_MODULE_NAME' => array(
-            array(
-                array(
-                    'name' => 'emails_email_templates_name',
-                    'label' => 'LBL_EMAIL_TEMPLATE',
-                    'displayParams' => array(
-                        'call_back_function' => '$.fn.EmailsComposeView.onTemplateSelect',
-                    ),
-                ),
-                array(
-                    'name' =>  'parent_name',
-                    'label' => 'LBL_EMAIL_RELATE',
-                    'displayParams' => array(
-                        'call_back_function' => '$.fn.EmailsComposeView.onParentSelect',
-                        'field_to_name_array' => array(
-                            'id' => 'parent_id',
-                            'name' => 'parent_name',
-                            'email1' => 'email1',
-                        )
-                    ),
-                )
-            ),
-            array(
-                array(
-                    'name' => 'from_addr_name',
-                    'label' => 'LBL_LIST_FROM_ADDR',
-                )
-            ),
-            array(
-                array(
-                    'name' => 'to_addrs_names',
-                    'label' => 'LBL_TO',
-                    'expanded' => 'true',
-                )
-            ),
-            array(
-                array(
-                    'name' => 'cc_addrs_names',
-                    'label' => 'LBL_CC',
-                    'expanded' => 'true'
-                )
-            ),
-            array(
-                array(
-                    'name' => 'bcc_addrs_names',
-                    'label' => 'LBL_BCC',
-                    'expanded' => 'true'
-                )
-            ),
-            array(
-                array(
-                    'name' => 'name',
-                    'label' => 'LBL_SUBJECT',
-                ),
-            ),
-            array(
-                array(
-                    'name' => 'description',
-                    'label' => 'LBL_BODY',
-                )
-            ),
-            array(
-                array(
-                    'name' => 'description_html',
-                    'label' => 'LBL_BODY',
-                )
-            ),
-            array(
-                array(
-                    'name' => 'is_only_plain_text',
-                    'label' => 'LBL_SEND_IN_PLAIN_TEXT'
-                )
-            )
-        )
-    )
+$viewdefs['Emails']['ComposeView'] = [
+    'templateMeta' => [
+        'maxColumns' => 2,
+        'useTabs' => false,
+        'tabDefs' => [
+            'LBL_COMPOSE_MODULE_NAME' => [
+                'showHeader' => false,
+            ]
+        ],
+        'colClasses' => [
+        ],
+        'widths' => [
+            ['label' => '10', 'field' => '30'],
+            ['label' => '10', 'field' => '30']
+        ],
+    ],
+    'recordActions' => [
+        'actions' => [
+            'insert-email-template' => [
+                'key' => 'insert-email-template',
+                'labelKey' => 'LBL_INSERT_TEMPLATE',
+                'klass' => ['btn btn-sm btn-outline-main'],
+                'asyncProcess' => true,
+                'acl' => ['view'],
+                'aclModule' => 'EmailTemplates',
+                'params' => [
+                    'expanded' => true,
+                    'selectModal' => [
+                        'module' => 'EmailTemplates'
+                    ],
+                ],
+                'modes' => ['detail', 'edit', 'create'],
+            ],
+            'send-email' => [
+                'key' => 'send-email',
+                'labelKey' => 'LBL_SEND_BUTTON_TITLE',
+                'klass' => ['btn btn-sm btn-main'],
+                'asyncProcess' => true,
+                'acl' => ['create', 'edit'],
+                'aclModule' => 'Emails',
+                'params' => [
+                    'validate' => true,
+                    'expanded' => true
+                ],
+                'modes' => ['detail', 'edit', 'create'],
+            ],
+        ],
+        'exclude' => [
+            'delete',
+            'edit',
+            'save',
+            'saveNew',
+            'saveContinue',
+            'saveSchedule',
+            'duplicate',
+            'cancel',
+            'cancelCreate',
+        ]
 
-);
+    ],
+    'panels' => [
+        'LBL_COMPOSE_MODULE_NAME' => [
+            [
+                [
+                    'name' => 'outbound_email_name',
+                    'metadata' => [
+                        'headerColumnClass' => 'col-xs-12 col-sm-2 col-md-2 col-lg-2',
+                        'valueColumnClass' => 'col-xs-12 col-sm-10 col-md-10 col-lg-10'
+                    ],
+                ],
+            ],
+            [
+                [
+                    'name' => 'to_addrs_names',
+                    'type' => 'multiflexrelate',
+                    'metadata' => [
+                        'headerColumnClass' => 'col-xs-12 col-sm-2 col-md-2 col-lg-2',
+                        'valueColumnClass' => 'col-xs-12 col-sm-10 col-md-10 col-lg-10',
+                        'relatedModules' => [
+                            ['module' => 'Contacts', 'headerField' => 'name', 'subHeaderField' => 'email1'],
+                            ['module' => 'Leads', 'headerField' => 'name', 'subHeaderField' => 'email1'],
+                            ['module' => 'Users', 'headerField' => 'name', 'subHeaderField' => 'email1'],
+                            ['module' => 'Accounts', 'headerField' => 'name', 'subHeaderField' => 'email1'],
+                        ],
+                    ],
+                    'fieldActions' => [
+                        'klass' => '',
+                        'containerKlass' => 'd-flex align-items-center',
+                        'position' => 'inline',
+                        'actions' => [
+                            'toggle-cc' => [
+                                'key' => 'toggle-fields-visibility',
+                                'labelKey' => 'LBL_CC',
+                                'modes' => ['edit', 'create', 'detail'],
+                                'klass' => [' btn btn-sm btn-outline-main w-max-content border-0 p-1 m-0 ml-1'],
+                                'params' => [
+                                    'fields' => ['cc_addrs_names'],
+                                    'expanded' => true
+                                ]
+                            ],
+                            'toggle-bcc' => [
+                                'key' => 'toggle-fields-visibility',
+                                'labelKey' => 'LBL_BCC',
+                                'modes' => ['edit', 'create', 'detail'],
+                                'klass' => [' btn btn-sm btn-outline-main w-max-content border-0 p-1 m-0 ml-1'],
+                                'params' => [
+                                    'fields' => ['bcc_addrs_names'],
+                                    'expanded' => true
+                                ]
+                            ],
+                        ]
+                    ],
+                ],
+            ],
+            [
+                [
+                    'name' => 'cc_addrs_names',
+                    'display' => 'none',
+                    'type' => 'multiflexrelate',
+                    'metadata' => [
+                        'headerColumnClass' => 'col-xs-12 col-sm-2 col-md-2 col-lg-2',
+                        'valueColumnClass' => 'col-xs-12 col-sm-10 col-md-10 col-lg-10',
+                        'relatedModules' => [
+                            ['module' => 'Contacts', 'headerField' => 'name', 'subHeaderField' => 'email1'],
+                            ['module' => 'Leads', 'headerField' => 'name', 'subHeaderField' => 'email1'],
+                            ['module' => 'Users', 'headerField' => 'name', 'subHeaderField' => 'email1'],
+                            ['module' => 'Accounts', 'headerField' => 'name', 'subHeaderField' => 'email1'],
+                        ],
+                    ],
+                ],
+            ],
+            [
+                [
+                    'name' => 'bcc_addrs_names',
+                    'display' => 'none',
+                    'type' => 'multiflexrelate',
+                    'metadata' => [
+                        'headerColumnClass' => 'col-xs-12 col-sm-2 col-md-2 col-lg-2',
+                        'valueColumnClass' => 'col-xs-12 col-sm-10 col-md-10 col-lg-10',
+                        'relatedModules' => [
+                            ['module' => 'Contacts', 'headerField' => 'name', 'subHeaderField' => 'email1'],
+                            ['module' => 'Leads', 'headerField' => 'name', 'subHeaderField' => 'email1'],
+                            ['module' => 'Users', 'headerField' => 'name', 'subHeaderField' => 'email1'],
+                            ['module' => 'Accounts', 'headerField' => 'name', 'subHeaderField' => 'email1'],
+                        ],
+                    ],
+                ],
+            ],
+            [
+                [
+                    'name' => 'name',
+                    'metadata' => [
+                        'headerColumnClass' => 'col-xs-12 col-sm-2 col-md-2 col-lg-2',
+                        'valueColumnClass' => 'col-xs-12 col-sm-10 col-md-10 col-lg-10'
+                    ],
+                ],
+            ],
+            [
+                [
+                    'name' => 'description_html',
+                    'useFullColumn' => ['xs', 'sm', 'md', 'lg', 'xl'],
+                    'displayType' => 'squire',
+                    'metadata' => [
+                        'labelDisplay' => 'none',
+                        'squire' => [
+                            'edit' => [
+                                'height' => 450,
+                            ]
+                        ]
+                    ],
+                ],
+            ],
+            [
+                [
+                    'name' => 'parent_name',
+                    'type' => 'enum',
+                    'metadata' => [
+                        'headerColumnClass' => 'col-xs-12 col-sm-3 col-md-3 col-lg-3',
+                        'valueColumnClass' => 'col-xs-12 col-sm-9 col-md-9 col-lg-9'
+                    ],
+                ],
+            ]
+
+        ]
+    ]
+];
