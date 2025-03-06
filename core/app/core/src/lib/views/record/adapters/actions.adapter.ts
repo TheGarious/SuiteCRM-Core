@@ -49,6 +49,7 @@ import {SelectModalService} from '../../../services/modals/select-modal.service'
 import {RecordActionDisplayTypeLogic} from '../action-logic/display-type/display-type.logic';
 import {AppMetadataStore} from "../../../store/app-metadata/app-metadata.store.service";
 import {FieldModalService} from "../../../services/modals/field-modal.service";
+import {RecordMapperRegistry} from "../../../common/record/record-mappers/record-mapper.registry";
 
 @Injectable()
 export class RecordActionsAdapter extends BaseRecordActionsAdapter<RecordActionData> {
@@ -87,7 +88,8 @@ export class RecordActionsAdapter extends BaseRecordActionsAdapter<RecordActionD
         protected selectModalService: SelectModalService,
         protected fieldModalService: FieldModalService,
         protected displayTypeLogic: RecordActionDisplayTypeLogic,
-        protected appMetadataStore: AppMetadataStore
+        protected appMetadataStore: AppMetadataStore,
+        protected recordMappers: RecordMapperRegistry
     ) {
         super(
             actionManager,
@@ -98,7 +100,8 @@ export class RecordActionsAdapter extends BaseRecordActionsAdapter<RecordActionD
             selectModalService,
             fieldModalService,
             metadata,
-            appMetadataStore
+            appMetadataStore,
+            recordMappers
         );
     }
 

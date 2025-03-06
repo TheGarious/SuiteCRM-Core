@@ -156,10 +156,13 @@ export abstract class BaseActionsAdapter<D extends ActionData> implements Action
      * @param actionName
      * @param moduleName
      * @param context
+     * @param actionData
      */
-    protected abstract buildActionInput(action: Action, actionName: string,
+    protected abstract buildActionInput(action: Action,
+                                        actionName: string,
                                         moduleName: string,
-                                        context?: ActionContext): AsyncActionInput;
+                                        context?: ActionContext,
+                                        actionData?: D): AsyncActionInput;
 
     /**
      * Get action name
@@ -267,8 +270,8 @@ export abstract class BaseActionsAdapter<D extends ActionData> implements Action
         const moduleName = this.getModuleName(context);
 
         this.message.removeMessages();
-        const asyncData = this.buildActionInput(action, actionName, moduleName, context);
         const actionData: D = this.buildActionData(action, context);
+        const asyncData = this.buildActionInput(action, actionName, moduleName, context, actionData);
 
         this.asyncActionService.run(actionName, asyncData, null, null, actionData).pipe(take(1)).subscribe((process: Process) => {
             this.afterAsyncAction(actionName, moduleName, asyncData, process, action, context);

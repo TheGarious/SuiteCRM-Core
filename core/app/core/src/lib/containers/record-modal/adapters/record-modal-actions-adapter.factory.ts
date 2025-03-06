@@ -37,6 +37,8 @@ import {RecordActionDisplayTypeLogic} from "../../../views/record/action-logic/d
 import {RecordModalActionManager} from "../actions/record-modal-action-manager.service";
 import {RecordModalActionsAdapter} from "./record-modal-actions.adapter";
 import {FieldModalService} from "../../../services/modals/field-modal.service";
+import {RecordMapperRegistry} from "../../../common/record/record-mappers/record-mapper.registry";
+import {BaseSaveRecordMapper} from "../../../store/record/record-mappers/base-save.record-mapper";
 
 @Injectable({
     providedIn: 'root',
@@ -54,7 +56,10 @@ export class RecordModalActionsAdapterFactory {
         protected displayTypeLogic: RecordActionDisplayTypeLogic,
         protected appMetadataStore: AppMetadataStore,
         protected fieldModalService: FieldModalService,
+        protected recordMappers: RecordMapperRegistry,
+        protected baseMapper: BaseSaveRecordMapper
     ) {
+        recordMappers.register('default', baseMapper.getKey(), baseMapper);
     }
 
     create(store: RecordModalStore): RecordModalActionsAdapter {
@@ -69,7 +74,8 @@ export class RecordModalActionsAdapterFactory {
             this.selectModalService,
             this.displayTypeLogic,
             this.appMetadataStore,
-            this.fieldModalService
+            this.fieldModalService,
+            this.recordMappers
         );
     }
 }

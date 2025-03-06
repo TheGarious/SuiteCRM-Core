@@ -44,6 +44,7 @@ import {SelectModalService} from '../../../services/modals/select-modal.service'
 import {MetadataStore} from '../../../store/metadata/metadata.store.service';
 import {AppMetadataStore} from "../../../store/app-metadata/app-metadata.store.service";
 import {FieldModalService} from "../../../services/modals/field-modal.service";
+import {RecordMapperRegistry} from "../../../common/record/record-mappers/record-mapper.registry";
 
 @Injectable()
 export class ListViewRecordPanelActionsAdapter extends BaseRecordActionsAdapter<RecordPanelActionData> {
@@ -61,7 +62,8 @@ export class ListViewRecordPanelActionsAdapter extends BaseRecordActionsAdapter<
         protected selectModalService: SelectModalService,
         protected fieldModalService: FieldModalService,
         protected metadata: MetadataStore,
-        protected appMetadataStore: AppMetadataStore
+        protected appMetadataStore: AppMetadataStore,
+        protected recordMappers: RecordMapperRegistry
     ) {
         super(
             actionManager,
@@ -72,7 +74,8 @@ export class ListViewRecordPanelActionsAdapter extends BaseRecordActionsAdapter<
             selectModalService,
             fieldModalService,
             metadata,
-            appMetadataStore
+            appMetadataStore,
+            recordMappers
         )
     }
 

@@ -40,7 +40,7 @@ import {ViewMode} from "../../../../common/views/view.model";
 export class RecordModalSaveAction extends RecordModalActionHandler {
 
     key = 'save';
-    modes = ['edit','create'] as ViewMode[];
+    modes = ['edit', 'create'] as ViewMode[];
 
     constructor(
         protected router: Router,
@@ -55,12 +55,12 @@ export class RecordModalSaveAction extends RecordModalActionHandler {
     run(data: RecordModalActionData): void {
         const isFieldLoading = Object.keys(data.store.recordStore.getStaging().fields).some(fieldKey => {
             const field = data.store.recordStore.getStaging().fields[fieldKey];
-            return field.loading ?? false;
+            return field.loading() ?? false;
         });
 
-        if(isFieldLoading) {
+        if (isFieldLoading) {
             this.message.addWarningMessageByKey('LBL_LOADING_IN_PROGRESS');
-            return ;
+            return;
         }
 
         data.store.recordStore.validate().pipe(take(1)).subscribe(valid => {
