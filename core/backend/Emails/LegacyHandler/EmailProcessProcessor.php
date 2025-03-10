@@ -28,6 +28,8 @@
 
 namespace App\Emails\LegacyHandler;
 
+use App\Data\Entity\Record;
+use App\Data\Service\RecordProviderInterface;
 use App\Engine\LegacyHandler\LegacyHandler;
 use App\Engine\LegacyHandler\LegacyScopeState;
 use PHPMailer\PHPMailer\Exception;
@@ -36,20 +38,19 @@ use Symfony\Component\HttpFoundation\RequestStack;
 class EmailProcessProcessor extends LegacyHandler
 {
 
-    protected EmailBuilderHandler $emailBuilderHandler;
     protected SendEmailHandler $sendEmailHandler;
+    protected RecordProviderInterface $recordProvider;
 
     public function __construct(
-        string              $projectDir,
-        string              $legacyDir,
-        string              $legacySessionName,
-        string              $defaultSessionName,
-        LegacyScopeState    $legacyScopeState,
-        RequestStack        $requestStack,
-        EmailBuilderHandler $emailBuilderHandler,
-        SendEmailHandler    $sendEmailHandler
-    )
-    {
+        string $projectDir,
+        string $legacyDir,
+        string $legacySessionName,
+        string $defaultSessionName,
+        LegacyScopeState $legacyScopeState,
+        RequestStack $requestStack,
+        SendEmailHandler $sendEmailHandler,
+        RecordProviderInterface $recordProvider
+    ) {
         parent::__construct(
             $projectDir,
             $legacyDir,
@@ -58,8 +59,8 @@ class EmailProcessProcessor extends LegacyHandler
             $legacyScopeState,
             $requestStack
         );
-        $this->emailBuilderHandler = $emailBuilderHandler;
         $this->sendEmailHandler = $sendEmailHandler;
+        $this->recordProvider = $recordProvider;
     }
 
     public function getHandlerKey(): string
@@ -68,25 +69,86 @@ class EmailProcessProcessor extends LegacyHandler
     }
 
     /**
-     * @param $emailTo
-     * @param $subject
-     * @param $body
-     * @param string $from
-     * @param string $fromName
+     * @param Record $emailRecord
      * @param bool $isTest
-     * @return bool
+     * @return array
      * @throws Exception
      */
-    public function processEmail($emailTo, $subject, $body, string $from = '', string $fromName = '', $outboundEmail = null, bool $isTest = false): bool
+    public function processEmail(Record $emailRecord, bool $isTest = false): array
     {
-        $email = $this->emailBuilderHandler->buildEmail($subject, $body, $emailTo, $from, $fromName, $outboundEmail);
-        $success = $this->sendEmailHandler->sendEmail($email, $isTest);
+        $this->init();
+        $this->startLegacyApp();
 
-        if ($success){
-            return true;
+        $emailAttributes = $emailRecord->getAttributes() ?? [];
+        $validationErrors = $this->validateInput($emailAttributes);
+
+        if (!empty($validationErrors)) {
+            return $validationErrors;
         }
 
-        return false;
+        /** @var \OutboundEmailAccounts $outboundEmail */
+        $outboundEmail = \BeanFactory::getBean('OutboundEmailAccounts', $emailAttributes['outbound_email_id']);
+
+        if (empty($outboundEmail)) {
+            $this->close();
+            return [
+                'success' => false,
+                'message' => 'Outbound email not found'
+            ];
+        }
+
+        $outboundRecord = $this->recordProvider->mapToRecord($outboundEmail);
+
+        $success = false;
+        try {
+            $success = $this->sendEmailHandler->sendEmail($emailRecord, $outboundRecord, $isTest);
+        } catch (\Exception $e) {
+
+        }
+
+        if (!$success) {
+            $this->close();
+            return [
+                'success' => false,
+                'message' => 'Unable to send email'
+            ];
+        }
+
+        $this->recordProvider->saveRecord($emailRecord);
+        $this->close();
+        return [
+            'success' => true,
+            'message' => ''
+        ];
+    }
+
+    protected function validateInput(array $emailAttributes): array
+    {
+        if (empty($emailAttributes['to_addrs_names']) && empty($emailAttributes['cc_addrs_names']) && empty($emailAttributes['bcc_addrs_names'])) {
+            $this->close();
+            return [
+                'success' => false,
+                'message' => 'No email addresses provided'
+            ];
+        }
+
+        if (empty($emailAttributes['outbound_email_id'] ?? '')) {
+            $this->close();
+            return [
+                'success' => false,
+                'message' => 'No outbound email provided'
+            ];
+        }
+
+        if (empty($emailAttributes['outbound_email_id'] ?? '')) {
+            $this->close();
+            return [
+                'success' => false,
+                'message' => 'No outbound email provided'
+            ];
+        }
+
+        return [];
     }
 
 

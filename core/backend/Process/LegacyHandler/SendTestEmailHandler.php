@@ -30,6 +30,7 @@ namespace App\Process\LegacyHandler;
 
 
 use ApiPlatform\Exception\InvalidArgumentException;
+use App\Data\Entity\Record;
 use App\Emails\LegacyHandler\EmailBuilderHandler;
 use App\Emails\LegacyHandler\EmailProcessProcessor;
 use App\Emails\LegacyHandler\FilterEmailListHandler;
@@ -50,7 +51,6 @@ class SendTestEmailHandler extends LegacyHandler implements ProcessHandlerInterf
     protected const PROCESS_TYPE = 'record-send-test-email';
 
     protected FilterEmailListHandler $filterEmailListHandler;
-    protected EmailBuilderHandler $emailBuilderHandler;
     protected ModuleNameMapperInterface $moduleNameMapper;
     protected SendEmailHandler $sendEmailHandler;
     protected SystemConfigHandler $systemConfigHandler;
@@ -64,13 +64,11 @@ class SendTestEmailHandler extends LegacyHandler implements ProcessHandlerInterf
         LegacyScopeState $legacyScopeState,
         RequestStack $requestStack,
         FilterEmailListHandler $filterEmailListHandler,
-        EmailBuilderHandler $emailBuilderHandler,
         ModuleNameMapperInterface $moduleNameMapper,
         SendEmailHandler $sendEmailHandler,
         SystemConfigHandler $systemConfigHandler,
         EmailProcessProcessor $emailProcessProcessor
-    )
-    {
+    ) {
         parent::__construct(
             $projectDir,
             $legacyDir,
@@ -80,7 +78,6 @@ class SendTestEmailHandler extends LegacyHandler implements ProcessHandlerInterf
             $requestStack
         );
         $this->filterEmailListHandler = $filterEmailListHandler;
-        $this->emailBuilderHandler = $emailBuilderHandler;
         $this->moduleNameMapper = $moduleNameMapper;
         $this->sendEmailHandler = $sendEmailHandler;
         $this->systemConfigHandler = $systemConfigHandler;
@@ -155,8 +152,6 @@ class SendTestEmailHandler extends LegacyHandler implements ProcessHandlerInterf
         $this->startLegacyApp();
 
         $outboundEmail = null;
-        $from = '';
-        $fromName = '';
 
         $module = $this->moduleNameMapper->toLegacy($module);
         $bean = BeanFactory::getBean($module, $id);
@@ -172,8 +167,6 @@ class SendTestEmailHandler extends LegacyHandler implements ProcessHandlerInterf
 
         if ($bean?->outbound_email_id ?? false) {
             $outboundEmail = BeanFactory::getBean('OutboundEmailAccounts', $bean->outbound_email_id);
-            $from = $outboundEmail->smtp_from_addr;
-            $fromName = $outboundEmail->smtp_from_name;
         }
 
         $subject = $bean->subject;
@@ -182,8 +175,27 @@ class SendTestEmailHandler extends LegacyHandler implements ProcessHandlerInterf
         $allSent = true;
 
         foreach ($emails as $email) {
-            $success = $this->emailProcessProcessor->processEmail($email, $subject, $body, $from, $fromName, $outboundEmail, true);
-            if ($success){
+            $record = new Record();
+            $record->setId($recordOption['id'] ?? '');
+            $record->setModule($recordOption['module'] ?? '');
+            $record->setType($recordOption['type'] ?? '');
+            $record->setAttributes(
+                [
+                    'to_addrs_names' => [
+                        [
+                            'email1' => $email,
+                        ]
+                    ],
+                    'cc_addrs_names' => [],
+                    'bcc_addrs_names' => [],
+                    'name' => $subject,
+                    'description_html' => $body,
+                    'outbound_email_id' => $outboundEmail->id,
+                ]
+            );
+
+            $success = $this->emailProcessProcessor->processEmail($record, true);
+            if ($success) {
                 continue;
             }
             $allSent = false;
