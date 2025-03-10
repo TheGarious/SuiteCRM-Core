@@ -120,6 +120,7 @@ body.modal-open.detached-modal-open {
   width: max-content;
   display: flex;
   align-items: flex-end;
+  z-index: 2;
 
   .detached-modal {
     position: relative;
