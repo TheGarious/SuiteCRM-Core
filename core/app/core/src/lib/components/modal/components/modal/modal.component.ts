@@ -82,10 +82,14 @@ export class ModalComponent implements OnInit, OnDestroy{
         this.minimiseButton = {
             klass: ['btn', 'btn-outline-light', 'btn-sm'],
             onClick: () => {
-                this.isMinimized.set(!this.isMinimized());
-                this.initMinimiseStatus();
+                this.toggleMinimize();
             },
         } as ButtonInterface;
+        this.initMinimiseStatus();
+    }
+
+    toggleMinimize() {
+        this.isMinimized.set(!this.isMinimized());
         this.initMinimiseStatus();
     }
 
