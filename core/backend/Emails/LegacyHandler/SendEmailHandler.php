@@ -28,17 +28,22 @@
 
 namespace App\Emails\LegacyHandler;
 
+use App\Data\Entity\Record;
+use App\Emails\LegacyHandler\Mailers\LegacyMailer;
+use App\Emails\Service\RecordToEmailMapper\RecordToEmailService;
 use App\Engine\LegacyHandler\LegacyHandler;
 use App\Engine\LegacyHandler\LegacyScopeState;
 use Psr\Log\LoggerInterface;
-use SugarPHPMailer;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-class SendEmailHandler extends LegacyHandler {
+class SendEmailHandler extends LegacyHandler
+{
 
     protected const HANDLER_KEY = 'send-email';
 
     protected LoggerInterface $logger;
+    protected RecordToEmailService $recordToEmailService;
+    protected LegacyMailer $legacyMailer;
 
     public function __construct(
         string $projectDir,
@@ -47,9 +52,10 @@ class SendEmailHandler extends LegacyHandler {
         string $defaultSessionName,
         LegacyScopeState $legacyScopeState,
         RequestStack $requestStack,
-        LoggerInterface $logger
-    )
-    {
+        LoggerInterface $logger,
+        RecordToEmailService $recordToEmailService,
+        LegacyMailer $legacyMailer
+    ) {
         parent::__construct(
             $projectDir,
             $legacyDir,
@@ -59,6 +65,8 @@ class SendEmailHandler extends LegacyHandler {
             $requestStack
         );
         $this->logger = $logger;
+        $this->recordToEmailService = $recordToEmailService;
+        $this->legacyMailer = $legacyMailer;
     }
 
     public function getHandlerKey(): string
@@ -66,9 +74,13 @@ class SendEmailHandler extends LegacyHandler {
         return self::HANDLER_KEY;
     }
 
-    public function sendEmail(SugarPHPMailer $email, $isTest = false): bool {
+    public function sendEmail(Record $emailRecord, Record $outboundRecord, $isTest = false): bool
+    {
 
-        $sent = $email->send();
+        $email = $this->recordToEmailService->map($emailRecord, $outboundRecord);
+
+
+        $sent = $this->legacyMailer->send($email, null, $outboundRecord);
 
         if ($isTest && $sent) {
             return true;

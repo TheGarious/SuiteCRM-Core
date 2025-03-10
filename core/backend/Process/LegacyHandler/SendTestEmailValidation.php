@@ -29,18 +29,12 @@
 namespace App\Process\LegacyHandler;
 
 
-use ApiPlatform\Exception\InvalidArgumentException;
-use App\Emails\LegacyHandler\EmailBuilderHandler;
-use App\Emails\LegacyHandler\EmailProcessProcessor;
 use App\Emails\LegacyHandler\FilterEmailListHandler;
-use App\Emails\LegacyHandler\SendEmailHandler;
 use App\Engine\LegacyHandler\LegacyHandler;
 use App\Engine\LegacyHandler\LegacyScopeState;
-use App\Module\Service\ModuleNameMapperInterface;
 use App\Process\Entity\Process;
 use App\Process\Service\ProcessHandlerInterface;
 use App\SystemConfig\LegacyHandler\SystemConfigHandler;
-use PHPMailer\PHPMailer\Exception;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class SendTestEmailValidation extends LegacyHandler implements ProcessHandlerInterface
@@ -49,11 +43,7 @@ class SendTestEmailValidation extends LegacyHandler implements ProcessHandlerInt
     protected const PROCESS_TYPE = 'send-test-email-validation';
 
     protected FilterEmailListHandler $filterEmailListHandler;
-    protected EmailBuilderHandler $emailBuilderHandler;
-    protected ModuleNameMapperInterface $moduleNameMapper;
-    protected SendEmailHandler $sendEmailHandler;
     protected SystemConfigHandler $systemConfigHandler;
-    protected EmailProcessProcessor $emailProcessProcessor;
 
     public function __construct(
         string $projectDir,
@@ -63,13 +53,8 @@ class SendTestEmailValidation extends LegacyHandler implements ProcessHandlerInt
         LegacyScopeState $legacyScopeState,
         RequestStack $requestStack,
         FilterEmailListHandler $filterEmailListHandler,
-        EmailBuilderHandler $emailBuilderHandler,
-        ModuleNameMapperInterface $moduleNameMapper,
-        SendEmailHandler $sendEmailHandler,
         SystemConfigHandler $systemConfigHandler,
-        EmailProcessProcessor $emailProcessProcessor
-    )
-    {
+    ) {
         parent::__construct(
             $projectDir,
             $legacyDir,
@@ -79,11 +64,7 @@ class SendTestEmailValidation extends LegacyHandler implements ProcessHandlerInt
             $requestStack
         );
         $this->filterEmailListHandler = $filterEmailListHandler;
-        $this->emailBuilderHandler = $emailBuilderHandler;
-        $this->moduleNameMapper = $moduleNameMapper;
-        $this->sendEmailHandler = $sendEmailHandler;
         $this->systemConfigHandler = $systemConfigHandler;
-        $this->emailProcessProcessor = $emailProcessProcessor;
     }
 
     /**
