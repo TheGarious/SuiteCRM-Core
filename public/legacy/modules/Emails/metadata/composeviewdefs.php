@@ -213,7 +213,7 @@ $viewdefs['Emails']['ComposeView'] = [
             [
                 [
                     'name' => 'parent_name',
-                    'type' => 'enum',
+                    'useFullColumn' => ['xs', 'sm', 'md', 'lg', 'xl'],
                     'metadata' => [
                         'headerColumnClass' => 'col-xs-12 col-sm-3 col-md-3 col-lg-3',
                         'valueColumnClass' => 'col-xs-12 col-sm-9 col-md-9 col-lg-9'
