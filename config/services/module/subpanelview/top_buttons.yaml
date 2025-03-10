@@ -73,6 +73,18 @@ parameters:
       params:
         detached: true
         headerClass: 'left-aligned-title'
+        mapFields:
+          default:
+            'parent_id': 'id'
+            'parent_name': 'fields.name'
+            'parent_type': 'attributes.module_name'
+            'to_addrs_names':
+              -
+                'id': 'id'
+                'name': 'fields.name'
+                'email1': 'fields.email1'
+                'email': 'fields.email1'
+                'module_name': 'attributes.module_name'
       acl:
         - edit
       module: emails
