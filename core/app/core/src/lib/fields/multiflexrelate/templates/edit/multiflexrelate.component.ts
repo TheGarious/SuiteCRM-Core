@@ -99,11 +99,22 @@ export class MultiFlexRelateEditFieldComponent extends BaseMultiFlexRelateCompon
         if ((this.field?.valueList ?? []).length > 0) {
             this.field.valueObjectArray = deepClone(this.field.valueList);
             this.selectedValues = this.field.valueObjectArray.map(valueElement => {
+
                 const relateValue = valueElement[relatedFieldName] ?? valueElement.attributes[relatedFieldName] ?? '';
+                const moduleName = valueElement['module_name'] ?? valueElement.attributes['module_name'] ?? '';
+
                 const relateId = valueElement['id'] ?? '';
+
+                const headerField = this.headerFields[moduleName] ?? 'name';
+                const subHeader = this.subHeaderFields[moduleName] ?? '';
+                const headerFieldValue = valueElement[headerField] ?? valueElement.attributes[headerField] ?? '';
+                const subHeaderFieldValue = valueElement[subHeader] ?? valueElement.attributes[subHeader] ?? '';
                 return {
                     id: relateId,
-                    [relatedFieldName]: relateValue
+                    [relatedFieldName]: relateValue,
+                    [headerField]: headerFieldValue,
+                    [headerFieldValue]: subHeaderFieldValue,
+                    module_name: moduleName
                 };
             });
             this.currentOptionGroups.set(this.splitIntoGroups(this.selectedValues));
