@@ -37,6 +37,7 @@ import {NavigationStore} from "../../../../store/navigation/navigation.store";
 import {ModuleNavigation} from "../../../../services/navigation/module-navigation/module-navigation.service";
 import {RecordValidationHandler} from "../../../../services/record/validation/record-validation.handler";
 import {RecordModalFieldActionsAdapterFactory} from "../../adapters/record-modal-field-actions.adapter.factory";
+import {RecordManager} from "../../../../services/record/record.manager";
 
 @Injectable({
     providedIn: 'root',
@@ -54,7 +55,8 @@ export class RecordModalStoreFactory {
         protected navigationStore: NavigationStore,
         protected moduleNavigation: ModuleNavigation,
         protected fieldActionAdaptorFactory: RecordModalFieldActionsAdapterFactory,
-        protected recordValidationHandler: RecordValidationHandler
+        protected recordValidationHandler: RecordValidationHandler,
+        protected recordManager: RecordManager
     ) {
     }
 
@@ -71,7 +73,8 @@ export class RecordModalStoreFactory {
             this.navigationStore,
             this.moduleNavigation,
             this.fieldActionAdaptorFactory,
-            this.recordValidationHandler
+            this.recordValidationHandler,
+            this.recordManager
         );
     }
 }

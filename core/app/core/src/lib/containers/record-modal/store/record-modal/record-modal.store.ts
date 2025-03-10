@@ -57,10 +57,9 @@ import {Field, FieldDefinitionMap, FieldMetadata} from "../../../../common/recor
 import {FieldLogicMap} from "../../../../common/actions/field-logic-action.model";
 import {ObjectMap} from "../../../../common/types/object-map";
 import {RecordModalFieldActionsAdapterFactory} from "../../adapters/record-modal-field-actions.adapter.factory";
-import {
-    BaseRecordContainerStoreInterface
-} from "../../../../common/containers/record/record-container.store.model";
+import {BaseRecordContainerStoreInterface} from "../../../../common/containers/record/record-container.store.model";
 import {ActionDataSource, ActionDataSourceBuilderFunction} from "../../../../common/actions/action.model";
+import {RecordManager} from "../../../../services/record/record.manager";
 
 const initialState: any = {
     module: '',
@@ -123,7 +122,8 @@ export class RecordModalStore implements StateStore, BaseRecordContainerStoreInt
         protected navigationStore: NavigationStore,
         protected moduleNavigation: ModuleNavigation,
         protected fieldActionAdaptorFactory: RecordModalFieldActionsAdapterFactory,
-        protected recordValidationHandler: RecordValidationHandler
+        protected recordValidationHandler: RecordValidationHandler,
+        protected recordManager: RecordManager
     ) {
         this.metadataState = new BehaviorSubject<Metadata>({});
         this.metadata$ = this.metadataState.asObservable();
@@ -170,6 +170,7 @@ export class RecordModalStore implements StateStore, BaseRecordContainerStoreInt
         this.internalState.recordID = recordID;
         this.setMode(mode);
         this.metadataLoadingState.next(true);
+        this.parseParams(params);
 
 
         this.subs.push(
@@ -177,8 +178,6 @@ export class RecordModalStore implements StateStore, BaseRecordContainerStoreInt
                 tap((metadata) => {
                     this.metadataState.next(metadata ?? {});
                     this.metadataLoadingState.next(false);
-
-
                 })
             ).subscribe()
         );
@@ -186,19 +185,22 @@ export class RecordModalStore implements StateStore, BaseRecordContainerStoreInt
         this.recordStore = this.recordStoreFactory.create(this.getViewFieldsObservable(), this.getRecordMetadata$());
 
         if (mode === 'create') {
-            this.recordStore.init(
-                {
-                    id: '',
-                    type: '',
-                    module: module,
-                    attributes: {
-                        assigned_user_id: this.appStateStore.getCurrentUser().id,
-                        assigned_user_name: {
-                            id: this.appStateStore.getCurrentUser().id,
-                            user_name: this.appStateStore.getCurrentUser().userName
-                        },
+            const blankRecord = {
+                id: '',
+                type: '',
+                module: module,
+                attributes: {
+                    assigned_user_id: this.appStateStore.getCurrentUser().id,
+                    assigned_user_name: {
+                        id: this.appStateStore.getCurrentUser().id,
+                        user_name: this.appStateStore.getCurrentUser().userName
                     },
-                } as Record,
+                },
+            } as Record;
+
+            this.recordManager.injectParamFields(params, blankRecord, this.getVardefs());
+            this.recordStore.init(
+                blankRecord,
                 true,
                 {
                     initVardefBasedFieldActions: true,
@@ -209,10 +211,7 @@ export class RecordModalStore implements StateStore, BaseRecordContainerStoreInt
             );
         } else {
             this.load().pipe(
-                take(1),
-                tap(() => {
-                    this.parseParams(params);
-                })).subscribe();
+                take(1)).subscribe();
         }
 
         this.panels$ = this.panelsSubject.asObservable();

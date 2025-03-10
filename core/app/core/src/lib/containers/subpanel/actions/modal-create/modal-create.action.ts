@@ -31,6 +31,7 @@ import {AppStateStore} from "../../../../store/app-state/app-state.store";
 import {ViewMode} from "../../../../common/views/view.model";
 import {SubpanelActionData, SubpanelActionHandler} from "../subpanel.action";
 import {NgbModalOptions} from "@ng-bootstrap/ng-bootstrap/modal/modal-config";
+import {RecordFieldInjector} from "../../../../services/record/record-field-injector.service";
 
 @Injectable({
     providedIn: 'root'
@@ -42,9 +43,14 @@ export class SubpanelModalCreateAction extends SubpanelActionHandler {
 
     constructor(
         protected modalService: NgbModal,
-        protected appState: AppStateStore
+        protected appState: AppStateStore,
+        protected recordFieldInjector: RecordFieldInjector
     ) {
         super();
+    }
+
+    shouldDisplay(data: SubpanelActionData): boolean {
+        return true;
     }
 
     run(data: SubpanelActionData): void {
@@ -78,6 +84,20 @@ export class SubpanelModalCreateAction extends SubpanelActionHandler {
             minimizable = true;
         }
 
+        let titleKey = data?.action?.params?.headerLabelKey ?? data?.action?.labelKey ?? ''
+        let dynamicTitleKey = data?.action?.params?.dynamicTitleKey ?? '';
+        let dynamicTitleContext = data?.action?.params?.dynamicTitleContext ?? null;
+
+        let mappedFieldsConfig = data?.action?.params?.mapFields[parentModule] ?? null;
+        if (!mappedFieldsConfig) {
+            mappedFieldsConfig = data?.action?.params?.mapFields['default'] ?? null;
+        }
+
+        const parentRecord = data?.store?.parentRecord ?? null;
+        if (parentRecord && mappedFieldsConfig) {
+            modal.componentInstance.mappedFields = this.recordFieldInjector.getInjectFieldsMap(parentRecord, mappedFieldsConfig);
+        }
+
         modal.componentInstance.metadataView = data?.action?.metadataView ?? 'recordView';
         modal.componentInstance.module = moduleName;
         modal.componentInstance.mode = mode;
@@ -90,6 +110,8 @@ export class SubpanelModalCreateAction extends SubpanelActionHandler {
         modal.componentInstance.footerClass = data?.action?.params?.footerClass ?? '';
         modal.componentInstance.wrapperClass = data?.action?.params?.wrapperClass ?? '';
 
+        modal.componentInstance.init();
+
         // Store modal reference to handle cleanup
         this.appState.addModalRef(modal);
 
@@ -98,9 +120,5 @@ export class SubpanelModalCreateAction extends SubpanelActionHandler {
             () => this.appState.removeModalRef(modal),
             () => this.appState.removeModalRef(modal)
         );
-    }
-
-    shouldDisplay(data: SubpanelActionData): boolean {
-        return true;
     }
 }

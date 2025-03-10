@@ -27,7 +27,6 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {filter, take} from "rxjs/operators";
 import {CommonModule} from "@angular/common";
-import {ActivatedRoute} from "@angular/router";
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {animate, transition, trigger} from '@angular/animations';
 import {combineLatest, Observable, Subscription} from 'rxjs';
@@ -45,6 +44,7 @@ import {ActionContext} from "../../../../common/actions/action.model";
 import {ButtonInterface} from "../../../../common/components/button/button.model";
 import {ModalCloseFeedBack} from "../../../../common/components/modal/modal.model";
 import {Record} from "../../../../common/record/record.model";
+import {ObjectMap} from "../../../../common/types/object-map";
 
 @Component({
     selector: 'scrm-record-modal',
@@ -77,6 +77,7 @@ export class RecordModalComponent implements OnInit, OnDestroy {
     @Input() recordId: string = '';
     @Input() parentId: string = '';
     @Input() parentModule: string = '';
+    @Input() mappedFields: ObjectMap = null;
     @Input() contentAdapter: any = null;
     @Input() actionsAdapter: any = null;
     @Input() headerClass: string = '';
@@ -103,28 +104,6 @@ export class RecordModalComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
 
-        this.modalStore = this.storeFactory.create(this.metadataView);
-        if (!this.contentAdapter) {
-            this.contentAdapter = this.recordModalContentAdapterFactory.create(this.modalStore);
-        }
-        if (!this.actionsAdapter) {
-            this.actionsAdapter = this.recordModalActionsAdapterFactory.create(this.modalStore);
-        }
-
-        this.subs.push(
-            this.modalStore.loadMetadata(this.module).pipe(take(1)).subscribe(() => {
-                this.initStore();
-                this.subs.push(
-                    combineLatest([this.modalStore.record$, this.modalStore.loading$, this.modalStore.viewContext$]).pipe(
-                        filter(([record, loading, viewContext]) => !!record && !loading),
-                        take(1)
-                    ).subscribe(([record, loading, viewContext]): void => {
-                        this.record = record;
-                        this.viewContext = viewContext;
-                    })
-                );
-            })
-        );
 
         this.closeButton = {
             klass: ['btn', 'btn-outline-light', 'btn-sm'],
@@ -143,12 +122,39 @@ export class RecordModalComponent implements OnInit, OnDestroy {
         this.modalStore.clear();
     }
 
+    init(): void {
+
+        this.modalStore = this.storeFactory.create(this.metadataView);
+        if (!this.contentAdapter) {
+            this.contentAdapter = this.recordModalContentAdapterFactory.create(this.modalStore);
+        }
+        if (!this.actionsAdapter) {
+            this.actionsAdapter = this.recordModalActionsAdapterFactory.create(this.modalStore);
+        }
+
+
+        this.subs.push(
+            this.modalStore.loadMetadata(this.module).pipe(take(1)).subscribe(() => {
+                this.initStore();
+                this.subs.push(
+                    combineLatest([this.modalStore.record$, this.modalStore.loading$, this.modalStore.viewContext$]).pipe(
+                        filter(([record, loading, viewContext]) => !!record && !loading),
+                        take(1)
+                    ).subscribe(([record, loading, viewContext]): void => {
+                        this.record = record;
+                        this.viewContext = viewContext;
+                    })
+                );
+            })
+        );
+    }
+
     protected initStore(): void {
         if (!this.module) {
             return;
         }
 
-        this.modalStore.init(this.module, this.recordId, this.mode);
+        this.modalStore.init(this.module, this.recordId, this.mode, this.mappedFields ?? {});
         this.loading$ = this.modalStore.metadataLoading$;
     }
 }
