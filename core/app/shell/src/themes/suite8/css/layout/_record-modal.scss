@@ -27,6 +27,13 @@
 .record-modal {
   background-color: $white;
 
+  &.minimizable {
+    .modal-title {
+      cursor: pointer;
+      flex-grow: 1;
+    }
+  }
+
   .modal-header {
     background-color: $white;
     padding-bottom: 0;
@@ -36,14 +43,17 @@
       justify-content: space-between;
 
       .modal-title {
-        margin-left: 0rem;
-        margin-right: 0rem;
+        margin-left: 0;
+        margin-right: 0;
+        align-items: start;
       }
     }
 
     .modal-title {
-      margin-top: 0.5rem;
-      margin-bottom: 0.5rem;
+      margin-top: 0;
+      margin-bottom: 0;
+      padding-top: .5rem;
+      padding-bottom: .5rem;
     }
 
     .close-button {

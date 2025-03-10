@@ -25,9 +25,10 @@
 * the words "Supercharged by SuiteCRM".
 */
 -->
-<div [class]="klass" [ngClass]="{'minimized': isMinimized()}">
+<div [class]="klass" [class.minimizable]="minimizable" [ngClass]="{'minimized': isMinimized()}">
     <div *ngIf="titleKey || descriptionKey || limit" class="modal-header {{headerKlass}} d-flex align-items-center">
-        <div class="modal-title">
+        <div class="modal-title"
+             (click)="minimizable ? toggleMinimize() : null">
             <scrm-label class="mt-1" *ngIf="titleKey" [labelKey]="titleKey"></scrm-label>
             <scrm-dynamic-label *ngIf="dynamicTitleKey"
                                 class="mt-1"
