@@ -48,4 +48,18 @@ interface RecordProviderInterface
      * @return Record
      */
     public function saveRecord(Record $record): Record;
+
+    /**
+     * Map to bean
+     * @param Record $record
+     * @return \SugarBean
+     */
+    public function mapToBean(Record $record): \SugarBean;
+
+    /**
+     * Map to bean
+     * @param \SugarBean $bean
+     * @return Record
+     */
+    public function mapToRecord(\SugarBean $bean): Record;
 }
