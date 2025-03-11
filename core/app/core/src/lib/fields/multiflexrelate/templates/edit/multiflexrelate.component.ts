@@ -110,10 +110,11 @@ export class MultiFlexRelateEditFieldComponent extends BaseMultiFlexRelateCompon
                 const headerFieldValue = valueElement[headerField] ?? valueElement.attributes[headerField] ?? '';
                 const subHeaderFieldValue = valueElement[subHeader] ?? valueElement.attributes[subHeader] ?? '';
                 return {
+                    ...(valueElement.attributes ?? {}),
                     id: relateId,
                     [relatedFieldName]: relateValue,
                     [headerField]: headerFieldValue,
-                    [headerFieldValue]: subHeaderFieldValue,
+                    [subHeader]: subHeaderFieldValue,
                     module_name: moduleName
                 };
             });
