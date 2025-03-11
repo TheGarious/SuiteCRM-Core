@@ -4105,3 +4105,4 @@ $app_strings['LBL_MISSING_FIELDS_DATA'] = 'Missing Fields Data';
 $app_strings['LBL_WRONG_MODULE_PROVIDED'] = 'Wrong module provided';
 $app_strings['LBL_NO_TEMPLATE_ID_PROVIDED'] = 'No template id provided';
 $app_strings['LBL_TEMPLATE_NOT_FOUND'] = 'Template not found';
+$app_strings['LBL_EMAIL_MODAL_DYNAMIC_TITLE'] = 'New Email{{fields.name.value|prefix:\' - \'}}';
