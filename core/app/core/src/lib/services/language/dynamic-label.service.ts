@@ -74,6 +74,8 @@ export class DynamicLabelService implements DynamicLabelServiceInterface {
         this.valuePipes.datetime = (value: string): string => this.valueTypeFormat('datetime', value);
         this.valuePipes.currency = (value: string): string => this.valueTypeFormat('currency', value);
         this.valuePipes.enum = (value: string, filterArguments: string[] = []): string => this.enumFormat(value, filterArguments);
+        this.valuePipes.prefix = (value: string, filterArguments: string[] = []): string => this.applyPrefix(value, filterArguments);
+        this.valuePipes.applySuffix = (value: string, filterArguments: string[] = []): string => this.applySuffix(value, filterArguments);
 
         this.fieldPipes.int = (value: Field): string => this.fieldTypeFormat('int', value);
         this.fieldPipes.float = (value: Field): string => this.fieldTypeFormat('float', value);
@@ -136,9 +138,12 @@ export class DynamicLabelService implements DynamicLabelServiceInterface {
                 filter = pipe.trim();
 
                 if (pipe.trim().includes(':')) {
-                    let[filterType, ...filterArgs] = pipe.trim().split(':');
+                    let [filterType, ...filterArgs] = pipe.trim().split(':');
                     filter = filterType.trim();
                     filterArguments = filterArgs;
+                    if (filterArguments && filterArguments.length) {
+                        filterArguments = filterArguments.map(arg => arg.replace(/(['"])/g, ''));
+                    }
                 }
 
                 variableName = name.trim();
@@ -173,6 +178,9 @@ export class DynamicLabelService implements DynamicLabelServiceInterface {
 
                 if (parts[2] && parts[2] === 'value' && field.type in this.fieldPipes) {
                     value = this.fieldPipes[field.type](field);
+                    if (filter && this.valuePipes[filter]) {
+                        value = this.valuePipes[filter](value, filterArguments ?? []);
+                    }
                     parsedTemplate = parsedTemplate.replace(regexMatch, value);
                     return;
                 }
@@ -184,6 +192,9 @@ export class DynamicLabelService implements DynamicLabelServiceInterface {
                 }
 
                 value = get({fields}, path, '');
+                if (filter && this.valuePipes[filter]) {
+                    value = this.valuePipes[filter](value, filterArguments ?? []);
+                }
 
                 parsedTemplate = parsedTemplate.replace(regexMatch, value);
                 return;
@@ -307,5 +318,27 @@ export class DynamicLabelService implements DynamicLabelServiceInterface {
         }
 
         return parsedTemplate.replace(regexMatch, value);
+    }
+
+    protected applyPrefix(value: string, filterArguments: string[] = []): string {
+
+        if (isVoid(value) || value === '') {
+            return value;
+        }
+
+        const joinedArgs = (filterArguments ?? []).join('');
+
+        return joinedArgs + value;
+    }
+
+    protected applySuffix(value: string, filterArguments: string[] = []): string {
+
+        if (isVoid(value) || value === '') {
+            return value;
+        }
+
+        const joinedArgs = (filterArguments ?? []).join('');
+
+        return value + joinedArgs;
     }
 }
