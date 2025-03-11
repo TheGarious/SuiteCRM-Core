@@ -213,10 +213,9 @@ $viewdefs['Emails']['ComposeView'] = [
             [
                 [
                     'name' => 'parent_name',
-                    'useFullColumn' => ['xs', 'sm', 'md', 'lg', 'xl'],
                     'metadata' => [
-                        'headerColumnClass' => 'col-xs-12 col-sm-3 col-md-3 col-lg-3',
-                        'valueColumnClass' => 'col-xs-12 col-sm-9 col-md-9 col-lg-9'
+                        'headerColumnClass' => 'col-xs-12 col-sm-2 col-md-2 col-lg-2',
+                        'valueColumnClass' => 'col-xs-12 col-sm-10 col-md-10 col-lg-10'
                     ],
                 ],
             ]
