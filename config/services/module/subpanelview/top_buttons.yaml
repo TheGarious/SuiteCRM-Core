@@ -73,6 +73,7 @@ parameters:
       params:
         detached: true
         headerClass: 'left-aligned-title'
+        dynamicTitleKey: LBL_EMAIL_MODAL_DYNAMIC_TITLE
         mapFields:
           default:
             'parent_id': 'id'
@@ -82,8 +83,7 @@ parameters:
               -
                 'id': 'id'
                 'name': 'fields.name'
-                'email1': 'fields.email1'
-                'email': 'fields.email1'
+                'email1': 'attributes.email1'
                 'module_name': 'attributes.module_name'
       acl:
         - edit
