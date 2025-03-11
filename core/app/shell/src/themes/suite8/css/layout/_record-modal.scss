@@ -180,6 +180,20 @@ body.modal-open.detached-modal-open {
       .modal-header {
         margin-bottom: 0;
         border-bottom: 0 !important;
+
+        .modal-title {
+          max-width: 200px;
+          overflow: hidden;
+          span {
+            max-width: 200px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: inline-block;
+            line-height: 1;
+          }
+        }
+
       }
     }
   }
@@ -189,6 +203,21 @@ body.modal-open.detached-modal-open {
   .detached-modal {
     .modal-dialog.modal-lg, .modal-dialog.modal-xl {
       max-width: 600px;
+
+      .modal-header {
+        .modal-title {
+          max-width: 500px;
+          overflow: hidden;
+          span {
+            max-width: 500px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: inline-block;
+            line-height: 1;
+          }
+        }
+      }
     }
   }
 }
@@ -198,6 +227,21 @@ body.modal-open.detached-modal-open {
     .modal-dialog {
       right: 7px;
       left: 7px;
+
+      .modal-header {
+        .modal-title {
+          max-width: 400px;
+          overflow: hidden;
+          span {
+            max-width: 400px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: inline-block;
+            line-height: 1;
+          }
+        }
+      }
     }
   }
 }
