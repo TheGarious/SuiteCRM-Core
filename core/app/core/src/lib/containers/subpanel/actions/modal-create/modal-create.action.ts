@@ -84,10 +84,6 @@ export class SubpanelModalCreateAction extends SubpanelActionHandler {
             minimizable = true;
         }
 
-        let titleKey = data?.action?.params?.headerLabelKey ?? data?.action?.labelKey ?? ''
-        let dynamicTitleKey = data?.action?.params?.dynamicTitleKey ?? '';
-        let dynamicTitleContext = data?.action?.params?.dynamicTitleContext ?? null;
-
         let mappedFieldsConfig = data?.action?.params?.mapFields[parentModule] ?? null;
         if (!mappedFieldsConfig) {
             mappedFieldsConfig = data?.action?.params?.mapFields['default'] ?? null;
@@ -103,6 +99,11 @@ export class SubpanelModalCreateAction extends SubpanelActionHandler {
         modal.componentInstance.mode = mode;
         modal.componentInstance.minimizable = minimizable;
         modal.componentInstance.titleKey = data?.action?.params?.headerLabelKey ?? data?.action?.labelKey ?? '';
+        modal.componentInstance.dynamicTitleKey = data?.action?.params?.dynamicTitleKey ??'';
+        modal.componentInstance.dynamicTitleContext = data?.action?.params?.dynamicTitleContext ?? {};
+        modal.componentInstance.descriptionKey = data?.action?.params?.descriptionLabelKey ??'';
+        modal.componentInstance.dynamicDescriptionKey = data?.action?.params?.dynamicDescriptionKey ??'';
+        modal.componentInstance.dynamicDescriptionContext = data?.action?.params?.dynamicDescriptionContext ??'';
         modal.componentInstance.parentId = parentId;
         modal.componentInstance.parentModule = parentModule;
         modal.componentInstance.headerClass = data?.action?.params?.headerClass ?? '';

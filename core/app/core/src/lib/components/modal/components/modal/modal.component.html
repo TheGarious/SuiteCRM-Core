@@ -29,19 +29,19 @@
     <div *ngIf="titleKey || descriptionKey || limit" class="modal-header {{headerKlass}} d-flex align-items-center">
         <div class="modal-title"
              (click)="minimizable ? toggleMinimize() : null">
-            <scrm-label class="mt-1" *ngIf="titleKey" [labelKey]="titleKey"></scrm-label>
+            <scrm-label class="mt-1" *ngIf="titleKey && !dynamicTitleKey" [labelKey]="titleKey"></scrm-label>
             <scrm-dynamic-label *ngIf="dynamicTitleKey"
                                 class="mt-1"
                                 [labelKey]="dynamicTitleKey"
-                                [fields]="dynamicTitleFields"
-                                [context]="dynamicTitleContext"
+                                [fields]="dynamicTitleFields()"
+                                [context]="dynamicTitleContext()"
             ></scrm-dynamic-label>
-            <scrm-label class="small text-muted mt-2" *ngIf="descriptionKey" [labelKey]="descriptionKey"></scrm-label>
+            <scrm-label class="small text-muted mt-2" *ngIf="descriptionKey && !dynamicDescriptionKey" [labelKey]="descriptionKey"></scrm-label>
             <scrm-dynamic-label *ngIf="dynamicDescriptionKey"
                                 class="small text-muted mt-2"
                                 [labelKey]="dynamicDescriptionKey"
-                                [fields]="dynamicDescriptionFields"
-                                [context]="dynamicDescriptionContext"
+                                [fields]="dynamicDescriptionFields()"
+                                [context]="dynamicDescriptionContext()"
             ></scrm-dynamic-label>
             <span *ngIf="limit" class="small text-muted mt-1">
                 <scrm-label [labelKey]="limitLabel" ></scrm-label>

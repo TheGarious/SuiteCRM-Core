@@ -24,7 +24,7 @@
  * the words "Supercharged by SuiteCRM".
  */
 
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, signal, WritableSignal} from '@angular/core';
 import {filter, take} from "rxjs/operators";
 import {CommonModule} from "@angular/common";
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
@@ -45,6 +45,8 @@ import {ButtonInterface} from "../../../../common/components/button/button.model
 import {ModalCloseFeedBack} from "../../../../common/components/modal/modal.model";
 import {Record} from "../../../../common/record/record.model";
 import {ObjectMap} from "../../../../common/types/object-map";
+import {StringMap} from "../../../../common/types/string-map";
+import {FieldMap} from "../../../../common/record/field.model";
 
 @Component({
     selector: 'scrm-record-modal',
@@ -70,6 +72,9 @@ import {ObjectMap} from "../../../../common/types/object-map";
 export class RecordModalComponent implements OnInit, OnDestroy {
 
     @Input() titleKey = '';
+    @Input() dynamicTitleKey = '';
+    @Input() descriptionKey = '';
+    @Input() dynamicDescriptionKey = '';
     @Input() module: string;
     @Input() metadataView: string = 'recordView';
     @Input() mode: ViewMode;
@@ -91,6 +96,9 @@ export class RecordModalComponent implements OnInit, OnDestroy {
     closeButton: ButtonInterface;
 
     loading$: Observable<boolean>;
+
+    @Input() context: WritableSignal<StringMap> = signal({});
+    @Input() fields: WritableSignal<FieldMap> = signal({});
 
     protected subs: Subscription[] = [];
 
@@ -137,11 +145,12 @@ export class RecordModalComponent implements OnInit, OnDestroy {
             this.modalStore.loadMetadata(this.module).pipe(take(1)).subscribe(() => {
                 this.initStore();
                 this.subs.push(
-                    combineLatest([this.modalStore.record$, this.modalStore.loading$, this.modalStore.viewContext$]).pipe(
+                    combineLatest([this.modalStore.stagingRecord$, this.modalStore.loading$, this.modalStore.viewContext$]).pipe(
                         filter(([record, loading, viewContext]) => !!record && !loading),
                         take(1)
                     ).subscribe(([record, loading, viewContext]): void => {
                         this.record = record;
+                        this.fields.set({...(record.fields ?? {})})
                         this.viewContext = viewContext;
                     })
                 );
