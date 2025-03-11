@@ -24,7 +24,7 @@
  * the words "Supercharged by SuiteCRM".
  */
 
-import {Component, computed, ElementRef, Signal, signal, ViewChild, WritableSignal} from '@angular/core';
+import {AfterViewInit, Component, computed, ElementRef, Signal, signal, ViewChild, WritableSignal} from '@angular/core';
 import {emptyObject} from '../../../../common/utils/object-utils';
 import {ButtonInterface} from '../../../../common/components/button/button.model';
 import {Field} from '../../../../common/record/field.model';
@@ -55,7 +55,7 @@ import {SystemConfigStore} from "../../../../store/system-config/system-config.s
     styleUrls: [],
     providers: [RelateService]
 })
-export class RelateEditFieldComponent extends BaseRelateComponent {
+export class RelateEditFieldComponent extends BaseRelateComponent implements AfterViewInit {
     @ViewChild('tag') tag: Dropdown;
     @ViewChild('dropdownFilterInput') dropdownFilterInput: ElementRef;
     selectButton: ButtonInterface;
@@ -117,6 +117,13 @@ export class RelateEditFieldComponent extends BaseRelateComponent {
 
     }
 
+    ngAfterViewInit(): void {
+
+        if (this.field?.definition?.filterOnEmpty ?? false) {
+            this.tag.onLazyLoad.emit();
+        }
+    }
+
     protected init(): void {
 
         super.init();
@@ -133,6 +140,7 @@ export class RelateEditFieldComponent extends BaseRelateComponent {
         this.subs.push(this.filterInputBuffer$.pipe(debounceTime(clickDebounceTime)).subscribe(value => {
             this.filterResults(this.filterValue ?? '');
         }));
+
     }
 
     protected initValue(): void {
@@ -397,9 +405,5 @@ export class RelateEditFieldComponent extends BaseRelateComponent {
 
     focusFilterInput() {
         this.dropdownFilterInput.nativeElement.focus();
-
-        if (this.field?.definition?.filterOnEmpty ?? false) {
-            this.tag.onLazyLoad.emit();
-        }
     }
 }
