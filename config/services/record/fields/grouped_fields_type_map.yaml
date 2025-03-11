@@ -39,11 +39,11 @@ parameters:
         - '{type_name}'
         - '{id_name}'
       layout:
-        - '{name}'
         - '{type_name}'
+        - '{name}'
       showLabel:
-        edit: ['*']
-        filter: ['*']
+        edit: []
+        filter: []
       replaceAttributes:
         - name
         - type_name
