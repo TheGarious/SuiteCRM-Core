@@ -42,6 +42,7 @@ export class DynamicLabelComponent implements OnInit, OnChanges, OnDestroy {
     @Input() context: StringMap = {};
     @Input() fields: FieldMap = {};
     @Input() module: string = null;
+    @Input() displayTitle: boolean = false;
 
     parsedLabel: WritableSignal<string> = signal('');
     vm$: Observable<LanguageStrings>;

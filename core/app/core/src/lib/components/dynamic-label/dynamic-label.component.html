@@ -26,5 +26,6 @@
 */
 -->
 <ng-container *ngIf="template && labelKey">
-    <span class="dynamic-label">{{parsedLabel()}}</span>
+    <span *ngIf="displayTitle" class="dynamic-label" [title]="parsedLabel()">{{parsedLabel()}}</span>
+    <span *ngIf="!displayTitle" class="dynamic-label" >{{parsedLabel()}}</span>
 </ng-container>
