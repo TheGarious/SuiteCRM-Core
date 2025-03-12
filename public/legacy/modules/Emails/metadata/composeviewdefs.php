@@ -105,7 +105,9 @@ $viewdefs['Emails']['ComposeView'] = [
                     'name' => 'outbound_email_name',
                     'metadata' => [
                         'headerColumnClass' => 'col-xs-12 col-sm-2 col-md-2 col-lg-2',
-                        'valueColumnClass' => 'col-xs-12 col-sm-10 col-md-10 col-lg-10'
+                        'valueColumnClass' => 'col-xs-12 col-sm-10 col-md-10 col-lg-10',
+                        'dynamicOptionLabel' => 'LBL_OUTBOUND_EMAIL_NAME_COMPOSE_LABEL',
+                        'dynamicOptionSubLabel' => 'LBL_OUTBOUND_EMAIL_NAME_COMPOSE_SUB_LABEL'
                     ],
                 ],
             ],
