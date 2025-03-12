@@ -27,8 +27,7 @@
 import {Component, OnDestroy, OnInit, signal, WritableSignal} from '@angular/core';
 import {Observable, of} from 'rxjs';
 import {catchError, map, tap} from 'rxjs/operators';
-import {AttributeMap} from '../../common/record/record.model';
-import {Record} from '../../common/record/record.model';
+import {AttributeMap, Record} from '../../common/record/record.model';
 import {ModuleNameMapper} from '../../services/navigation/module-name-mapper/module-name-mapper.service';
 import {BaseFieldComponent} from './base-field.component';
 import {DataTypeFormatter} from '../../services/formatters/data-type.formatter.service';
@@ -37,11 +36,16 @@ import {RelateService} from '../../services/record/relate/relate.service';
 import {FieldLogicManager} from '../field-logic/field-logic.manager';
 import {FieldLogicDisplayManager} from '../field-logic-display/field-logic-display.manager';
 import {SearchCriteria} from "../../common/views/list/search-criteria.model";
+import {StringMap} from "../../common/types/string-map";
 
 @Component({template: ''})
 export class BaseRelateComponent extends BaseFieldComponent implements OnInit, OnDestroy {
     selectedValues: AttributeMap[] = [];
     options: AttributeMap[] = [];
+    relateFieldName: string = '';
+    dynamicOptionLabel: string = '';
+    dynamicOptionSubLabel: string = '';
+    dynamicOptionLabelContext: StringMap =  {};
 
     status: '' | 'searching' | 'not-found' | 'error' | 'found' | 'no-module' = '';
     initModule: WritableSignal<string> = signal('');
@@ -74,6 +78,9 @@ export class BaseRelateComponent extends BaseFieldComponent implements OnInit, O
         this.subs.push(this.field.valueChanges$.subscribe(() => {
             this.onModuleChange();
         }));
+
+        this.relateFieldName = this.getRelateFieldName();
+        this.initDynamicOptionLabel();
     }
 
 
@@ -149,6 +156,12 @@ export class BaseRelateComponent extends BaseFieldComponent implements OnInit, O
         return this.field.definition.metadata.relateSearchField;
     }
 
+    initDynamicOptionLabel(): void {
+        this.dynamicOptionLabel = this?.field?.metadata?.dynamicOptionLabel || this?.field?.definition?.metadata?.dynamicOptionLabel || '';
+        this.dynamicOptionSubLabel = this?.field?.metadata?.dynamicOptionSubLabel || this?.field?.definition?.metadata?.dynamicOptionSubLabel || '';
+        this.dynamicOptionLabelContext  = this?.field?.metadata?.dynamicOptionLabelContext || this?.field?.definition?.metadata?.dynamicOptionLabelContext || {};
+    }
+
     getRelateIdField(): string {
         return (this.field && this.field.definition && this.field.definition.id_name) || '';
     }
@@ -211,8 +224,8 @@ export class BaseRelateComponent extends BaseFieldComponent implements OnInit, O
         }
     }
 
-    protected buildRelate(id: string, relateValue: string): any {
-        const relate = {id};
+    protected buildRelate(id: string, relateValue: string, other: AttributeMap = {}): any {
+        const relate = {...other, id};
 
         if (this.getRelateFieldName()) {
             relate[this.getRelateFieldName()] = relateValue;
