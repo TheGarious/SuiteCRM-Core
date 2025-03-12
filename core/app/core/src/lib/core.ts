@@ -580,6 +580,7 @@ export * from './services/process/processes/generate-backup-codes/generate-backu
 export * from './services/process/processes/recover-password/recover-password';
 export * from './services/process/processes/send-test-email/send-test-email';
 export * from './services/record/record-convert.service';
+export * from './services/record/record-field-injector.service';
 export * from './services/record/record.manager';
 export * from './services/record/field/attribute.builder';
 export * from './services/record/field/field-object-type.manifest';
