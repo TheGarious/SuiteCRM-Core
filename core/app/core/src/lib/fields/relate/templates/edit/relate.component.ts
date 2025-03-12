@@ -28,7 +28,7 @@ import {AfterViewInit, Component, computed, ElementRef, Signal, signal, ViewChil
 import {emptyObject} from '../../../../common/utils/object-utils';
 import {ButtonInterface} from '../../../../common/components/button/button.model';
 import {Field} from '../../../../common/record/field.model';
-import {Record, AttributeMap} from '../../../../common/record/record.model';
+import {AttributeMap, Record} from '../../../../common/record/record.model';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ModuleNameMapper} from '../../../../services/navigation/module-name-mapper/module-name-mapper.service';
 import {DataTypeFormatter} from '../../../../services/formatters/data-type.formatter.service';
@@ -162,7 +162,7 @@ export class RelateEditFieldComponent extends BaseRelateComponent implements Aft
             this.field.valueObject[this.field.metadata.relateSearchField] = this.field.valueObject[rname];
         }
 
-        this.setValue(this.field.valueObject.id, this.field.valueObject[rname])
+        this.setValue(this.field.valueObject.id, this.field.valueObject[rname], this.field.valueObject)
     }
 
     /**
@@ -180,7 +180,7 @@ export class RelateEditFieldComponent extends BaseRelateComponent implements Aft
                     confirmationLabel,
                     () => {
                         this.tag.writeValue(item);
-                        this.setValue(item.id, item[relateName]);
+                        this.setValue(item.id, item[relateName], item);
                     },
                     () => {
                         this.tag.writeValue(this.field.valueObject);
@@ -191,11 +191,11 @@ export class RelateEditFieldComponent extends BaseRelateComponent implements Aft
                             return;
                         }
 
-                        this.setValue(this.field.valueObject.id, value);
+                        this.setValue(this.field.valueObject.id, value, this.field.valueObject);
                     });
                 return;
             }
-            this.setValue(item.id, item[relateName]);
+            this.setValue(item.id, item[relateName], item);
             return;
         }
 
@@ -242,6 +242,7 @@ export class RelateEditFieldComponent extends BaseRelateComponent implements Aft
             take(1),
             map(data => data.filter(item => item[relateName] !== '')),
             map(filteredData => filteredData.map(item => ({
+                ...item,
                 id: item.id,
                 [relateName]: item[relateName]
             })))
@@ -289,9 +290,10 @@ export class RelateEditFieldComponent extends BaseRelateComponent implements Aft
      *
      * @param {string} id to set
      * @param {string} relateValue to set
+     * @param other
      */
-    protected setValue(id: string, relateValue: string): void {
-        const relate = this.buildRelate(id, relateValue);
+    protected setValue(id: string, relateValue: string, other: AttributeMap = {}): void {
+        const relate = this.buildRelate(id, relateValue, other);
         this.field.value = relateValue;
         this.field.valueObject = relate;
         this.field.formControl.setValue(relateValue);
@@ -305,11 +307,11 @@ export class RelateEditFieldComponent extends BaseRelateComponent implements Aft
 
         if (relateValue) {
             const relateName = this.getRelateFieldName();
-            this.selectedValue = {id: id, [relateName]: relateValue};
+            this.selectedValue = {...other, id: id, [relateName]: relateValue};
         }
 
         this.options = [this.selectedValue];
-        if (this.selectedValue !== null){
+        if (this.selectedValue !== null) {
             this.currentOptions.set(this.options)
         }
     }
@@ -382,7 +384,7 @@ export class RelateEditFieldComponent extends BaseRelateComponent implements Aft
     public getTranslatedLabels(): void {
         this.placeholderLabel = this.languages.getAppString('LBL_SELECT_ITEM') || '';
         this.emptyFilterLabel = computed(() => {
-            if (!this.loading()){
+            if (!this.loading()) {
                 return this.languages.getAppString('ERR_SEARCH_NO_RESULTS') || '';
             }
 

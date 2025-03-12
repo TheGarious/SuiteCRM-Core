@@ -27,7 +27,7 @@
 -->
 <div class="d-flex align-items-center">
     <ng-container *ngIf="initModule()">
-        <div class="flex-grow-1 w-100 mr-1">
+        <div #tagWrapper class="flex-grow-1 w-100 mr-1">
             <p-dropdown
                 #tag
                 [options]="currentOptions()"
@@ -69,6 +69,60 @@
                         <scrm-image image="search" class="p-element p-dropdown-filter-search-icon"></scrm-image>
                     </div>
 
+                </ng-template>
+                <ng-template pTemplate="selectedItem">
+                    <div class="align-items-end relate-item" *ngIf="selectedValue">
+                        <div *ngIf="!dynamicOptionLabel">{{ selectedValue[relateFieldName] ?? '' }}</div>
+                        <ng-container *ngIf="dynamicOptionLabel">
+                            <div class="relate-item-header-field"
+                                 [style.max-width]="tagWrapper?.offsetWidth - 180 + 'px'"
+                            >
+                                <scrm-dynamic-label [labelKey]="dynamicOptionLabel"
+                                                    [fields]="selectedValue"
+                                                    [context]="dynamicOptionLabelContext"
+                                                    [displayTitle]="true"
+                                >
+                                </scrm-dynamic-label>
+                            </div>
+                            <div *ngIf="dynamicOptionSubLabel"
+                                 class="relate-item-subheader-field"
+                            >
+                                <scrm-dynamic-label [labelKey]="dynamicOptionSubLabel"
+                                                    [fields]="selectedValue"
+                                                    [context]="dynamicOptionLabelContext"
+                                                    [displayTitle]="true"
+                                >
+                                </scrm-dynamic-label>
+                            </div>
+                        </ng-container>
+                    </div>
+                </ng-template>
+                <ng-template let-option pTemplate="item">
+                    <div class="align-items-end relate-item" *ngIf="option">
+                        <div *ngIf="!dynamicOptionLabel">{{ option[relateFieldName] ?? '' }}</div>
+                        <ng-container *ngIf="dynamicOptionLabel">
+                            <div class="relate-item-header-field"
+                                 [style.max-width]="tagWrapper?.offsetWidth - 180 + 'px'"
+                            >
+                                <scrm-dynamic-label [labelKey]="dynamicOptionLabel"
+                                                    [fields]="option"
+                                                    [context]="dynamicOptionLabelContext"
+                                                    [displayTitle]="true"
+                                >
+                                </scrm-dynamic-label>
+                            </div>
+                            <div *ngIf="dynamicOptionSubLabel"
+                                 class="relate-item-subheader-field"
+                            >
+                                <scrm-dynamic-label [labelKey]="dynamicOptionSubLabel"
+                                                    [fields]="option"
+                                                    [context]="dynamicOptionLabelContext"
+                                                    [displayTitle]="true"
+                                >
+                                </scrm-dynamic-label>
+                            </div>
+                        </ng-container>
+                    </div>
                 </ng-template>
             </p-dropdown>
         </div>
