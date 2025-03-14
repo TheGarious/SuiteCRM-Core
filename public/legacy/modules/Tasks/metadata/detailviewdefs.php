@@ -174,10 +174,12 @@ array(
         3 =>
         array(
           0 => 'priority',
+          1 => ''
         ),
         4 =>
         array(
           0 => 'description',
+          1 => ''
         ),
       ),
       'LBL_PANEL_ASSIGNMENT' =>
@@ -189,6 +191,7 @@ array(
             'name' => 'assigned_user_name',
             'label' => 'LBL_ASSIGNED_TO',
           ),
+          1 => ''
         ),
         1 =>
         array(

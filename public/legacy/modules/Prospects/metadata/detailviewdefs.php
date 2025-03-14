@@ -211,10 +211,12 @@ array(
         6 =>
         array(
           0 => 'description',
+          1 => ''
         ),
         7 =>
         array(
           0 => 'assigned_user_name',
+          1 => ''
         ),
       ),
       'LBL_MORE_INFORMATION' =>
