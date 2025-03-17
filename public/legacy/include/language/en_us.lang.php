@@ -2344,6 +2344,7 @@ $app_strings = array(
 
     'LBL_SEND_TEST_EMAIL' => 'Send Test Email',
     'LBL_SEND_TEST_EMAIL_DESC' => 'Please select the Email Addresses / User(s) and/or Target List(s) to send to.',
+    'LBL_EMAIL_SENT_SUCCESSFULLY' => 'Email sent successfully',
     'LBL_PROSPECT_LIST_NAME' => 'Target Lists',
 
     //List View Column Selector Modal
