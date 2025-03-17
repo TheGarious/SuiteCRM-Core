@@ -169,8 +169,8 @@ class LegacyMailer extends LegacyHandler
             }
         }
 
-        if (is_array($message->getBcc())) {
-            foreach ($message->getBcc() as $cc) {
+        if (is_array($message->getCc())) {
+            foreach ($message->getCc() as $cc) {
                 $mail->AddCC($cc->getAddress(), $cc->getName() ?? '');
             }
         }
