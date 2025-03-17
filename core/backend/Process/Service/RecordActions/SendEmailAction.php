@@ -136,7 +136,7 @@ class SendEmailAction implements ProcessHandlerInterface
         );
 
         $process->setStatus('success');
-        $process->setMessages(['LBL_RECORD_DELETE_SUCCESS']);
+        $process->setMessages(['LBL_EMAIL_SENT_SUCCESSFULLY']);
         if (!$result) {
             $process->setStatus('error');
             $process->setMessages(['LBL_ACTION_ERROR']);
