@@ -96,8 +96,13 @@ export class MultiFlexRelateEditFieldComponent extends BaseMultiFlexRelateCompon
         this.selectAll = false;
         super.ngOnInit();
         const relatedFieldName = this.getRelateFieldName();
+
+
+
         if ((this.field?.valueList ?? []).length > 0) {
-            this.field.valueObjectArray = deepClone(this.field.valueList);
+            if ((this.field?.valueList ?? []).length >= (this.field?.valueObjectArray ?? []).length) {
+                this.field.valueObjectArray = deepClone(this.field.valueList);
+            }
             this.selectedValues = this.field.valueObjectArray.map(valueElement => {
 
                 const relateValue = valueElement[relatedFieldName] ?? valueElement.attributes[relatedFieldName] ?? '';
