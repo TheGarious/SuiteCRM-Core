@@ -407,5 +407,9 @@ export class RelateEditFieldComponent extends BaseRelateComponent implements Aft
 
     focusFilterInput() {
         this.dropdownFilterInput.nativeElement.focus();
+
+        if (this.field?.definition?.filterOnEmpty ?? false) {
+            this.tag.onLazyLoad.emit();
+        }
     }
 }
