@@ -31,10 +31,15 @@
 <ng-template #popTitle>
     <ng-content select="[popup-title]"></ng-content>
 </ng-template>
-<scrm-button [config]="buttonConfig()"
-             [autoClose]="'outside'"
-             [ngbPopover]="popContent"
-             [popoverTitle]="popTitle"
-             [popoverClass]="popoverClass"
-             [placement]="placement"
-></scrm-button>
+<div #wrapper>
+    <scrm-button [config]="buttonConfig()"
+                 [autoClose]="'outside'"
+                 [ngbPopover]="popContent"
+                 [popoverTitle]="popTitle"
+                 [popoverClass]="popoverClass"
+                 [placement]="placement"
+                 [positionTarget]="wrapper"
+                 #popover="ngbPopover"
+                 [class.d-none]="displayButton() === false"
+    ></scrm-button>
+</div>
