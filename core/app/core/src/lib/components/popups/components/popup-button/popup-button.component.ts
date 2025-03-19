@@ -24,27 +24,56 @@
  * the words "Supercharged by SuiteCRM".
  */
 
-import {Component, Input, OnInit, signal} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, signal, ViewChild, WritableSignal} from '@angular/core';
 import {ButtonInterface} from '../../../../common/components/button/button.model';
+import {Subscription} from "rxjs";
+import {NgbPopover} from "@ng-bootstrap/ng-bootstrap";
+
+
 @Component({
     selector: 'scrm-popup-button',
     templateUrl: 'popup-button.component.html',
 })
 
-export class PopupButtonComponent implements OnInit{
+export class PopupButtonComponent implements OnInit, OnDestroy {
 
     @Input() icon: string;
     @Input() klass: string = 'line-action-item line-action float-right';
     @Input() placement: string = 'right';
     @Input() popoverClass: string = 'popover-wrapper';
+    @Input() openStatusEventEmitter: EventEmitter<boolean>;
+    @Input() displayButton: WritableSignal<boolean> = signal(true);
+
+    @ViewChild('popover') popover: NgbPopover;
 
     buttonConfig = signal<ButtonInterface>({});
+
+    protected subs: Subscription[] = [];
 
     constructor() {
     }
 
     ngOnInit(): void {
-        this.buttonConfig.update( () => this.getButtonConfig());
+        this.buttonConfig.update(() => this.getButtonConfig());
+        this.subs = [];
+
+        if (this.openStatusEventEmitter) {
+            this.openStatusEventEmitter.subscribe((status: boolean) => {
+                if (status === true) {
+                    this.popover.open();
+                    return;
+                }
+
+                this.popover.close();
+            });
+        }
+    }
+
+    ngOnDestroy(): void {
+        this.subs.forEach((sub: Subscription) => {
+            sub.unsubscribe();
+        });
+        this.subs = [];
     }
 
     getButtonConfig(): ButtonInterface {
@@ -53,5 +82,6 @@ export class PopupButtonComponent implements OnInit{
             klass: this.klass,
         } as ButtonInterface;
     }
+
 
 }
