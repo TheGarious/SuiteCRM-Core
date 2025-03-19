@@ -23,28 +23,37 @@
  * feasible for technical reasons, the Appropriate Legal Notices must display
  * the words "Supercharged by SuiteCRM".
  */
+import {FieldMap} from "../../record/field.model";
+import {Signal} from "@angular/core";
+import {ObjectMap} from "../../types/object-map";
 
 export declare type ButtonCallback = (...args) => void;
 
 export interface ButtonInterface {
     id?: string;
     klass?: string | string[] | Set<string> | { [key: string]: any };
+    style?: string;
+    dynamicClass?: Signal<string>;
     onClick?: ButtonCallback;
     debounceClick?: boolean;
     clickDebounceTime?: number;
     label?: string;
     labelKey?: string;
     titleKey?: string;
+    dynamicLabelKey?: string;
+    dynamicLabelFields?: FieldMap;
     title?: string;
     icon?: string;
     iconKlass?: string;
     labelModule?: string;
     section?: string;
     disabled?: boolean;
+    type?: string;
+    metadata?: ObjectMap;
 }
 
 export interface ButtonInterfaceMap {
-    [key:string]: ButtonInterface;
+    [key: string]: ButtonInterface;
 }
 
 export class Button implements ButtonInterface {
