@@ -24,8 +24,8 @@
  * the words "Supercharged by SuiteCRM".
  */
 
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
-import {ButtonInterface, ButtonCallback} from '../../common/components/button/button.model';
+import {Component, Input, OnDestroy, OnInit, signal, Signal} from '@angular/core';
+import {ButtonCallback, ButtonInterface} from '../../common/components/button/button.model';
 import {LanguageStore} from '../../store/language/language.store';
 import {Observable, Subject, Subscription} from 'rxjs';
 import {debounceTime} from 'rxjs/operators';
@@ -36,6 +36,8 @@ import {debounceTime} from 'rxjs/operators';
 })
 export class ButtonComponent implements OnInit, OnDestroy {
     @Input() config: ButtonInterface;
+
+    dynamicClass: Signal<string> = signal('');
     clickCallBack: ButtonCallback;
     protected clickBuffer = new Subject<any>();
     protected clickBuffer$: Observable<any> = this.clickBuffer.asObservable();
@@ -48,6 +50,11 @@ export class ButtonComponent implements OnInit, OnDestroy {
         const isToDebounce = this.config?.debounceClick ?? null;
         this.clickCallBack = this.config?.onClick ?? null;
         const clickDebounceTime = this.getDebounceTime();
+
+        if (this.config?.dynamicClass) {
+            this.dynamicClass = this.config?.dynamicClass;
+        }
+
 
         if (isToDebounce && this.clickCallBack) {
             this.subs.push(this.clickBuffer$.pipe(debounceTime(clickDebounceTime)).subscribe(value => {
