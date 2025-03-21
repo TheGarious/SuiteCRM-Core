@@ -51,6 +51,14 @@
       line-height: 100%;
     }
 
+    .squire-editor-button-row {
+      border-radius: 3px;
+
+      &:hover {
+        background-color: $light-grey;
+      }
+    }
+
     .squire-editor-button {
       &.squire-editor-button-active {
         background-color: $light-grey;
@@ -88,7 +96,6 @@
       background: none;
       border: 1px solid transparent;
       border-radius: 3px;
-      font-size: 1rem;
       height: 24px;
       line-height: 1.375rem;
       padding: 0 2px;
@@ -114,6 +121,7 @@
       .image-down_carret {
         display: flex;
         align-items: center;
+
         svg {
           font-size: 0.8rem;
           line-height: 0.8rem;
@@ -124,6 +132,11 @@
     }
 
     .popover-body {
+      .grid-popup-body {
+        //width: 125px;
+        width: 175px;
+      }
+
       padding: .25rem .25rem;
     }
   }
@@ -139,6 +152,28 @@
     overflow-x: auto;
     overflow-y: auto;
     padding: 44px 15px 15px;
+
+    ul {
+      list-style-type: revert !important;
+      padding-inline-start: revert !important;
+    }
+
+    a {
+      color: revert;
+      text-decoration: revert;
+      background-color: revert;
+    }
+
+
+    blockquote {
+      margin: 0;
+      border-left: 2px solid $midnight-blue-faded;
+      background: $grey-transparent;
+      padding-left: 1ex;
+      padding-top: 1ex;
+      padding-bottom: 1ex;
+    }
+
   }
 
 }
