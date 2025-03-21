@@ -116,7 +116,7 @@ export class ColorSelectorComponent implements OnInit {
                     'dark-gray': {color: '#a9a9a9'},
                     'light-gray': {color: '#d3d3d3'},
                     'white': {color: '#ffffff'},
-                    'remove': {icon: 'slash-lg', color: null, klass: 'color-remove p-0'},
+                    'remove': {icon: 'x-lg', color: null, klass: 'color-remove p-0'},
                 }
             },
             {
