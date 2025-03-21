@@ -28,7 +28,9 @@ import {
     AfterViewInit,
     ChangeDetectionStrategy,
     Component,
+    computed,
     ElementRef,
+    EventEmitter,
     HostListener,
     OnDestroy,
     signal,
@@ -44,8 +46,12 @@ import {FieldLogicDisplayManager} from '../../../field-logic-display/field-logic
 import Squire from 'squire-rte'
 import {DomSanitizer} from "@angular/platform-browser";
 import {SquireConfig} from "squire-rte/dist/types/Editor";
-import {ButtonInterface} from "../../../../common/components/button/button.model";
+import {ButtonInterface, ButtonInterfaceMap} from "../../../../common/components/button/button.model";
 import {floor} from "mathjs";
+import {AnyButtonInterface, DropdownButtonInterface} from "../../../../common/components/button/dropdown-button.model";
+import {ColorButton} from "../../../../components/popups/components/color-selector/color-selector.model";
+import {isEmail, isURL} from "../../../../common/utils/value-utils";
+
 
 @Component({
     selector: 'scrm-squire-edit',
@@ -61,14 +67,19 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
     protected editor: Squire;
 
     settings: any = {};
+    availableButtons = {} as ButtonInterfaceMap;
+    modelEvents = 'change'
+    ignoreEvents = "onKeyDown,onKeyPress,onKeyUp,onSelectionChange"
     value: string = '';
     isMobile = signal(false);
-    activeButtonLayout: WritableSignal<Array<ButtonInterface[]>> = signal([]);
+    activeButtonLayout: WritableSignal<Array<DropdownButtonInterface[]>> = signal([]);
     baseButtonLayout: WritableSignal<Array<ButtonInterface[]>> = signal([]);
     collapsedButtons: WritableSignal<ButtonInterface[]> = signal([]);
     collapsedDropdownButton: WritableSignal<ButtonInterface> = signal(null);
     minHeight: WritableSignal<number> = signal(450);
     height: WritableSignal<number> = signal(0);
+
+    protected currentEditorPath: WritableSignal<string> = signal('');
 
     @HostListener('window:resize', ['$event'])
     onResize(): void {
@@ -92,20 +103,20 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
         this.subscribeValueChanges();
         this.value = this.getValue();
         this.initSettings();
+        this.initAvailableButtons();
+        this.initButtons();
+        this.collapsedDropdownButton.set({
+            'icon': 'down_carret',
+            klass: 'squire-editor-button squire-editor-collapsed-button btn btn-sm',
+        } as ButtonInterface);
     }
 
     ngAfterViewInit(): void {
 
         setTimeout(() => {
             this.initEditor();
-            this.initButtons();
-
-            this.collapsedDropdownButton.set({
-                'icon': 'down_carret',
-                klass: 'squire-editor-button squire-editor-collapsed-button btn btn-sm',
-            } as ButtonInterface);
             this.calculateActiveButtons();
-        }, 100);
+        }, 50);
     }
 
     protected setFieldValue(newValue): void {
@@ -148,7 +159,7 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
                     },
                 },
                 classNames: {
-                    color:'squire-editor-color',
+                    color: 'squire-editor-color',
                     fontFamily: 'squire-editor-font',
                     fontSize: 'squire-editor-size',
                     highlight: 'squire-editor-highlight',
@@ -192,199 +203,513 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
         }
     }
 
-    initButtons(): void {
-        const defaultButtonLayout = [
-            [
-                {
-                    key: 'bold',
-                    icon: 'bold',
-                    titleKey: 'LBL_BOLD',
-                    hotkey: 'ctrl+b',
-                    klass: 'squire-editor-button btn btn-sm ',
-                    onClick: () => this.editor.bold(),
-                } as ButtonInterface,
-                {
-                    key: 'italic',
-                    icon: 'italic',
-                    titleKey: 'LBL_ITALIC',
-                    hotkey: 'ctrl+i',
-                    klass: 'squire-editor-button btn btn-sm ',
-                    onClick: () => this.editor.italic(),
-                } as ButtonInterface,
-                {
-                    key: 'underline',
-                    icon: 'underline',
-                    titleKey: 'LBL_UNDERLINE',
-                    hotkey: 'ctrl+u',
-                    klass: 'squire-editor-button btn btn-sm ',
-                    onClick: () => this.editor.underline(),
-                } as ButtonInterface,
-                {
-                    key: 'strikethrough',
-                    icon: 'strikethrough',
-                    titleKey: 'LBL_STRIKETHROUGH',
-                    hotkey: 'ctrl+shift+7',
-                    klass: 'squire-editor-button btn btn-sm ',
-                    onClick: () => this.editor.strikethrough(),
-                } as ButtonInterface,
-            ],
-            [
-                {
-                    key: 'font',
-                    icon: 'fonts',
-                    titleKey: 'LBL_FONT_FACE',
-                    klass: 'squire-editor-button btn btn-sm ',
-                    onClick: () => this.editor.bold(),
-                } as ButtonInterface,
-                {
-                    key: 'size',
-                    icon: 'text-size',
-                    titleKey: 'LBL_TEXT_SIZE',
-                    klass: 'squire-editor-button btn btn-sm ',
-                    onClick: () => this.editor.bold(),
-                } as ButtonInterface,
-            ],
-            [
-                {
-                    key: 'textColour',
-                    icon: 'text-colour',
-                    titleKey: 'LBL_TEXT_COLOUR',
-                    klass: 'squire-editor-button btn btn-sm ',
-                    onClick: () => this.editor.bold(),
-                } as ButtonInterface,
-                {
-                    key: 'highlight',
-                    icon: 'highlighter',
-                    titleKey: 'LBL_TEXT_HIGHLIGHT',
-                    klass: 'squire-editor-button btn btn-sm ',
-                    onClick: () => this.editor.bold(),
-                } as ButtonInterface,
-            ],
-            [
-                {
-                    key: 'insertImage',
-                    icon: 'card-image',
-                    titleKey: 'LBL_INSERT_IMAGE',
-                    klass: 'squire-editor-button btn btn-sm ',
-                    onClick: () => this.editor.bold(),
-                } as ButtonInterface,
-            ],
-            [
-                {
-                    key: 'insertLink',
-                    icon: 'link-45deg',
-                    titleKey: 'LBL_INSERT_LINK',
-                    klass: 'squire-editor-button btn btn-sm ',
-                    hotkey: 'ctrl+k',
-                    onClick: () => this.editor.bold(),
-                } as ButtonInterface,
-            ],
-            [
-                {
-                    key: 'unorderedList',
-                    icon: 'list-ul',
-                    titleKey: 'LBL_UNORDERED_LIST',
-                    klass: 'squire-editor-button btn btn-sm ',
-                    hotkey: 'ctrl+shift+8',
-                    onClick: () => this.editor.makeUnorderedList(),
-                } as ButtonInterface,
-                {
-                    key: 'orderedList',
-                    icon: 'list-ol',
-                    titleKey: 'LBL_ORDERED_LIST',
-                    klass: 'squire-editor-button btn btn-sm ',
-                    hotkey: 'ctrl+shift+9',
-                    onClick: () => this.editor.makeOrderedList(),
-                } as ButtonInterface,
-                {
-                    key: 'indentMore',
-                    icon: 'text-indent-left',
-                    titleKey: 'LBL_TEXT_INDENT_LEFT',
-                    klass: 'squire-editor-button btn btn-sm ',
-                    onClick: () => this.editor.increaseListLevel(),
-                } as ButtonInterface,
-                {
-                    key: 'indentLess',
-                    icon: 'text-indent-right',
-                    titleKey: 'LBL_TEXT_INDENT_RIGHT',
-                    klass: 'squire-editor-button btn btn-sm ',
-                    onClick: () => this.editor.decreaseListLevel(),
-                } as ButtonInterface,
-            ],
-            [
-                {
-                    key: 'alignLeft',
-                    icon: 'text-left',
-                    titleKey: 'LBL_ALIGN_LEFT',
-                    klass: 'squire-editor-button btn btn-sm ',
-                    onClick: () => this.editor.setTextAlignment('left'),
-                } as ButtonInterface,
-                {
-                    key: 'alignCenter',
-                    icon: 'text-center',
-                    titleKey: 'LBL_ALIGN_CENTER',
-                    klass: 'squire-editor-button btn btn-sm ',
-                    onClick: () => this.editor.setTextAlignment('center'),
-                } as ButtonInterface,
-                {
-                    key: 'alignRight',
-                    icon: 'text-right',
-                    titleKey: 'LBL_ALIGN_RIGHT',
-                    klass: 'squire-editor-button btn btn-sm ',
-                    onClick: () => this.editor.setTextAlignment('right'),
-                } as ButtonInterface,
-                {
-                    key: 'justify',
-                    icon: 'justify',
-                    titleKey: 'LBL_JUSTIFY',
-                    klass: 'squire-editor-button btn btn-sm ',
-                    onClick: () => this.editor.setTextAlignment('justify'),
-                } as ButtonInterface,
-            ],
-            [
-                {
-                    key: 'quote',
-                    icon: 'quote',
-                    titleKey: 'LBL_QUOTE',
-                    klass: 'squire-editor-button btn btn-sm ',
-                    hotkey: 'ctrl+]',
-                    onClick: () => this.editor.increaseQuoteLevel(),
-                } as ButtonInterface,
-                {
-                    key: 'unquote',
-                    icon: 'unquote',
-                    titleKey: 'LBL_UNQUOTE',
-                    klass: 'squire-editor-button btn btn-sm ',
-                    hotkey: 'ctrl+[',
-                    onClick: () => this.editor.decreaseQuoteLevel(),
-                } as ButtonInterface,
-            ],
-            [
-                {
-                    key: 'leftToRight',
-                    icon: 'text-left-to-right',
-                    titleKey: 'LBL_TEXT_LEFT_TO_RIGHT',
-                    klass: 'squire-editor-button btn btn-sm',
-                    onClick: () => this.editor.setTextDirection('ltr'),
-                } as ButtonInterface,
-                {
-                    key: 'rightToLeft',
-                    icon: 'text-right-to-left',
-                    titleKey: 'LBL_TEXT_RIGHT_TO_LEFT',
-                    klass: 'squire-editor-button btn btn-sm',
-                    onClick: () => this.editor.setTextAlignment('rtl'),
-                } as ButtonInterface,
-                {
-                    key: 'clearFormatting',
-                    icon: 'clear-formatting',
-                    titleKey: 'LBL_CLEAR_FORMATING',
-                    klass: 'squire-editor-button btn btn-sm ',
-                    onClick: () => this.editor.removeAllFormatting(),
-                } as ButtonInterface,
-            ],
-        ] as Array<ButtonInterface[]>;
+    initAvailableButtons(): void {
 
-        this.baseButtonLayout.set(defaultButtonLayout);
+        this.availableButtons.bold = {
+            key: 'bold',
+            type: 'button',
+            icon: 'bold',
+            titleKey: 'LBL_BOLD',
+            hotkey: 'ctrl+b',
+            klass: 'squire-editor-button btn btn-sm ',
+            onClick: () => {
+                const hasBold = this?.editor?.hasFormat('B');
+                if (hasBold) {
+                    this?.editor?.removeBold();
+                    return;
+                }
+
+                this?.editor?.bold();
+            },
+            dynamicClass: computed((): string => {
+                const path = this.currentEditorPath();
+                return this?.editor?.hasFormat('B') ? 'active squire-editor-button-active' : '';
+            })
+        } as ButtonInterface;
+
+        this.availableButtons.italic = {
+            key: 'italic',
+            type: 'button',
+            icon: 'italic',
+            titleKey: 'LBL_ITALIC',
+            hotkey: 'ctrl+i',
+            klass: 'squire-editor-button btn btn-sm ',
+            onClick: () => {
+                const hasItalic = this?.editor?.hasFormat('I');
+                if (hasItalic) {
+                    this?.editor?.removeItalic();
+                    return;
+                }
+
+                this?.editor?.italic();
+            },
+            dynamicClass: computed((): string => {
+                const path = this.currentEditorPath();
+                return this?.editor?.hasFormat('I') ? 'active squire-editor-button-active' : '';
+            })
+        } as ButtonInterface;
+
+        this.availableButtons.underline = {
+            key: 'underline',
+            type: 'button',
+            icon: 'underline',
+            titleKey: 'LBL_UNDERLINE',
+            hotkey: 'ctrl+u',
+            klass: 'squire-editor-button btn btn-sm ',
+            onClick: () => {
+                const hasUnderline = this?.editor?.hasFormat('U');
+                if (hasUnderline) {
+                    this?.editor?.removeUnderline();
+                    return;
+                }
+
+                this?.editor?.underline();
+            },
+            dynamicClass: computed((): string => {
+                const path = this.currentEditorPath();
+                return this?.editor?.hasFormat('U') ? 'active squire-editor-button-active' : '';
+            })
+        } as ButtonInterface;
+
+        this.availableButtons.strikethrough = {
+            key: 'strikethrough',
+            type: 'button',
+            icon: 'strikethrough',
+            titleKey: 'LBL_STRIKETHROUGH',
+            hotkey: 'ctrl+shift+7',
+            klass: 'squire-editor-button btn btn-sm ',
+            onClick: () => {
+                const hasStrikeThrough = this?.editor?.hasFormat('S');
+                if (hasStrikeThrough) {
+                    this?.editor?.removeStrikethrough();
+                    return;
+                }
+
+                this?.editor?.strikethrough();
+            },
+            dynamicClass: computed((): string => {
+                const path = this.currentEditorPath();
+                return this?.editor?.hasFormat('S') ? 'active squire-editor-button-active' : '';
+            })
+        } as ButtonInterface;
+
+        this.availableButtons.font = {
+            key: 'font',
+            type: 'popup-button-list',
+            icon: 'fonts',
+            titleKey: 'LBL_FONT_FACE',
+            klass: 'squire-editor-button btn btn-sm ',
+            items: [
+                {
+                    key: 'default',
+                    labelKey: 'LBL_DEFAULT',
+                    klass: 'squire-editor-button btn btn-sm',
+                    onClick: () => {
+                        this?.editor?.setFontFace(null);
+                    },
+                } as ButtonInterface,
+                {
+                    key: 'sans-serif',
+                    label: 'Sans Serif',
+                    klass: 'squire-editor-button btn btn-sm',
+                    style: 'font-family:sans-serif',
+                    onClick: () => {
+                        this?.editor?.setFontFace('sans-serif');
+                    },
+                } as ButtonInterface,
+                {
+                    key: 'serif',
+                    label: 'Serif',
+                    klass: 'squire-editor-button btn btn-sm',
+                    style: 'font-family:serif',
+                    onClick: () => {
+                        this?.editor?.setFontFace('serif');
+                    },
+                } as ButtonInterface,
+                {
+                    key: 'monospace',
+                    label: 'Monospace',
+                    klass: 'squire-editor-button btn btn-sm',
+                    style: 'font-family:monospace',
+                    onClick: () => {
+                        this?.editor?.setFontFace('monospace');
+                    },
+                } as ButtonInterface,
+            ] as AnyButtonInterface[],
+        } as ButtonInterface;
+
+        this.availableButtons.size = {
+            key: 'size',
+            type: 'popup-button-list',
+            icon: 'text-size',
+            titleKey: 'LBL_TEXT_SIZE',
+            klass: 'squire-editor-button btn btn-sm ',
+            items: [
+                {
+                    key: 'Small',
+                    labelKey: 'LBL_SMALL',
+                    klass: 'squire-editor-button btn btn-sm',
+                    style: 'font-size:x-small',
+                    onClick: () => {
+                        this?.editor?.setFontSize('x-small');
+                    },
+                } as ButtonInterface,
+                {
+                    key: 'normal',
+                    labelKey: 'LBL_NORMAL',
+                    klass: 'squire-editor-button btn btn-sm',
+                    onClick: () => {
+                        this?.editor?.setFontSize(null);
+                    },
+                } as ButtonInterface,
+                {
+                    key: 'large',
+                    labelKey: 'LBL_LARGE',
+                    klass: 'squire-editor-button btn btn-sm',
+                    style: 'font-size:large',
+                    onClick: () => {
+                        this?.editor?.setFontSize('large');
+                    },
+                } as ButtonInterface,
+                {
+                    key: 'Huge',
+                    labelKey: 'LBL_HUGE',
+                    klass: 'squire-editor-button btn btn-sm',
+                    style: 'font-size:xx-large',
+                    onClick: () => {
+                        this?.editor?.setFontSize('xx-large');
+                    },
+                } as ButtonInterface
+            ] as AnyButtonInterface[],
+        } as ButtonInterface;
+
+
+        this.availableButtons.textColour = {
+            key: 'textColour',
+            type: 'color-selector',
+            icon: 'text-colour',
+            titleKey: 'LBL_TEXT_COLOUR',
+            klass: 'squire-editor-button btn btn-sm',
+            onClick: (color: ColorButton) => {
+                this?.editor?.setTextColor(color.color);
+            }
+        } as ButtonInterface;
+
+        this.availableButtons.highlight = {
+            key: 'highlight',
+            type: 'color-selector',
+            icon: 'highlighter',
+            titleKey: 'LBL_TEXT_HIGHLIGHT',
+            klass: 'squire-editor-button btn btn-sm ',
+            onClick: (color: ColorButton) => {
+                this?.editor?.setHighlightColor(color.color);
+            }
+        } as ButtonInterface;
+
+        const insertLink = {
+            key: 'insertLink',
+            type: 'insert-link',
+            dynamicIcon: computed((): string => {
+                const path = this.currentEditorPath();
+                return this?.editor?.hasFormat('A') ? 'unlink-45deg' : 'link-45deg';
+            }),
+            titleKey: 'LBL_INSERT_LINK',
+            klass: 'squire-editor-button btn btn-sm',
+            hotkey: 'ctrl+k',
+            dynamicClass: computed((): string => {
+                const path = this.currentEditorPath();
+                return this?.editor?.hasFormat('A') ? 'active squire-editor-button-active' : '';
+            }),
+            metadata: {
+                openStatusEventEmitter: new EventEmitter(),
+                displayButton: signal(false),
+                linkURL: ''
+            },
+        } as DropdownButtonInterface;
+
+        insertLink.onClick = () => {
+            const isLink = this?.editor?.hasFormat('A');
+            if (isLink) {
+                this?.editor?.removeLink();
+                return;
+            }
+
+            const selectedText = this.editor?.getSelectedText() ?? '';
+            if (isURL(selectedText.trim())) {
+                insertLink.metadata.linkURL = selectedText;
+            } else {
+                insertLink.metadata.linkURL = '';
+            }
+
+            insertLink.metadata.openStatusEventEmitter.emit(true);
+        };
+
+        insertLink.items = [
+            {
+                labelKey: 'LBL_APPLY',
+                titleKey: 'LBL_APPLY',
+                klass: 'btn btn-sm btn-main',
+                onClick: (linkValue) => {
+                    if (isEmail(linkValue)) {
+                        linkValue = 'mailto:' + linkValue;
+                    }
+                    this?.editor?.makeLink(linkValue, {title: linkValue});
+
+                    insertLink.metadata.openStatusEventEmitter.emit(false);
+                },
+            } as ButtonInterface,
+            {
+                labelKey: 'LBL_CANCEL',
+                titleKey: 'LBL_CANCEL',
+                klass: 'btn btn-sm btn-outline-main',
+                onClick: () => {
+                    insertLink.metadata.openStatusEventEmitter.emit(false);
+                },
+            } as ButtonInterface
+        ]
+
+        this.availableButtons.insertLink = insertLink;
+
+        this.availableButtons.unorderedList = {
+            key: 'unorderedList',
+            type: 'button',
+            icon: 'list-ul',
+            titleKey: 'LBL_UNORDERED_LIST',
+            klass: 'squire-editor-button btn btn-sm ',
+            hotkey: 'ctrl+shift+8',
+            onClick: () => {
+                const isUL = this?.editor?.hasFormat('UL');
+                if (isUL) {
+                    this?.editor?.removeList();
+                    return;
+                }
+
+                this?.editor?.makeUnorderedList();
+            },
+            dynamicClass: computed((): string => {
+                const path = this.currentEditorPath();
+                return this?.editor?.hasFormat('UL') ? 'active squire-editor-button-active' : '';
+            })
+        } as ButtonInterface;
+
+        this.availableButtons.orderedList = {
+            key: 'orderedList',
+            type: 'button',
+            icon: 'list-ol',
+            titleKey: 'LBL_ORDERED_LIST',
+            klass: 'squire-editor-button btn btn-sm ',
+            hotkey: 'ctrl+shift+9',
+            onClick: () => {
+                const isOL = this?.editor?.hasFormat('OL');
+                if (isOL) {
+                    this?.editor?.removeList();
+                    return;
+                }
+
+                this?.editor?.makeOrderedList();
+            },
+            dynamicClass: computed((): string => {
+                const path = this.currentEditorPath();
+                return this?.editor?.hasFormat('OL') ? 'active squire-editor-button-active' : '';
+            })
+        } as ButtonInterface;
+
+        this.availableButtons.indentMore = {
+            key: 'indentMore',
+            type: 'button',
+            icon: 'text-indent-left',
+            titleKey: 'LBL_TEXT_INDENT_LEFT',
+            klass: 'squire-editor-button btn btn-sm ',
+            onClick: () => this?.editor?.increaseListLevel(),
+        } as ButtonInterface;
+
+        this.availableButtons.indentLess = {
+            key: 'indentLess',
+            type: 'button',
+            icon: 'text-indent-right',
+            titleKey: 'LBL_TEXT_INDENT_RIGHT',
+            klass: 'squire-editor-button btn btn-sm ',
+            onClick: () => this?.editor?.decreaseListLevel(),
+        } as ButtonInterface;
+
+        this.availableButtons.alignLeft = {
+            key: 'alignLeft',
+            type: 'button',
+            icon: 'text-left',
+            titleKey: 'LBL_ALIGN_LEFT',
+            klass: 'squire-editor-button btn btn-sm ',
+            onClick: () => this?.editor?.setTextAlignment('left'),
+            dynamicClass: computed((): string => {
+                const path = this.currentEditorPath();
+                const alignment = this.getTextAlignment(path);
+                return alignment === 'left' ? 'active squire-editor-button-active' : '';
+            })
+        } as ButtonInterface;
+
+        this.availableButtons.alignCenter = {
+            key: 'alignCenter',
+            type: 'button',
+            icon: 'text-center',
+            titleKey: 'LBL_ALIGN_CENTER',
+            klass: 'squire-editor-button btn btn-sm ',
+            onClick: () => this?.editor?.setTextAlignment('center'),
+            dynamicClass: computed((): string => {
+                const path = this.currentEditorPath();
+                const alignment = this.getTextAlignment(path);
+                return alignment === 'center' ? 'active squire-editor-button-active' : '';
+            })
+        } as ButtonInterface;
+
+        this.availableButtons.alignRight = {
+            key: 'alignRight',
+            type: 'button',
+            icon: 'text-right',
+            titleKey: 'LBL_ALIGN_RIGHT',
+            klass: 'squire-editor-button btn btn-sm ',
+            onClick: () => this?.editor?.setTextAlignment('right'),
+            dynamicClass: computed((): string => {
+                const path = this.currentEditorPath();
+                const alignment = this.getTextAlignment(path);
+                return alignment === 'right' ? 'active squire-editor-button-active' : '';
+            })
+        } as ButtonInterface;
+
+        this.availableButtons.justify = {
+            key: 'justify',
+            type: 'button',
+            icon: 'justify',
+            titleKey: 'LBL_JUSTIFY',
+            klass: 'squire-editor-button btn btn-sm ',
+            onClick: () => this?.editor?.setTextAlignment('justify'),
+            dynamicClass: computed((): string => {
+                const path = this.currentEditorPath();
+                const alignment = this.getTextAlignment(path);
+                return alignment === 'justify' ? 'active squire-editor-button-active' : '';
+            })
+        } as ButtonInterface;
+
+        this.availableButtons.quote = {
+            key: 'quote',
+            type: 'button',
+            icon: 'quote',
+            titleKey: 'LBL_QUOTE',
+            klass: 'squire-editor-button btn btn-sm ',
+            hotkey: 'ctrl+]',
+            onClick: () => this?.editor?.increaseQuoteLevel(),
+        } as ButtonInterface;
+
+        this.availableButtons.unquote = {
+            key: 'unquote',
+            type: 'button',
+            icon: 'unquote',
+            titleKey: 'LBL_UNQUOTE',
+            klass: 'squire-editor-button btn btn-sm',
+            hotkey: 'ctrl+[',
+            onClick: () => this?.editor?.decreaseQuoteLevel(),
+        } as ButtonInterface;
+
+
+        this.availableButtons.leftToRight = {
+            key: 'leftToRight',
+            type: 'button',
+            icon: 'text-left-to-right',
+            titleKey: 'LBL_TEXT_LEFT_TO_RIGHT',
+            klass: 'squire-editor-button btn btn-sm',
+            onClick: () => this?.editor?.setTextDirection('ltr'),
+            dynamicClass: computed((): string => {
+                const path = this.currentEditorPath();
+                const direction = this.getTextDirection(path);
+                return direction === 'ltr' ? 'active squire-editor-button-active' : '';
+            })
+        } as ButtonInterface;
+
+        this.availableButtons.rightToLeft = {
+            key: 'rightToLeft',
+            type: 'button',
+            icon: 'text-right-to-left',
+            titleKey: 'LBL_TEXT_RIGHT_TO_LEFT',
+            klass: 'squire-editor-button btn btn-sm',
+            onClick: () => this?.editor?.setTextAlignment('rtl'),
+            dynamicClass: computed((): string => {
+                const path = this.currentEditorPath();
+                const direction = this.getTextDirection(path);
+                return direction === 'rtl' ? 'active squire-editor-button-active' : '';
+            })
+        } as ButtonInterface;
+
+        this.availableButtons.clearFormatting = {
+            key: 'clearFormatting',
+            type: 'button',
+            icon: 'clear-formatting',
+            titleKey: 'LBL_CLEAR_FORMATING',
+            klass: 'squire-editor-button btn btn-sm',
+            onClick: () => this?.editor?.removeAllFormatting(),
+        } as ButtonInterface;
+    }
+
+
+    initButtons(): void {
+        let buttonLayout = this.getDefaultButtonLayout();
+
+        if (this.settings?.buttonLayout && this.settings?.buttonLayout.length) {
+            buttonLayout = [...this.settings?.buttonLayout];
+        }
+
+        const buttonsGroups: ButtonInterface[][] = [];
+
+        buttonLayout.forEach((buttonGroup: string[]) => {
+            const group: ButtonInterface[] = [];
+            buttonGroup.forEach((buttonKey: string) => {
+                if (this.availableButtons[buttonKey]) {
+                    group.push(this.availableButtons[buttonKey]);
+                }
+            });
+
+            buttonsGroups.push(group);
+        });
+
+        this.baseButtonLayout.set(buttonsGroups);
+    }
+
+    private getDefaultButtonLayout(): string[][] {
+        return [
+            [
+                'bold',
+                'italic',
+                'underline',
+                'strikethrough',
+            ],
+            [
+                'font',
+                'size',
+            ],
+            [
+                'textColour',
+                'highlight',
+            ],
+            [
+                'insertLink',
+            ],
+            [
+                'unorderedList',
+                'orderedList',
+                'indentMore',
+                'indentLess',
+            ],
+            [
+                'alignLeft',
+                'alignCenter',
+                'alignRight',
+                'justify',
+            ],
+            [
+                'quote',
+                'unquote',
+            ],
+            [
+                'clearFormatting',
+            ],
+        ] as string[][];
     }
 
     protected calculateActiveButtons(): void {
@@ -443,7 +768,7 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
             dropdownWidth = limitConfig?.dynamicBreakpoint?.dropdownMax;
         }
 
-        const containerWidth = this?.toolbar?.nativeElement?.parentElement?.parentElement?.offsetWidth;
+        const containerWidth = this?.toolbar?.nativeElement?.parentElement?.parentElement?.offsetWidth ?? 560;
 
         if (!containerWidth || containerWidth < buttonMax) {
             return 6;
@@ -483,9 +808,79 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
             this.value = this.editor.getHTML();
             this.field.value = this.value;
         });
+        this.editor.addEventListener('pathChange', (e: Event) => {
+            e.stopPropagation();
+            this.currentEditorPath.set(this.editor.getPath());
+        });
     }
 
     toPlainText(html: any, arg1: boolean) {
         return html;
+    }
+
+    protected getTextAlignment(path: string): string {
+        const results = /\.align-(\w+)/.exec(path);
+
+        if (path !== '(selection)') {
+            return results ? results[1] : 'left';
+        }
+
+        let alignment = '';
+
+        this.editor.forEachBlock(
+            (block) => {
+                const align = block.style.textAlign || 'left';
+
+                if (!alignment) {
+                    alignment = align;
+                    return false;
+                }
+
+                const isSame = alignment === align;
+                if (isSame) {
+                    alignment = '';
+                    return false;
+                }
+
+                alignment = '';
+                return true;
+            },
+            false
+        );
+
+        return alignment;
+    }
+
+    protected getTextDirection(path: string): string {
+        const results = /\[dir=(\w+)\]/.exec(path);
+
+        if (path !== '(selection)') {
+            return results ? results[1] : 'ltr';
+        }
+
+        let direction = '';
+
+        this.editor.forEachBlock(
+            (block) => {
+                const dir = block.dir || 'ltr';
+
+                if (!direction) {
+                    direction = dir;
+                    return false;
+                }
+
+                const isSame = direction === dir;
+                if (isSame) {
+                    direction = '';
+                    return false;
+                }
+
+                direction = '';
+                return true;
+            },
+            false
+        );
+
+        return direction;
     }
 }

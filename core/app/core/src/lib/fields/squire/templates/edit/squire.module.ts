@@ -33,6 +33,10 @@ import {ButtonModule} from "../../../../components/button/button.module";
 import {DropdownButtonModule} from "../../../../components/dropdown-button/dropdown-button.module";
 import {LabelModule} from "../../../../components/label/label.module";
 import {PopupButtonModule} from "../../../../components/popups/components/popup-button/popup-button.module";
+import {ColorSelectorComponent} from "../../../../components/popups/components/color-selector/color-selector.component";
+import {
+    InsertLinkPopupButtonComponent
+} from "../../../../components/popups/components/insert-link-popup-button/insert-link-popup-button.component";
 
 @NgModule({
     declarations: [SquireEditFieldComponent],
@@ -45,7 +49,9 @@ import {PopupButtonModule} from "../../../../components/popups/components/popup-
         ButtonModule,
         DropdownButtonModule,
         LabelModule,
-        PopupButtonModule
+        PopupButtonModule,
+        ColorSelectorComponent,
+        InsertLinkPopupButtonComponent
     ],
     providers: []
 })
