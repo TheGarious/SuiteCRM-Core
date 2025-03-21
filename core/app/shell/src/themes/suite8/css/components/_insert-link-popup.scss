@@ -24,18 +24,30 @@
  * the words "Supercharged by SuiteCRM".
  */
 
-.insert-link-popup-body  {
-  .insert-link-popup-input-row {
-    input {
-      width: 225px;
+.insert-link-popup-button {
+  .insert-link-button {
+    .popover{
+      transform: translate(154px, 34px) !important;
+
+      .insert-link-popup-body  {
+        .insert-link-popup-input-row {
+          input {
+            width: 225px;
+          }
+        }
+
+        .insert-link-popup-button-row {
+          button {
+            font-size: .75rem;
+            line-height: 1.4;
+            font-weight: 700;
+          }
+        }
+      }
     }
   }
 
-  .insert-link-popup-button-row {
-    button {
-      font-size: .75rem;
-      line-height: 1.4;
-      font-weight: 700;
-    }
-  }
 }
+
+
+
