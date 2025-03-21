@@ -39,7 +39,7 @@
     padding: 0 2px;
     right: 0;
     top: 0;
-    display: flex;
+    display: block;
     align-items: center;
     justify-content: start;
     position: relative;
@@ -49,6 +49,11 @@
       padding: 0 3px;
       color: $shell-grey;
       line-height: 100%;
+      display: inline-block;
+    }
+
+    .squire-editor-toolbar-item {
+      display: inline-block;
     }
 
     .squire-editor-button-row {
