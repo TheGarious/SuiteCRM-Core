@@ -24,6 +24,8 @@
  * the words "Supercharged by SuiteCRM".
  */
 
+import {isString} from "lodash-es";
+
 /**
  * Check if value is false
  *
@@ -61,3 +63,31 @@ export const isEmptyString = (value: any): boolean => (typeof value === 'string'
  * @returns {boolean} isEmptyString
  */
 export const isEmail = (value: any): boolean => (typeof value === 'string' && /[\w-\.]+@([\w-]+\.)+[\w-]+$/.test(value ?? ''));
+/**
+ * Check if value is an empty string
+ *
+ * @param {any} value to check
+ * @returns {boolean} isEmptyString
+ */
+export const isURL = (value: any): boolean => {
+    if (!isString(value)) {
+        return false;
+    }
+    if(value.includes('javascript:')) {
+        return false;
+    }
+
+    if(!value.includes('https://') && !value.includes('http://') && value.includes('.')) {
+        value = 'http://' + value;
+    }
+
+    let url: URL;
+
+    try {
+        url = new URL(value);
+    } catch (e) {
+        return false;
+    }
+
+    return url?.protocol === "http:" || url?.protocol === "https:";
+}
