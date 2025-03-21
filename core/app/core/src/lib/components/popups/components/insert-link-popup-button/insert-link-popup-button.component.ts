@@ -27,7 +27,7 @@ import {Component, EventEmitter, Input, OnDestroy, OnInit, signal, WritableSigna
 import {LabelModule} from "../../../label/label.module";
 import {PopupButtonModule} from "../popup-button/popup-button.module";
 import {ButtonModule} from "../../../button/button.module";
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {DropdownButtonInterface} from "../../../../common/components/button/dropdown-button.model";
 import {ButtonInterface} from "../../../../common/components/button/button.model";
 import {NgForOf, NgIf} from "@angular/common";
@@ -43,6 +43,7 @@ import {LanguageStore} from "../../../../store/language/language.store";
         FormsModule,
         NgForOf,
         NgIf,
+        ReactiveFormsModule,
     ],
     templateUrl: './insert-link-popup-button.component.html',
 })
@@ -51,25 +52,30 @@ export class InsertLinkPopupButtonComponent implements OnInit, OnDestroy {
     @Input('config') config: DropdownButtonInterface;
     @Input() openStatusEventEmitter: EventEmitter<boolean>;
     @Input() displayButton: WritableSignal<boolean> = signal(true);
+    @Input() linkUrl: string = '';
     @Input() inputClass: string = 'form-control form-control-sm';
-    linkUrl: string;
     buttons: ButtonInterface[] = [];
     placeHolderLabel: string;
+    protected subs: any[] = [];
 
     constructor(protected language: LanguageStore) {
     }
 
     ngOnInit(): void {
-        this.linkUrl = '';
         this.placeHolderLabel = this.language.getFieldLabel('LBL_INSERT_LINK_PLACEHOLDER');
         this.buttons = [];
+        this.subs = [];
+
         if (this?.config?.items?.length) {
             this?.config?.items.forEach((item: ButtonInterface) => {
                 this.buttons.push({
                     ...item,
                     onClick: (event) => {
                         item?.onClick(this.linkUrl);
-                        this.linkUrl = '';
+                        setTimeout(() => {
+                            this.linkUrl = ''
+                        }, 0)
+
                     },
                 })
             });
@@ -77,5 +83,7 @@ export class InsertLinkPopupButtonComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
+        this.subs.forEach(sub => sub.unsubscribe());
+        this.subs = [];
     }
 }
