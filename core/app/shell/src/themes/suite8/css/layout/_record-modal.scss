@@ -57,15 +57,22 @@
     }
 
     .close-button {
-      font-size: 1.3em;
+      font-size: 1.5em;
       height: 1em;
+    }
+
+    .minimise-button {
+      font-size: .65em;
+      svg {
+        vertical-align: middle;
+      }
     }
   }
 
   .modal-body {
     padding-top: 0;
     overflow-y: auto;
-    max-height: max-content;
+    max-height: 75vh;
 
     .record-content.panel-layout {
 
@@ -131,7 +138,7 @@ body.modal-open.detached-modal-open {
   width: max-content;
   display: flex;
   align-items: flex-end;
-  z-index: 2;
+  z-index: map-get($zindex, modal-mid) !important;;
   pointer-events: none;
 
   .detached-modal {
@@ -224,25 +231,34 @@ body.modal-open.detached-modal-open {
 }
 
 @media (max-width: 575px) {
-  .detached-modal {
-    .modal-dialog {
-      right: 7px;
-      left: 7px;
+  #detached-modals {
+    right: 0;
 
-      .modal-header {
-        .modal-title {
-          max-width: 400px;
-          overflow: hidden;
-          span {
+    .detached-modal {
+      .modal-dialog {
+        width: 100vw;
+
+        .modal-body {
+          height: 80vh;
+        }
+
+
+        .modal-header {
+          .modal-title {
             max-width: 400px;
-            white-space: nowrap;
             overflow: hidden;
-            text-overflow: ellipsis;
-            display: inline-block;
-            line-height: 1;
+            span {
+              max-width: 400px;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              display: inline-block;
+              line-height: 1;
+            }
           }
         }
       }
     }
   }
+
 }

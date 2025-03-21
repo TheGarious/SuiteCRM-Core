@@ -76,8 +76,10 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
     baseButtonLayout: WritableSignal<Array<ButtonInterface[]>> = signal([]);
     collapsedButtons: WritableSignal<ButtonInterface[]> = signal([]);
     collapsedDropdownButton: WritableSignal<ButtonInterface> = signal(null);
-    minHeight: WritableSignal<number> = signal(450);
-    height: WritableSignal<number> = signal(0);
+    minHeight: WritableSignal<string> = signal('45vh');
+    height: WritableSignal<string> = signal('18vh');
+    maxHeight: WritableSignal<string> = signal('45vh');
+    maxWidth: WritableSignal<string> = signal('100vh');
 
     protected currentEditorPath: WritableSignal<string> = signal('');
 
@@ -198,8 +200,12 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
             this.height.set(this?.settings?.height);
         }
 
+        if (this?.settings?.maxHeight) {
+            this.maxHeight.set(this?.settings?.maxHeight);
+        }
+
         if (this.isMobile()) {
-            this.height.set(300);
+            this.height.set('23vh');
         }
     }
 
@@ -763,16 +769,17 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
             buttonMax = limitConfig?.dynamicBreakpoint?.buttonMax;
         }
 
-        let dropdownWidth = 30;
+        let dropdownWidth = 40;
         if (limitConfig?.dynamicBreakpoint?.dropdownMax) {
             dropdownWidth = limitConfig?.dynamicBreakpoint?.dropdownMax;
         }
 
-        const containerWidth = this?.toolbar?.nativeElement?.parentElement?.parentElement?.offsetWidth ?? 560;
+        let containerWidth = this?.toolbar?.nativeElement?.parentElement?.parentElement?.offsetWidth ?? 560;
 
         if (!containerWidth || containerWidth < buttonMax) {
             return 6;
         }
+        containerWidth = containerWidth - 10;
 
 
         const fitting = floor(containerWidth / buttonMax);

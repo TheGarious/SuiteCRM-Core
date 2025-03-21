@@ -33,7 +33,7 @@
             <ng-container *ngFor="let item of layoutItems | keyvalue">
 
                 <ng-container *ngIf="item?.value?.type === 'button'">
-                    <scrm-button [config]="item.value"></scrm-button>
+                    <scrm-button class="squire-editor-toolbar-item" [config]="item.value"></scrm-button>
                 </ng-container>
 
                 <ng-container *ngIf="item?.value?.type === 'popup-button-list' && item?.value.items?.length">
@@ -41,10 +41,11 @@
                                        [klass]="item?.value?.klass"
                                        [popoverClass]="''"
                                        placement="bottom"
+                                       class="squire-editor-toolbar-item"
                     >
                         <div popup-content class="container container-popover scrollbar-thin">
                             <div *ngFor="let item of item?.value.items" class="squire-editor-button-row row py-1">
-                                <scrm-button [config]="item"></scrm-button>
+                                <scrm-button class="squire-editor-toolbar-item" [config]="item"></scrm-button>
                             </div>
                         </div>
                     </scrm-popup-button>
@@ -55,6 +56,7 @@
                                        [klass]="item?.value?.klass"
                                        [popoverClass]="''"
                                        placement="bottom"
+                                       class="squire-editor-toolbar-item"
                     >
                         <div popup-content class="grid-popup-body container-popover scrollbar-thin">
                             <div *ngFor="let section of item?.value?.sections | keyvalue"
@@ -70,17 +72,18 @@
                 </ng-container>
 
                 <ng-container *ngIf="item?.value?.type === 'insert-link'">
-                    <scrm-button [config]="item?.value"></scrm-button>
+                    <scrm-button class="squire-editor-toolbar-item" [config]="item?.value"></scrm-button>
                     <scrm-insert-link-popup-button [config]="item?.value"
                                                    [displayButton]="item?.value?.metadata?.displayButton"
                                                    [openStatusEventEmitter]="item?.value?.metadata?.openStatusEventEmitter"
                                                    [linkUrl]="item?.value?.metadata?.linkURL"
+                                                   class="squire-editor-toolbar-item"
                     >
                     </scrm-insert-link-popup-button>
                 </ng-container>
 
                 <ng-container *ngIf="item?.value?.type === 'color-selector'">
-                    <scrm-color-selector [config]="item?.value"></scrm-color-selector>
+                    <scrm-color-selector class="squire-editor-toolbar-item" [config]="item?.value"></scrm-color-selector>
                 </ng-container>
 
             </ng-container>
@@ -91,6 +94,7 @@
                                [klass]="collapsedDropdownButton().klass"
                                [popoverClass]="''"
                                placement="bottom"
+                               class="squire-editor-toolbar-item"
             >
                 <div popup-content class="container container-popover scrollbar-thin">
                     <div *ngFor="let item of collapsedButtons()" class="row py-1">
@@ -107,7 +111,7 @@
          aria-label="Body"
          class="editor-container squire-editor-content scrollbar-thin"
          contenteditable="true"
-         [ngStyle]="{'min-height.px': minHeight() ? minHeight() : 'auto', 'height.px': height() ? height() : 'auto'}"
+         [ngStyle]="{'min-height': minHeight() ? minHeight() : 'auto', 'height': height() ? height() : 'auto', 'max-height': maxHeight() ? maxHeight() : 'auto'}"
     ></div>
 </div>
 
