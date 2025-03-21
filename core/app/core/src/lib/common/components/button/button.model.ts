@@ -44,6 +44,7 @@ export interface ButtonInterface {
     dynamicLabelFields?: FieldMap;
     title?: string;
     icon?: string;
+    dynamicIcon?: Signal<string>;
     iconKlass?: string;
     labelModule?: string;
     section?: string;
