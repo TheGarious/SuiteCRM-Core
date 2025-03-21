@@ -38,6 +38,7 @@ export class ButtonComponent implements OnInit, OnDestroy {
     @Input() config: ButtonInterface;
 
     dynamicClass: Signal<string> = signal('');
+    dynamicIcon: Signal<string> = signal('');
     clickCallBack: ButtonCallback;
     protected clickBuffer = new Subject<any>();
     protected clickBuffer$: Observable<any> = this.clickBuffer.asObservable();
@@ -53,6 +54,10 @@ export class ButtonComponent implements OnInit, OnDestroy {
 
         if (this.config?.dynamicClass) {
             this.dynamicClass = this.config?.dynamicClass;
+        }
+
+        if (this.config?.dynamicIcon) {
+            this.dynamicIcon = this.config?.dynamicIcon;
         }
 
 
