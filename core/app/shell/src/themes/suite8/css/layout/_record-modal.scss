@@ -132,6 +132,7 @@ body.modal-open.detached-modal-open {
   display: flex;
   align-items: flex-end;
   z-index: 2;
+  pointer-events: none;
 
   .detached-modal {
     position: relative;
