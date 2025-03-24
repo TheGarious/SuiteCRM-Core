@@ -190,10 +190,10 @@ body.modal-open.detached-modal-open {
         border-bottom: 0 !important;
 
         .modal-title {
-          max-width: 200px;
+          max-width: 226px;
           overflow: hidden;
           span {
-            max-width: 200px;
+            max-width: 226px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -214,10 +214,33 @@ body.modal-open.detached-modal-open {
 
       .modal-header {
         .modal-title {
-          max-width: 500px;
+          max-width: 524px;
           overflow: hidden;
           span {
-            max-width: 500px;
+            max-width: 524px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: inline-block;
+            line-height: 1;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (min-width: 576px) and (max-width: 991px) {
+  .detached-modal {
+    .modal-dialog.modal-lg, .modal-dialog.modal-xl {
+      max-width: 500px;
+
+      .modal-header {
+        .modal-title {
+          max-width: 426px;
+          overflow: hidden;
+          span {
+            max-width: 426px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -245,10 +268,10 @@ body.modal-open.detached-modal-open {
 
         .modal-header {
           .modal-title {
-            max-width: 400px;
+            max-width: calc(100vw - 74px);
             overflow: hidden;
             span {
-              max-width: 400px;
+              max-width: calc(100vw - 74px);
               white-space: nowrap;
               overflow: hidden;
               text-overflow: ellipsis;
