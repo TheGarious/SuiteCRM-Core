@@ -152,6 +152,22 @@
   .relate-item {
     display: table;
 
+    .selected-item-label {
+      display: table-cell;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      width: 100%;
+    }
+
+    .related-item-label {
+      display: table-cell;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      width: 100%;
+    }
+
     .relate-item-header-field {
 
       display: table-cell;

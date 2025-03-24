@@ -71,8 +71,8 @@
 
                 </ng-template>
                 <ng-template pTemplate="selectedItem">
-                    <div class="align-items-end relate-item" *ngIf="selectedValue">
-                        <div *ngIf="!dynamicOptionLabel">{{ selectedValue[relateFieldName] ?? '' }}</div>
+                    <div class="align-items-end relate-item related-selected-item" *ngIf="selectedValue">
+                        <div [style.max-width]="tagWrapper?.offsetWidth - 62 + 'px'" class="selected-item-label" *ngIf="!dynamicOptionLabel">{{ selectedValue[relateFieldName] ?? '' }}</div>
                         <ng-container *ngIf="dynamicOptionLabel">
                             <div class="relate-item-header-field"
                                  [style.max-width]="tagWrapper?.offsetWidth - 180 + 'px'"
@@ -99,7 +99,7 @@
                 </ng-template>
                 <ng-template let-option pTemplate="item">
                     <div class="align-items-end relate-item" *ngIf="option">
-                        <div *ngIf="!dynamicOptionLabel">{{ option[relateFieldName] ?? '' }}</div>
+                        <div [style.max-width]="tagWrapper?.offsetWidth - 35 + 'px'"  class="related-item-label" *ngIf="!dynamicOptionLabel">{{ option[relateFieldName] ?? '' }}</div>
                         <ng-container *ngIf="dynamicOptionLabel">
                             <div class="relate-item-header-field"
                                  [style.max-width]="tagWrapper?.offsetWidth - 180 + 'px'"
