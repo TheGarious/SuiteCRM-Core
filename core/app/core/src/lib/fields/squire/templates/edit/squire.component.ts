@@ -309,7 +309,7 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
                 {
                     key: 'default',
                     labelKey: 'LBL_DEFAULT',
-                    klass: 'squire-editor-button btn btn-sm',
+                    klass: 'squire-editor-button squire-editor-list-button btn btn-sm',
                     onClick: () => {
                         this?.editor?.setFontFace(null);
                     },
@@ -317,7 +317,7 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
                 {
                     key: 'sans-serif',
                     label: 'Sans Serif',
-                    klass: 'squire-editor-button btn btn-sm',
+                    klass: 'squire-editor-button squire-editor-list-button btn btn-sm',
                     style: 'font-family:sans-serif',
                     onClick: () => {
                         this?.editor?.setFontFace('sans-serif');
@@ -326,7 +326,7 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
                 {
                     key: 'serif',
                     label: 'Serif',
-                    klass: 'squire-editor-button btn btn-sm',
+                    klass: 'squire-editor-button squire-editor-list-button btn btn-sm',
                     style: 'font-family:serif',
                     onClick: () => {
                         this?.editor?.setFontFace('serif');
@@ -335,7 +335,7 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
                 {
                     key: 'monospace',
                     label: 'Monospace',
-                    klass: 'squire-editor-button btn btn-sm',
+                    klass: 'squire-editor-button squire-editor-list-button btn btn-sm',
                     style: 'font-family:monospace',
                     onClick: () => {
                         this?.editor?.setFontFace('monospace');
@@ -354,7 +354,7 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
                 {
                     key: 'Small',
                     labelKey: 'LBL_SMALL',
-                    klass: 'squire-editor-button btn btn-sm',
+                    klass: 'squire-editor-button squire-editor-list-button btn btn-sm',
                     style: 'font-size:x-small',
                     onClick: () => {
                         this?.editor?.setFontSize('x-small');
@@ -363,7 +363,7 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
                 {
                     key: 'normal',
                     labelKey: 'LBL_NORMAL',
-                    klass: 'squire-editor-button btn btn-sm',
+                    klass: 'squire-editor-button squire-editor-list-button btn btn-sm',
                     onClick: () => {
                         this?.editor?.setFontSize(null);
                     },
@@ -371,7 +371,7 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
                 {
                     key: 'large',
                     labelKey: 'LBL_LARGE',
-                    klass: 'squire-editor-button btn btn-sm',
+                    klass: 'squire-editor-button squire-editor-list-button btn btn-sm',
                     style: 'font-size:large',
                     onClick: () => {
                         this?.editor?.setFontSize('large');
@@ -380,7 +380,7 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
                 {
                     key: 'Huge',
                     labelKey: 'LBL_HUGE',
-                    klass: 'squire-editor-button btn btn-sm',
+                    klass: 'squire-editor-button squire-editor-list-button btn btn-sm',
                     style: 'font-size:xx-large',
                     onClick: () => {
                         this?.editor?.setFontSize('xx-large');
