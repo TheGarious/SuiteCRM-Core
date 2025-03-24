@@ -48,12 +48,20 @@
     .squire-editor-toolbar-divider {
       padding: 0 3px;
       color: $shell-grey;
-      line-height: 100%;
+      line-height: 27px;
       display: inline-block;
+      vertical-align: middle;
     }
 
     .squire-editor-toolbar-item {
       display: inline-block;
+      line-height: 27px;
+      vertical-align: middle;
+
+      svg {
+        vertical-align: -.2em;
+        display: inline-block;
+      }
     }
 
     .squire-editor-button-row {
