@@ -51,16 +51,42 @@
         vertical-align: middle;
       }
 
+      .multi-flex-relate-item-header-field {
+        width: 100%;
+        table-layout: fixed;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
       .multi-flex-relate-item-subheader-field {
         font-size: 85%;
         color: $shell-grey;
+        width: 100%;
+        table-layout: fixed;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
     }
 
   }
 
   .multi-flex-relate-selected-entry {
-    .multi-flex-relate-selected-entry-value{
+    width: 100%;
+    table-layout: fixed;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    .multi-flex-relate-selected-entry-value {
+      width: 100%;
+      table-layout: fixed;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+
+
       line-height: 1;
     }
     svg {
