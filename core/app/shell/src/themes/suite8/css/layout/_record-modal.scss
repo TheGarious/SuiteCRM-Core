@@ -138,7 +138,7 @@ body.modal-open.detached-modal-open {
   width: max-content;
   display: flex;
   align-items: flex-end;
-  z-index: map-get($zindex, modal-mid) !important;;
+  z-index: map-get($zindex, modal-low) !important;
   pointer-events: none;
 
   .detached-modal {
@@ -256,10 +256,11 @@ body.modal-open.detached-modal-open {
 @media (max-width: 575px) {
   #detached-modals {
     right: 0;
+    left: 0;
+    width: fit-content;
 
     .detached-modal {
       .modal-dialog {
-        width: 100vw;
 
         .modal-body {
           height: 80vh;
