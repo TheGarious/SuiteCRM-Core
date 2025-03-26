@@ -30,13 +30,14 @@ import {MinimiseButtonStatus} from "../../../minimise-button/minimise-button.com
 import {Observable, Subscription} from "rxjs";
 import {StringMap} from "../../../../common/types/string-map";
 import {FieldMap} from "../../../../common/record/field.model";
+import {toObservable} from "@angular/core/rxjs-interop";
 
 @Component({
     selector: 'scrm-modal',
     templateUrl: './modal.component.html',
     styleUrls: [],
 })
-export class ModalComponent implements OnInit, OnDestroy{
+export class ModalComponent implements OnInit, OnDestroy {
 
     @Input() klass = '';
     @Input() headerKlass = '';
@@ -53,8 +54,8 @@ export class ModalComponent implements OnInit, OnDestroy{
     @Input() limit = '';
     @Input() limitEndLabel = '';
     @Input() limitLabel = 'LBL_LIMIT';
-    @Input() closable:boolean = false;
-    @Input() minimizable:boolean = false;
+    @Input() closable: boolean = false;
+    @Input() minimizable: boolean = false;
     @Input() isMinimized$: Observable<boolean>;
     @Input() close: ButtonInterface = {
         klass: ['btn', 'btn-outline-light', 'btn-sm']
@@ -62,8 +63,11 @@ export class ModalComponent implements OnInit, OnDestroy{
 
     isMinimized: WritableSignal<boolean> = signal(false);
     minimiseButton: ButtonInterface;
-    minimiseStatus: MinimiseButtonStatus;
+    minimiseStatus: WritableSignal<MinimiseButtonStatus> = signal('maximised');
+    minimiseStatus$: Observable<MinimiseButtonStatus> = toObservable(this.minimiseStatus);
+
     protected subs: Subscription[] = [];
+
     ngOnInit(): void {
         if (this.isMinimized$) {
             this.subs.push(this.isMinimized$.subscribe(minimize => {
@@ -95,10 +99,10 @@ export class ModalComponent implements OnInit, OnDestroy{
 
     initMinimiseStatus(): void {
         if (this.isMinimized()) {
-            this.minimiseStatus = 'minimised';
+            this.minimiseStatus.set('minimised');
             return;
         }
-        this.minimiseStatus = 'maximised';
+        this.minimiseStatus.set('maximised');
     }
 
 }

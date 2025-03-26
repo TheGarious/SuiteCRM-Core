@@ -24,8 +24,9 @@
  * the words "Supercharged by SuiteCRM".
  */
 
-import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {Component, Input, OnChanges, OnDestroy, OnInit, signal, SimpleChanges, WritableSignal} from '@angular/core';
 import {Button, ButtonInterface} from '../../common/components/button/button.model';
+import {Observable, Subscription} from "rxjs";
 
 export type MinimiseButtonStatus = 'minimised' | 'maximised';
 
@@ -34,18 +35,33 @@ export type MinimiseButtonStatus = 'minimised' | 'maximised';
     templateUrl: './minimise-button.component.html',
     styleUrls: []
 })
-export class MinimiseButtonComponent implements OnInit, OnChanges {
+export class MinimiseButtonComponent implements OnInit, OnChanges, OnDestroy {
     @Input() config: ButtonInterface;
     @Input() status: MinimiseButtonStatus = 'maximised';
-    internalConfig: ButtonInterface;
+    @Input() status$: Observable<MinimiseButtonStatus>;
+    internalConfig: WritableSignal<ButtonInterface> = signal(null);
 
     buttonClasses = ['minimise-button'];
+
+    protected subs: Subscription[] = [];
 
     constructor() {
     }
 
     ngOnInit(): void {
         this.buildButton();
+
+        if (this.status$) {
+            this.subs.push(this.status$.subscribe((status: MinimiseButtonStatus) => {
+                this.setStatus(status);
+            }));
+        }
+    }
+
+    ngOnDestroy(): void {
+        this.subs.forEach((sub: Subscription) => {
+            sub.unsubscribe();
+        });
     }
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -62,7 +78,7 @@ export class MinimiseButtonComponent implements OnInit, OnChanges {
             this.config.onClick();
             this.toggleStatus();
         };
-        this.internalConfig = btn;
+        this.internalConfig.set(btn);
     }
 
     toggleStatus(): void {
@@ -74,10 +90,16 @@ export class MinimiseButtonComponent implements OnInit, OnChanges {
         this.buildButton();
     }
 
+    setStatus(newStatus: MinimiseButtonStatus): void {
+        this.status = newStatus;
+        this.buildButton();
+    }
+
     getIcon(): string {
         if (this.status === 'minimised') {
             return 'plus_thin';
         }
         return 'minimise';
     }
+
 }

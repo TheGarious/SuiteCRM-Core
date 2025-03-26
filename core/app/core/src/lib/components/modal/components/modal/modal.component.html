@@ -52,7 +52,9 @@
         <div>
             <scrm-minimise-button *ngIf="minimizable"
                                   [config]="minimiseButton"
-                                  [status]="minimiseStatus">
+                                  [status]="minimiseStatus()"
+                                  [status$]="minimiseStatus$"
+            >
             </scrm-minimise-button>
             <scrm-close-button *ngIf="closable" [config]="close"></scrm-close-button>
         </div>
