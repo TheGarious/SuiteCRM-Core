@@ -39,6 +39,7 @@ import {RecordModalActionsAdapter} from "./record-modal-actions.adapter";
 import {FieldModalService} from "../../../services/modals/field-modal.service";
 import {RecordMapperRegistry} from "../../../common/record/record-mappers/record-mapper.registry";
 import {BaseSaveRecordMapper} from "../../../store/record/record-mappers/base-save.record-mapper";
+import {NgbActiveModal} from "@ng-bootstrap/ng-bootstrap";
 
 @Injectable({
     providedIn: 'root',
@@ -62,9 +63,10 @@ export class RecordModalActionsAdapterFactory {
         recordMappers.register('default', baseMapper.getKey(), baseMapper);
     }
 
-    create(store: RecordModalStore): RecordModalActionsAdapter {
+    create(store: RecordModalStore, activeModal: NgbActiveModal): RecordModalActionsAdapter {
         return new RecordModalActionsAdapter(
             store,
+            activeModal,
             this.metadata,
             this.language,
             this.actionManager,
