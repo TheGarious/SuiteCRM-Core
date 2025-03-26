@@ -38,7 +38,8 @@
              class="field-group-item d-flex flex-column justify-content-end h-100 w-100">
 
             <!-- LABEL -->
-            <span class="field-group-label pr-1">
+            <span class="field-group-label pr-1"
+                  [class.hidden]="!(attribute.labelKey && showLabel(attribute))">
                 <label *ngIf="attribute.labelKey && showLabel(attribute)">
                     <scrm-label [labelKey]="attribute.labelKey" [module]="getModule()"></scrm-label>
                     <ng-container *ngIf="attribute?.required() && (['edit', 'create'].includes(mode))">
