@@ -46,12 +46,14 @@ import {LogicDefinitions, Panel} from "../../../common/metadata/metadata.model";
 import {Record} from "../../../common/record/record.model";
 import {FieldModalService} from "../../../services/modals/field-modal.service";
 import {RecordMapperRegistry} from "../../../common/record/record-mappers/record-mapper.registry";
+import {NgbActiveModal} from "@ng-bootstrap/ng-bootstrap";
 
 @Injectable()
 export class RecordModalActionsAdapter extends BaseRecordActionsAdapter<RecordModalActionData> {
 
     constructor(
         protected store: RecordModalStore,
+        protected activeModal: NgbActiveModal,
         protected metadata: MetadataStore,
         protected language: LanguageStore,
         protected actionManager: RecordModalActionManager,
@@ -123,5 +125,44 @@ export class RecordModalActionsAdapter extends BaseRecordActionsAdapter<RecordMo
         }
 
         return actionHandler && actionHandler.shouldDisplay(data);
+    }
+
+    /**
+     * Run after async action handlers
+     * @param actionName
+     * @param moduleName
+     * @param asyncData
+     * @param process
+     * @param action
+     * @param context
+     * @protected
+     */
+    protected afterAsyncAction(
+        actionName: string,
+        moduleName: string,
+        asyncData: AsyncActionInput,
+        process: Process,
+        action: Action,
+        context: ActionContext
+    ) {
+        super.afterAsyncAction(
+            actionName,
+            moduleName,
+            asyncData,
+            process,
+            action,
+            context
+        );
+        if (this.shouldCloseModal(process)) {
+            this.activeModal.close();
+        }
+    }
+
+    /**
+     * Should reload page
+     * @param process
+     */
+    protected shouldCloseModal(process: Process): boolean {
+        return !!(process.data && process.data.closeModal);
     }
 }

@@ -137,7 +137,7 @@ export class RecordModalComponent implements OnInit, OnDestroy {
             this.contentAdapter = this.recordModalContentAdapterFactory.create(this.modalStore);
         }
         if (!this.actionsAdapter) {
-            this.actionsAdapter = this.recordModalActionsAdapterFactory.create(this.modalStore);
+            this.actionsAdapter = this.recordModalActionsAdapterFactory.create(this.modalStore, this.activeModal);
         }
 
 
