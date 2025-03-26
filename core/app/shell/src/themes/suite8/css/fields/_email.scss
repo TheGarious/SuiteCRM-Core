@@ -23,14 +23,206 @@
  * feasible for technical reasons, the Appropriate Legal Notices must display
  * the words "Supercharged by SuiteCRM".
  */
+
+@media (min-width: 1200px) {
+  .col-xl-12.field-layout-field-wrapper {
+    .composite.email-fields {
+      .field-group {
+        .field-group-item:first-child {
+          width: 238px !important;
+        }
+      }
+    }
+  }
+}
+@media (min-width: 992px) and (max-width: 1199px) {
+  .col-lg-12.field-layout-field-wrapper {
+    .composite.email-fields {
+      .field-group {
+        .field-group-item:first-child {
+          width: 200px !important;
+        }
+      }
+    }
+  }
+}
+@media (min-width: 787px) and (max-width: 991px) {
+  .full-row.field-layout-field-wrapper {
+    .composite.email-fields {
+      .field-group {
+        .field-group-item:first-child {
+          width: 200px !important;
+        }
+      }
+    }
+  }
+
+  .field-layout-field-wrapper {
+    .composite.email-fields {
+      .field-group {
+        .field-group-item:first-child {
+          width: 152px !important;
+        }
+        .field-group-item {
+          margin-left: 0.2rem;
+        }
+      }
+    }
+  }
+}
+
+@media (min-width: 768px) and (max-width: 786px) {
+  .full-row.field-layout-field-wrapper {
+    .composite.email-fields {
+      .field-group {
+        .field-group-item:first-child {
+          width: 200px !important;
+        }
+      }
+    }
+  }
+
+  .field-layout-field-wrapper {
+    .composite.email-fields {
+      .field-group {
+        .field-group-item:first-child {
+          width: 143px !important;
+        }
+        .field-group-item {
+          margin-left: 0.2rem;
+        }
+      }
+    }
+  }
+}
+
+@media (min-width: 676px) and (max-width: 767px) {
+  .full-row.field-layout-field-wrapper {
+    .composite.email-fields {
+      .field-group {
+        .field-group-item:first-child {
+          width: 200px !important;
+        }
+        .field-group-item {
+          margin-left: 0.3rem;
+        }
+      }
+    }
+  }
+
+  .field-layout-field-wrapper {
+    .composite.email-fields {
+      .field-group {
+        .field-group-item:first-child {
+          width: 95px !important;
+        }
+        .field-group-item {
+          margin-left: 0.2rem;
+        }
+      }
+    }
+  }
+}
+
+@media (min-width: 600px) and (max-width: 675px) {
+  .full-row.field-layout-field-wrapper {
+    .composite.email-fields {
+      .field-group {
+        .field-group-item:first-child {
+          width: 150px !important;
+        }
+        .field-group-item {
+          margin-left: 0.3rem;
+        }
+      }
+    }
+  }
+
+  .field-layout-field-wrapper {
+    .composite.email-fields {
+      .field-group {
+        .field-group-item:first-child {
+          width: 69px !important;
+        }
+        .field-group-item {
+          margin-left: 0rem;
+        }
+      }
+    }
+  }
+}
+
+@media (min-width: 426px) and (max-width: 599px) {
+  .col-xs-12.field-layout-field-wrapper {
+    .composite.email-fields {
+      .field-group {
+        .field-group-item:first-child {
+          width: 150px !important;
+        }
+      }
+    }
+  }
+
+  .field-layout-field-wrapper {
+    .composite.email-fields {
+      .field-group {
+        .field-group-item {
+          margin-left: 0.3rem;
+        }
+      }
+    }
+  }
+}
+
+@media (min-width: 375px) and (max-width: 425px) {
+  .field-layout-field-wrapper {
+    .composite.email-fields {
+      .field-group {
+        .field-group-item:first-child {
+          width: 100px !important;
+        }
+        .field-group-item {
+          margin-left: 0.3rem;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 374px) {
+  .field-layout-field-wrapper {
+    .composite.email-fields {
+      .field-group {
+        .field-group-item:first-child {
+          width: 75px !important;
+        }
+        .field-group-item {
+          margin-left: 0.1rem;
+        }
+      }
+    }
+  }
+}
+
+
 .composite.email-fields {
   .field-group {
+    .field-group-label.hidden {
+      display: none !important;
+    }
+
+    &.composite-field-wrapper {
+      height: auto !important;
+    }
     .field-group-item:first-child {
-      width: 100% !important;
+      width: 150px !important;
+      margin-left: 0;
     }
 
     .field-group-item {
-      width: 25% !important;
+      display: inline-block !important;
+      margin-left: 0.5rem;
+      width: 50px !important;
       align-self: flex-start !important;
       @media all and (max-width: $breakpoint-xxlarge) {
         line-height: 1;
