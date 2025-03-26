@@ -306,6 +306,11 @@ abstract class BaseCommand extends Command
         return implode('', ["<$type>", $message, "</$type>"]);
     }
 
+    protected function colorText(string $color, string $message): string
+    {
+        return implode('', ["<fg=$color>", $message, "</>"]);
+    }
+
     /**
      * @return array|null
      */
