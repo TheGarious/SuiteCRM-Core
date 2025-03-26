@@ -102,6 +102,19 @@ span.required {
     }
   }
 
+  .full-row {
+    @media (min-width: 992px) {
+      .col-lg-3 {
+        flex: 0 0 12.4861%;
+        max-width: 12.4861%;
+      }
+
+      .col-lg-9 {
+        flex: 0 0 87.39%;
+        max-width: 87.39%;
+      }
+    }
+  }
 
 
   .col-form-label {
