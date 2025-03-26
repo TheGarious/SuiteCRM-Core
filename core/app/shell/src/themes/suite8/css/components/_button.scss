@@ -205,6 +205,11 @@ button {
   background-color: $midnight-blue;
 }
 
+.settings-button.btn-outline-main:focus,
+.settings-button.btn.btn-outline-main:focus {
+  border-color: $midnight-blue !important;
+}
+
 .settings-button.active,
 .settings-button.btn.active {
   background-color: $midnight-blue;
