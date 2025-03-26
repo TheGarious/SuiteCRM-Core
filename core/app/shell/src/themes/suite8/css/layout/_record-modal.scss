@@ -159,6 +159,8 @@ body.modal-open.detached-modal-open {
         color: $white;
         fill: $white;
         background-color: transparent;
+        margin: 0;
+        padding: .25rem .55rem;
       }
       .close-button {
         color: $white;
