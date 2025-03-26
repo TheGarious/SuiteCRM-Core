@@ -173,9 +173,9 @@ class EmailProcessProcessor extends LegacyHandler
         $bcc = [];
         $cc = [];
 
-        $toAddresses = !empty($recordAttributes['to_addrs_names']) ? $recordAttributes['to_addrs_names'] : [];
-        $ccAddresses = !empty($recordAttributes['cc_addrs_names']) ? $recordAttributes['cc_addrs_names'] : [];
-        $bccAddresses = !empty($recordAttributes['bcc_addrs_names']) ? $recordAttributes['bcc_addrs_names'] : [];
+        $toAddresses = !empty($emailAttributes['to_addrs_names']) ? $emailAttributes['to_addrs_names'] : [];
+        $ccAddresses = !empty($emailAttributes['cc_addrs_names']) ? $emailAttributes['cc_addrs_names'] : [];
+        $bccAddresses = !empty($emailAttributes['bcc_addrs_names']) ? $emailAttributes['bcc_addrs_names'] : [];
 
         foreach ($toAddresses as $key => $value) {
             $to[] = $value['email1'] ?? $value['email'];
