@@ -94,7 +94,7 @@ class PreparedStatementHandler
             }
         }
 
-        return $stmt->executeQuery($params)->fetchAssociative();
+        return $stmt->executeQuery($params)->fetchAllAssociative();
     }
 
     /**
