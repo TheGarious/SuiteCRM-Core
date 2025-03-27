@@ -210,7 +210,7 @@ abstract class LegacyHandler
         /* @noinspection PhpIncludeInspection */
         require_once 'include/MVC/SugarApplication.php';
 
-        global $sugar_config;
+        global $sugar_config, $current_user;
 
         $app = new SugarApplication();
 
@@ -230,7 +230,9 @@ abstract class LegacyHandler
         $app->controller = $controller;
         // If the entry point is defined to not need auth, then don't authenticate.
         if (empty($_REQUEST['entryPoint']) || $controller->checkEntryPointRequiresAuth($_REQUEST['entryPoint'])) {
-            $app->loadUser();
+            if (empty($current_user->id)) {
+                $app->loadUser();
+            }
             $app->ACLFilter();
             $app->preProcess();
             $controller->preProcess();
