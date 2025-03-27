@@ -88,7 +88,8 @@ class Scheduler extends SugarBean
     public $process_save_dates = true;
     public $order_by;
 
-    public static $job_strings;
+    public static $jobStrings;
+    public static $legacyJobStrings;
 
     public function __construct($init = true)
     {
@@ -193,7 +194,7 @@ class Scheduler extends SugarBean
      */
     public function checkPendingJobs($queue)
     {
-        $allSchedulers = $this->get_full_list('', "schedulers.status='Active' AND NOT EXISTS(SELECT id FROM {$this->job_queue_table} WHERE scheduler_id=schedulers.id AND status!='" . SchedulersJob::JOB_STATUS_DONE . "')");
+        $allSchedulers = $this->get_full_list('', "schedulers.status='Active' AND job NOT LIKE '%scheduler::%' AND NOT EXISTS(SELECT id FROM {$this->job_queue_table} WHERE scheduler_id=schedulers.id AND status!='" . SchedulersJob::JOB_STATUS_DONE . "')");
 
         $GLOBALS['log']->info('-----> Scheduler found [ ' . (is_countable($allSchedulers) ? count($allSchedulers) : 0) . ' ] ACTIVE jobs');
 
@@ -976,6 +977,30 @@ class Scheduler extends SugarBean
         $sched17->modified_user_id = '1';
         $sched17->catch_up = '0';
         $sched17->save();
+
+        $sched18 = new Scheduler;
+        $sched18->name = $mod_strings['LBL_OOTB_SEND_EMAIL_TO_QUEUE'];
+        $sched18->job = 'scheduler::email-to-queue';
+        $sched18->date_time_start = create_date(2015, 1, 1) . ' ' . create_time(0, 0, 1);
+        $sched18->date_time_end = null;
+        $sched18->job_interval = '*::*::*::*::*';
+        $sched18->status = 'Active';
+        $sched18->created_by = '1';
+        $sched18->modified_user_id = '1';
+        $sched18->catch_up = '0';
+        $sched18->save();
+
+        $sched19 = new Scheduler;
+        $sched19->name = $mod_strings['LBL_OOTB_SEND_EMAIL_FROM_QUEUE'];
+        $sched19->job = 'scheduler::send-email';
+        $sched19->date_time_start = create_date(2015, 1, 1) . ' ' . create_time(0, 0, 1);
+        $sched19->date_time_end = null;
+        $sched19->job_interval = '*::*::*::*::*';
+        $sched19->status = 'Active';
+        $sched19->created_by = '1';
+        $sched19->modified_user_id = '1';
+        $sched19->catch_up = '0';
+        $sched19->save();
     }
 
     ////	END SCHEDULER HELPER FUNCTIONS
@@ -1036,16 +1061,26 @@ class Scheduler extends SugarBean
     ///////////////////////////////////////////////////////////////////////////
     public static function getJobsList()
     {
-        if (empty(self::$job_strings)) {
-            global $mod_strings;
+        global $mod_strings;
+
+        if (empty(self::$legacyJobStrings)) {
             include_once('modules/Schedulers/_AddJobsHere.php');
 
             // job functions
-            self::$job_strings = array('url::' => 'URL');
-            foreach ($job_strings as $k => $v) {
-                self::$job_strings['function::' . $v] = $mod_strings['LBL_' . strtoupper($v)];
+            self::$legacyJobStrings = array('url::' => 'URL');
+            foreach ($legacyJobStrings as $k => $v) {
+                self::$legacyJobStrings['function::' . $v] = $mod_strings['LBL_' . strtoupper($v)];
             }
         }
-        return self::$job_strings;
+
+        if (empty(self::$jobStrings)){
+            self::$jobStrings = [];
+            foreach($jobStrings as $k => $v) {
+                $label = str_replace('-', '', $v);
+                self::$jobStrings['scheduler::' . $v] = $mod_strings['LBL_' . strtoupper($label)];
+            }
+        }
+
+        return [...self::$legacyJobStrings, ...self::$jobStrings];
     }
 }
