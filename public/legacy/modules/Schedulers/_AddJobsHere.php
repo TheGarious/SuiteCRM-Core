@@ -66,7 +66,7 @@ require_once 'include/Services/NormalizeRecords/NormalizeRecords.php';
  * This array provides the Schedulers admin interface with values for its "Job"
  * dropdown menu.
  */
-$job_strings = array(
+$legacyJobStrings = array(
     0 => 'refreshJobs',
     1 => 'pollMonitoredInboxes',
     2 => 'runMassEmailCampaign',
@@ -84,6 +84,10 @@ $job_strings = array(
     14 => 'runElasticSearchIndexerScheduler',
 );
 
+$jobStrings = [
+    0 => 'send-from-queue',
+    1 => 'email-to-queue'
+];
 /**
  * Job 0 refreshes all job schedulers at midnight
  * DEPRECATED

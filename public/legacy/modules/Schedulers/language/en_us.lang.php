@@ -156,6 +156,8 @@ $mod_strings = array(
     'LBL_PROCESSAOW_WORKFLOW' => 'Process AOW Workflow',
 
     'LBL_RUNELASTICSEARCHINDEXERSCHEDULER' => 'Elasticsearch indexer',
+    'LBL_SENDFROMQUEUE' => 'Send Emails from Email Queue',
+    'LBL_EMAILTOQUEUE' => 'Send Scheduled Emails to Email Queue',
 
     'LBL_SCHEDULER_TIMES' => 'Scheduler Times',
     'LBL_SYNCGOOGLECALENDAR' => 'Sync Google Calendars',
