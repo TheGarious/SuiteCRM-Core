@@ -56,9 +56,6 @@ $layout_defs['EmailMarketing'] = [
             'order' => 110,
             'module' => 'CampaignLog',
             'get_subpanel_data' => "function:trackLogEntries",
-            'function_parameters' => [
-                0 => 'targeted',
-            ],
             'subpanel_name' => 'default',
             'title_key' => 'LBL_LOG_ENTRIES_TARGETED_TITLE',
             'sort_order' => 'desc',
