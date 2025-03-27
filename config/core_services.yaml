@@ -111,6 +111,8 @@ services:
       tags: [ 'app.legacy.migration.step' ]
     App\Install\Service\Installation\InstallStepInterface:
       tags: [ 'app.install.step' ]
+    App\Schedulers\Service\SchedulerInterface:
+      tags: [ 'app.scheduler' ]
     App\Install\Service\Cli\CliStepInterface:
       tags: ['cli.install.step']
     App\ViewDefinitions\Service\MassUpdateDefinitionMapperInterface:
@@ -175,6 +177,10 @@ services:
     # and use the value of the 'getProcessType' method to index the services
     arguments:
       - !tagged { tag: 'app.process.handler' }
+
+  App\Schedulers\Service\SchedulerRegistry:
+    arguments:
+      - !tagged { tag: 'app.scheduler' }
 
   App\Engine\Service\Extensions\ExtensionAssetCopyCacheWarmer:
     arguments:
