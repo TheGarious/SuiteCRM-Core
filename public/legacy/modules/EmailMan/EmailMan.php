@@ -1509,7 +1509,7 @@ class EmailMan extends SugarBean
      * @param \Contact|\Account|\Prospect|\SugarBean $bean
      * @return bool true === block email from being sent
      */
-    protected function shouldBlockEmail(SugarBean $bean)
+    public function shouldBlockEmail(SugarBean $bean)
     {
         global $sugar_config;
 
