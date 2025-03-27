@@ -39,7 +39,6 @@ class FilterEmailListHandler extends LegacyHandler
     protected const HANDLER_KEY = 'record-filter-email-list';
 
     protected ProspectListsEmailMapper $prospectListsEmailMapper;
-    protected EmailToQueueHandler $emailToQueueHandler;
 
     public function __construct(
         string                   $projectDir,
@@ -49,7 +48,6 @@ class FilterEmailListHandler extends LegacyHandler
         LegacyScopeState         $legacyScopeState,
         RequestStack             $requestStack,
         ProspectListsEmailMapper $prospectListsEmailMapper,
-        EmailToQueueHandler $emailToQueueHandler
     )
     {
         parent::__construct(
@@ -61,7 +59,6 @@ class FilterEmailListHandler extends LegacyHandler
             $requestStack
         );
         $this->prospectListsEmailMapper = $prospectListsEmailMapper;
-        $this->emailToQueueHandler = $emailToQueueHandler;
     }
 
     public function getHandlerKey(): string
@@ -118,11 +115,6 @@ class FilterEmailListHandler extends LegacyHandler
 
                 $emails[$item] = $item;
 
-                if (!$isTest) {
-                    $this->emailToQueueHandler->sendToQueue();
-                    continue;
-                }
-
                 $count++;
             }
         }
@@ -144,11 +136,6 @@ class FilterEmailListHandler extends LegacyHandler
             $id = $item['id'];
             $bean = BeanFactory::getBean($module, $id);
             $emails[$bean->email1] = $bean->email1;
-
-            if (!$isTest) {
-                $this->emailToQueueHandler->sendToQueue();
-                return;
-            }
 
             $count++;
         }
