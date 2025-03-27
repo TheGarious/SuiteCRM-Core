@@ -48,3 +48,5 @@ parameters:
     enable_record_pagination: true
     auth_type: true
     test_email_limit: true
+    cron_class: true
+    emails_per_run: true
