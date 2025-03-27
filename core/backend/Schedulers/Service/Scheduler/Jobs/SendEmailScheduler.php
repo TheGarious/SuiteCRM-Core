@@ -100,23 +100,27 @@ class SendEmailScheduler extends LegacyHandler implements SchedulerInterface
      */
     public function run(): bool
     {
+
+        $timedate = $this->emailManagerHandler->getTimeDate();
+
         $maxPerRun = $this->systemConfigHandler->getSystemConfig('emails_per_run')?->getValue() ?? '500';
-        $copies = $this->systemConfigHandler->getSystemConfig('copies_per_email')?->getValue() ?? '0';
         $emailMan = $this->getBean('EmailMan');
-        $confirmOptInEnabled = $this->emailManagerHandler->getConfigurator()->getConfirmOptInEnumValue();
+        $table = $this->emailManagerHandler->getTable();
+        $confirmOptInEnabled = $this->emailManagerHandler->getConfigurator()->isConfirmOptInEnabled();
 
-        $date = date('Y-m-d H:i:s');
-        $str = strtotime(date('Y-m-d H:i:s'));
+        $now = $timedate->nowDb();
+        $str = strtotime($timedate->fromString("-1 day")?->asDb());
 
-        $query = "SELECT * FROM emailman WHERE send_date_time <= :now ";
+        $query = "SELECT * FROM $table WHERE send_date_time <= :now ";
         $query .= "AND deleted = 0 ";
         $query .= "AND (in_queue ='0' OR in_queue IS NULL OR ( in_queue ='1' AND in_queue_date <= :queue_date )) ";
+        $query .= ($confirmOptInEnabled ? ' OR related_confirm_opt_in = 1 ' : ' AND related_confirm_opt_in = 0 ');
         $query .= "ORDER BY send_date_time ASC, user_id, list_id ";
         $query .= "LIMIT " . (int)$maxPerRun;
 
         $results = $this->preparedStatementHandler->fetchAll($query,
             [
-                'now' => $date,
+                'now' => $now,
                 'queue_date' => $str,
             ],
             [

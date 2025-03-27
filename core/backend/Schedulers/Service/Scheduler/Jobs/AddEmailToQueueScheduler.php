@@ -88,8 +88,9 @@ class AddEmailToQueueScheduler extends LegacyHandler implements SchedulerInterfa
      */
     public function run(): bool
     {
+        $table = $this->emailManagerHandler->getModuleTable('EmailMarketing');
         $emails = $this->preparedStatementHandler->fetchAll(
-            "SELECT * FROM email_marketing WHERE status = 'scheduled'",
+            "SELECT * FROM $table WHERE status = 'scheduled'",
             []
         );
 
@@ -155,8 +156,7 @@ class AddEmailToQueueScheduler extends LegacyHandler implements SchedulerInterfa
      */
     protected function runInsertQuery($prospectId, $emId, $campaignId, $sendDate): bool
     {
-        global $timedate;
-
+        $timedate = $this->emailManagerHandler->getTimeDate();
         $user = $this->getUser();
 
         $query = 'INSERT INTO emailman (
@@ -175,7 +175,7 @@ class AddEmailToQueueScheduler extends LegacyHandler implements SchedulerInterfa
         $query .= 'FROM prospect_lists_prospects plp ';
         $query .= 'INNER JOIN email_marketing_prospect_lists empl ON empl.prospect_list_id = plp.prospect_list_id ';
         $query .= 'WHERE empl.id = :prospect_id ';
-        $query .= 'AND plp.deleted=0 AND empl.deleted=0 AND empl.email_marketing_id= :em_id LIMIT 25';
+        $query .= 'AND plp.deleted=0 AND empl.deleted=0 AND empl.email_marketing_id= :em_id';
 
         try {
             $result = $this->preparedStatementHandler->update($query,
@@ -232,7 +232,8 @@ class AddEmailToQueueScheduler extends LegacyHandler implements SchedulerInterfa
      */
     protected function runDeleteQuery($campaignId, $marketingId, $listId): void
     {
-        $query = 'DELETE FROM emailman WHERE campaign_id = :campaign_id ';
+        $table = $this->emailManagerHandler->getTable();
+        $query = "DELETE FROM $table WHERE campaign_id = :campaign_id ";
         $query .= 'AND marketing_id = :marketing_id AND list_id = :list_id';
 
         try {
@@ -257,7 +258,8 @@ class AddEmailToQueueScheduler extends LegacyHandler implements SchedulerInterfa
      */
     protected function deleteExemptEntries($marketingId): void
     {
-        $query = 'DELETE FROM emailman WHERE id IN ( SELECT em.id FROM ( SELECT emailman.id id FROM emailman ';
+        $table = $this->emailManagerHandler->getTable();
+        $query = "DELETE FROM $table WHERE id IN ( SELECT em.id FROM ( SELECT emailman.id id FROM emailman ";
         $query .= 'INNER JOIN prospect_lists_prospects plp ON emailman.related_id = plp.related_id ';
         $query .= 'AND emailman.related_type = plp.related_type ';
         $query .= 'INNER JOIN prospect_lists pl ON pl.id = plp.prospect_list_id ';
