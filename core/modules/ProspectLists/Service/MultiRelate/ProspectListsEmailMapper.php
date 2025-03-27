@@ -27,37 +27,10 @@
 
 namespace App\Module\ProspectLists\Service\MultiRelate;
 
-use App\Emails\LegacyHandler\EmailToQueueHandler;
 use App\Engine\LegacyHandler\LegacyHandler;
-use App\Engine\LegacyHandler\LegacyScopeState;
 use BeanFactory;
-use Symfony\Component\HttpFoundation\RequestStack;
 
 class ProspectListsEmailMapper extends LegacyHandler {
-
-    protected EmailToQueueHandler $emailToQueueHandler;
-
-
-    public function __construct(
-        string $projectDir,
-        string $legacyDir,
-        string $legacySessionName,
-        string $defaultSessionName,
-        LegacyScopeState $legacyScopeState,
-        RequestStack $requestStack,
-        EmailToQueueHandler $emailToQueueHandler
-    )
-    {
-        parent::__construct(
-            $projectDir,
-            $legacyDir,
-            $legacySessionName,
-            $defaultSessionName,
-            $legacyScopeState,
-            $requestStack
-        );
-        $this->emailToQueueHandler = $emailToQueueHandler;
-    }
 
     public function getHandlerKey(): string
     {
@@ -130,11 +103,6 @@ class ProspectListsEmailMapper extends LegacyHandler {
         foreach($beans as $bean) {
             foreach ($bean as $key => $value) {
                 $emails[$value->email1] = $value->email1;
-
-                if (!$isTest) {
-                    $this->emailToQueueHandler->sendToQueue();
-                    continue;
-                }
 
                 $count++;
             }
