@@ -162,6 +162,7 @@ class EmailManagerHandler extends LegacyHandler {
         $id = $this->getEmailManId($emailAttributes['parent_id'], $emAttributes['id']);
 
         if (!$delete){
+            $this->close();
             $query = "UPDATE emailman SET in_queue = '1', send_attempts = send_attempts + 1, in_queue_date = :now ";
             $query .= "WHERE id = :id";
 
@@ -206,7 +207,24 @@ class EmailManagerHandler extends LegacyHandler {
         $this->init();
 
         $emailMan = \BeanFactory::getBean('EmailMan');
-        $table = $emailMan->getTableName();
+        $table = $emailMan->db->quote($emailMan->getTableName());
+
+        $this->close();
+
+        return $table;
+    }
+
+
+    /**
+     * @param string $module
+     * @return string|null
+     */
+    public function getModuleTable(string $module): ?string
+    {
+        $this->init();
+
+        $bean = \BeanFactory::getBean($module);
+        $table = $bean->db->quote($bean->getTableName());
 
         $this->close();
 
@@ -378,5 +396,16 @@ class EmailManagerHandler extends LegacyHandler {
         $this->close();
 
         return $configurator;
+    }
+
+    public function getTimeDate(): \TimeDate
+    {
+        $this->init();
+
+        global $timedate;
+
+        $this->close();
+
+        return $timedate;
     }
 }
