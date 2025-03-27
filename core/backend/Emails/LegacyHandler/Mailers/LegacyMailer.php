@@ -215,4 +215,30 @@ class LegacyMailer extends LegacyHandler
         $mail->description = $plainText;
     }
 
+    public function getAllRecipients(Email $message): array
+    {
+        $recipients = [];
+
+        if (is_array($message->getTo())){
+            foreach ($message->getTo() as $key => $address) {
+                $recipients[$address->getAddress()] = 1;
+            }
+        }
+
+        if (is_array($message->getBcc())){
+            foreach ($message->getBcc() as $key => $address) {
+                $recipients[$address->getAddress()] = 1;
+            }
+        }
+
+        if (is_array($message->getCc())){
+            foreach ($message->getCc() as $key => $address) {
+                $recipients[$address->getAddress()] = 1;
+            }
+        }
+
+        return $recipients;
+    }
+
+
 }
