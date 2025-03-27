@@ -1815,6 +1815,15 @@ $app_strings = array(
 
     'LBL_INBOUNDEMAIL_ID' => 'Inbound Email ID',
 
+    'LBL_ALL_SCHEDULERS' => 'All Schedulers',
+    'LBL_LEGACY_SCHEDULERS' => 'Legacy Schedulers',
+    'LBL_SCHEDULERS' => 'Schedulers',
+    'LBL_RUN_LEGACY_SCHEDULERS' => 'Running Legacy Schedulers',
+    'LBL_LEGACY_SCHEDULERS_RUN_SUCCESSFULLY' => 'Legacy Schedulers run successfully!',
+    'LBL_RUN_SCHEDULERS' => 'Running Schedulers',
+    'LBL_LEGACY_SCHEDULER_FAILED' => 'Not all Schedulers were successful. See Logs.',
+    'LBL_PASSED' => 'Passed',
+
     'LBL_SCENARIO_SALES' => 'Sales',
     'LBL_SCENARIO_MARKETING' => 'Marketing',
     'LBL_SCENARIO_FINANCE' => 'Finance',
