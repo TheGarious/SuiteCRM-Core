@@ -458,7 +458,7 @@ class Scheduler extends SugarBean
         if (empty($focus->last_run)) {
             $lastRunTs = 0;
         } else {
-            $lastRunTs = $timedate->fromDb($focus->last_run)->ts;
+            $lastRunTs = $timedate->fromDb($focus->last_run)->ts ?? null;
         }
 
         /**
@@ -467,7 +467,7 @@ class Scheduler extends SugarBean
         $validJobTime = array();
 
         global $timedate;
-        $timeStartTs = $timedate->fromDb($focus->date_time_start)->ts;
+        $timeStartTs = $timedate->fromDb($focus->date_time_start)->ts ?? null;
         if (!empty($focus->date_time_end)) { // do the same for date_time_end if not empty
             $timeEndTs = $timedate->fromDb($focus->date_time_end)->ts;
         } else {
