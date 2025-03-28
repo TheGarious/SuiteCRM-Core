@@ -28,7 +28,6 @@
 namespace App\Schedulers\Service\Scheduler\Jobs;
 
 use App\Data\LegacyHandler\PreparedStatementHandler;
-use App\DateTime\LegacyHandler\DateTimeHandler;
 use App\Emails\LegacyHandler\EmailManagerHandler;
 use App\Engine\LegacyHandler\LegacyHandler;
 use App\Engine\LegacyHandler\LegacyScopeState;
@@ -42,7 +41,6 @@ class AddEmailToQueueScheduler extends LegacyHandler implements SchedulerInterfa
     public const SCHEDULER_KEY = 'scheduler::email-to-queue';
 
     protected PreparedStatementHandler $preparedStatementHandler;
-    protected DateTimeHandler $dateTimeHandler;
     protected LoggerInterface $logger;
     protected EmailManagerHandler $emailManagerHandler;
 
@@ -54,7 +52,6 @@ class AddEmailToQueueScheduler extends LegacyHandler implements SchedulerInterfa
         LegacyScopeState $legacyScopeState,
         RequestStack $requestStack,
         PreparedStatementHandler $preparedStatementHandler,
-        DateTimeHandler $dateTimeHandler,
         LoggerInterface $logger,
         EmailManagerHandler $emailManagerHandler
     )
@@ -68,7 +65,6 @@ class AddEmailToQueueScheduler extends LegacyHandler implements SchedulerInterfa
             $requestStack
         );
         $this->preparedStatementHandler = $preparedStatementHandler;
-        $this->dateTimeHandler = $dateTimeHandler;
         $this->logger = $logger;
         $this->emailManagerHandler = $emailManagerHandler;
     }
