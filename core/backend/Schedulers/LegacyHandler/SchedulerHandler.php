@@ -32,9 +32,8 @@ use App\Engine\LegacyHandler\LegacyHandler;
 use App\Engine\LegacyHandler\LegacyScopeState;
 use App\Schedulers\Service\SchedulerRegistry;
 use App\SystemConfig\LegacyHandler\SystemConfigHandler;
+use Doctrine\DBAL\Exception;
 use Psr\Log\LoggerInterface;
-use SugarCronJobs;
-use SuiteCRM\Exception\Exception;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class SchedulerHandler extends LegacyHandler {
@@ -93,9 +92,6 @@ class SchedulerHandler extends LegacyHandler {
 
     /**
      * @return array
-     * @throws \Doctrine\DBAL\Exception
-     * @throws \DateMalformedStringException
-     * @throws Exception
      */
     public function runSchedulers(): array {
 
@@ -109,7 +105,14 @@ class SchedulerHandler extends LegacyHandler {
 
         $query = "SELECT * FROM schedulers WHERE status = 'Active' AND job LIKE '%scheduler::%' ";
         $query .= "AND NOT EXISTS(SELECT id FROM job_queue WHERE scheduler_id = schedulers.id AND status != 'done')";
-        $schedulers = $this->preparedStatementHandler->fetchAll($query, []);
+
+        $schedulers = [];
+
+        try {
+            $schedulers = $this->preparedStatementHandler->fetchAll($query, []);
+        } catch (\Doctrine\DBAL\Exception $e) {
+            $this->logger->error($e->getMessage());
+        }
 
         if (empty($schedulers)) {
             return [];
@@ -133,7 +136,11 @@ class SchedulerHandler extends LegacyHandler {
 
         for ($count = 0; $count < $this->maxJobs; $count++) {
 
-            $schedulerRow = $schedulers[$count];
+            $schedulerRow = $schedulers[$count] ?? null;
+
+            if (empty($schedulerRow)){
+                break;
+            }
 
             $job = $this->getNextScheduler(false);
 
@@ -162,16 +169,11 @@ class SchedulerHandler extends LegacyHandler {
         return $response;
     }
 
-    /**
-     * @throws \DateMalformedStringException
-     * @throws Exception
-     * @throws \Doctrine\DBAL\Exception
-     */
-    public function runLegacySchedulers(): bool {
+    public function runLegacySchedulers(): array {
 
         if (!$this->throttle()){
             $this->logger->error('Job runs too frequently, throttled to protect the system.');
-            return false;
+            return [];
         }
 
         $this->cleanup(true);
@@ -208,6 +210,9 @@ class SchedulerHandler extends LegacyHandler {
 
         $this->close();
 
+        if ($job->resolution === 'success' && $job->status === 'done') {
+            $this->updateLastRun($job->scheduler_id);
+        }
     }
 
     public function buildJob($scheduler): \SugarBean|bool
@@ -247,9 +252,6 @@ class SchedulerHandler extends LegacyHandler {
         $this->close();
     }
 
-    /**
-     * @throws \Doctrine\DBAL\Exception
-     */
     protected function getNextScheduler(bool $isLegacy): \SugarBean|bool|null
     {
         $this->init();
@@ -270,9 +272,13 @@ class SchedulerHandler extends LegacyHandler {
 
 
         while ($tries--){
-            $result = $this->preparedStatementHandler->fetch($query, [
-                'now' => $timedate->nowDb()
-            ]);
+            try {
+                $result = $this->preparedStatementHandler->fetch($query, [
+                    'now' => $timedate->nowDb()
+                ]);
+            } catch (\Doctrine\DBAL\Exception $e) {
+                $this->logger->error($e->getMessage());
+            }
 
             if (empty($result['id'])){
                 return null;
@@ -291,19 +297,26 @@ class SchedulerHandler extends LegacyHandler {
 
             $update = 'UPDATE job_queue SET status = :job_status, date_modified = :now, client = :client_id ';
             $update .= 'WHERE id = :job_id AND status = :status';
-            $result = $this->preparedStatementHandler->update($update, [
-                'job_status' => $job->status,
-                'now' => $timedate->nowDb(),
-                'client_id' => $cronId,
-                'job_id' => $job->id,
-                'status' => 'queued'
-            ], [
-                ['param' => 'job_status', 'type' => 'string'],
-                ['param' => 'now', 'type' => 'string'],
-                ['param' => 'client_id', 'type' => 'string'],
-                ['param' => 'job_id', 'type' => 'string'],
-                ['param' => 'status', 'type' => 'string']
-            ]);
+
+            $result = [];
+
+            try {
+                $result = $this->preparedStatementHandler->update($update, [
+                    'job_status' => $job->status,
+                    'now' => $timedate->nowDb(),
+                    'client_id' => $cronId,
+                    'job_id' => $job->id,
+                    'status' => 'queued'
+                ], [
+                    ['param' => 'job_status', 'type' => 'string'],
+                    ['param' => 'now', 'type' => 'string'],
+                    ['param' => 'client_id', 'type' => 'string'],
+                    ['param' => 'job_id', 'type' => 'string'],
+                    ['param' => 'status', 'type' => 'string']
+                ]);
+            } catch (\Doctrine\DBAL\Exception $e) {
+                $this->logger->error($e->getMessage());
+            }
 
             if (empty($result)){
                 continue;
@@ -403,17 +416,19 @@ class SchedulerHandler extends LegacyHandler {
         $this->close();
     }
 
-    /**
-     * @throws \DateMalformedStringException
-     * @throws \Doctrine\DBAL\Exception
-     */
     public function cleanup($isLegacy): void
     {
         $this->init();
 
         global $timedate, $app_strings;
 
-        $date = $timedate->getNow()->modify("-$this->timeout seconds")->asDb();
+        $date = '';
+
+        try {
+            $date = $timedate->getNow()->modify("-$this->timeout seconds")->asDb();
+        } catch (\DateMalformedStringException $e) {
+            $this->logger->error($e->getMessage());
+        }
 
         $this->close();
 
@@ -425,17 +440,19 @@ class SchedulerHandler extends LegacyHandler {
 
         $query = "SELECT id from job_queue " . $where;
 
-        $results = $this->preparedStatementHandler->fetchAll($query, ["date" => $date]);
+        $results = [];
+
+        try {
+            $results = $this->preparedStatementHandler->fetchAll($query, ["date" => $date]);
+        } catch (\Doctrine\DBAL\Exception $e) {
+            $this->logger->error($e->getMessage());
+        }
 
         foreach ($results as $result) {
-            $this->resolveJob($result, 'failure', $app_strings['ERR_TIMEOUT']);
+            $this->resolveJob($result, false, $app_strings['ERR_TIMEOUT']);
         }
     }
 
-    /**
-     * @throws \DateMalformedStringException
-     * @throws Exception
-     */
     public function clearHistoricJobs(bool $isLegacy): void
     {
         $this->processJobs($isLegacy, $this->successLifetime, true);
@@ -443,15 +460,18 @@ class SchedulerHandler extends LegacyHandler {
     }
 
     /**
-     * @throws \DateMalformedStringException
-     * @throws Exception
      */
     protected function processJobs(bool $isLegacy, $days, bool $success): void
     {
         $this->init();
 
         global $timedate;
-        $date = $timedate->getNow()->modify("-$days days")->asDb();
+
+        try {
+            $date = $timedate->getNow()->modify("-$days days")->asDb();
+        } catch (\DateMalformedStringException $e) {
+            $this->logger->error($e->getMessage());
+        }
 
         $this->close();
 
@@ -466,24 +486,28 @@ class SchedulerHandler extends LegacyHandler {
             $where = "WHERE status = 'done' AND date_modified <= :date AND target NOT LIKE '%scheduler::%' ";
         }
 
-        $where = $where . $resolution;
+        $where .= $resolution;
 
         $query = 'SELECT id FROM job_queue ' . $where;
 
-        $results = $this->preparedStatementHandler->fetchAll($query,  ["date" => $date]);
+        $results = [];
+
+        try {
+            $results = $this->preparedStatementHandler->fetchAll($query, ["date" => $date]);
+        } catch (\Doctrine\DBAL\Exception $e) {
+            $this->logger->error($e->getMessage());
+        }
 
         foreach ($results as $result) {
             $this->deleteJob($result);
         }
     }
 
-    /**
-     * @throws \Doctrine\DBAL\Exception
-     */
-    public function runLegacyJobs(): bool {
+    public function runLegacyJobs(): array {
 
         $cutoff = time() + $this->maxRuntime;
-        $passed = true;
+        $status = true;
+        $response = [];
 
         for ($count = 0; $count < $this->maxJobs; $count++) {
 
@@ -496,9 +520,14 @@ class SchedulerHandler extends LegacyHandler {
             $this->init();
 
             if (!$job->runJob()) {
-                $passed = false;
+                $status = false;
                 $this->jobFailed($job);
             }
+
+            $response[] = [
+                'name' => $job->name,
+                'result' => $status,
+            ];
 
             $this->close();
 
@@ -509,7 +538,7 @@ class SchedulerHandler extends LegacyHandler {
 
         $this->maxJobs -= $count;
 
-        return $passed;
+        return $response;
     }
 
     protected function deleteJob(string $id): void
@@ -549,5 +578,25 @@ class SchedulerHandler extends LegacyHandler {
     protected function jobFailed($job): void
     {
         $this->logger->error('Scheduler job failed: ' . $job->name);
+    }
+
+    protected function updateLastRun($id): void
+    {
+        $this->init();
+
+        global $timedate;
+
+        $this->close();
+
+        $query = 'UPDATE schedulers SET last_run = :now WHERE id = :id';
+
+        try {
+            $this->preparedStatementHandler->update($query, ["now" => $timedate->nowDb(), "id" => $id], [
+                ['param' => 'now', 'type' => 'string'],
+                ['param' => 'id', 'type' => 'string']
+            ]);
+        } catch (Exception $e) {
+            $this->logger->error($e->getMessage());
+        }
     }
 }
