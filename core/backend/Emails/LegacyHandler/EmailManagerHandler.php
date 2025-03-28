@@ -90,6 +90,7 @@ class EmailManagerHandler extends LegacyHandler {
     ): bool
     {
         $email = $moduleBean->email1 ?? '';
+        $emailManId = $this->getEmailManId($emailRecord->getAttributes()['parent_id'], $emailMarketing->getId());
 
         $isPrimary = $emailMan->is_primary_email_address($moduleBean) ?? false;
         $isValid = $emailMan->valid_email_address($email) ?? false;
@@ -97,37 +98,43 @@ class EmailManagerHandler extends LegacyHandler {
 
         if (!$isPrimary) {
             $this->setAsSent($email, $emailRecord, $emailMarketing, true, 'send error', $prospectListId);
-            $this->logger->error('Email Address provided is not Primary Address for email with id ' . $email);
+            $this->logger->error("Email Address provided is not Primary Address for email with id $email and EmailMan id $emailManId");
+
             return false;
         }
 
         if (!$isValid) {
             $this->setAsSent($email, $emailRecord, $emailMarketing, true, 'invalid email', $prospectListId);
+            $this->logger->error("Email Address provided is not Primary Address for email $email and EmailMan id $emailManId");
+
             return false;
         }
 
         if ($shouldBlock) {
             $this->setAsSent($email, $emailRecord, $emailMarketing, true, 'blocked', $prospectListId);
+            $this->logger->warning("Email Address was sent due to not being confirm opt in for email $email and EmailMan id $emailManId");
+
             return false;
         }
 
         if ($this->isOptOut($moduleBean)) {
             $this->setAsSent($email, $emailRecord, $emailMarketing, true, 'blocked', $prospectListId);
-            return false;
-        }
+            $this->logger->error("Email Address provided is Opted out with id $email and EmailMan id $emailManId");
 
-        if ($this->isInvalidEmail($moduleBean)) {
-            $this->setAsSent($email, $emailRecord, $emailMarketing, true, 'invalid email', $prospectListId);
             return false;
         }
 
         if ($this->isRestrictedDomains($moduleBean, $suppressedEmails['domains'])) {
             $this->setAsSent($email, $emailRecord, $emailMarketing, true, 'blocked', $prospectListId);
+            $this->logger->error("Email Address provided is restricted: $email and EmailMan id $emailManId");
+
             return false;
         }
 
         if ($this->isRestrictedAddress($moduleBean, $suppressedEmails['addresses'])) {
             $this->setAsSent($email, $emailRecord, $emailMarketing, true, 'blocked', $prospectListId);
+            $this->logger->error("Email Address provided is restricted: $email and EmailMan id $emailManId");
+
             return false;
         }
 
@@ -135,13 +142,6 @@ class EmailManagerHandler extends LegacyHandler {
     }
 
     /**
-     * @param string $email
-     * @param Record|null $emailRecord
-     * @param Record|null $emailMarketing
-     * @param $delete
-     * @param $activityType
-     * @param $prospectListId
-     * @return void
      * @throws Exception
      */
     public function setAsSent(
@@ -166,13 +166,17 @@ class EmailManagerHandler extends LegacyHandler {
             $query = "UPDATE emailman SET in_queue = '1', send_attempts = send_attempts + 1, in_queue_date = :now ";
             $query .= "WHERE id = :id";
 
-            $this->preparedStatementHandler->update($query,[
-                'now' => $timedate->now(),
-                'id' => $id
-            ], [
-                ['param' => 'now', 'type' => 'datetime'],
-                ['param' => 'id', 'type' => 'string']
-            ]);
+            try {
+                $this->preparedStatementHandler->update($query, [
+                    'now' => $timedate->now(),
+                    'id' => $id
+                ], [
+                    ['param' => 'now', 'type' => 'datetime'],
+                    ['param' => 'id', 'type' => 'string']
+                ]);
+            } catch (Exception $e) {
+                $this->logger->error($e->getMessage());
+            }
 
             return;
         }
@@ -192,11 +196,16 @@ class EmailManagerHandler extends LegacyHandler {
         $this->close();
 
         $query = "DELETE FROM emailman WHERE id = :id ";
-        $this->preparedStatementHandler->update($query,  [
-            'id' => $id
-        ], [
-            ['param' => 'id', 'type' => 'string'],
-        ]);
+        try {
+            $this->preparedStatementHandler->update($query, [
+                'id' => $id
+            ], [
+                ['param' => 'id', 'type' => 'string'],
+            ]);
+        } catch (Exception $e) {
+            $this->logger->error('Unable to Delete Record from Email Man with the id' . $id);
+            $this->logger->error($e->getMessage());
+        }
     }
 
     /**
@@ -264,19 +273,6 @@ class EmailManagerHandler extends LegacyHandler {
                 $moduleBean->email_opt_out === 'on' ||
                 $moduleBean->email_opt_out === '1' ||
                 $moduleBean->email_opt_out === 1
-        );
-    }
-
-    /**
-     * @param SugarBean $moduleBean
-     * @return bool
-     */
-    protected function isInvalidEmail(SugarBean $moduleBean): bool
-    {
-        return isset($moduleBean->invalid_email) && (
-            $moduleBean->invalid_email === 'on' ||
-            $moduleBean->invalid_email === 1 ||
-            $moduleBean->invalid_email === '1'
         );
     }
 
