@@ -32,7 +32,6 @@ use App\Engine\LegacyHandler\DefaultLegacyHandler;
 use App\Install\Command\BaseCommand;
 use App\Schedulers\LegacyHandler\SchedulerHandler;
 use App\SystemConfig\LegacyHandler\SystemConfigHandler;
-use SuiteCRM\Exception\Exception;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -67,11 +66,6 @@ class RunSchedulersCommand extends BaseCommand
     }
 
 
-    /**
-     * @throws Exception
-     * @throws \Doctrine\DBAL\Exception
-     * @throws \DateMalformedStringException
-     */
     protected function executeCommand(InputInterface $input, OutputInterface $output, array $inputs): int
     {
         $this->authentication->initLegacySystemSession();
@@ -80,50 +74,30 @@ class RunSchedulersCommand extends BaseCommand
 
         $this->writeHeader($output, $appStrings['LBL_RUN_LEGACY_SCHEDULERS']);
 
-        $passed = $this->schedulerHandler->runLegacySchedulers();
-        $color = 'green';
-        $label = $appStrings['LBL_LEGACY_SCHEDULERS_RUN_SUCCESSFULLY'];
-
-        if (!$passed) {
-            $color = 'red';
-            $label = $appStrings['LBL_LEGACY_SCHEDULER_FAILED'];
-        }
-
-        $output->writeln([
-            $this->colorText($color, $label),
-            ''
-        ]);
+        $this->runLegacySchedulers($output);
 
         $this->writeHeader($output, $appStrings['LBL_RUN_SCHEDULERS']);
 
-        $this->runSchedulers($appStrings, $output);
+        $this->runSchedulers($output);
 
         return 0;
     }
 
 
     /**
-     * @param array|null $appStrings
      * @param OutputInterface $output
      * @return void
      */
-    public function runSchedulers(?array $appStrings, OutputInterface $output): void
+    public function runSchedulers(OutputInterface $output): void
     {
         $results = $this->schedulerHandler->runSchedulers();
-        $color = 'green';
-        $label = '(' .  $appStrings['LBL_PASSED'] . ')';
+        $this->showResults($output, $results);
+    }
 
-        foreach ($results as $result) {
-
-            if ($result['result'] === false) {
-                $label = '(' .  $appStrings['LBL_NEW'] . ')';
-                $color = 'red';
-            }
-
-            $output->writeln([
-                $result['name'] . ' ' . $this->colorText($color, $label),
-            ]);
-        }
+    protected function runLegacySchedulers($output): void
+    {
+        $results = $this->schedulerHandler->runLegacySchedulers();
+        $this->showResults($output, $results);
     }
 
     /**
@@ -139,5 +113,33 @@ class RunSchedulersCommand extends BaseCommand
             '=========================',
             ''
         ]);
+    }
+
+    protected function showResults($output, $results): void
+    {
+        $appStrings = $this->getAppStrings();
+        $color = 'green';
+        $label = '(' .  $appStrings['LBL_PASSED'] . ')';
+
+
+        if (empty($results)) {
+            $output->writeln([
+                'No Schedulers to run.'
+            ]);
+        }
+
+        foreach ($results as $result) {
+
+            if ($result['result'] === false) {
+                $label = '(' .  $appStrings['LBL_NEW'] . ')';
+                $color = 'red';
+            }
+
+            $output->writeln([
+                $result['name'] . ' ' . $this->colorText($color, $label),
+            ]);
+        }
+
+        $output->writeln(['']);
     }
 }
