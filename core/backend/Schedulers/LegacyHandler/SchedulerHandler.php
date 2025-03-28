@@ -162,6 +162,31 @@ class SchedulerHandler extends LegacyHandler {
         return $response;
     }
 
+    /**
+     * @throws \DateMalformedStringException
+     * @throws Exception
+     * @throws \Doctrine\DBAL\Exception
+     */
+    public function runLegacySchedulers(): bool {
+
+        if (!$this->throttle()){
+            $this->logger->error('Job runs too frequently, throttled to protect the system.');
+            return false;
+        }
+
+        $this->cleanup(true);
+
+        $this->clearHistoricJobs(true);
+
+        $schedulers = $this->getLegacySchedulers();
+
+        foreach ($schedulers as $scheduler) {
+            $this->createJob($scheduler);
+        }
+
+        return $this->runLegacyJobs();
+    }
+
     public function resolveJob($id, $result, $messages = null): void
     {
 
