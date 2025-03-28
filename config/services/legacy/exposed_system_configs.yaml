@@ -48,5 +48,16 @@ parameters:
     enable_record_pagination: true
     auth_type: true
     test_email_limit: true
+    jobs:
+      min_retry_interval: true
+      max_retries: true
+      timeout: true
+      failure_lifetime: true
+      success_lifetime: true
+    cron:
+      max_cron_jobs: true
+      max_cron_runtime: true
+      min_cron_interval: true
+      allowed_cron_users: true
     cron_class: true
     emails_per_run: true
