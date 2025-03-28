@@ -31,6 +31,8 @@ use App\Authentication\LegacyHandler\Authentication;
 use App\Engine\LegacyHandler\DefaultLegacyHandler;
 use App\Install\Command\BaseCommand;
 use App\Schedulers\LegacyHandler\SchedulerHandler;
+use App\SystemConfig\LegacyHandler\SystemConfigHandler;
+use SuiteCRM\Exception\Exception;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -40,19 +42,21 @@ class RunSchedulersCommand extends BaseCommand
 {
     protected SchedulerHandler $schedulerHandler;
     protected Authentication $authentication;
+    protected SystemConfigHandler $systemConfigHandler;
 
     public function __construct(
         SchedulerHandler $schedulerHandler,
         Authentication $authentication,
         DefaultLegacyHandler $legacyHandler,
+        SystemConfigHandler $systemConfigHandler,
         ?string          $name = null
     )
     {
-
         $this->schedulerHandler = $schedulerHandler;
         $this->initSession = true;
         $this->authentication = $authentication;
         $this->legacyHandler = $legacyHandler;
+        $this->systemConfigHandler = $systemConfigHandler;
         parent::__construct($name);
     }
 
@@ -63,6 +67,11 @@ class RunSchedulersCommand extends BaseCommand
     }
 
 
+    /**
+     * @throws Exception
+     * @throws \Doctrine\DBAL\Exception
+     * @throws \DateMalformedStringException
+     */
     protected function executeCommand(InputInterface $input, OutputInterface $output, array $inputs): int
     {
         $this->authentication->initLegacySystemSession();
@@ -102,12 +111,12 @@ class RunSchedulersCommand extends BaseCommand
     {
         $results = $this->schedulerHandler->runSchedulers();
         $color = 'green';
-        $label = $appStrings['LBL_PASSED'];
+        $label = '(' .  $appStrings['LBL_PASSED'] . ')';
 
         foreach ($results as $result) {
 
             if ($result['result'] === false) {
-                $label = $appStrings['LBL_NEW'];
+                $label = '(' .  $appStrings['LBL_NEW'] . ')';
                 $color = 'red';
             }
 
@@ -131,6 +140,4 @@ class RunSchedulersCommand extends BaseCommand
             ''
         ]);
     }
-
-
 }
