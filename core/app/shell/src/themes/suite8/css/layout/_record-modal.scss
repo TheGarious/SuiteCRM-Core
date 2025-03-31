@@ -271,10 +271,15 @@ body.modal-open.detached-modal-open {
 
         .modal-header {
           .modal-title {
-            max-width: calc(100vw - 74px);
+
+            &.minimized {
+              max-width: 223px;
+            }
+
+            max-width: calc(100vw - 77px);
             overflow: hidden;
             span {
-              max-width: calc(100vw - 74px);
+              max-width: calc(100vw - 77px);
               white-space: nowrap;
               overflow: hidden;
               text-overflow: ellipsis;
