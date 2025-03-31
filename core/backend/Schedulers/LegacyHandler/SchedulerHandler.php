@@ -195,11 +195,16 @@ class SchedulerHandler extends LegacyHandler {
         $this->init();
 
         $job = \BeanFactory::getBean('SchedulersJobs', $id);
-        $job->resolution = 'failed';
+        $job->resolution = 'success';
+        $job->status = 'done';
 
-        if ($result) {
-            $job->resolution = 'success';
-            $job->status = 'done';
+        if (!$result) {
+            $job->resolution = 'failed';
+            $job->failure_count++;
+
+            if ($job->requeue && $job->retry_count > 0){
+                $this->requeueJob($job);
+            }
         }
 
         if (!empty($messages)) {
@@ -304,7 +309,7 @@ class SchedulerHandler extends LegacyHandler {
                 $result = $this->preparedStatementHandler->update($update, [
                     'job_status' => $job->status,
                     'now' => $timedate->nowDb(),
-                    'client_id' => $cronId,
+                    'client_id' => $job->client,
                     'job_id' => $job->id,
                     'status' => 'queued'
                 ], [
@@ -449,7 +454,7 @@ class SchedulerHandler extends LegacyHandler {
         }
 
         foreach ($results as $result) {
-            $this->resolveJob($result, false, $app_strings['ERR_TIMEOUT']);
+            $this->resolveJob($result['id'], false, $app_strings['ERR_TIMEOUT']);
         }
     }
 
@@ -499,7 +504,7 @@ class SchedulerHandler extends LegacyHandler {
         }
 
         foreach ($results as $result) {
-            $this->deleteJob($result);
+            $this->deleteJob($result['id']);
         }
     }
 
@@ -598,5 +603,30 @@ class SchedulerHandler extends LegacyHandler {
         } catch (Exception $e) {
             $this->logger->error($e->getMessage());
         }
+    }
+
+    /**
+     * @param \SugarBean|bool $job
+     * @return void
+     */
+    public function requeueJob(\SugarBean|bool $job): void
+    {
+        global $timedate;
+
+        $job->status = 'queued';
+
+        if ($job->job_delay < $job->min_interval) {
+            $job->job_delay = $job->min_interval;
+        }
+
+        try {
+            $job->execute_time = $timedate->getNow()->modify("+{$job->job_delay} seconds")->asDb();
+        } catch (\DateMalformedStringException $e) {
+            $this->logger->error($e->getMessage());
+        }
+
+        $job->retry_count--;
+
+        $this->logger->info("Will retry job $job->name at $job->execute_time $job->retry_count");
     }
 }
