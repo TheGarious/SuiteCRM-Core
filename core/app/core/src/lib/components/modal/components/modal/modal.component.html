@@ -26,7 +26,7 @@
 */
 -->
 <div [class]="klass" [class.minimizable]="minimizable" [ngClass]="{'minimized': isMinimized()}">
-    <div *ngIf="titleKey || descriptionKey || limit" class="modal-header {{headerKlass}} d-flex align-items-center">
+    <div class="modal-header pt-0 pb-0 {{headerKlass}} d-flex align-items-center">
         <div class="modal-title"
              (click)="minimizable ? toggleMinimize() : null">
             <scrm-label class="mt-1" *ngIf="titleKey && !dynamicTitleKey" [labelKey]="titleKey"></scrm-label>
