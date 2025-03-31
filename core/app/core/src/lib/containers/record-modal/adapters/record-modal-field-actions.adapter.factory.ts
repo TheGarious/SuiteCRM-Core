@@ -55,7 +55,7 @@ export class RecordModalFieldActionsAdapterFactory {
     }
 
     create(viewName: string, fieldName: string, store: any): RecordModalFieldActionsAdapter {
-        const adapter = new RecordModalFieldActionsAdapter(
+        return new RecordModalFieldActionsAdapter(
             store,
             this.metadata,
             this.appMetadataStore,
@@ -69,7 +69,5 @@ export class RecordModalFieldActionsAdapterFactory {
             viewName,
             fieldName
         );
-
-        return adapter;
     }
 }

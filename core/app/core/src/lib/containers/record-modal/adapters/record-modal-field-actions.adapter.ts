@@ -24,7 +24,6 @@
  * the words "Supercharged by SuiteCRM".
  */
 
-import {Injectable} from '@angular/core';
 import {combineLatest, Observable} from 'rxjs';
 import {map, take} from 'rxjs/operators';
 import {MetadataStore} from '../../../store/metadata/metadata.store.service';
@@ -43,7 +42,6 @@ import {FieldActionData} from "../../../components/field-layout/actions/field.ac
 import {FieldActionManager} from "../../../components/field-layout/actions/field-action-manager.service";
 import {RecordModalStore} from "../store/record-modal/record-modal.store";
 
-@Injectable()
 export class RecordModalFieldActionsAdapter extends BaseFieldActionsAdapter<FieldActionData> {
 
     constructor(

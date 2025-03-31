@@ -36,8 +36,9 @@ import {ViewFieldDefinition} from '../../../common/metadata/metadata.model';
 import {AsyncValidatorFn, UntypedFormArray, UntypedFormControl, ValidatorFn} from '@angular/forms';
 import {LanguageStore} from '../../../store/language/language.store';
 import get from 'lodash-es/get';
-import {isEmpty, merge} from 'lodash-es';
+import {isEmpty, isObject, merge} from 'lodash-es';
 import {FieldObjectRegistry} from "./field-object-type.registry";
+import {deepClone} from "../../../common/utils/object-utils";
 
 
 @Injectable({
@@ -69,6 +70,10 @@ export class FieldBuilder {
 
         if (!isEmpty(currentModuleDefinitions)) {
             definition = currentModuleDefinitions;
+        }
+
+        if (!isEmpty(definition)) {
+            definition = deepClone(definition);
         }
 
         const {value, valueList, valueObject} = this.parseValue(viewField, definition, record);
@@ -218,7 +223,12 @@ export class FieldBuilder {
             field.formControl = new UntypedFormControl(formattedValue);
         }
 
-        field.fieldActions =   viewField?.fieldActions || definition?.fieldActions || null;
+        const fieldActions = viewField?.fieldActions ?? definition?.fieldActions ?? null;
+        field.fieldActions = null;
+
+        if (fieldActions && isObject(fieldActions)) {
+            field.fieldActions = deepClone(fieldActions);
+        }
 
         field.displayType =  viewField?.displayType ?? definition?.displayType ?? '';
 

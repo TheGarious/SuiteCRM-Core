@@ -52,7 +52,7 @@ export class RecordStoreFactory {
         recordMappers.register('default', baseMapper.getKey(), baseMapper);
     }
 
-    create(definitions$: Observable<ViewFieldDefinition[]>, metadata$?: Observable<ObjectMap>): RecordStore {
+    create(definitions$: Observable<ViewFieldDefinition[]>, metadata$?: Observable<ObjectMap>, options: ObjectMap = null): RecordStore {
         return new RecordStore(
             definitions$,
             metadata$,
@@ -60,7 +60,8 @@ export class RecordStoreFactory {
             this.recordFetchGQL,
             this.message,
             this.recordManager,
-            this.recordMappers
+            this.recordMappers,
+            options
         );
     }
 }
