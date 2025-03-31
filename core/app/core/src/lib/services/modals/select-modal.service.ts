@@ -57,23 +57,28 @@ export class SelectModalService {
 
         const modal = this.modalService.open(RecordListModalComponent, {size: 'xl', scrollable: true});
         modal.componentInstance.module = selectModule;
-        modal.result.then((result: RecordListModalResult) => {
+        modal.result.then(
+            (result: RecordListModalResult) => {
 
-            if (!result || !result.selection || !result.selection.selected) {
-                return;
-            }
+                if (!result || !result.selection || !result.selection.selected) {
+                    return;
+                }
 
-            const record: Record = this.getSelectedRecord(result);
-            if (!record.id) {
-                let message = this.languageStore.getFieldLabel('ERROR_NO_RECORD');
-                this.message.addDangerMessage(message);
-                return;
-            }
+                const record: Record = this.getSelectedRecord(result);
+                if (!record.id) {
+                    let message = this.languageStore.getFieldLabel('ERROR_NO_RECORD');
+                    this.message.addDangerMessage(message);
+                    return;
+                }
 
-            if (onSelectCallback !== null) {
-                onSelectCallback(record);
+                if (onSelectCallback !== null) {
+                    onSelectCallback(record);
+                }
+            },
+            () => {
+                // Modal dismissed
             }
-        });
+        );
     }
 
     /**
