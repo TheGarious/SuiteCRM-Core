@@ -78,34 +78,37 @@ export class SubpanelSelectAction extends SubpanelActionHandler {
 
         modal.result.then((result: RecordListModalResult) => {
 
-            if (!result || !result.selection || !result.selection.selected) {
-                return;
+                if (!result || !result.selection || !result.selection.selected) {
+                    return;
+                }
+
+                const recordIds = this.getSelectedIds(result);
+
+                let linkField: string = data.subpanelMeta.get_subpanel_data;
+
+                const collectionList = data.subpanelMeta?.collection_list ?? null;
+
+                if (collectionList && collectionList?.[module]?.get_subpanel_data) {
+                    linkField = collectionList[module].get_subpanel_data;
+                }
+                const input = {
+                    action: 'record-select',
+                    module: data.store.parentModule,
+                    id: data.store.parentId || '',
+                    payload: {
+                        baseModule: data.parentModule,
+                        baseRecordId: data.parentId,
+                        linkField,
+                        relateModule: module,
+                        relateRecordIds: recordIds
+                    },
+                } as AsyncActionInput
+
+                this.runAsyncAction(input, data);
+            },
+            () => {
             }
-
-            const recordIds = this.getSelectedIds(result);
-
-            let linkField: string = data.subpanelMeta.get_subpanel_data;
-
-            const collectionList = data.subpanelMeta?.collection_list ?? null;
-
-            if (collectionList && collectionList?.[module]?.get_subpanel_data) {
-                linkField = collectionList[module].get_subpanel_data;
-            }
-            const input = {
-                action: 'record-select',
-                module: data.store.parentModule,
-                id: data.store.parentId || '',
-                payload: {
-                    baseModule: data.parentModule,
-                    baseRecordId: data.parentId,
-                    linkField,
-                    relateModule: module,
-                    relateRecordIds: recordIds
-                },
-            } as AsyncActionInput
-
-            this.runAsyncAction(input, data);
-        });
+        );
     }
 
 
