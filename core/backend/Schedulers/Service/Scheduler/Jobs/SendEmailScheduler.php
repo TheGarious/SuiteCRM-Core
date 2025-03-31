@@ -250,7 +250,7 @@ class SendEmailScheduler extends LegacyHandler implements SchedulerInterface
         return $user;
     }
 
-    protected function getBean(string $module, mixed $id = ''): SugarBean|bool
+    protected function getBean(string $module, string $id = ''): SugarBean|bool
     {
         $this->init();
 
@@ -290,7 +290,7 @@ class SendEmailScheduler extends LegacyHandler implements SchedulerInterface
         return $emailRecord;
     }
 
-    protected function getRecord(string $module, mixed $id = ''): Record
+    protected function getRecord(string $module, string $id = ''): Record
     {
         $bean = $this->getBean($module, $id);
 
