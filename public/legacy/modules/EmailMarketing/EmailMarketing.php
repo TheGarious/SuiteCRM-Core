@@ -317,4 +317,12 @@ class EmailMarketing extends SugarBean
 
         return $listQuery;
     }
+
+    public function mark_deleted($id): void
+    {
+        $id = $this->db->quote($id);
+        $query = "update campaign_log set deleted = 1 where marketing_id = " . $id;
+        $this->db->query($query);
+        parent::mark_deleted($id);
+    }
 }
