@@ -29,6 +29,7 @@ namespace App\Schedulers\Command;
 
 use App\Data\LegacyHandler\PreparedStatementHandler;
 use App\Install\Command\BaseCommand;
+use Doctrine\DBAL\Exception;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -75,7 +76,13 @@ class ShowSchedulersCommand extends BaseCommand {
             $where = "WHERE job LIKE '%scheduler::%'";
         }
 
-        $records = $this->preparedStatementHandler->fetchAll($query . $where, []);
+        try {
+            $records = $this->preparedStatementHandler->fetchAll($query . $where, []);
+        } catch (Exception $e) {
+            $output->writeln($e->getMessage());
+
+            return 1;
+        }
 
         $output->writeln([
             '',
