@@ -94,20 +94,19 @@ class RunSchedulersCommand extends BaseCommand
         $this->showResults($output, $results);
     }
 
-    protected function runLegacySchedulers($output): void
+    protected function runLegacySchedulers(OutputInterface $output): void
     {
         $results = $this->schedulerHandler->runLegacySchedulers();
         $this->showResults($output, $results);
     }
 
     /**
-     * @param $output
-     * @param $header
-     * @return string|null
+     * @param OutputInterface $output
+     * @param string $header
      */
-    protected function writeHeader($output, $header): ?string
+    protected function writeHeader(OutputInterface $output, string $header): void
     {
-        return $output->writeln([
+        $output->writeln([
             '',
             $header,
             '=========================',
@@ -115,7 +114,7 @@ class RunSchedulersCommand extends BaseCommand
         ]);
     }
 
-    protected function showResults($output, $results): void
+    protected function showResults(OutputInterface $output, array $results): void
     {
         $appStrings = $this->getAppStrings();
         $color = 'green';

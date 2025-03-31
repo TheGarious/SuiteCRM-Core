@@ -122,11 +122,7 @@ class AddEmailToQueueScheduler extends LegacyHandler implements SchedulerInterfa
         return $passed;
     }
 
-    /**
-     * @param $emId
-     * @return false|mixed
-     */
-    protected function getProspectLists($emId): mixed
+    protected function getProspectLists(string $emId): array
     {
         $query = "SELECT email_marketing_prospect_lists.* FROM email_marketing_prospect_lists ";
         $query .= 'INNER JOIN prospect_lists on prospect_lists.id = email_marketing_prospect_lists.prospect_list_id ';
@@ -143,14 +139,7 @@ class AddEmailToQueueScheduler extends LegacyHandler implements SchedulerInterfa
         return $records;
     }
 
-    /**
-     * @param $prospectId
-     * @param $emId
-     * @param $campaignId
-     * @param $sendDate
-     * @return bool
-     */
-    protected function runInsertQuery($prospectId, $emId, $campaignId, $sendDate): bool
+    protected function runInsertQuery(string $prospectId, string $emId, string $campaignId, string $sendDate): bool
     {
         $timedate = $this->emailManagerHandler->getTimeDate();
         $user = $this->getUser();
@@ -203,9 +192,6 @@ class AddEmailToQueueScheduler extends LegacyHandler implements SchedulerInterfa
         return true;
     }
 
-    /**
-     * @return \SugarBean|null
-     */
     protected function getUser(): ?\SugarBean {
 
         $this->init();
@@ -219,14 +205,7 @@ class AddEmailToQueueScheduler extends LegacyHandler implements SchedulerInterfa
         return $user;
     }
 
-
-    /**
-     * @param $campaignId
-     * @param $marketingId
-     * @param $listId
-     * @return void
-     */
-    protected function runDeleteQuery($campaignId, $marketingId, $listId): void
+    protected function runDeleteQuery(string $campaignId, string $marketingId, string $listId): void
     {
         $table = $this->emailManagerHandler->getTable();
         $query = "DELETE FROM $table WHERE campaign_id = :campaign_id ";
@@ -248,11 +227,7 @@ class AddEmailToQueueScheduler extends LegacyHandler implements SchedulerInterfa
 
     }
 
-    /**
-     * @param $marketingId
-     * @return void
-     */
-    protected function deleteExemptEntries($marketingId): void
+    protected function deleteExemptEntries(string $marketingId): void
     {
         $table = $this->emailManagerHandler->getTable();
         $query = "DELETE FROM $table WHERE id IN ( SELECT em.id FROM ( SELECT emailman.id id FROM emailman ";

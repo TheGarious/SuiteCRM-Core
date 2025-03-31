@@ -90,9 +90,6 @@ class SchedulerHandler extends LegacyHandler {
         return self::HANDLER_KEY;
     }
 
-    /**
-     * @return array
-     */
     public function runSchedulers(): array {
 
         if (!$this->throttle()){
@@ -352,9 +349,6 @@ class SchedulerHandler extends LegacyHandler {
         return $id;
     }
 
-    /**
-     * @return array|null
-     */
     public function getCronConfig(): ?array
     {
         return $this->systemConfigHandler->getSystemConfig('cron')?->getItems();
@@ -421,7 +415,7 @@ class SchedulerHandler extends LegacyHandler {
         $this->close();
     }
 
-    public function cleanup($isLegacy): void
+    public function cleanup(bool $isLegacy): void
     {
         $this->init();
 
@@ -464,9 +458,7 @@ class SchedulerHandler extends LegacyHandler {
         $this->processJobs($isLegacy, $this->failureLifetime, false);
     }
 
-    /**
-     */
-    protected function processJobs(bool $isLegacy, $days, bool $success): void
+    protected function processJobs(bool $isLegacy, string $days, bool $success): void
     {
         $this->init();
 
@@ -580,12 +572,12 @@ class SchedulerHandler extends LegacyHandler {
         $this->jobTries = $jobConfig['max_retries'] ?? $this->jobTries;
     }
 
-    protected function jobFailed($job): void
+    protected function jobFailed(\SugarBean $job): void
     {
         $this->logger->error('Scheduler job failed: ' . $job->name);
     }
 
-    protected function updateLastRun($id): void
+    protected function updateLastRun(string $id): void
     {
         $this->init();
 
