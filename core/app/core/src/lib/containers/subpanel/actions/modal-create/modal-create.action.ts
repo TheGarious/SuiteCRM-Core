@@ -32,6 +32,7 @@ import {ViewMode} from "../../../../common/views/view.model";
 import {SubpanelActionData, SubpanelActionHandler} from "../subpanel.action";
 import {NgbModalOptions} from "@ng-bootstrap/ng-bootstrap/modal/modal-config";
 import {RecordFieldInjector} from "../../../../services/record/record-field-injector.service";
+import {deepClone} from "../../../../common/utils/object-utils";
 
 @Injectable({
     providedIn: 'root'
@@ -72,6 +73,7 @@ export class SubpanelModalCreateAction extends SubpanelActionHandler {
         }
 
         const modal = this.modalService.open(RecordModalComponent, modalOptions);
+
         const mode = 'create' as ViewMode;
 
         const moduleName = data.module;
@@ -91,7 +93,7 @@ export class SubpanelModalCreateAction extends SubpanelActionHandler {
 
         const parentRecord = data?.store?.parentRecord ?? null;
         if (parentRecord && mappedFieldsConfig) {
-            modal.componentInstance.mappedFields = this.recordFieldInjector.getInjectFieldsMap(parentRecord, mappedFieldsConfig);
+            modal.componentInstance.mappedFields = deepClone(this.recordFieldInjector.getInjectFieldsMap(parentRecord, mappedFieldsConfig));
         }
 
         modal.componentInstance.metadataView = data?.action?.metadataView ?? 'recordView';

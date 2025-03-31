@@ -24,7 +24,6 @@
  * the words "Supercharged by SuiteCRM".
  */
 
-import {Injectable} from '@angular/core';
 import {BehaviorSubject, combineLatest, combineLatestWith, Observable, of, Subscription} from 'rxjs';
 import {catchError, distinctUntilChanged, finalize, map, take, tap} from 'rxjs/operators';
 import {Metadata, MetadataStore, RecordViewMetadata} from '../../../../store/metadata/metadata.store.service';
@@ -73,7 +72,6 @@ const initialState: any = {
     }
 };
 
-@Injectable()
 export class RecordModalStore implements StateStore, BaseRecordContainerStoreInterface {
 
     record$: Observable<Record>;
@@ -182,10 +180,17 @@ export class RecordModalStore implements StateStore, BaseRecordContainerStoreInt
             ).subscribe()
         );
 
-        this.recordStore = this.recordStoreFactory.create(this.getViewFieldsObservable(), this.getRecordMetadata$());
+        const initOptions = {
+            initVardefBasedFieldActions: true,
+            buildFieldActionAdapter: ((options?: ObjectMap): ActionDataSource => {
+                return this.fieldActionAdaptorFactory.create('recordView', ((options?.field) as Field)?.name ?? '', this);
+            }) as ActionDataSourceBuilderFunction
+        };
+
+        this.recordStore = this.recordStoreFactory.create(this.getViewFieldsObservable(), this.getRecordMetadata$(), initOptions);
 
         if (mode === 'create') {
-            const blankRecord = {
+            const blankRecord = deepClone({
                 id: '',
                 type: '',
                 module: module,
@@ -196,18 +201,12 @@ export class RecordModalStore implements StateStore, BaseRecordContainerStoreInt
                         user_name: this.appStateStore.getCurrentUser().userName
                     },
                 },
-            } as Record;
+            } as Record);
 
             this.recordManager.injectParamFields(params, blankRecord, this.getVardefs());
             this.recordStore.init(
                 blankRecord,
-                true,
-                {
-                    initVardefBasedFieldActions: true,
-                    buildFieldActionAdapter: ((options?: ObjectMap): ActionDataSource => {
-                        return this.fieldActionAdaptorFactory.create('recordView', ((options?.field) as Field)?.name ?? '', this);
-                    }) as ActionDataSourceBuilderFunction
-                }
+                true
             );
         } else {
             this.load().pipe(

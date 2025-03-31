@@ -36,6 +36,7 @@ import {Params} from '@angular/router';
 import {FieldHandlerRegistry} from "./field/handler/field-handler.registry";
 import {ActionDataSourceBuilderFunction} from "../../common/actions/action.model";
 import {ObjectMap} from "../../common/types/object-map";
+import {deepClone} from "../../common/utils/object-utils";
 
 @Injectable({
     providedIn: 'root'
@@ -256,10 +257,12 @@ export class RecordManager {
     }
 
     initVardefBasedFieldActions(record: Record, buildFieldActionAdapter: ActionDataSourceBuilderFunction): void {
-        Object.values(record.fields).forEach(field => {
-            if (field?.fieldActions || field?.definition?.fieldActions) {
-                const fieldActions = field.fieldActions ?? field?.definition?.fieldActions;
+        Object.values(record?.fields ?? {}).forEach(field => {
+            let fieldActions = field.fieldActions ?? field?.definition?.fieldActions ?? null;
+            if (fieldActions && !fieldActions.adapter) {
+                fieldActions = deepClone(fieldActions);
                 fieldActions.adapter = buildFieldActionAdapter({field} as ObjectMap);
+                field.fieldActions = fieldActions;
             }
         });
 

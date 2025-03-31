@@ -38,7 +38,6 @@ import {ViewMode} from "../../../common/views/view.model";
 import {Panel} from "../../../common/metadata/metadata.model";
 import {Record} from "../../../common/record/record.model";
 
-@Injectable()
 export class RecordModalContentAdapter implements RecordContentDataSource {
     inlineEdit: true;
 

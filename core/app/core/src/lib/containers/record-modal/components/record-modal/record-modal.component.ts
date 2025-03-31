@@ -47,6 +47,7 @@ import {Record} from "../../../../common/record/record.model";
 import {ObjectMap} from "../../../../common/types/object-map";
 import {StringMap} from "../../../../common/types/string-map";
 import {FieldMap} from "../../../../common/record/field.model";
+import {deepClone} from "../../../../common/utils/object-utils";
 
 @Component({
     selector: 'scrm-record-modal',
@@ -126,19 +127,25 @@ export class RecordModalComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
         this.subs.forEach(sub => sub.unsubscribe());
+        this.contentAdapter = null
+        this.actionsAdapter = null
 
         this.modalStore.clear();
+        this.modalStore = null;
+        this.subs = [];
     }
 
     init(): void {
+        this.record = null;
+        this.subs = [];
+        this.contentAdapter = null;
+        this.actionsAdapter = null;
+        this.modalStore = null;
+
 
         this.modalStore = this.storeFactory.create(this.metadataView);
-        if (!this.contentAdapter) {
-            this.contentAdapter = this.recordModalContentAdapterFactory.create(this.modalStore);
-        }
-        if (!this.actionsAdapter) {
-            this.actionsAdapter = this.recordModalActionsAdapterFactory.create(this.modalStore, this.activeModal);
-        }
+        this.contentAdapter = this.recordModalContentAdapterFactory.create(this.modalStore);
+        this.actionsAdapter = this.recordModalActionsAdapterFactory.create(this.modalStore, this.activeModal);
 
 
         this.subs.push(
@@ -151,7 +158,7 @@ export class RecordModalComponent implements OnInit, OnDestroy {
                     ).subscribe(([record, loading, viewContext]): void => {
                         this.record = record;
                         this.fields.set({...(record.fields ?? {})})
-                        this.viewContext = viewContext;
+                        this.viewContext = {...viewContext};
                     })
                 );
             })
@@ -163,7 +170,7 @@ export class RecordModalComponent implements OnInit, OnDestroy {
             return;
         }
 
-        this.modalStore.init(this.module, this.recordId, this.mode, this.mappedFields ?? {});
+        this.modalStore.init(this.module, this.recordId, this.mode, deepClone(this.mappedFields ?? {}));
         this.loading$ = this.modalStore.metadataLoading$;
     }
 }

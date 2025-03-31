@@ -81,6 +81,7 @@ export class RecordStore {
         protected message: MessageService,
         protected recordManager: RecordManager,
         protected recordMappers: RecordMapperRegistry,
+        protected options: ObjectMap = null
     ) {
 
 
@@ -104,14 +105,14 @@ export class RecordStore {
 
     }
 
-    init(record: Record, initDefaultValues = false, options: ObjectMap = null): void {
+    init(record: Record, initDefaultValues = false): void {
         const newRecord = {
             ...record,
         };
 
         this.initFieldDefaults = initDefaultValues;
 
-        this.initRecord(newRecord, false, options);
+        this.initRecord(newRecord, false);
 
         this.updateState(newRecord);
     }
@@ -125,7 +126,7 @@ export class RecordStore {
 
     setStaging(record: Record): void {
 
-        this.initRecord(record);
+        this.initRecord(record, false, this?.options ?? null);
 
         this.staging.next(this.stagingState = record);
     }
@@ -281,7 +282,7 @@ export class RecordStore {
     protected updateStaging(state: Record): void {
 
         const newState = deepClone(this.extractBaseRecord(state));
-        this.initRecord(newState, this.initFieldDefaults);
+        this.initRecord(newState, this.initFieldDefaults, this?.options ?? null);
 
         this.staging.next(this.stagingState = newState);
     }
