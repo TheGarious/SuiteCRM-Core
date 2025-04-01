@@ -24,7 +24,7 @@
  * the words "Supercharged by SuiteCRM".
  */
 
-import {Component, Input, OnDestroy, OnInit, signal, WritableSignal} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, signal, WritableSignal} from '@angular/core';
 import {ButtonInterface} from '../../../../common/components/button/button.model';
 import {MinimiseButtonStatus} from "../../../minimise-button/minimise-button.component";
 import {Observable, Subscription} from "rxjs";
@@ -60,6 +60,7 @@ export class ModalComponent implements OnInit, OnDestroy {
     @Input() close: ButtonInterface = {
         klass: ['btn', 'btn-outline-light', 'btn-sm']
     } as ButtonInterface;
+    @Output('onMinimizeToggle') onMinimizeToggle: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     isMinimized: WritableSignal<boolean> = signal(false);
     minimiseButton: ButtonInterface;
@@ -94,6 +95,7 @@ export class ModalComponent implements OnInit, OnDestroy {
 
     toggleMinimize() {
         this.isMinimized.set(!this.isMinimized());
+        this.onMinimizeToggle.emit(this.isMinimized());
         this.initMinimiseStatus();
     }
 
