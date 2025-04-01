@@ -29,12 +29,15 @@
 namespace App\Process\Service\RecordActions;
 
 use ApiPlatform\Exception\InvalidArgumentException;
+use App\Data\LegacyHandler\PreparedStatementHandler;
 use App\Engine\LegacyHandler\LegacyHandler;
 use App\Engine\LegacyHandler\LegacyScopeState;
 use App\Process\Entity\Process;
 use App\Module\Service\ModuleNameMapperInterface;
 use App\Process\Service\ProcessHandlerInterface;
 use BeanFactory;
+use Doctrine\DBAL\Exception;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class UnscheduleEmailMarketingAction extends LegacyHandler implements ProcessHandlerInterface
@@ -43,16 +46,9 @@ class UnscheduleEmailMarketingAction extends LegacyHandler implements ProcessHan
     protected const PROCESS_TYPE = 'record-unschedule-email-marketing';
 
     protected ModuleNameMapperInterface $moduleNameMapper;
+    protected PreparedStatementHandler $preparedStatementHandler;
+    protected LoggerInterface $logger;
 
-    /**
-     * @param string $projectDir
-     * @param string $legacyDir
-     * @param string $legacySessionName
-     * @param string $defaultSessionName
-     * @param LegacyScopeState $legacyScopeState
-     * @param RequestStack $requestStack
-     * @param ModuleNameMapperInterface $moduleNameMapper
-     */
     public function __construct(
         string $projectDir,
         string $legacyDir,
@@ -61,6 +57,8 @@ class UnscheduleEmailMarketingAction extends LegacyHandler implements ProcessHan
         LegacyScopeState $legacyScopeState,
         RequestStack $requestStack,
         ModuleNameMapperInterface $moduleNameMapper,
+        PreparedStatementHandler $preparedStatementHandler,
+        LoggerInterface $logger
     ) {
         parent::__construct(
             $projectDir,
@@ -71,6 +69,8 @@ class UnscheduleEmailMarketingAction extends LegacyHandler implements ProcessHan
             $requestStack
         );
         $this->moduleNameMapper = $moduleNameMapper;
+        $this->preparedStatementHandler = $preparedStatementHandler;
+        $this->logger = $logger;
     }
 
     /**
@@ -148,6 +148,8 @@ class UnscheduleEmailMarketingAction extends LegacyHandler implements ProcessHan
         $module = $this->moduleNameMapper->toLegacy($options['module']);
         $id = $options['id'];
 
+        $this->removeFromQueue($id);
+
         $this->init();
 
         $bean = BeanFactory::getBean($module, $id);
@@ -160,6 +162,26 @@ class UnscheduleEmailMarketingAction extends LegacyHandler implements ProcessHan
 
         $process->setStatus('success');
         $process->setData(['reload' => true]);
+    }
+
+    protected function removeFromQueue(string $id): void
+    {
+        $query = 'DELETE FROM emailman WHERE marketing_id = :id';
+
+        try {
+            $result = $this->preparedStatementHandler->update($query, [
+                'id' => $id
+            ], [
+                ['param' => 'id', 'type' => 'string']
+            ]);
+        } catch (Exception $e) {
+            $result = '';
+            $this->logger->error($e->getMessage());
+        }
+
+        if (empty($result)) {
+            $this->logger->error('Records in EmailMan may not have deleted with marketing_id:' . $id);
+        }
     }
 
 
