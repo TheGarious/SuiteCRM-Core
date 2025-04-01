@@ -104,15 +104,15 @@ export class MultiFlexRelateEditFieldComponent extends BaseMultiFlexRelateCompon
             }
             this.selectedValues = this.field.valueObjectArray.map(valueElement => {
 
-                const relateValue = valueElement[relatedFieldName] ?? valueElement.attributes[relatedFieldName] ?? '';
-                const moduleName = valueElement['module_name'] ?? valueElement.attributes['module_name'] ?? '';
+                const relateValue = valueElement[relatedFieldName] ?? valueElement?.attributes[relatedFieldName] ?? '';
+                const moduleName = valueElement['module_name'] ?? valueElement?.attributes['module_name'] ?? '';
 
                 const relateId = valueElement['id'] ?? '';
 
                 const headerField = this.headerFields[moduleName] ?? 'name';
                 const subHeader = this.subHeaderFields[moduleName] ?? '';
-                const headerFieldValue = valueElement[headerField] ?? valueElement.attributes[headerField] ?? '';
-                const subHeaderFieldValue = valueElement[subHeader] ?? valueElement.attributes[subHeader] ?? '';
+                const headerFieldValue = valueElement[headerField] ?? valueElement?.attributes[headerField] ?? '';
+                const subHeaderFieldValue = valueElement[subHeader] ?? valueElement?.attributes[subHeader] ?? '';
                 return {
                     ...(valueElement.attributes ?? {}),
                     id: relateId,
