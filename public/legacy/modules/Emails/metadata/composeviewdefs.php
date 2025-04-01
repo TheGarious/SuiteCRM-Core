@@ -115,6 +115,9 @@ $viewdefs['Emails']['ComposeView'] = [
                 [
                     'name' => 'to_addrs_names',
                     'type' => 'multiflexrelate',
+                    'displayParams' => [
+                        'required' => true,
+                    ],
                     'metadata' => [
                         'headerColumnClass' => 'col-xs-12 col-sm-2 col-md-2 col-lg-2',
                         'valueColumnClass' => 'col-xs-12 col-sm-10 col-md-10 col-lg-10',
