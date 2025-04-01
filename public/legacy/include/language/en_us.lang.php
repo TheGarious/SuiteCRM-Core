@@ -981,7 +981,8 @@ $app_list_strings = array(
         '' => '',
         'active' => 'Active',
         'inactive' => 'Inactive',
-        'scheduled' => 'Scheduled'
+        'scheduled' => 'Scheduled',
+        'sent' => 'Sent'
     ),
     'email_marketing_type_dom' => array(
         'marketing' => 'Marketing',
