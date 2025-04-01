@@ -126,6 +126,7 @@ $viewdefs['Emails']['ComposeView'] = [
                             ['module' => 'Leads', 'headerField' => 'name', 'subHeaderField' => 'email1'],
                             ['module' => 'Users', 'headerField' => 'name', 'subHeaderField' => 'email1'],
                             ['module' => 'Accounts', 'headerField' => 'name', 'subHeaderField' => 'email1'],
+                            ['module' => 'Emails', 'headerField' => 'name', 'subHeaderField' => 'email'],
                         ],
                     ],
                     'fieldActions' => [
@@ -170,6 +171,7 @@ $viewdefs['Emails']['ComposeView'] = [
                             ['module' => 'Leads', 'headerField' => 'name', 'subHeaderField' => 'email1'],
                             ['module' => 'Users', 'headerField' => 'name', 'subHeaderField' => 'email1'],
                             ['module' => 'Accounts', 'headerField' => 'name', 'subHeaderField' => 'email1'],
+                            ['module' => 'Emails', 'headerField' => 'name', 'subHeaderField' => 'email'],
                         ],
                     ],
                 ],
@@ -187,6 +189,7 @@ $viewdefs['Emails']['ComposeView'] = [
                             ['module' => 'Leads', 'headerField' => 'name', 'subHeaderField' => 'email1'],
                             ['module' => 'Users', 'headerField' => 'name', 'subHeaderField' => 'email1'],
                             ['module' => 'Accounts', 'headerField' => 'name', 'subHeaderField' => 'email1'],
+                            ['module' => 'Emails', 'headerField' => 'name', 'subHeaderField' => 'email'],
                         ],
                     ],
                 ],
