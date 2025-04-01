@@ -36,7 +36,7 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-#[AsCommand(name: 'schedulers:run-all')]
+#[AsCommand(name: 'schedulers:run')]
 class RunSchedulersCommand extends BaseCommand
 {
     protected SchedulerHandler $schedulerHandler;
@@ -72,10 +72,6 @@ class RunSchedulersCommand extends BaseCommand
 
         $appStrings = $this->getAppStrings();
 
-        $this->writeHeader($output, $appStrings['LBL_RUN_LEGACY_SCHEDULERS']);
-
-        $this->runLegacySchedulers($output);
-
         $this->writeHeader($output, $appStrings['LBL_RUN_SCHEDULERS']);
 
         $this->runSchedulers($output);
@@ -91,12 +87,6 @@ class RunSchedulersCommand extends BaseCommand
     public function runSchedulers(OutputInterface $output): void
     {
         $results = $this->schedulerHandler->runSchedulers();
-        $this->showResults($output, $results);
-    }
-
-    protected function runLegacySchedulers(OutputInterface $output): void
-    {
-        $results = $this->schedulerHandler->runLegacySchedulers();
         $this->showResults($output, $results);
     }
 

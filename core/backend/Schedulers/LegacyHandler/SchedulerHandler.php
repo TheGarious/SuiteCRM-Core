@@ -30,6 +30,8 @@ namespace App\Schedulers\LegacyHandler;
 use App\Data\LegacyHandler\PreparedStatementHandler;
 use App\Engine\LegacyHandler\LegacyHandler;
 use App\Engine\LegacyHandler\LegacyScopeState;
+use App\Schedulers\Runners\LegacySchedulerRunner;
+use App\Schedulers\Runners\SchedulerRunner;
 use App\Schedulers\Service\SchedulerRegistry;
 use App\SystemConfig\LegacyHandler\SystemConfigHandler;
 use Doctrine\DBAL\Exception;
@@ -44,7 +46,8 @@ class SchedulerHandler extends LegacyHandler {
     protected SystemConfigHandler $systemConfigHandler;
     protected PreparedStatementHandler $preparedStatementHandler;
     protected LoggerInterface $logger;
-
+    protected LegacySchedulerRunner $legacySchedulerRunner;
+    protected SchedulerRunner $schedulerRunner;
 
     protected int $maxJobs = 10;
     protected int $maxRuntime = 60;
@@ -65,6 +68,8 @@ class SchedulerHandler extends LegacyHandler {
         SchedulerRegistry $schedulerRegistry,
         SystemConfigHandler $systemConfigHandler,
         PreparedStatementHandler $preparedStatementHandler,
+        LegacySchedulerRunner $legacySchedulerRunner,
+        SchedulerRunner $schedulerRunner,
         LoggerInterface $logger
     )
     {
@@ -79,6 +84,8 @@ class SchedulerHandler extends LegacyHandler {
         $this->schedulerRegistry = $schedulerRegistry;
         $this->systemConfigHandler = $systemConfigHandler;
         $this->preparedStatementHandler = $preparedStatementHandler;
+        $this->legacySchedulerRunner = $legacySchedulerRunner;
+        $this->schedulerRunner = $schedulerRunner;
         $this->logger = $logger;
 
         $this->setCronConfig();
@@ -96,11 +103,11 @@ class SchedulerHandler extends LegacyHandler {
             $this->logger->error('Jobs run too frequently, throttled to protect the system');
         }
 
-        $this->cleanup(false);
+        $this->cleanup();
 
-        $this->clearHistoricJobs(false);
+        $this->clearHistoricJobs();
 
-        $query = "SELECT * FROM schedulers WHERE status = 'Active' AND job LIKE '%scheduler::%' ";
+        $query = "SELECT * FROM schedulers WHERE status = 'Active' ";
         $query .= "AND NOT EXISTS(SELECT id FROM job_queue WHERE scheduler_id = schedulers.id AND status != 'done')";
 
         $schedulers = [];
@@ -128,32 +135,34 @@ class SchedulerHandler extends LegacyHandler {
         $cutoff = time() + $this->maxRuntime;
 
         if (empty($this->maxJobs)){
-            $this->logger->error('Ran all cron Jobs');
+            $this->logger->error('Cron hit max jobs');
         }
 
         for ($count = 0; $count < $this->maxJobs; $count++) {
 
-            $schedulerRow = $schedulers[$count] ?? null;
+            $job = $this->getNextScheduler();
 
-            if (empty($schedulerRow)){
+            if ($job === null){
                 break;
             }
 
-            $job = $this->getNextScheduler(false);
-
             if (empty($job->id)) {
                 $this->logger->error('Unable to get job id');
-                continue;
+                break;
             }
 
-            $scheduler = $this->schedulerRegistry->get($schedulerRow['job']);
-
-            $status = $scheduler->run();
+            if (str_contains($job->target, 'function::')) {
+                $this->init();
+                $status = $this->legacySchedulerRunner->run($job);
+                $this->close();
+            } else {
+                $status = $this->schedulerRunner->run($job);
+            }
 
             $this->resolveJob($job->id, $status);
 
             $response[] = [
-                'name' => $schedulerRow['name'],
+                'name' => $job->name,
                 'result' => $status,
             ];
 
@@ -164,26 +173,6 @@ class SchedulerHandler extends LegacyHandler {
         }
 
         return $response;
-    }
-
-    public function runLegacySchedulers(): array {
-
-        if (!$this->throttle()){
-            $this->logger->error('Job runs too frequently, throttled to protect the system.');
-            return [];
-        }
-
-        $this->cleanup(true);
-
-        $this->clearHistoricJobs(true);
-
-        $schedulers = $this->getLegacySchedulers();
-
-        foreach ($schedulers as $scheduler) {
-            $this->createJob($scheduler);
-        }
-
-        return $this->runLegacyJobs();
     }
 
     public function resolveJob($id, $result, $messages = null): void
@@ -254,7 +243,7 @@ class SchedulerHandler extends LegacyHandler {
         $this->close();
     }
 
-    protected function getNextScheduler(bool $isLegacy): \SugarBean|bool|null
+    protected function getNextScheduler(): \SugarBean|bool|null
     {
         $this->init();
 
@@ -264,14 +253,7 @@ class SchedulerHandler extends LegacyHandler {
         $tries = $this->jobTries;
         $cronId = $this->getCronId();
 
-        $where = "WHERE execute_time <= :now AND status = 'queued' AND target LIKE '%scheduler::%'";
-
-        if ($isLegacy) {
-            $where = "WHERE execute_time <= :now AND status = 'queued' AND target NOT LIKE '%scheduler::%'";
-        }
-
-        $query = "SELECT id FROM job_queue $where ORDER BY date_entered ASC";
-
+        $query = "SELECT id FROM job_queue WHERE execute_time <= :now AND status = 'queued' ORDER BY date_entered ASC";
 
         while ($tries--){
             try {
@@ -386,19 +368,6 @@ class SchedulerHandler extends LegacyHandler {
         }
     }
 
-    public function getLegacySchedulers(): ?array
-    {
-        $this->init();
-
-        $schedulers = \BeanFactory::getBean('Schedulers')->get_full_list(
-            '',
-            "schedulers.status='Active' AND job NOT LIKE '%scheduler::%' AND NOT EXISTS(SELECT id FROM job_queue WHERE scheduler_id=schedulers.id AND status!='done')"
-        );
-        $this->close();
-
-        return $schedulers;
-    }
-
     public function createJob(\SugarBean $scheduler): void
     {
         $this->init();
@@ -407,6 +376,7 @@ class SchedulerHandler extends LegacyHandler {
 
         if (!$scheduler->fireQualified()) {
             $this->logger->debug('Scheduler did NOT find valid job (' . $scheduler->name . ') for time GMT (' . $timedate->now() . ')');
+            return;
         }
 
         $job = $this->buildJob($scheduler);
@@ -415,7 +385,7 @@ class SchedulerHandler extends LegacyHandler {
         $this->close();
     }
 
-    public function cleanup(bool $isLegacy): void
+    public function cleanup(): void
     {
         $this->init();
 
@@ -431,13 +401,7 @@ class SchedulerHandler extends LegacyHandler {
 
         $this->close();
 
-        $where = "WHERE status = 'running' AND target LIKE '%scheduler::%' AND date_modified <= :date";
-
-        if ($isLegacy){
-            $where = "WHERE status = 'running' AND target NOT LIKE '%scheduler::%' AND date_modified <= :date";
-        }
-
-        $query = "SELECT id from job_queue " . $where;
+        $query = "SELECT id from job_queue WHERE status = 'running' AND date_modified <= :date ";
 
         $results = [];
 
@@ -452,13 +416,13 @@ class SchedulerHandler extends LegacyHandler {
         }
     }
 
-    public function clearHistoricJobs(bool $isLegacy): void
+    public function clearHistoricJobs(): void
     {
-        $this->processJobs($isLegacy, $this->successLifetime, true);
-        $this->processJobs($isLegacy, $this->failureLifetime, false);
+        $this->processJobs($this->successLifetime, true);
+        $this->processJobs($this->failureLifetime, false);
     }
 
-    protected function processJobs(bool $isLegacy, string $days, bool $success): void
+    protected function processJobs(string $days, bool $success): void
     {
         $this->init();
 
@@ -473,19 +437,12 @@ class SchedulerHandler extends LegacyHandler {
         $this->close();
 
         $resolution = "AND resolution = 'success'";
-        $where = "WHERE status = 'done' AND date_modified <= :date AND target LIKE '%scheduler::%' ";
 
         if (!$success) {
             $resolution = "AND resolution != 'success'";
         }
 
-        if ($isLegacy){
-            $where = "WHERE status = 'done' AND date_modified <= :date AND target NOT LIKE '%scheduler::%' ";
-        }
-
-        $where .= $resolution;
-
-        $query = 'SELECT id FROM job_queue ' . $where;
+        $query = "SELECT id FROM job_queue WHERE status = 'done' AND date_modified <= :date " . $resolution;
 
         $results = [];
 
@@ -498,44 +455,6 @@ class SchedulerHandler extends LegacyHandler {
         foreach ($results as $result) {
             $this->deleteJob($result['id']);
         }
-    }
-
-    public function runLegacyJobs(): array {
-
-        $cutoff = time() + $this->maxRuntime;
-        $status = true;
-        $response = [];
-
-        for ($count = 0; $count < $this->maxJobs; $count++) {
-
-            $job = $this->getNextScheduler(true);
-
-            if (empty($job)) {
-                break;
-            }
-
-            $this->init();
-
-            if (!$job->runJob()) {
-                $status = false;
-                $this->jobFailed($job);
-            }
-
-            $response[] = [
-                'name' => $job->name,
-                'result' => $status,
-            ];
-
-            $this->close();
-
-            if (time() >= $cutoff) {
-                break;
-            }
-        }
-
-        $this->maxJobs -= $count;
-
-        return $response;
     }
 
     protected function deleteJob(string $id): void
