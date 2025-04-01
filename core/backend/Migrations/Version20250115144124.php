@@ -51,7 +51,7 @@ final class Version20250115144124 extends BaseMigration implements ContainerAwar
                 $this->log('logs/legacy already exists');
             }
         } catch (\Exception $e) {
-            $this->log('Failed to ad dlogs/legacy. Error: ' . $e->getMessage());
+            $this->log('Failed to add logs/legacy. Error: ' . $e->getMessage());
         }
     }
 
