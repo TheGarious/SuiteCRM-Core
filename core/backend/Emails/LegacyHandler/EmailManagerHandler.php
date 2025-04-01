@@ -110,16 +110,16 @@ class EmailManagerHandler extends LegacyHandler {
             return false;
         }
 
-        if ($shouldBlock) {
+        if ($this->isInvalidEmail($moduleBean)) {
             $this->setAsSent($email, $emailRecord, $emailMarketing, true, 'blocked', $prospectListId);
-            $this->logger->warning("Email Address was sent due to not being confirm opt in for email $email and EmailMan id $emailManId");
+            $this->logger->error("Email Address provided is invalid with email $email and EmailMan id $emailManId");
 
             return false;
         }
 
-        if ($this->isOptOut($moduleBean)) {
+        if ($shouldBlock) {
             $this->setAsSent($email, $emailRecord, $emailMarketing, true, 'blocked', $prospectListId);
-            $this->logger->error("Email Address provided is Opted out with id $email and EmailMan id $emailManId");
+            $this->logger->error("Email Address was not sent due to not being confirm opt in for email $email and EmailMan id $emailManId");
 
             return false;
         }
@@ -274,6 +274,19 @@ class EmailManagerHandler extends LegacyHandler {
                 $moduleBean->email_opt_out === '1' ||
                 $moduleBean->email_opt_out === 1
         );
+    }
+
+    /**
+     * @param SugarBean $moduleBean
+     * @return bool
+     */
+    protected function isInvalidEmail(SugarBean $moduleBean): bool
+    {
+        return isset($moduleBean->invalid_email) && (
+                $moduleBean->invalid_email === 'on' ||
+                $moduleBean->invalid_email === '1' ||
+                $moduleBean->invalid_email === 1
+            );
     }
 
     /**

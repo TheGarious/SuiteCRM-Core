@@ -178,7 +178,6 @@ class SendEmailScheduler extends LegacyHandler implements SchedulerInterface
             );
 
             if (!$validated) {
-                $this->logger->error('Unable to validate email');
                 continue;
             }
 
