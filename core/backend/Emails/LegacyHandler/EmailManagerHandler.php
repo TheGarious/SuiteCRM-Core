@@ -29,6 +29,7 @@ namespace App\Emails\LegacyHandler;
 
 use App\Data\Entity\Record;
 use App\Data\LegacyHandler\PreparedStatementHandler;
+use App\Data\Service\RecordProviderInterface;
 use App\Engine\LegacyHandler\LegacyScopeState;
 use Configurator;
 use Doctrine\DBAL\Exception;
@@ -41,6 +42,7 @@ class EmailManagerHandler extends LegacyHandler {
 
     protected PreparedStatementHandler $preparedStatementHandler;
     protected LoggerInterface $logger;
+    protected RecordProviderInterface $recordProvider;
 
     public function __construct(
         string $projectDir,
@@ -50,7 +52,8 @@ class EmailManagerHandler extends LegacyHandler {
         LegacyScopeState $legacyScopeState,
         RequestStack $requestStack,
         PreparedStatementHandler $preparedStatementHandler,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        RecordProviderInterface $recordProvider
     )
     {
         parent::__construct(
@@ -63,6 +66,7 @@ class EmailManagerHandler extends LegacyHandler {
         );
         $this->preparedStatementHandler = $preparedStatementHandler;
         $this->logger = $logger;
+        $this->recordProvider = $recordProvider;
     }
 
     public function getHandlerKey(): string
@@ -206,6 +210,16 @@ class EmailManagerHandler extends LegacyHandler {
             $this->logger->error('Unable to Delete Record from Email Man with the id' . $id);
             $this->logger->error($e->getMessage());
         }
+
+        if ($emailMarketing === null){
+            return;
+        }
+
+        $emAttributes['status'] = 'sent';
+
+        $emailMarketing->setAttributes($emAttributes);
+
+        $this->recordProvider->saveRecord($emailMarketing);
     }
 
     /**
