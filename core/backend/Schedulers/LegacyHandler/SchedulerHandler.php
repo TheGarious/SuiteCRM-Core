@@ -107,9 +107,11 @@ class SchedulerHandler extends LegacyHandler {
 
         $this->clearHistoricJobs();
 
-        $query = "SELECT * FROM schedulers WHERE status = 'Active' ";
-        $query .= "AND NOT EXISTS(SELECT id FROM job_queue WHERE scheduler_id = schedulers.id AND status != 'done')";
+        $schedulerTable = $this->getSchedulerTable();
+        $jobQueueTable = $this->getJobQueueTable();
 
+        $query = "SELECT * FROM $schedulerTable sched WHERE status = 'Active' ";
+        $query .= "AND NOT EXISTS(SELECT id FROM $jobQueueTable WHERE scheduler_id = sched.id AND status != 'done')";
         $schedulers = [];
 
         try {
@@ -253,7 +255,9 @@ class SchedulerHandler extends LegacyHandler {
         $tries = $this->jobTries;
         $cronId = $this->getCronId();
 
-        $query = "SELECT id FROM job_queue WHERE execute_time <= :now AND status = 'queued' ORDER BY date_entered ASC";
+        $jobQueueTable = $this->getJobQueueTable();
+
+        $query = "SELECT id FROM $jobQueueTable WHERE execute_time <= :now AND status = 'queued' ORDER BY date_entered ASC";
 
         while ($tries--){
             try {
@@ -279,7 +283,7 @@ class SchedulerHandler extends LegacyHandler {
             $job->status = 'running';
             $job->client = $cronId;
 
-            $update = 'UPDATE job_queue SET status = :job_status, date_modified = :now, client = :client_id ';
+            $update = "UPDATE $jobQueueTable SET status = :job_status, date_modified = :now, client = :client_id ";
             $update .= 'WHERE id = :job_id AND status = :status';
 
             $result = [];
@@ -401,7 +405,9 @@ class SchedulerHandler extends LegacyHandler {
 
         $this->close();
 
-        $query = "SELECT id from job_queue WHERE status = 'running' AND date_modified <= :date ";
+        $table = $this->getJobQueueTable();
+
+        $query = "SELECT id from $table WHERE status = 'running' AND date_modified <= :date ";
 
         $results = [];
 
@@ -442,7 +448,9 @@ class SchedulerHandler extends LegacyHandler {
             $resolution = "AND resolution != 'success'";
         }
 
-        $query = "SELECT id FROM job_queue WHERE status = 'done' AND date_modified <= :date " . $resolution;
+        $table = $this->getJobQueueTable();
+
+        $query = "SELECT id FROM $table WHERE status = 'done' AND date_modified <= :date " . $resolution;
 
         $results = [];
 
@@ -491,11 +499,6 @@ class SchedulerHandler extends LegacyHandler {
         $this->jobTries = $jobConfig['max_retries'] ?? $this->jobTries;
     }
 
-    protected function jobFailed(\SugarBean $job): void
-    {
-        $this->logger->error('Scheduler job failed: ' . $job->name);
-    }
-
     protected function updateLastRun(string $id): void
     {
         $this->init();
@@ -504,7 +507,9 @@ class SchedulerHandler extends LegacyHandler {
 
         $this->close();
 
-        $query = 'UPDATE schedulers SET last_run = :now WHERE id = :id';
+        $table = $this->getSchedulerTable();
+
+        $query = "UPDATE $table SET last_run = :now WHERE id = :id";
 
         try {
             $this->preparedStatementHandler->update($query, ["now" => $timedate->nowDb(), "id" => $id], [
@@ -539,5 +544,27 @@ class SchedulerHandler extends LegacyHandler {
         $job->retry_count--;
 
         $this->logger->info("Will retry job $job->name at $job->execute_time $job->retry_count");
+    }
+
+    protected function getJobQueueTable(): string {
+
+        $this->init();
+
+        $table = \BeanFactory::newBean('SchedulersJobs')->getTableName();
+
+        $this->close();
+
+        return $table;
+    }
+
+    protected function getSchedulerTable(): string {
+
+        $this->init();
+
+        $table = \BeanFactory::newBean('Schedulers')->getTableName();
+
+        $this->close();
+
+        return $table;
     }
 }
