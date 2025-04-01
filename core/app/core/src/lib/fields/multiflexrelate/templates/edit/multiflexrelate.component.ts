@@ -99,8 +99,8 @@ export class MultiFlexRelateEditFieldComponent extends BaseMultiFlexRelateCompon
 
 
 
-        if ((this.field?.valueList ?? []).length > 0) {
-            if ((this.field?.valueList ?? []).length >= (this.field?.valueObjectArray ?? []).length) {
+        if ((this.field?.valueList ?? []).length > 0 || (this.field?.valueObjectArray ?? []).length) {
+            if ((this.field?.valueList ?? []).length > (this.field?.valueObjectArray ?? []).length) {
                 this.field.valueObjectArray = deepClone(this.field.valueList);
             }
             this.selectedValues = this.field.valueObjectArray.map(valueElement => {
@@ -274,6 +274,7 @@ export class MultiFlexRelateEditFieldComponent extends BaseMultiFlexRelateCompon
 
     protected updateFieldValues(): void {
         this.field.valueObjectArray = deepClone(this.selectedValues ?? []);
+        this.field.valueList = deepClone(this.selectedValues ?? []);
         this.field.value = deepClone(this.selectedValues ?? []);
     }
 
