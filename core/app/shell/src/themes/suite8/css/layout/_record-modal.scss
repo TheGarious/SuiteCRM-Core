@@ -63,6 +63,7 @@
 
     .minimise-button {
       font-size: .65em;
+
       svg {
         vertical-align: middle;
       }
@@ -94,6 +95,7 @@
                 margin-bottom: 0.3rem !important;
               }
             }
+
             .form-row:last-child > .col, .form-row:last-child > [class*=col-] {
               padding-bottom: 0rem !important;
             }
@@ -154,6 +156,7 @@ body.modal-open.detached-modal-open {
 
     .modal-header {
       background-color: $main;
+
       .minimise-button {
         border: 0;
         color: $white;
@@ -162,9 +165,11 @@ body.modal-open.detached-modal-open {
         margin: 0;
         padding: .25rem .55rem;
       }
+
       .close-button {
         color: $white;
       }
+
       .modal-title {
         color: $white;
       }
@@ -194,8 +199,9 @@ body.modal-open.detached-modal-open {
         .modal-title {
           max-width: 226px;
           overflow: hidden;
+
           span {
-            max-width: 226px;
+            max-width: 223px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -218,6 +224,7 @@ body.modal-open.detached-modal-open {
         .modal-title {
           max-width: 524px;
           overflow: hidden;
+
           span {
             max-width: 524px;
             white-space: nowrap;
@@ -241,8 +248,9 @@ body.modal-open.detached-modal-open {
         .modal-title {
           max-width: 426px;
           overflow: hidden;
+
           span {
-            max-width: 426px;
+            max-width: 424px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -262,10 +270,41 @@ body.modal-open.detached-modal-open {
     width: fit-content;
 
     .detached-modal {
+      float: left;
+      margin-left: 0rem;
+      box-shadow: none;
+      display: none !important;
+
+      &:first-child {
+        display: block !important;
+
+        .modal-dialog {
+          .record-modal.minimized {
+            width: 90vw;
+
+            .modal-title {
+              max-width: 435px;
+
+              span {
+                max-width: 435px;
+              }
+            }
+          }
+        }
+      }
+
       .modal-dialog {
 
         .modal-body {
-          height: 80vh;
+          max-height: 80vh;
+        }
+
+        .record-modal {
+          box-shadow: 0 0 .8rem #0000005c !important;
+        }
+
+        .record-modal.minimized {
+          margin-left: 0.5rem;
         }
 
 
@@ -274,6 +313,10 @@ body.modal-open.detached-modal-open {
 
             &.minimized {
               max-width: 223px;
+
+              span {
+                max-width: 223px;
+              }
             }
 
             max-width: calc(100vw - 77px);
