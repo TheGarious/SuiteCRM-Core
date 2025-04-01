@@ -283,10 +283,10 @@ body.modal-open.detached-modal-open {
             width: 90vw;
 
             .modal-title {
-              max-width: 435px;
+              max-width: calc(100vw - 138px);
 
               span {
-                max-width: 435px;
+                max-width: calc(100vw - 138px);
               }
             }
           }
