@@ -37,13 +37,14 @@
             [dynamicDescriptionFields]="fields"
             [dynamicDescriptionContext]="context"
             [minimizable]="minimizable"
+            (onMinimizeToggle)="onMinimizeToggle($event)"
             bodyKlass="m-0 p-0 small-font scrollbar-thin {{bodyClass}}"
             footerKlass="border-0 {{footerClass}}"
             headerKlass="border-bottom {{headerClass}} "
             klass="record-modal rounded {{wrapperClass}}">
     <div modal-body>
 
-        <ng-container >
+        <ng-container *ngIf="!isMinimized()">
             <div *ngIf="record">
                 <scrm-record-content [dataSource]="contentAdapter"></scrm-record-content>
             </div>

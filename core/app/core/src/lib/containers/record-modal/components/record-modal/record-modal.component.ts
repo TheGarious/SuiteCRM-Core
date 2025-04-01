@@ -90,6 +90,8 @@ export class RecordModalComponent implements OnInit, OnDestroy {
     @Input() bodyClass: string = '';
     @Input() footerClass: string = '';
     @Input() wrapperClass: string = '';
+    @Input() context: WritableSignal<StringMap> = signal({});
+    @Input() fields: WritableSignal<FieldMap> = signal({});
 
     record: Record;
     modalStore: RecordModalStore;
@@ -97,10 +99,7 @@ export class RecordModalComponent implements OnInit, OnDestroy {
     closeButton: ButtonInterface;
 
     loading$: Observable<boolean>;
-
-    @Input() context: WritableSignal<StringMap> = signal({});
-    @Input() fields: WritableSignal<FieldMap> = signal({});
-
+    isMinimized: WritableSignal<boolean> = signal(false);
     protected subs: Subscription[] = [];
 
     constructor(
@@ -172,5 +171,9 @@ export class RecordModalComponent implements OnInit, OnDestroy {
 
         this.modalStore.init(this.module, this.recordId, this.mode, deepClone(this.mappedFields ?? {}));
         this.loading$ = this.modalStore.metadataLoading$;
+    }
+
+    onMinimizeToggle($event: boolean) {
+        this.isMinimized.set($event);
     }
 }
