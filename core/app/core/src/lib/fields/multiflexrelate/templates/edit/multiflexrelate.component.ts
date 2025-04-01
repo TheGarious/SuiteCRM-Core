@@ -61,7 +61,7 @@ export class MultiFlexRelateEditFieldComponent extends BaseMultiFlexRelateCompon
     selectedItemsLabel: string = '';
     emptyFilterLabel: string = '';
     maxSelectedLabels: number = 20;
-    selectAll: boolean = false;
+    selectAll: WritableSignal<boolean> = signal(false);
     filterValue: string | undefined = '';
     currentOptionGroups: WritableSignal<SelectItemGroup[]> = signal([]);
     loading: WritableSignal<boolean> = signal(false);
@@ -93,10 +93,9 @@ export class MultiFlexRelateEditFieldComponent extends BaseMultiFlexRelateCompon
      * On init handler
      */
     ngOnInit(): void {
-        this.selectAll = false;
+        this.selectAll.set(false);
         super.ngOnInit();
         const relatedFieldName = this.getRelateFieldName();
-
 
 
         if ((this.field?.valueList ?? []).length > 0 || (this.field?.valueObjectArray ?? []).length) {
@@ -158,23 +157,68 @@ export class MultiFlexRelateEditFieldComponent extends BaseMultiFlexRelateCompon
     onClear(): void {
         this.options = [];
         this.selectedValues = [];
-        this.selectAll = false;
+        this.selectAll.set(false);
         this.filterValue = '';
         this.currentOptionGroups.set([]);
         this.onRemove();
     }
 
     onSelectAll(): void {
-        this.selectAll = !this.selectAll;
-        if (this.selectAll) {
+        this.selectAll.set(!this.selectAll());
+        if (this.selectAll()) {
             if (this.tag.visibleOptions() && this.tag.visibleOptions().length) {
-                this.selectedValues = this.tag.visibleOptions();
-            } else {
-                this.selectedValues = this.options;
+
+                const selectedValuesKeys: { [key: string]: boolean } = {};
+                this.selectedValues.forEach(item => {
+                    if (item?.id) {
+                        selectedValuesKeys[item.id] = true
+                    }
+                });
+
+                this.tag.visibleOptions().forEach((item: SelectItem) => {
+                    if ((item as any)?.group) {
+                        return;
+                    }
+
+                    const id = item.value?.id ?? '';
+                    if (!id || selectedValuesKeys[id]) {
+                        return;
+                    }
+
+                    this.selectedValues.push(item.value);
+                });
             }
+
             this.onAdd();
         } else {
-            this.selectedValues = [];
+            if (this.tag.visibleOptions() && this.tag.visibleOptions().length) {
+
+                const unSelectedValues: { [key: string]: boolean } = {};
+
+                this.tag.visibleOptions().forEach((item: SelectItem) => {
+                    if ((item as any)?.group) {
+                        return;
+                    }
+
+                    const id = item.value?.id ?? '';
+                    if (id || !unSelectedValues[id]) {
+                        unSelectedValues[id] = true;
+                    }
+                });
+
+                const newSelectedValues: AttributeMap[] = [];
+
+                this.selectedValues.forEach(item => {
+                    if (!item?.id || unSelectedValues[item.id]) {
+                        return;
+                    }
+
+                    newSelectedValues.push(item);
+                });
+
+                this.selectedValues = newSelectedValues;
+            }
+
             this.onRemove();
         }
     }
@@ -203,7 +247,7 @@ export class MultiFlexRelateEditFieldComponent extends BaseMultiFlexRelateCompon
 
     onFilterInput(event: KeyboardEvent): void {
         event?.stopPropagation();
-        this.selectAll = false;
+        this.selectAll.set(false);
         this.tag.onLazyLoad.emit()
     }
 
@@ -268,7 +312,9 @@ export class MultiFlexRelateEditFieldComponent extends BaseMultiFlexRelateCompon
 
             }
             this.currentOptionGroups.set(groups);
-            this.calculateSelectAll();
+            setTimeout(() => {
+                this.calculateSelectAll();
+            },0);
         });
     }
 
@@ -330,24 +376,36 @@ export class MultiFlexRelateEditFieldComponent extends BaseMultiFlexRelateCompon
     }
 
     protected calculateSelectAll(): void {
-        const visibleOptions = this?.tag?.visibleOptions() ?? [];
-        const selected = this?.selectedValues ?? [];
-        let selectedValuesKeys = [];
-        if (selected.length) {
-            selectedValuesKeys = selected.map(item => item.id);
-        }
 
-        if (!visibleOptions.length || !selectedValuesKeys.length) {
-            this.selectAll = false;
+        if (!this?.selectedValues?.length || !this?.tag?.visibleOptions()?.length) {
+            this.selectAll.set(false);
             return;
         }
 
-        if (visibleOptions.length > selectedValuesKeys.length) {
-            this.selectAll = false;
-            return;
-        }
+        const selectedValuesKeys: { [key: string]: boolean } = {};
+        this.selectedValues.forEach(item => {
+            if (item?.id) {
+                selectedValuesKeys[item.id] = true
+            }
+        });
 
-        this.selectAll = visibleOptions.every(item => selectedValuesKeys.includes(item.id));
+        let allSelected = true;
+        this.tag.visibleOptions().some((item: SelectItem) => {
+            if ((item as any)?.group) {
+                return false;
+            }
+
+            const id = item.value?.id ?? '';
+
+            if (!selectedValuesKeys[id]) {
+                allSelected = false;
+                return true;
+            }
+
+            return false;
+        });
+
+        this.selectAll.set(allSelected);
     }
 
     protected buildCriteria(): SearchCriteria {

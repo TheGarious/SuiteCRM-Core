@@ -44,7 +44,7 @@
             [styleClass]="'w-100 ' + getInvalidClass()"
             [showToggleAll]="true"
             [group]="true"
-            [selectAll]="selectAll"
+            [selectAll]="selectAll()"
             [loading]="loading()"
             [autoOptionFocus]="false"
             [autofocusFilter]="false"
@@ -117,7 +117,7 @@
                         <input type="checkbox" checked="false" aria-label="All items unselected">
                     </div>
                     <div role="checkbox" class="p-checkbox-box" aria-checked="false" (click)="onSelectAll()">
-                        <scrm-image image="checkbox_cross" *ngIf="selectAll"></scrm-image>
+                        <scrm-image image="checkbox_cross" *ngIf="selectAll()"></scrm-image>
                     </div>
                 </div>
                 <div class="p-multiselect-filter-container" (click)="$event.stopPropagation()">
