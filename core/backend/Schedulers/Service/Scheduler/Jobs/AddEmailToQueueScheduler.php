@@ -117,7 +117,7 @@ class AddEmailToQueueScheduler extends LegacyHandler implements SchedulerInterfa
 
                     $bean = $this->emailManagerHandler->getBean($result['related_type'], $result['related_id']);
 
-                    $isDuplicate = $this->checkForDuplicate($result['related_id']);
+                    $isDuplicate = $this->checkForDuplicate($result['related_id'], $emailId);
 
                     if ($isDuplicate){
                         continue;
@@ -332,12 +332,16 @@ class AddEmailToQueueScheduler extends LegacyHandler implements SchedulerInterfa
         }
     }
 
-    protected function checkForDuplicate(string $id): bool
+    protected function checkForDuplicate(string $id, string $marketingId): bool
     {
-        $query = 'SELECT related_id FROM campaign_log WHERE related_id = :id';
+        $query = "SELECT related_id FROM campaign_log WHERE related_id = :id AND marketing_id = :mkt_id AND deleted = 0";
 
         try {
-            $results = $this->preparedStatementHandler->fetch($query, ['id' => $id]);
+            $results = $this->preparedStatementHandler->fetch($query,
+                [
+                    'id' => $id,
+                    'mkt_id' => $marketingId
+                ]);
         } catch (Exception $e) {
             $this->logger->error($e->getMessage());
         }
