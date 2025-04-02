@@ -83,6 +83,16 @@
         .card-body {
           padding-bottom: 0 !important;
 
+          .field-layout {
+            .field-layout-row {
+              .full-row {
+                .squire-editor {
+                  max-width: 568px;
+                }
+              }
+            }
+          }
+
           .field-layout.edit,
           .field-layout.create {
 
@@ -235,6 +245,25 @@ body.modal-open.detached-modal-open {
           }
         }
       }
+
+      .record-content.panel-layout {
+
+        .row:first-child {
+
+          .card-body {
+
+            .field-layout {
+              .field-layout-row {
+                .full-row {
+                  .squire-editor {
+                    max-width: 568px;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }
@@ -256,6 +285,25 @@ body.modal-open.detached-modal-open {
             text-overflow: ellipsis;
             display: inline-block;
             line-height: 1;
+          }
+        }
+      }
+
+      .record-content.panel-layout {
+
+        .row:first-child {
+
+          .card-body {
+
+            .field-layout {
+              .field-layout-row {
+                .full-row {
+                  .squire-editor {
+                    max-width: 468px;
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -297,6 +345,25 @@ body.modal-open.detached-modal-open {
 
         .modal-body {
           max-height: 80vh;
+
+          .record-content.panel-layout {
+
+            .row:first-child {
+
+              .card-body {
+
+                .field-layout {
+                  .field-layout-row {
+                    .full-row {
+                      .squire-editor {
+                        max-width: calc(100vw - 33px);
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
 
         .record-modal {
@@ -306,7 +373,6 @@ body.modal-open.detached-modal-open {
         .record-modal.minimized {
           margin-left: 0.5rem;
         }
-
 
         .modal-header {
           .modal-title {
