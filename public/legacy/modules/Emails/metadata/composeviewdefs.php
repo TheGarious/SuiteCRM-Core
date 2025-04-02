@@ -126,7 +126,27 @@ $viewdefs['Emails']['ComposeView'] = [
                             ['module' => 'Leads', 'headerField' => 'name', 'subHeaderField' => 'email1'],
                             ['module' => 'Users', 'headerField' => 'name', 'subHeaderField' => 'email1'],
                             ['module' => 'Accounts', 'headerField' => 'name', 'subHeaderField' => 'email1'],
-                            ['module' => 'Emails', 'headerField' => 'name', 'subHeaderField' => 'email'],
+                            [
+                                'module' => 'Emails',
+                                'headerField' => 'name',
+                                'subHeaderField' => 'email',
+                                'appendable' => true,
+                                'appendableConfig' => [
+                                    'matchMethod' => [
+                                        'method' => 'function',
+                                        'function' => 'isEmail'
+                                    ],
+                                    'groupLabelKey' => 'Emails',
+                                    'groupValue' => 'Emails',
+                                    'icon' => 'Emails',
+                                    'valueMap' => [
+                                        'email' => '{{term}}',
+                                        'name' => '{{term}}',
+                                        'id' => '{{term}}',
+                                        'module_name' => 'Emails'
+                                    ]
+                                ]
+                            ],
                         ],
                     ],
                     'fieldActions' => [
@@ -171,7 +191,27 @@ $viewdefs['Emails']['ComposeView'] = [
                             ['module' => 'Leads', 'headerField' => 'name', 'subHeaderField' => 'email1'],
                             ['module' => 'Users', 'headerField' => 'name', 'subHeaderField' => 'email1'],
                             ['module' => 'Accounts', 'headerField' => 'name', 'subHeaderField' => 'email1'],
-                            ['module' => 'Emails', 'headerField' => 'name', 'subHeaderField' => 'email'],
+                            [
+                                'module' => 'Emails',
+                                'headerField' => 'name',
+                                'subHeaderField' => 'email',
+                                'appendable' => true,
+                                'appendableConfig' => [
+                                    'matchMethod' => [
+                                        'method' => 'function',
+                                        'function' => 'isEmail'
+                                    ],
+                                    'groupLabelKey' => 'Emails',
+                                    'groupValue' => 'Emails',
+                                    'icon' => 'Emails',
+                                    'valueMap' => [
+                                        'email' => '{{term}}',
+                                        'name' => '{{term}}',
+                                        'id' => '{{term}}',
+                                        'module_name' => 'Emails'
+                                    ]
+                                ]
+                            ],
                         ],
                     ],
                 ],
@@ -189,7 +229,27 @@ $viewdefs['Emails']['ComposeView'] = [
                             ['module' => 'Leads', 'headerField' => 'name', 'subHeaderField' => 'email1'],
                             ['module' => 'Users', 'headerField' => 'name', 'subHeaderField' => 'email1'],
                             ['module' => 'Accounts', 'headerField' => 'name', 'subHeaderField' => 'email1'],
-                            ['module' => 'Emails', 'headerField' => 'name', 'subHeaderField' => 'email'],
+                            [
+                                'module' => 'Emails',
+                                'headerField' => 'name',
+                                'subHeaderField' => 'email',
+                                'appendable' => true,
+                                'appendableConfig' => [
+                                    'matchMethod' => [
+                                        'method' => 'function',
+                                        'function' => 'isEmail'
+                                    ],
+                                    'groupLabelKey' => 'Emails',
+                                    'groupValue' => 'Emails',
+                                    'icon' => 'Emails',
+                                    'valueMap' => [
+                                        'email' => '{{term}}',
+                                        'name' => '{{term}}',
+                                        'id' => '{{term}}',
+                                        'module_name' => 'Emails'
+                                    ]
+                                ]
+                            ],
                         ],
                     ],
                 ],
