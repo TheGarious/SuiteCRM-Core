@@ -34,6 +34,7 @@ use App\Data\Service\RecordProviderInterface;
 use App\Engine\LegacyHandler\LegacyHandler;
 use App\Engine\LegacyHandler\LegacyScopeState;
 use PHPMailer\PHPMailer\Exception;
+use Psr\Log\LoggerInterface;
 use SugarEmailAddress;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -43,6 +44,7 @@ class EmailProcessProcessor extends LegacyHandler
     protected SendEmailHandler $sendEmailHandler;
     protected RecordProviderInterface $recordProvider;
     protected PreparedStatementHandler $preparedStatementHandler;
+    protected LoggerInterface $logger;
 
     public function __construct(
         string $projectDir,
@@ -53,7 +55,8 @@ class EmailProcessProcessor extends LegacyHandler
         RequestStack $requestStack,
         SendEmailHandler $sendEmailHandler,
         RecordProviderInterface $recordProvider,
-        PreparedStatementHandler $preparedStatementHandler
+        PreparedStatementHandler $preparedStatementHandler,
+        LoggerInterface $logger,
     ) {
         parent::__construct(
             $projectDir,
@@ -66,6 +69,7 @@ class EmailProcessProcessor extends LegacyHandler
         $this->sendEmailHandler = $sendEmailHandler;
         $this->recordProvider = $recordProvider;
         $this->preparedStatementHandler = $preparedStatementHandler;
+        $this->logger = $logger;
     }
 
     public function getHandlerKey(): string
@@ -190,14 +194,7 @@ class EmailProcessProcessor extends LegacyHandler
         return [$to, $cc, $bcc];
     }
 
-    /**
-     * @param array|null $outboundAttributes
-     * @param array $emailAttributes
-     * @param $addresses
-     * @return void
-     * @throws \Doctrine\DBAL\Exception
-     */
-    protected function saveEmailAddresses(?array $outboundAttributes, array $emailAttributes, $addresses): void
+    protected function saveEmailAddresses(?array $outboundAttributes, array $emailAttributes, array $addresses): void
     {
 
         $id = $emailAttributes['id'] ?? null;
@@ -212,60 +209,53 @@ class EmailProcessProcessor extends LegacyHandler
         $this->mapAddresses($id, $addresses['bcc'], 'bcc');
     }
 
-
-    /**
-     * @param $emailId
-     * @param $email
-     * @param $type
-     * @return void
-     * @throws \Doctrine\DBAL\Exception
-     */
-    protected function linkEmailToAddress($emailId, $email, $type): void
+    protected function linkEmailToAddress(string $emailId, string $email, string $type): void
     {
-        $records = $this->preparedStatementHandler->fetch(
-            "SELECT * FROM emails_email_addr_rel
-         WHERE email_id = :email_id AND email_address_id = :email_address_id AND address_type = :type AND deleted = 0",
-        ['email_id' => $emailId, 'email_address_id' => $email, 'type' => $type],
-        [
-            ['param' => 'email_id', 'type' => 'string'],
-            ['param' => 'email_address_id', 'type' => 'string'],
-            ['param' => 'type', 'type' => 'string']
-        ]);
+        $query = 'SELECT * FROM emails_email_addr_rel WHERE email_id = :email_id ';
+        $query .= 'AND email_address_id = :email_address_id AND address_type = :type AND deleted = 0';
+        try {
+            $records = $this->preparedStatementHandler->fetch($query,
+                [
+                    'email_id' => $emailId,
+                    'email_address_id' => $email,
+                    'type' => $type
+                ],
+                [
+                    ['param' => 'email_id', 'type' => 'string'],
+                    ['param' => 'email_address_id', 'type' => 'string'],
+                    ['param' => 'type', 'type' => 'string']
+                ]);
+        } catch (\Doctrine\DBAL\Exception $e) {
+            $this->logger->error($e->getMessage());
+        }
 
         if (empty($records)) {
             $id = create_guid();
 
-            $this->preparedStatementHandler->update(
-                'INSERT INTO emails_email_addr_rel VALUES(:id, :email_id, :type, :email, 0)',
-                ['id' => $id, 'email_id' => $emailId, 'email' => $email, 'type' => $type],
-                [
-                    ['param' => 'email_id', 'type' => 'string'],
-                    ['param' => 'id', 'type' => 'string'],
-                    ['param' => 'email', 'type' => 'string'],
-                    ['param' => 'type', 'type' => 'string']
-                ]
-            );
+            try {
+                $this->preparedStatementHandler->update(
+                    'INSERT INTO emails_email_addr_rel VALUES(:id, :email_id, :type, :email, 0)',
+                    ['id' => $id, 'email_id' => $emailId, 'email' => $email, 'type' => $type],
+                    [
+                        ['param' => 'email_id', 'type' => 'string'],
+                        ['param' => 'id', 'type' => 'string'],
+                        ['param' => 'email', 'type' => 'string'],
+                        ['param' => 'type', 'type' => 'string']
+                    ]
+                );
+            } catch (\Doctrine\DBAL\Exception $e) {
+                $this->logger->error($e->getMessage());
+            }
         }
     }
 
-    /**
-     * @param string $value
-     * @return string
-     */
     protected function getEmailId(string $value): string
     {
         $sugarEmailAddresses = new SugarEmailAddress();
         return $sugarEmailAddresses->getEmailGUID($value) ?? '';
     }
 
-    /**
-     * @param $id
-     * @param $address
-     * @param $type
-     * @return void
-     * @throws \Doctrine\DBAL\Exception
-     */
-    protected function mapAddresses($id, $address, $type): void
+    protected function mapAddresses(string $id, array $address, string $type): void
     {
         foreach ($address as $key => $value) {
             $emailId = $this->getEmailId($value);

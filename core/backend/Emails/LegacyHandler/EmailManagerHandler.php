@@ -74,16 +74,6 @@ class EmailManagerHandler extends LegacyHandler {
         return 'email-manager-handler';
     }
 
-    /**
-     * @param Record $emailRecord
-     * @param Record $emailMarketing
-     * @param SugarBean $moduleBean
-     * @param SugarBean $emailMan
-     * @param string $prospectListId
-     * @param array $suppressedEmails
-     * @return bool
-     * @throws Exception
-     */
     public function validateEmail(
         SugarBean $moduleBean,
         string $campaignId,
@@ -146,18 +136,15 @@ class EmailManagerHandler extends LegacyHandler {
         return true;
     }
 
-    /**
-     * @throws Exception
-     */
     public function setAsSent(
         string $email,
-        $relatedId,
-        $relatedType,
-        $delete,
-        $activityType,
-        $prospectListId,
-        $campaignId,
-        $emailMarketingId,
+        string $relatedId,
+        string $relatedType,
+        bool $delete,
+        string $activityType,
+        string $prospectListId,
+        string $campaignId,
+        string $emailMarketingId,
     ): void {
 
         $this->init();
@@ -277,21 +264,19 @@ class EmailManagerHandler extends LegacyHandler {
         return $table;
     }
 
-    /**
-     * @param $relatedId
-     * @param $marketingId
-     * @return mixed
-     * @throws Exception
-     */
-    public function getEmailManId($relatedId, $marketingId): mixed
+    public function getEmailManId(string $relatedId, string $marketingId): mixed
     {
 
         $query = "SELECT id FROM emailman WHERE related_id = :related_id AND marketing_id = :marketing_id AND deleted = 0";
 
-        $result = $this->preparedStatementHandler->fetch($query, [
-           'related_id' => $relatedId,
-           'marketing_id' => $marketingId
-        ]);
+        try {
+            $result = $this->preparedStatementHandler->fetch($query, [
+                'related_id' => $relatedId,
+                'marketing_id' => $marketingId
+            ]);
+        } catch (Exception $e) {
+            $this->logger->error($e->getMessage());
+        }
 
         return $result['id'] ?? '';
     }
@@ -300,8 +285,8 @@ class EmailManagerHandler extends LegacyHandler {
         string $campaignId,
         string $marketingId,
         string $email,
-        $activityType,
-        $prospectListId,
+        string $activityType,
+        string $prospectListId,
         string $parentId,
         string $parentType
     ): void
@@ -413,12 +398,7 @@ class EmailManagerHandler extends LegacyHandler {
         ];
     }
 
-    /**
-     * @param $id
-     * @return array
-     * @throws Exception
-     */
-    protected function getInvalidEmails($id): array
+    protected function getInvalidEmails(string $id): array
     {
         $addresses = [];
 
@@ -461,9 +441,6 @@ class EmailManagerHandler extends LegacyHandler {
 
     }
 
-    /**
-     * @return Configurator
-     */
     public function getConfigurator(): Configurator
     {
         $this->init();
