@@ -108,6 +108,43 @@ export const multienumRequiredValidator = (viewField: ViewFieldDefinition, recor
     }
 );
 
+export const multiflexrelateRequiredValidator = (viewField: ViewFieldDefinition, record: Record, utils: FormControlUtils): StandardValidatorFn => (
+    (control: AbstractControl): StandardValidationErrors | null => {
+        const name = viewField.name || '';
+
+        if (!name || !record || !record.fields) {
+            return null;
+        }
+
+        const field = record?.fields[name] ?? {} as Field;
+
+        if (!field) {
+            return null;
+        }
+
+        let activeItems: any[] = field?.valueObjectArray;
+
+        if (!activeItems) {
+            activeItems = field.valueList;
+        }
+
+        if (activeItems && activeItems.length > 0) {
+            return null;
+        }
+
+        return {
+            required: {
+                required: true,
+                message: {
+                    labelKey: 'LBL_VALIDATION_ERROR_REQUIRED',
+                    context: {}
+                }
+            }
+        };
+    }
+);
+
+
 
 @Injectable({
     providedIn: 'root'
@@ -142,6 +179,10 @@ export class RequiredValidator implements ValidatorInterface {
 
         if (type === 'multienum') {
             return [multienumRequiredValidator(viewField, record, this.utils)];
+        }
+
+        if (type === 'multiflexrelate') {
+            return [multiflexrelateRequiredValidator(viewField, record, this.utils)];
         }
 
         return [requiredValidator(this.utils)];

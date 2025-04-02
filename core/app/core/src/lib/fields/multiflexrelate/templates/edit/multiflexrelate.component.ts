@@ -361,7 +361,8 @@ export class MultiFlexRelateEditFieldComponent extends BaseMultiFlexRelateCompon
     protected updateFieldValues(): void {
         this.field.valueObjectArray = deepClone(this.selectedValues ?? []);
         this.field.valueList = deepClone(this.selectedValues ?? []);
-        this.field.value = deepClone(this.selectedValues ?? []);
+        this.field.value = (this?.selectedValues ?? []).map(item => item.id).join(',') ?? '';
+        this.field.formControl.setValue(deepClone(this.selectedValues ?? []));
     }
 
     /**
