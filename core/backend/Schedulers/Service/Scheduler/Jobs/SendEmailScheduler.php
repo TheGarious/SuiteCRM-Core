@@ -38,7 +38,6 @@ use App\Schedulers\Service\SchedulerInterface;
 use App\SystemConfig\LegacyHandler\SystemConfigHandler;
 use Doctrine\DBAL\Exception;
 use Psr\Log\LoggerInterface;
-use SugarBean;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class SendEmailScheduler extends LegacyHandler implements SchedulerInterface

@@ -282,7 +282,7 @@ class AddEmailToQueueScheduler extends LegacyHandler implements SchedulerInterfa
 
     }
 
-    protected function filterProspectsEmails($id): array
+    protected function filterProspectsEmails(string $id): array
     {
         $query = "SELECT * FROM prospect_lists_prospects plp ";
         $query .= "WHERE prospect_list_id = :id AND plp.deleted = 0";
@@ -302,7 +302,7 @@ class AddEmailToQueueScheduler extends LegacyHandler implements SchedulerInterfa
         return $results;
     }
 
-    protected function removeDeletedProspects($id): void
+    protected function removeDeletedProspects(string $id): void
     {
         $query = "SELECT plp.related_id FROM prospect_lists_prospects plp ";
         $query .= "WHERE plp.prospect_list_id = :list_id AND plp.deleted = 1";
@@ -332,7 +332,7 @@ class AddEmailToQueueScheduler extends LegacyHandler implements SchedulerInterfa
         }
     }
 
-    protected function checkForDuplicate($id): bool
+    protected function checkForDuplicate(string $id): bool
     {
         $query = 'SELECT related_id FROM campaign_log WHERE related_id = :id';
 
