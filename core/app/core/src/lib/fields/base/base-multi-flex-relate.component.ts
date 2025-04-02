@@ -38,6 +38,7 @@ import {SearchCriteria} from "../../common/views/list/search-criteria.model";
 import {MultiFlexRelateService} from "../../services/record/relate/multi-flex-relate.service";
 import {SelectItem, SelectItemGroup} from "primeng/api";
 import {StringMap} from "../../common/types/string-map";
+import {ObjectMap} from "../../common/types/object-map";
 
 @Component({template: ''})
 export class BaseMultiFlexRelateComponent extends BaseFieldComponent implements OnInit, OnDestroy {
@@ -45,6 +46,7 @@ export class BaseMultiFlexRelateComponent extends BaseFieldComponent implements 
     options: AttributeMap[] = [];
     headerFields: StringMap = {};
     subHeaderFields: StringMap = {};
+    appendableModuleConfigs: ObjectMap = {};
 
     status: '' | 'searching' | 'not-found' | 'error' | 'found' | 'no-module' = '';
     initModule = '';
@@ -204,13 +206,16 @@ export class BaseMultiFlexRelateComponent extends BaseFieldComponent implements 
             this.relateService.init(this.getBaseModule());
         }
 
-        const metadata = this?.field?.metadata || this?.field?.definition?.metadata ||  {};
+        const metadata = this?.field?.metadata || this?.field?.definition?.metadata || {};
         const relateModules = metadata?.relatedModules ?? [];
 
-        relateModules.forEach((module) => {
-            const moduleName = module?.module ?? '';
-            this.headerFields[moduleName] = module?.headerField ?? 'name';
-            this.subHeaderFields[moduleName] = module?.subHeaderField ?? '';
+        relateModules.forEach((moduleConfig) => {
+            const moduleName = moduleConfig?.module ?? '';
+            this.headerFields[moduleName] = moduleConfig?.headerField ?? 'name';
+            this.subHeaderFields[moduleName] = moduleConfig?.subHeaderField ?? '';
+            if (moduleConfig?.appendable && moduleConfig?.appendableConfig) {
+                this.appendableModuleConfigs[moduleName] = moduleConfig.appendableConfig;
+            }
         })
     }
 

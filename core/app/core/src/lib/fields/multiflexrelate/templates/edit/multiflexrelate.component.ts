@@ -45,6 +45,7 @@ import {MultiFlexRelateService} from "../../../../services/record/relate/multi-f
 import {BaseMultiFlexRelateComponent} from "../../../base/base-multi-flex-relate.component";
 import {SelectItem, SelectItemGroup} from "primeng/api";
 import {isEmail} from "../../../../common/utils/value-utils";
+import {StringMap} from "../../../../common/types/string-map";
 
 @Component({
     selector: 'scrm-multiflexrelate-edit',
@@ -175,7 +176,7 @@ export class MultiFlexRelateEditFieldComponent extends BaseMultiFlexRelateCompon
                     }
                 });
 
-                const selected =  [...this.selectedValues];
+                const selected = [...this.selectedValues];
 
                 this.tag.visibleOptions().forEach((item: SelectItem) => {
                     if ((item as any)?.group) {
@@ -275,15 +276,48 @@ export class MultiFlexRelateEditFieldComponent extends BaseMultiFlexRelateCompon
             this.options = filteredOptions;
             this.addCurrentlySelectedToOptions(filteredOptions);
             const groups = this.splitIntoGroups(filteredOptions);
-            if (isEmail(term)) {
+            this.insertAppendableOptions(term, groups);
+            this.currentOptionGroups.set(groups);
+            setTimeout(() => {
+                this.calculateSelectAll();
+            }, 0);
+        });
+    }
+
+    protected insertAppendableOptions(term: string, groups: SelectItemGroup[]): void {
+        Object.keys(this.appendableModuleConfigs ?? {}).forEach((module) => {
+            const config = this.appendableModuleConfigs[module];
+            const matchMethod = config?.matchMethod?.method ?? '';
+            if (!matchMethod) {
+                return;
+            }
+
+            let isAppendable: Function;
+
+            if (matchMethod === 'function') {
+                const matchFunction = config?.matchMethod?.function ?? '';
+                if (matchFunction !== 'isEmail') {
+                    return;
+                }
+
+                isAppendable = (term) => isEmail(term);
+            } else if (matchMethod === 'regex') {
+                if (!config?.matchMethod?.regex) {
+                    return;
+                }
+                const regex = new RegExp(config?.matchMethod?.regex);
+                isAppendable = (term) => regex.test(term);
+            }
+
+            if (isAppendable(term)) {
                 let insertedGroup = {
-                    label: this.languages.getListLabel('moduleList', 'Emails'),
-                    value: 'Emails',
+                    label: this.languages.getListLabel('moduleList', config?.groupLabelKey ?? ''),
+                    value: config?.groupValue ?? '',
                     items: []
                 } as SelectItemGroup;
 
                 const found = groups.some(group => {
-                    if (group.value === 'Emails') {
+                    if (group.value === (config?.groupValue ?? '')) {
                         insertedGroup = group;
                         return true;
                     }
@@ -302,23 +336,25 @@ export class MultiFlexRelateEditFieldComponent extends BaseMultiFlexRelateCompon
                 });
 
                 if (!foundItem) {
-                    insertedGroup.items.unshift({
+                    const newItem = {
                         label: term,
-                        value: {
-                            email: term,
-                            name: term,
-                            id: term,
-                            module_name: 'Emails',
-                        },
-                        icon: 'Emails',
-                    } as SelectItem);
-                }
+                        value: {},
+                        icon: config?.icon ?? '',
+                    } as SelectItem;
 
+                    const valueMap: StringMap = config?.valueMap ?? {};
+                    Object.keys(valueMap).forEach((key) => {
+                        if (valueMap[key] === '{{term}}') {
+                            newItem.value[key] = term;
+                            return;
+                        }
+
+                        newItem.value[key] = valueMap[key];
+                    });
+
+                    insertedGroup.items.unshift(newItem);
+                }
             }
-            this.currentOptionGroups.set(groups);
-            setTimeout(() => {
-                this.calculateSelectAll();
-            },0);
         });
     }
 
