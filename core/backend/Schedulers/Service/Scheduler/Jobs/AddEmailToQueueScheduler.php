@@ -79,39 +79,91 @@ class AddEmailToQueueScheduler extends LegacyHandler implements SchedulerInterfa
         return self::SCHEDULER_KEY;
     }
 
-    /**
-     * @throws Exception
-     */
     public function run(): bool
     {
         $table = $this->emailManagerHandler->getModuleTable('EmailMarketing');
-        $emails = $this->preparedStatementHandler->fetchAll(
-            "SELECT * FROM $table WHERE status = 'scheduled'",
-            []
-        );
+        try {
+            $emails = $this->preparedStatementHandler->fetchAll(
+                "SELECT * FROM $table WHERE status = 'scheduled'",
+                []
+            );
+        } catch (Exception $e) {
+            $this->logger->error($e->getMessage());
+        }
 
         $passed = true;
 
         foreach ($emails as $email) {
-            $id = $email['id'];
+            $emailId = $email['id'];
             $campaignId = $email['campaign_id'];
             $sendDate = $email['date_start'];
 
-            $prospects = $this->getProspectLists($email['id']);
+            $emProspects = $this->getProspectLists($email['id']);
+            $emails = [];
+            foreach ($emProspects as $prospectList) {
+                $id = $prospectList['id'];
 
-            foreach ($prospects as $prospect) {
-                $prospectId = $prospect['id'];
+                $prospectListId = $prospectList['prospect_list_id'];
 
-                $this->runDeleteQuery($campaignId, $id, $prospect['prospect_list_id']);
+                $this->removeDeletedProspects($prospectListId);
 
-                $result = $this->runInsertQuery($prospectId, $id, $campaignId, $sendDate);
+                $prospects = $this->filterProspectsEmails($prospectListId);
+
+                $emailMan = $this->emailManagerHandler->getBean('EmailMan');
+
+                $ids = [];
+
+                foreach ($prospects as $result) {
+
+                    $bean = $this->emailManagerHandler->getBean($result['related_type'], $result['related_id']);
+
+                    $isDuplicate = $this->checkForDuplicate($result['related_id']);
+
+                    if ($isDuplicate){
+                        continue;
+                    }
+
+                    // check if duplicate
+                    if (array_key_exists($bean->email1, $emails)) {
+
+                        $this->emailManagerHandler->setAsSent(
+                            $bean->email1,
+                            $result['related_id'],
+                            $result['related_type'],
+                            true,
+                            'blocked',
+                            $prospectListId,
+                            $campaignId,
+                            $emailId,
+                        );
+                        continue;
+                    }
+
+                    $validated = $this->emailManagerHandler->validateEmail(
+                        $bean,
+                        $campaignId,
+                        $emailId,
+                        $emailMan,
+                        $id,
+                        []
+                    );
+
+                    if (!$validated){
+                        continue;
+                    }
+
+                    $ids[] = $result['related_id'];
+                    $emails[$bean->email1] = 1;
+                }
+
+                $result = $this->runInsertQuery($id, $emailId, $campaignId, $sendDate, $ids);
 
                 if (!$result) {
                     $passed = false;
                 }
             }
 
-            $this->deleteExemptEntries($id);
+            $this->deleteExemptEntries($emailId);
         }
 
 
@@ -139,7 +191,13 @@ class AddEmailToQueueScheduler extends LegacyHandler implements SchedulerInterfa
         return $records;
     }
 
-    protected function runInsertQuery(string $prospectId, string $emId, string $campaignId, string $sendDate): bool
+    protected function runInsertQuery(
+        string $prospectId,
+        string $emId,
+        string $campaignId,
+        string $sendDate,
+        array $ids,
+    ): bool
     {
         $timedate = $this->emailManagerHandler->getTimeDate();
         $user = $this->getUser();
@@ -159,8 +217,8 @@ class AddEmailToQueueScheduler extends LegacyHandler implements SchedulerInterfa
         :send_date ';
         $query .= 'FROM prospect_lists_prospects plp ';
         $query .= 'INNER JOIN email_marketing_prospect_lists empl ON empl.prospect_list_id = plp.prospect_list_id ';
-        $query .= 'WHERE empl.id = :prospect_id ';
-        $query .= 'AND plp.deleted=0 AND empl.deleted=0 AND empl.email_marketing_id= :em_id';
+        $query .= 'WHERE empl.id = :prospect_id AND NOT EXISTS (SELECT id FROM emailman WHERE related_id = plp.related_id) ';
+        $query .= "AND plp.deleted=0 AND empl.deleted=0 AND empl.email_marketing_id= :em_id AND plp.related_id IN ('" . implode("','", $ids) . "')";
 
         try {
             $result = $this->preparedStatementHandler->update($query,
@@ -170,7 +228,7 @@ class AddEmailToQueueScheduler extends LegacyHandler implements SchedulerInterfa
                     'em_id' => $emId,
                     'send_date' => $sendDate,
                     'prospect_id' => $prospectId,
-                    'campaign_id' => $campaignId
+                    'campaign_id' => $campaignId,
                 ],
                 [
                     ['param' => 'date', 'type' => 'string'],
@@ -185,11 +243,7 @@ class AddEmailToQueueScheduler extends LegacyHandler implements SchedulerInterfa
             $result = '';
         }
 
-        if (empty($result)) {
-            return false;
-        }
-
-        return true;
+        return !(empty($result) && $result !== 0);
     }
 
     protected function getUser(): ?\SugarBean {
@@ -203,28 +257,6 @@ class AddEmailToQueueScheduler extends LegacyHandler implements SchedulerInterfa
         $this->close();
 
         return $user;
-    }
-
-    protected function runDeleteQuery(string $campaignId, string $marketingId, string $listId): void
-    {
-        $table = $this->emailManagerHandler->getTable();
-        $query = "DELETE FROM $table WHERE campaign_id = :campaign_id ";
-        $query .= 'AND marketing_id = :marketing_id AND list_id = :list_id';
-
-        try {
-            $this->preparedStatementHandler->update($query, [
-                'campaign_id' => $campaignId,
-                'marketing_id' => $marketingId,
-                'list_id' => $listId,
-            ], [
-                ['param' => 'campaign_id', 'type' => 'string'],
-                ['param' => 'marketing_id', 'type' => 'string'],
-                ['param' => 'list_id', 'type' => 'string'],
-            ]);
-        } catch (Exception $e) {
-            $this->logger->error($e->getMessage());
-        }
-
     }
 
     protected function deleteExemptEntries(string $marketingId): void
@@ -248,5 +280,72 @@ class AddEmailToQueueScheduler extends LegacyHandler implements SchedulerInterfa
             $this->logger->error($e->getMessage());
         }
 
+    }
+
+    protected function filterProspectsEmails($id): array
+    {
+        $query = "SELECT * FROM prospect_lists_prospects plp ";
+        $query .= "WHERE prospect_list_id = :id AND plp.deleted = 0";
+
+        try {
+            $results = $this->preparedStatementHandler->fetchAll($query, [
+                'id' => $id,
+            ]);
+        } catch (Exception $e) {
+            $this->logger->error($e->getMessage());
+        }
+
+        if (empty($results)){
+            return [];
+        }
+
+        return $results;
+    }
+
+    protected function removeDeletedProspects($id): void
+    {
+        $query = "SELECT plp.related_id FROM prospect_lists_prospects plp ";
+        $query .= "WHERE plp.prospect_list_id = :list_id AND plp.deleted = 1";
+
+        try {
+            $results = $this->preparedStatementHandler->fetchAll($query, [
+                'list_id' => $id
+            ]);
+        } catch (Exception $e) {
+            $this->logger->error($e->getMessage());
+        }
+
+        if (empty($results)) {
+            return;
+        }
+
+        foreach ($results as $key => $result) {
+            $ids[] = $result['related_id'];
+        }
+
+        $deleteQuery = "DELETE FROM emailman WHERE related_id IN ('" . implode("','", $ids) . "')";
+
+        try {
+            $this->preparedStatementHandler->update($deleteQuery, [], []);
+        } catch (Exception $e) {
+            $this->logger->error($e->getMessage());
+        }
+    }
+
+    protected function checkForDuplicate($id): bool
+    {
+        $query = 'SELECT related_id FROM campaign_log WHERE related_id = :id';
+
+        try {
+            $results = $this->preparedStatementHandler->fetch($query, ['id' => $id]);
+        } catch (Exception $e) {
+            $this->logger->error($e->getMessage());
+        }
+
+        if (empty($results)){
+            return false;
+        }
+
+        return true;
     }
 }
