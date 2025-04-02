@@ -85,59 +85,60 @@ class EmailManagerHandler extends LegacyHandler {
      * @throws Exception
      */
     public function validateEmail(
-        Record $emailRecord,
-        Record $emailMarketing,
         SugarBean $moduleBean,
+        string $campaignId,
+        string $emailMarketingId,
         SugarBean $emailMan,
         string $prospectListId,
         array $suppressedEmails
     ): bool
     {
         $email = $moduleBean->email1 ?? '';
-        $emailManId = $this->getEmailManId($emailRecord->getAttributes()['parent_id'], $emailMarketing->getId());
+        $id = $moduleBean->id;
+        $type = $moduleBean->module_dir ?? '';
 
         $isPrimary = $emailMan->is_primary_email_address($moduleBean) ?? false;
         $isValid = $emailMan->valid_email_address($email) ?? false;
         $shouldBlock = $emailMan->shouldBlockEmail($moduleBean) ?? true;
 
         if (!$isPrimary) {
-            $this->setAsSent($email, $emailRecord, $emailMarketing, true, 'send error', $prospectListId);
-            $this->logger->error("Email Address provided is not Primary Address for email with id $email and EmailMan id $emailManId");
+            $this->setAsSent($email, $id, $type, true, 'send error', $prospectListId, $campaignId, $emailMarketingId);
+            $this->logger->error("Email Address provided is not Primary Address for email $email");
 
             return false;
         }
 
         if (!$isValid) {
-            $this->setAsSent($email, $emailRecord, $emailMarketing, true, 'invalid email', $prospectListId);
-            $this->logger->error("Email Address provided is not Primary Address for email $email and EmailMan id $emailManId");
+            $this->setAsSent($email, $id, $type, true, 'invalid email', $prospectListId, $campaignId, $emailMarketingId);
+            $this->logger->error("Email Address provided is not Primary Address for email $email");
 
             return false;
         }
 
         if ($this->isInvalidEmail($moduleBean)) {
-            $this->setAsSent($email, $emailRecord, $emailMarketing, true, 'blocked', $prospectListId);
-            $this->logger->error("Email Address provided is invalid with email $email and EmailMan id $emailManId");
+            $this->setAsSent($email, $id, $type, true, 'blocked', $prospectListId, $campaignId, $emailMarketingId);
+            $this->logger->error("Email Address provided is invalid with email $email ");
 
             return false;
         }
 
         if ($shouldBlock) {
-            $this->setAsSent($email, $emailRecord, $emailMarketing, true, 'blocked', $prospectListId);
-            $this->logger->error("Email Address was not sent due to not being confirm opt in for email $email and EmailMan id $emailManId");
+            $this->setAsSent($email, $id, $type, true, 'blocked', $prospectListId, $campaignId, $emailMarketingId);
+            $this->logger->error("Email Address was not sent due to not being confirm opt in for email $email");
 
             return false;
         }
 
-        if ($this->isRestrictedDomains($moduleBean, $suppressedEmails['domains'])) {
-            $this->setAsSent($email, $emailRecord, $emailMarketing, true, 'blocked', $prospectListId);
-            $this->logger->error("Email Address provided is restricted: $email and EmailMan id $emailManId");
+        if ($this->isRestrictedDomains($moduleBean, $suppressedEmails['domains'] ?? [])) {
+            $this->setAsSent($email, $id, $type, true, 'blocked', $prospectListId, $campaignId, $emailMarketingId);
+            $this->logger->error("Email Address provided is restricted: $email");
 
             return false;
         }
 
-        if ($this->isRestrictedAddress($moduleBean, $suppressedEmails['addresses'])) {
-            $this->setAsSent($email, $emailRecord, $emailMarketing, true, 'blocked', $prospectListId);
-            $this->logger->error("Email Address provided is restricted: $email and EmailMan id $emailManId");
+        if ($this->isRestrictedAddress($moduleBean, $suppressedEmails['addresses'] ?? [])) {
+            $this->setAsSent($email, $id, $type, true, 'blocked', $prospectListId, $campaignId, $emailMarketingId);
+            $this->logger->error("Email Address provided is restricted: $email");
 
             return false;
         }
@@ -150,23 +151,24 @@ class EmailManagerHandler extends LegacyHandler {
      */
     public function setAsSent(
         string $email,
-        ?Record $emailRecord,
-        ?Record $emailMarketing,
+        $relatedId,
+        $relatedType,
         $delete,
         $activityType,
-        $prospectListId
+        $prospectListId,
+        $campaignId,
+        $emailMarketingId,
     ): void {
-        $emAttributes = $emailMarketing?->getAttributes() ?? [];
-        $emailAttributes = $emailRecord?->getAttributes() ?? [];
 
         $this->init();
 
         global $timedate;
 
-        $id = $this->getEmailManId($emailAttributes['parent_id'], $emAttributes['id']);
+        $this->close();
+
+        $id = $this->getEmailManId($relatedId ?? null, $emailMarketingId ?? '');
 
         if (!$delete){
-            $this->close();
             $query = "UPDATE emailman SET in_queue = '1', send_attempts = send_attempts + 1, in_queue_date = :now ";
             $query .= "WHERE id = :id";
 
@@ -185,19 +187,19 @@ class EmailManagerHandler extends LegacyHandler {
             return;
         }
 
-        $campaignLog = \BeanFactory::newBean('CampaignLog');
-        $campaignLog->campaign_id = $emAttributes['campaign_id'] ?? '';
-        $campaignLog->marketing_id = $emAttributes['id'] ?? '';
-        $campaignLog->more_information = $email;
-        $campaignLog->activity_type = $activityType;
-        $campaignLog->activity_date = $timedate->nowDb();
-        $campaignLog->list_id = $prospectListId ?? null;
-        $campaignLog->related_id = $emailAttributes['parent_id'] ?? null;
-        $campaignLog->related_type = $emailAttributes['parent_type'] ?? null;
-        $campaignLog->resend_type = null;
-        $campaignLog->save();
+        $this->createCampaignLog(
+            $campaignId,
+            $emailMarketingId,
+            $email,
+            $activityType,
+            $prospectListId,
+            $relatedId,
+            $relatedType
+        );
 
-        $this->close();
+        if (!$id) {
+            return;
+        }
 
         $query = "DELETE FROM emailman WHERE id = :id ";
         try {
@@ -211,9 +213,13 @@ class EmailManagerHandler extends LegacyHandler {
             $this->logger->error($e->getMessage());
         }
 
-        if ($emailMarketing === null){
+        if ($emailMarketingId === null){
             return;
         }
+
+        $emailMarketing = $this->getRecord('EmailMarketing', $emailMarketingId);
+
+        $emAttributes = $emailMarketing->getAttributes();
 
         $emAttributes['status'] = 'sent';
 
@@ -222,9 +228,26 @@ class EmailManagerHandler extends LegacyHandler {
         $this->recordProvider->saveRecord($emailMarketing);
     }
 
-    /**
-     * @return string|null
-     */
+    public function checkForDuplicateEmail(string $email, string $marketingId): bool
+    {
+        $query = 'SELECT id FROM campaign_log where more_information = :email and marketing_id = :marketing_id';
+
+        try {
+            $result = $this->preparedStatementHandler->fetch($query, [
+                'email' => $email,
+                'marketing_id' => $marketingId,
+            ]);
+        } catch (Exception $e) {
+            $this->logger->error($e->getMessage());
+        }
+
+        if (empty($result)){
+            return false;
+        }
+
+        return true;
+    }
+
     public function getTable(): ?string
     {
         $this->init();
@@ -270,24 +293,36 @@ class EmailManagerHandler extends LegacyHandler {
            'marketing_id' => $marketingId
         ]);
 
-        if (empty($result)){
-            $this->logger->warning('Unable to find EmailMan id');
-        }
-
-        return $result['id'];
+        return $result['id'] ?? '';
     }
 
-    /**
-     * @param SugarBean $moduleBean
-     * @return bool
-     */
-    protected function isOptOut(SugarBean $moduleBean): bool
+    public function createCampaignLog(
+        string $campaignId,
+        string $marketingId,
+        string $email,
+        $activityType,
+        $prospectListId,
+        string $parentId,
+        string $parentType
+    ): void
     {
-        return isset($moduleBean->email_opt_out) && (
-                $moduleBean->email_opt_out === 'on' ||
-                $moduleBean->email_opt_out === '1' ||
-                $moduleBean->email_opt_out === 1
-        );
+        $this->init();
+
+        global $timedate;
+
+        $campaignLog = \BeanFactory::newBean('CampaignLog');
+        $campaignLog->campaign_id = $campaignId;
+        $campaignLog->marketing_id = $marketingId;
+        $campaignLog->more_information = $email;
+        $campaignLog->activity_type = $activityType;
+        $campaignLog->activity_date = $timedate->nowDb();
+        $campaignLog->list_id = $prospectListId ?? null;
+        $campaignLog->related_id = $parentId;
+        $campaignLog->related_type = $parentType;
+        $campaignLog->resend_type = null;
+        $campaignLog->save();
+
+        $this->close();
     }
 
     /**
@@ -405,6 +440,25 @@ class EmailManagerHandler extends LegacyHandler {
         }
 
         return $addresses;
+    }
+
+    public function getRecord(string $module, string $id = ''): Record
+    {
+        $bean = $this->getBean($module, $id);
+
+        return $this->recordProvider->mapToRecord($bean);
+    }
+
+    public function getBean(string $module, string $id = ''): SugarBean|bool
+    {
+        $this->init();
+
+        $bean = \BeanFactory::getBean($module, $id);
+
+        $this->close();
+
+        return $bean;
+
     }
 
     /**

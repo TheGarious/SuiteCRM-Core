@@ -104,7 +104,7 @@ class SendEmailScheduler extends LegacyHandler implements SchedulerInterface
         $timedate = $this->emailManagerHandler->getTimeDate();
 
         $maxPerRun = $this->systemConfigHandler->getSystemConfig('emails_per_run')?->getValue() ?? '500';
-        $emailMan = $this->getBean('EmailMan');
+        $emailMan = $this->emailManagerHandler->getBean('EmailMan');
         $table = $this->emailManagerHandler->getTable();
         $confirmOptInEnabled = $this->emailManagerHandler->getConfigurator()->isConfirmOptInEnabled();
 
@@ -155,12 +155,12 @@ class SendEmailScheduler extends LegacyHandler implements SchedulerInterface
                 continue;
             }
 
-            $prospectBean = $this->getBean($row['related_type'], $row['related_id']);
+            $prospectBean = $this->emailManagerHandler->getBean($row['related_type'], $row['related_id']);
             $email = $prospectBean->email1 ?? $prospectBean->email ?? '';
 
-            $prospect = $this->getRecord($row['related_type'], $row['related_id']);
+            $prospect = $this->emailManagerHandler->getRecord($row['related_type'], $row['related_id']);
             $prospectId = $prospect->getAttributes()['id'] ?? '';
-            $emRecord = $this->getRecord('EmailMarketing', $marketingId);
+            $emRecord = $this->emailManagerHandler->getRecord('EmailMarketing', $marketingId);
 
             $outboundEmailId = $emRecord->getAttributes()['outbound_email_id'] ?? '';
 
@@ -169,9 +169,9 @@ class SendEmailScheduler extends LegacyHandler implements SchedulerInterface
             $emailRecord = $this->buildEmailRecord($emRecord, $prospect, $outboundEmailId);
 
             $validated = $this->emailManagerHandler->validateEmail(
-                $emailRecord,
-                $emRecord,
                 $prospectBean,
+                $emRecord->getAttributes()['campaign_id'] ?? '',
+                $emRecord->getId(),
                 $emailMan,
                 $row['list_id'] ?? '',
                 $suppressedEmails
@@ -181,17 +181,19 @@ class SendEmailScheduler extends LegacyHandler implements SchedulerInterface
                 continue;
             }
 
-            $isDuplicate = $this->checkForDuplicate($email, $marketingId);
+            $isDuplicate = $this->emailManagerHandler->checkForDuplicateEmail($email, $marketingId);
 
             if ($isDuplicate){
                 $this->logger->info('duplicate email');
                 $this->emailManagerHandler->setAsSent(
                     $email,
-                    $emailRecord ,
-                    $emRecord,
+                    $row['related_id'],
+                    $row['related_type'] ,
                     true,
                     'blocked',
-                    $prospectId
+                    $prospectId,
+                    $emRecord->getAttributes()['campaign_id'] ?? '',
+                    $marketingId
                 );
                 continue;
             }
@@ -214,11 +216,13 @@ class SendEmailScheduler extends LegacyHandler implements SchedulerInterface
                 $this->logger->warning('Failed to send email.' . $prospect->getAttributes()['email1']);
                 $this->emailManagerHandler->setAsSent(
                     $email,
-                    $emailRecord,
-                    $emRecord,
-                    false,
+                    $row['related_id'],
+                    $row['related_type'] ,
+                    true,
                     'send error',
-                    $prospectId
+                    $prospectId,
+                    $emRecord->getAttributes()['campaign_id'] ?? '',
+                    $marketingId
                 );
 
                 continue;
@@ -227,11 +231,13 @@ class SendEmailScheduler extends LegacyHandler implements SchedulerInterface
             $this->logger->info('Email sent');
             $this->emailManagerHandler->setAsSent(
                 $email,
-                $emailRecord,
-                $emRecord,
+                $row['related_id'],
+                $row['related_type'] ,
                 true,
-                'targeted',
-                $row['list_id'] ?? ''
+                'send error',
+                $prospectId,
+                $emRecord->getAttributes()['campaign_id'] ?? '',
+                $marketingId
             );
         }
 
@@ -247,18 +253,6 @@ class SendEmailScheduler extends LegacyHandler implements SchedulerInterface
         $this->close();
 
         return $user;
-    }
-
-    protected function getBean(string $module, string $id = ''): SugarBean|bool
-    {
-        $this->init();
-
-        $bean = \BeanFactory::getBean($module, $id);
-
-        $this->close();
-
-        return $bean;
-
     }
 
     protected function buildEmailRecord(Record $record, Record $prospect, string $outboundId): Record
@@ -289,37 +283,11 @@ class SendEmailScheduler extends LegacyHandler implements SchedulerInterface
         return $emailRecord;
     }
 
-    protected function getRecord(string $module, string $id = ''): Record
-    {
-        $bean = $this->getBean($module, $id);
-
-        return $this->recordProvider->mapToRecord($bean);
-    }
-
-    /**
-     * @throws Exception
-     */
-    protected function checkForDuplicate(string $email, string $marketingId): bool
-    {
-        $query = 'SELECT id FROM campaign_log where more_information = :email and marketing_id = :marketing_id';
-
-        $result = $this->preparedStatementHandler->fetch($query, [
-            'email' => $email,
-            'marketing_id' => $marketingId,
-        ]);
-
-        if (empty($result)){
-            return false;
-        }
-
-        return true;
-    }
-
     protected function buildOptInEmail(Record $prospect, string $outboundId): Record|bool
     {
         $configurator = $this->emailManagerHandler->getConfigurator();
 
-        $emailTemplate = $this->getBean('EmailTemplates');
+        $emailTemplate = $this->emailManagerHandler->getBean('EmailTemplates');
         $templateId = $configurator->getConfirmOptInTemplateId() ?? '';
 
         if (empty($templateId)) {
