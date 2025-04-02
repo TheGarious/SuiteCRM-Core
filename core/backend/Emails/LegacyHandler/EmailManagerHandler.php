@@ -153,7 +153,7 @@ class EmailManagerHandler extends LegacyHandler {
 
         $this->close();
 
-        $id = $this->getEmailManId($relatedId ?? null, $emailMarketingId ?? '');
+        $id = $this->getEmailManId($relatedId, $emailMarketingId);
 
         if (!$delete){
             $query = "UPDATE emailman SET in_queue = '1', send_attempts = send_attempts + 1, in_queue_date = :now ";
@@ -198,10 +198,6 @@ class EmailManagerHandler extends LegacyHandler {
         } catch (Exception $e) {
             $this->logger->error('Unable to Delete Record from Email Man with the id' . $id);
             $this->logger->error($e->getMessage());
-        }
-
-        if ($emailMarketingId === null){
-            return;
         }
 
         $emailMarketing = $this->getRecord('EmailMarketing', $emailMarketingId);
