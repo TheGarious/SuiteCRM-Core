@@ -175,6 +175,8 @@ export class MultiFlexRelateEditFieldComponent extends BaseMultiFlexRelateCompon
                     }
                 });
 
+                const selected =  [...this.selectedValues];
+
                 this.tag.visibleOptions().forEach((item: SelectItem) => {
                     if ((item as any)?.group) {
                         return;
@@ -185,8 +187,10 @@ export class MultiFlexRelateEditFieldComponent extends BaseMultiFlexRelateCompon
                         return;
                     }
 
-                    this.selectedValues.push(item.value);
+                    selected.push(item.value);
                 });
+
+                this.selectedValues = selected;
             }
 
             this.onAdd();
