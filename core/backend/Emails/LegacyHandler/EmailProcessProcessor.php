@@ -156,14 +156,6 @@ class EmailProcessProcessor extends LegacyHandler
             ];
         }
 
-        if (empty($emailAttributes['outbound_email_id'] ?? '')) {
-            $this->close();
-            return [
-                'success' => false,
-                'message' => 'No outbound email provided'
-            ];
-        }
-
         return [];
     }
 
