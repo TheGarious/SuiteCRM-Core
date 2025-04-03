@@ -270,11 +270,6 @@ $viewdefs['Emails']['ComposeView'] = [
                     'displayType' => 'squire',
                     'metadata' => [
                         'labelDisplay' => 'none',
-                        'squire' => [
-                            'edit' => [
-                                'height' => 450,
-                            ]
-                        ]
                     ],
                 ],
             ],
