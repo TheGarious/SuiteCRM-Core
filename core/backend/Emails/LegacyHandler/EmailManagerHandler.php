@@ -188,27 +188,11 @@ class EmailManagerHandler extends LegacyHandler {
             return;
         }
 
-        $query = "DELETE FROM emailman WHERE id = :id ";
-        try {
-            $this->preparedStatementHandler->update($query, [
-                'id' => $id
-            ], [
-                ['param' => 'id', 'type' => 'string'],
-            ]);
-        } catch (Exception $e) {
-            $this->logger->error('Unable to Delete Record from Email Man with the id' . $id);
-            $this->logger->error($e->getMessage());
-        }
+        $this->deleteFromEmailMan($id);
 
         $emailMarketing = $this->getRecord('EmailMarketing', $emailMarketingId);
 
-        $emAttributes = $emailMarketing->getAttributes();
-
-        $emAttributes['status'] = 'sent';
-
-        $emailMarketing->setAttributes($emAttributes);
-
-        $this->recordProvider->saveRecord($emailMarketing);
+        $this->updateRecordStatus($emailMarketing, 'sent');
     }
 
     public function checkForDuplicateEmail(string $email, string $marketingId): bool
@@ -457,5 +441,31 @@ class EmailManagerHandler extends LegacyHandler {
         $this->close();
 
         return $timedate;
+    }
+
+    public function deleteFromEmailMan(string $id): void
+    {
+        $query = "DELETE FROM emailman WHERE id = :id ";
+        try {
+            $this->preparedStatementHandler->update($query, [
+                'id' => $id
+            ], [
+                ['param' => 'id', 'type' => 'string'],
+            ]);
+        } catch (Exception $e) {
+            $this->logger->error('Unable to Delete Record from Email Man with the id' . $id);
+            $this->logger->error($e->getMessage());
+        }
+    }
+
+    public function updateRecordStatus(Record $record, $status): void
+    {
+        $attributes = $record->getAttributes();
+
+        $attributes['status'] = $status;
+
+        $record->setAttributes($attributes);
+
+        $this->recordProvider->saveRecord($record);
     }
 }
