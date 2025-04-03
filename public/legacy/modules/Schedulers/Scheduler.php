@@ -89,7 +89,7 @@ class Scheduler extends SugarBean
     public $order_by;
 
     public static $jobStrings;
-    public static $legacyJobStrings;
+    public static $job_strings;
 
     public function __construct($init = true)
     {
@@ -1063,13 +1063,13 @@ class Scheduler extends SugarBean
     {
         global $mod_strings;
 
-        if (empty(self::$legacyJobStrings)) {
+        if (empty(self::$job_strings)) {
             include_once('modules/Schedulers/_AddJobsHere.php');
 
             // job functions
-            self::$legacyJobStrings = array('url::' => 'URL');
-            foreach ($legacyJobStrings as $k => $v) {
-                self::$legacyJobStrings['function::' . $v] = $mod_strings['LBL_' . strtoupper($v)];
+            self::$job_strings = array('url::' => 'URL');
+            foreach ($job_strings as $k => $v) {
+                self::$job_strings['function::' . $v] = $mod_strings['LBL_' . strtoupper($v)];
             }
         }
 
@@ -1081,6 +1081,6 @@ class Scheduler extends SugarBean
             }
         }
 
-        return [...self::$legacyJobStrings, ...self::$jobStrings];
+        return [...self::$job_strings, ...self::$jobStrings];
     }
 }

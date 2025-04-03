@@ -66,7 +66,7 @@ require_once 'include/Services/NormalizeRecords/NormalizeRecords.php';
  * This array provides the Schedulers admin interface with values for its "Job"
  * dropdown menu.
  */
-$legacyJobStrings = array(
+$job_strings = array(
     0 => 'refreshJobs',
     1 => 'pollMonitoredInboxes',
     2 => 'runMassEmailCampaign',

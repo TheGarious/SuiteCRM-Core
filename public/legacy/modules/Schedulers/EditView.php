@@ -154,8 +154,8 @@ $start_at = 1;
 include_once('modules/Schedulers/_AddJobsHere.php');
 
 $job_function = "<option value=''>--</option>";
-if (is_array($legacyJobStrings) && !empty($legacyJobStrings)) {
-    foreach ($legacyJobStrings as $k => $function) {
+if (is_array($job_strings) && !empty($job_strings)) {
+    foreach ($job_strings as $k => $function) {
         $job_function .= "<option value='function::".$function."'";
         if ($focus->job === "function::".$function) {
             $job_function .= " SELECTED ";
