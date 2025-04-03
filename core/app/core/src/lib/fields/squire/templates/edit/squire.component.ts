@@ -1,6 +1,6 @@
 /**
  * SuiteCRM is a customer relationship management program developed by SalesAgility Ltd.
- * Copyright (C) 2021 SalesAgility Ltd.
+ * Copyright (C) 2025 SalesAgility Ltd.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by the
@@ -160,20 +160,12 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
             label: 'MAIL_MESSAGE_BODY',
             tabIndex: 9,
             editorConfig: {
-                blockAttributes: defaultStyle
-                    ? {
-                        style: defaultStyle,
-                    }
-                    : null,
+                blockAttributes: null,
                 tagAttributes: {
                     blockquote: {
                         type: 'cite',
                     },
-                    li: defaultStyle
-                        ? {
-                            style: defaultStyle,
-                        }
-                        : null,
+                    li: null,
                     pre: {
                         style: preStyle,
                     },
@@ -190,7 +182,7 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
                 sanitizeToDOMFragment(html) {
                     return html;
                 },
-                toPlainText: (html) => this.toPlainText(html, false),
+                toPlainText: (html) => this.toPlainText(html),
             },
             layout: {
                 ...(this.isMobile()
@@ -838,7 +830,7 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
         });
     }
 
-    toPlainText(html: any, arg1: boolean) {
+    toPlainText(html: any) {
         return html;
     }
 
