@@ -530,7 +530,7 @@ export class MetadataStore implements StateStore {
             templateMeta: {} as RecordTemplateMetadata,
             panels: []
         };
-        // NOTE: Burada gereksizler var
+
         const receivedMeta = data.recordModal;
         const entries = {
             templateMeta: 'templateMeta',
