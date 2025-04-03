@@ -32,7 +32,7 @@
                 <scrm-panel [title]="panel.label"
                             [isCollapsed$]="(panel.isCollapsed | toObservable)"
                             mode="collapsible"
-                            [showHeader]="panel.meta.showHeader ?? true"
+                            [showHeader]="panel?.meta?.showHeader ?? true"
                 >
                     <div panel-body class="panel-{{panel.key}}">
                         <scrm-field-layout [dataSource]="getLayoutDataSource(panel)"></scrm-field-layout>
