@@ -184,7 +184,7 @@ class SendEmailScheduler extends LegacyHandler implements SchedulerInterface
 
             if ($isDuplicate){
                 $this->logger->info('duplicate email');
-                $this->emailManagerHandler->setAsSent(
+                $this->emailManagerHandler->setSentStatus(
                     $email,
                     $row['related_id'],
                     $row['related_type'] ,
@@ -213,7 +213,7 @@ class SendEmailScheduler extends LegacyHandler implements SchedulerInterface
 
             if (!$result['success']){
                 $this->logger->warning('Failed to send email.' . $prospect->getAttributes()['email1']);
-                $this->emailManagerHandler->setAsSent(
+                $this->emailManagerHandler->setSentStatus(
                     $email,
                     $row['related_id'],
                     $row['related_type'] ,
@@ -228,12 +228,12 @@ class SendEmailScheduler extends LegacyHandler implements SchedulerInterface
             }
 
             $this->logger->info('Email sent');
-            $this->emailManagerHandler->setAsSent(
+            $this->emailManagerHandler->setSentStatus(
                 $email,
                 $row['related_id'],
                 $row['related_type'] ,
                 true,
-                'send error',
+                'targeted',
                 $prospectId,
                 $emRecord->getAttributes()['campaign_id'] ?? '',
                 $marketingId

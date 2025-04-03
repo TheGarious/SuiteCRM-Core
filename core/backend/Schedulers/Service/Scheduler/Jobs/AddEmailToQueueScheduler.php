@@ -126,7 +126,7 @@ class AddEmailToQueueScheduler extends LegacyHandler implements SchedulerInterfa
                     // check if duplicate
                     if (array_key_exists($bean->email1, $emails)) {
 
-                        $this->emailManagerHandler->setAsSent(
+                        $this->emailManagerHandler->setSentStatus(
                             $bean->email1,
                             $result['related_id'],
                             $result['related_type'],
