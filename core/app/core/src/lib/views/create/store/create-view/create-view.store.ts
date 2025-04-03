@@ -108,6 +108,7 @@ export class CreateViewStore extends RecordViewStore {
         this.showTopWidget = false;
         this.showBottomWidgets = false;
         this.showSubpanels = false;
+        this.calculateCurrentSection();
 
         const isDuplicate = this.params.isDuplicate ?? false;
         const isConvert = this.params.isConvert ?? false;
