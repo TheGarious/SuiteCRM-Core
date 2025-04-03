@@ -143,7 +143,7 @@ $viewdefs ['EmailMarketing'] = [
                                     'status' => [
                                         [
                                             'operator' => 'is-equal',
-                                            'values' => ['inactive']
+                                            'values' => ['inactive', 'sent', 'sending']
                                         ],
                                     ],
                                 ]
