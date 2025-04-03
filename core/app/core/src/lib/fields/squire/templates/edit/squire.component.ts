@@ -51,6 +51,10 @@ import {floor} from "mathjs";
 import {AnyButtonInterface, DropdownButtonInterface} from "../../../../common/components/button/dropdown-button.model";
 import {ColorButton} from "../../../../components/popups/components/color-selector/color-selector.model";
 import {isEmail, isURL} from "../../../../common/utils/value-utils";
+import {
+    ScreenSize,
+    ScreenSizeObserverService
+} from "../../../../services/ui/screen-size-observer/screen-size-observer.service";
 
 
 @Component({
@@ -64,7 +68,6 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
     @ViewChild('editorEl') editorEl: ElementRef;
     @ViewChild('editorWrapper') editorWrapper: ElementRef;
     @ViewChild('toolbar') toolbar: ElementRef;
-    protected editor: Squire;
 
     settings: any = {};
     availableButtons = {} as ButtonInterfaceMap;
@@ -76,12 +79,13 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
     baseButtonLayout: WritableSignal<Array<ButtonInterface[]>> = signal([]);
     collapsedButtons: WritableSignal<ButtonInterface[]> = signal([]);
     collapsedDropdownButton: WritableSignal<ButtonInterface> = signal(null);
-    minHeight: WritableSignal<string> = signal('45vh');
+    minHeight: WritableSignal<string> = signal('43vh');
     height: WritableSignal<string> = signal('18vh');
     maxHeight: WritableSignal<string> = signal('45vh');
     maxWidth: WritableSignal<string> = signal('100vh');
 
     protected currentEditorPath: WritableSignal<string> = signal('');
+    protected editor: Squire;
 
     @HostListener('window:resize', ['$event'])
     onResize(): void {
@@ -95,7 +99,8 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
         protected logic: FieldLogicManager,
         protected logicDisplay: FieldLogicDisplayManager,
         protected config: SystemConfigStore,
-        protected sanitizer: DomSanitizer
+        protected sanitizer: DomSanitizer,
+        protected screenSize: ScreenSizeObserverService
     ) {
         super(typeFormatter, logic, logicDisplay);
     }
@@ -111,6 +116,22 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
             'icon': 'down_carret',
             klass: 'squire-editor-button squire-editor-collapsed-button btn btn-sm',
         } as ButtonInterface);
+
+        this.subs.push(this.screenSize.screenSize$.subscribe((size) => {
+            if (size === ScreenSize.XSmall && !this.isMobile()) {
+                this.isMobile.set(true);
+                this.minHeight.set('39vh');
+            } else if (size !== ScreenSize.XSmall && this.isMobile()) {
+                this.isMobile.set(false);
+                this.minHeight.set('43vh');
+
+                if (this?.settings?.minHeight) {
+                    this.minHeight.set(this?.settings?.minHeight);
+                } else {
+                    this.minHeight.set('43vh');
+                }
+            }
+        }));
     }
 
     ngAfterViewInit(): void {
@@ -174,10 +195,10 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
             layout: {
                 ...(this.isMobile()
                     ? {
-                        minHeight: 300,
+                        minHeight: 270,
                     }
                     : {
-                        height: 300,
+                        height: 270,
                     }),
             },
         } as Partial<SquireConfig>;
@@ -202,10 +223,6 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
 
         if (this?.settings?.maxHeight) {
             this.maxHeight.set(this?.settings?.maxHeight);
-        }
-
-        if (this.isMobile()) {
-            this.height.set('23vh');
         }
     }
 
