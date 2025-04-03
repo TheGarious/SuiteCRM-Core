@@ -78,6 +78,10 @@
     overflow: hidden;
     text-overflow: ellipsis;
 
+    .multi-flex-relate-selected-entry-icon {
+      width: 18px;
+    }
+
     .multi-flex-relate-selected-entry-value {
       width: 100%;
       table-layout: fixed;
