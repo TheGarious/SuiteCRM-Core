@@ -1,7 +1,7 @@
 <?php
 /**
  * SuiteCRM is a customer relationship management program developed by SalesAgility Ltd.
- * Copyright (C) 2024 SalesAgility Ltd.
+ * Copyright (C) 2025 SalesAgility Ltd.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by the
@@ -417,6 +417,7 @@ class RecordModalDefinitionHandler extends LegacyHandler
                     if (is_string($cell)) {
                         $definition = $this->getBaseFieldCellDefinition($cell);
                         $cells[$definition['name']] = $definition;
+                        continue;
                     }
 
                     if (isset($definition['name'])){
@@ -456,7 +457,7 @@ class RecordModalDefinitionHandler extends LegacyHandler
 
         if (!isset($vardefs[$fieldName])) {
             $message = "RecordViewDefinitions: '$fieldName' not set on vardefs. Ignoring.";
-            $this->logger->warning($message);
+            $this->logger->debug($message);
 
             return;
         }
@@ -493,11 +494,8 @@ class RecordModalDefinitionHandler extends LegacyHandler
      */
     protected function addActionConfig(string $module, array $detailViewDefs, array &$metadata): void
     {
-        //$recordActions = $detailViewDefs['recordlActions'] ?? [];
         $recordActions = $detailViewDefs['recordModalActions'] ?? [];
-        //$actions = $this->actionDefinitionProvider->getActions($module, $recordActions) ?? [];
         $modalActions = $this->modalActionDefinitionProvider->getActions($module, $recordActions) ?? [];
-        //$metadata['actions'] = array_values($actions);
         $metadata['actions'] = array_values($modalActions);
     }
 
