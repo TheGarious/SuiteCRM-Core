@@ -983,6 +983,7 @@ $app_list_strings = array(
         'inactive' => 'Inactive',
         'scheduled' => 'Scheduled',
         'in_queue' => 'In Queue',
+        'sending' => 'Sending',
         'sent' => 'Sent'
     ),
     'email_marketing_type_dom' => array(
@@ -2264,6 +2265,7 @@ $app_strings = array(
     'LBL_DATE_START' => 'Date Start',
     'LBL_SEND_DATE' => 'Send Date',
     'LBL_SCHEDULE_BUTTON_LABEL' => 'Schedule',
+    'LBL_UNABLE_TO_UNSCHEDULE' => 'Unable to unschedule as not in queue, or sending',
     'LBL_SAVE_BUTTON_TITLE' => 'Save',
     'LBL_SAVE_CONTINUE_LABEL' => 'Save And Continue',
     'LBL_CANCEL_BUTTON_KEY' => 'l',
