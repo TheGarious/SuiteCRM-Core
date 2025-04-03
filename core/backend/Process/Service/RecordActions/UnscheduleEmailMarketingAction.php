@@ -30,6 +30,7 @@ namespace App\Process\Service\RecordActions;
 
 use ApiPlatform\Exception\InvalidArgumentException;
 use App\Data\LegacyHandler\PreparedStatementHandler;
+use App\Data\Service\RecordProviderInterface;
 use App\Engine\LegacyHandler\LegacyHandler;
 use App\Engine\LegacyHandler\LegacyScopeState;
 use App\Process\Entity\Process;
@@ -48,6 +49,7 @@ class UnscheduleEmailMarketingAction extends LegacyHandler implements ProcessHan
     protected ModuleNameMapperInterface $moduleNameMapper;
     protected PreparedStatementHandler $preparedStatementHandler;
     protected LoggerInterface $logger;
+    protected RecordProviderInterface $recordProvider;
 
     public function __construct(
         string $projectDir,
@@ -58,7 +60,8 @@ class UnscheduleEmailMarketingAction extends LegacyHandler implements ProcessHan
         RequestStack $requestStack,
         ModuleNameMapperInterface $moduleNameMapper,
         PreparedStatementHandler $preparedStatementHandler,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        RecordProviderInterface $recordProvider
     ) {
         parent::__construct(
             $projectDir,
@@ -71,6 +74,7 @@ class UnscheduleEmailMarketingAction extends LegacyHandler implements ProcessHan
         $this->moduleNameMapper = $moduleNameMapper;
         $this->preparedStatementHandler = $preparedStatementHandler;
         $this->logger = $logger;
+        $this->recordProvider = $recordProvider;
     }
 
     /**
@@ -140,6 +144,7 @@ class UnscheduleEmailMarketingAction extends LegacyHandler implements ProcessHan
 
     /**
      * @inheritDoc
+     * @throws \Exception
      */
     public function run(Process $process): void
     {
@@ -147,6 +152,12 @@ class UnscheduleEmailMarketingAction extends LegacyHandler implements ProcessHan
 
         $module = $this->moduleNameMapper->toLegacy($options['module']);
         $id = $options['id'];
+
+        if (!$this->isSending($id)) {
+            $process->setStatus('error');
+            $process->setMessages(['LBL_UNABLE_TO_UNSCHEDULE']);
+            return;
+        }
 
         $this->removeFromQueue($id);
 
@@ -182,6 +193,16 @@ class UnscheduleEmailMarketingAction extends LegacyHandler implements ProcessHan
         if (empty($result)) {
             $this->logger->error('Records in EmailMan may not have deleted with marketing_id:' . $id);
         }
+    }
+
+    /**
+     * @throws \Exception
+     */
+    protected function isSending(string $id): bool
+    {
+       $record = $this->recordProvider->getRecord('EmailMarketing', $id);
+
+       return $record->getAttributes()['status'] === 'sending';
     }
 
 
