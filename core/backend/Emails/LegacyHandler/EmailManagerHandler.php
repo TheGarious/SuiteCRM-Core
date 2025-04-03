@@ -92,42 +92,42 @@ class EmailManagerHandler extends LegacyHandler {
         $shouldBlock = $emailMan->shouldBlockEmail($moduleBean) ?? true;
 
         if (!$isPrimary) {
-            $this->setAsSent($email, $id, $type, true, 'send error', $prospectListId, $campaignId, $emailMarketingId);
+            $this->setSentStatus($email, $id, $type, true, 'send error', $prospectListId, $campaignId, $emailMarketingId);
             $this->logger->error("Email Address provided is not Primary Address for email $email");
 
             return false;
         }
 
         if (!$isValid) {
-            $this->setAsSent($email, $id, $type, true, 'invalid email', $prospectListId, $campaignId, $emailMarketingId);
+            $this->setSentStatus($email, $id, $type, true, 'invalid email', $prospectListId, $campaignId, $emailMarketingId);
             $this->logger->error("Email Address provided is not Primary Address for email $email");
 
             return false;
         }
 
         if ($this->isInvalidEmail($moduleBean)) {
-            $this->setAsSent($email, $id, $type, true, 'blocked', $prospectListId, $campaignId, $emailMarketingId);
+            $this->setSentStatus($email, $id, $type, true, 'blocked', $prospectListId, $campaignId, $emailMarketingId);
             $this->logger->error("Email Address provided is invalid with email $email ");
 
             return false;
         }
 
         if ($shouldBlock) {
-            $this->setAsSent($email, $id, $type, true, 'blocked', $prospectListId, $campaignId, $emailMarketingId);
+            $this->setSentStatus($email, $id, $type, true, 'blocked', $prospectListId, $campaignId, $emailMarketingId);
             $this->logger->error("Email Address was not sent due to not being confirm opt in for email $email");
 
             return false;
         }
 
         if ($this->isRestrictedDomains($moduleBean, $suppressedEmails['domains'] ?? [])) {
-            $this->setAsSent($email, $id, $type, true, 'blocked', $prospectListId, $campaignId, $emailMarketingId);
+            $this->setSentStatus($email, $id, $type, true, 'blocked', $prospectListId, $campaignId, $emailMarketingId);
             $this->logger->error("Email Address provided is restricted: $email");
 
             return false;
         }
 
         if ($this->isRestrictedAddress($moduleBean, $suppressedEmails['addresses'] ?? [])) {
-            $this->setAsSent($email, $id, $type, true, 'blocked', $prospectListId, $campaignId, $emailMarketingId);
+            $this->setSentStatus($email, $id, $type, true, 'blocked', $prospectListId, $campaignId, $emailMarketingId);
             $this->logger->error("Email Address provided is restricted: $email");
 
             return false;
@@ -136,7 +136,7 @@ class EmailManagerHandler extends LegacyHandler {
         return true;
     }
 
-    public function setAsSent(
+    public function setSentStatus(
         string $email,
         string $relatedId,
         string $relatedType,
@@ -174,7 +174,7 @@ class EmailManagerHandler extends LegacyHandler {
             return;
         }
 
-        $this->createCampaignLog(
+        $this->createCampaignLogEntry(
             $campaignId,
             $emailMarketingId,
             $email,
@@ -277,7 +277,7 @@ class EmailManagerHandler extends LegacyHandler {
         return $result['id'] ?? '';
     }
 
-    public function createCampaignLog(
+    public function createCampaignLogEntry(
         string $campaignId,
         string $marketingId,
         string $email,
