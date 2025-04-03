@@ -99,6 +99,7 @@ class AddEmailToQueueScheduler extends LegacyHandler implements SchedulerInterfa
             $sendDate = $email['date_start'];
 
             $emProspects = $this->getProspectLists($email['id']);
+            $emRecord = $this->emailManagerHandler->getRecord('EmailMarketing', $emailId);
             $emails = [];
             foreach ($emProspects as $prospectList) {
                 $id = $prospectList['id'];
@@ -157,6 +158,8 @@ class AddEmailToQueueScheduler extends LegacyHandler implements SchedulerInterfa
                 }
 
                 $result = $this->runInsertQuery($id, $emailId, $campaignId, $sendDate, $ids);
+
+                $this->emailManagerHandler->updateRecordStatus($emRecord, 'in_queue');
 
                 if (!$result) {
                     $passed = false;
