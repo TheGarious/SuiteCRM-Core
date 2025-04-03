@@ -106,8 +106,8 @@ export class SubpanelModalCreateAction extends SubpanelActionHandler {
         modal.componentInstance.descriptionKey = data?.action?.params?.descriptionLabelKey ??'';
         modal.componentInstance.dynamicDescriptionKey = data?.action?.params?.dynamicDescriptionKey ??'';
         modal.componentInstance.dynamicDescriptionContext = data?.action?.params?.dynamicDescriptionContext ??'';
-        modal.componentInstance.parentId = parentId;
-        modal.componentInstance.parentModule = parentModule;
+        modal.componentInstance.parentId = parentId ?? '';
+        modal.componentInstance.parentModule = parentModule ?? '';
         modal.componentInstance.headerClass = data?.action?.params?.headerClass ?? '';
         modal.componentInstance.bodyClass = data?.action?.params?.bodyClass ?? '';
         modal.componentInstance.footerClass = data?.action?.params?.footerClass ?? '';
