@@ -38,8 +38,8 @@
             (onPanelHide)="resetFunction()"
             [placeholder]="placeholderLabel"
             [selectedItemsLabel]="'{0} ' + selectedItemsLabel"
-            [emptyFilterMessage]="emptyFilterLabel"
-            [emptyMessage]="emptyFilterLabel"
+            [emptyFilterMessage]="emptyFilterLabel()"
+            [emptyMessage]="emptyFilterLabel()"
             [maxSelectedLabels]="maxSelectedLabels"
             [styleClass]="'w-100 ' + getInvalidClass()"
             [showToggleAll]="true"
@@ -68,7 +68,7 @@
                         <ng-container *ngFor="let option of value; let i = index;">
                             <div *ngIf="i > 0" class="pr-1">,</div>
                             <div class="d-flex multi-flex-relate-selected-entry align-items-center" >
-                                <scrm-image [image]="option.module_name" style="width: 18px"></scrm-image>
+                                <scrm-image [image]="option.module_name" class="multi-flex-relate-selected-entry-icon"></scrm-image>
                                 <div class="multi-flex-relate-selected-entry-value">
                                     {{ option[headerFields[option.module_name] ?? 'name'] ?? '' }}
                                 </div>
@@ -77,12 +77,12 @@
                     </ng-container>
                     <ng-container *ngIf="value && value.length > 2">
                         <div class="d-flex multi-flex-relate-selected-entry align-items-center" >
-                            <scrm-image [image]="value[0].module_name" style="width: 18px"></scrm-image>
+                            <scrm-image [image]="value[0].module_name" class="multi-flex-relate-selected-entry-icon"></scrm-image>
                             <div class="multi-flex-relate-selected-entry-value">{{ value[0][headerFields[value[0].module_name] ?? 'name'] ?? '' }}</div>
                         </div>
                         <div class="pr-1">,</div>
                         <div class="d-flex multi-flex-relate-selected-entry align-items-center" >
-                            <scrm-image [image]="value[1].module_name" style="width: 18px"></scrm-image>
+                            <scrm-image [image]="value[1].module_name" class="multi-flex-relate-selected-entry-icon"></scrm-image>
                             <div class="multi-flex-relate-selected-entry-value">{{ value[1][headerFields[value[1].module_name] ?? 'name'] ?? '' }}</div>
                         </div>
                         <div class="pr-1">, +{{value.length - 2}} </div>
