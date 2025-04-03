@@ -1,6 +1,6 @@
 /**
  * SuiteCRM is a customer relationship management program developed by SalesAgility Ltd.
- * Copyright (C) 2024 SalesAgility Ltd.
+ * Copyright (C) 2025 SalesAgility Ltd.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by the
@@ -312,7 +312,7 @@ export class RecordModalStore implements StateStore, BaseRecordContainerStoreInt
             }
         });
 
-        this.params = params;
+        this.params = currentParams;
     }
 
     /**
@@ -471,7 +471,7 @@ export class RecordModalStore implements StateStore, BaseRecordContainerStoreInt
                     return;
                 }
 
-                Object.values(tabDef.displayLogic).forEach((logicDef) => {
+                Object.values(tabDef?.displayLogic ?? []).forEach((logicDef) => {
                     if (isEmpty(logicDef?.params?.fieldDependencies)) {
                         return;
                     }
