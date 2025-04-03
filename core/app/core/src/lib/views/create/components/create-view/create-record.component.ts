@@ -32,8 +32,10 @@ import {RecordViewStore} from '../../../record/store/record-view/record-view.sto
 import {RecordViewModel} from '../../../record/store/record-view/record-view.store.model';
 import {AppStateStore} from '../../../../store/app-state/app-state.store';
 import {Action, ActionContext} from '../../../../common/actions/action.model';
-import {ViewMode, ViewContext} from '../../../../common/views/view.model';
+import {ViewContext, ViewMode} from '../../../../common/views/view.model';
 import {RecordActionsAdapter} from "../../../record/adapters/actions.adapter";
+import {RecordPaginationStore} from "../../../record/store/record-pagination/record-pagination.store";
+import {RecordSectionTabActionsAdapter} from "../../../record/adapters/section-tab-actions.adapter";
 import {RecordViewSidebarWidgetService} from "../../../record/services/record-view-sidebar-widget.service";
 import {filter, map} from "rxjs/operators";
 
@@ -48,7 +50,9 @@ import {filter, map} from "rxjs/operators";
             provide: RecordViewStore,
             useExisting: CreateViewStore
         },
-        RecordViewSidebarWidgetService
+        RecordViewSidebarWidgetService,
+        RecordPaginationStore,
+        RecordSectionTabActionsAdapter
     ]
 })
 export class CreateRecordComponent implements OnInit, OnDestroy {
