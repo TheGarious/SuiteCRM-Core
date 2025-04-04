@@ -28,6 +28,7 @@
 namespace App\Schedulers\Service\Scheduler\Jobs;
 
 use App\Data\LegacyHandler\PreparedStatementHandler;
+use App\Data\Service\RecordProviderInterface;
 use App\Emails\LegacyHandler\EmailManagerHandler;
 use App\Engine\LegacyHandler\LegacyHandler;
 use App\Engine\LegacyHandler\LegacyScopeState;
@@ -43,6 +44,7 @@ class AddEmailToQueueScheduler extends LegacyHandler implements SchedulerInterfa
     protected PreparedStatementHandler $preparedStatementHandler;
     protected LoggerInterface $logger;
     protected EmailManagerHandler $emailManagerHandler;
+    protected RecordProviderInterface $recordProvider;
 
     public function __construct(
         string $projectDir,
@@ -53,7 +55,8 @@ class AddEmailToQueueScheduler extends LegacyHandler implements SchedulerInterfa
         RequestStack $requestStack,
         PreparedStatementHandler $preparedStatementHandler,
         LoggerInterface $logger,
-        EmailManagerHandler $emailManagerHandler
+        EmailManagerHandler $emailManagerHandler,
+        RecordProviderInterface $recordProvider
     )
     {
         parent::__construct(
@@ -67,6 +70,7 @@ class AddEmailToQueueScheduler extends LegacyHandler implements SchedulerInterfa
         $this->preparedStatementHandler = $preparedStatementHandler;
         $this->logger = $logger;
         $this->emailManagerHandler = $emailManagerHandler;
+        $this->recordProvider = $recordProvider;
     }
 
     public function getKey(): string
@@ -79,6 +83,9 @@ class AddEmailToQueueScheduler extends LegacyHandler implements SchedulerInterfa
         return self::SCHEDULER_KEY;
     }
 
+    /**
+     * @throws \Exception
+     */
     public function run(): bool
     {
         $table = $this->emailManagerHandler->getModuleTable('EmailMarketing');
@@ -98,9 +105,9 @@ class AddEmailToQueueScheduler extends LegacyHandler implements SchedulerInterfa
             $campaignId = $email['campaign_id'];
             $sendDate = $email['date_start'];
 
-            $emProspects = $this->getProspectLists($email['id']);
-            $emRecord = $this->emailManagerHandler->getRecord('EmailMarketing', $emailId);
-            $emails = [];
+            $emProspects = $this->getProspectLists($emailId);
+            $emRecord = $this->recordProvider->getRecord('EmailMarketing', $emailId);
+            $sentEmails = [];
             foreach ($emProspects as $prospectList) {
                 $id = $prospectList['id'];
 
@@ -109,8 +116,6 @@ class AddEmailToQueueScheduler extends LegacyHandler implements SchedulerInterfa
                 $this->removeDeletedProspects($prospectListId);
 
                 $prospects = $this->filterProspectsEmails($prospectListId);
-
-                $emailMan = $this->emailManagerHandler->getBean('EmailMan');
 
                 $ids = [];
 
@@ -125,7 +130,7 @@ class AddEmailToQueueScheduler extends LegacyHandler implements SchedulerInterfa
                     }
 
                     // check if duplicate
-                    if (array_key_exists($bean->email1, $emails)) {
+                    if (array_key_exists($bean->email1, $sentEmails)) {
 
                         $this->emailManagerHandler->setSentStatus(
                             $bean->email1,
@@ -144,8 +149,7 @@ class AddEmailToQueueScheduler extends LegacyHandler implements SchedulerInterfa
                         $bean,
                         $campaignId,
                         $emailId,
-                        $emailMan,
-                        $id,
+                        $prospectListId,
                         []
                     );
 
@@ -154,17 +158,17 @@ class AddEmailToQueueScheduler extends LegacyHandler implements SchedulerInterfa
                     }
 
                     $ids[] = $result['related_id'];
-                    $emails[$bean->email1] = 1;
+                    $sentEmails[$bean->email1] = 1;
                 }
 
                 $result = $this->runInsertQuery($id, $emailId, $campaignId, $sendDate, $ids);
-
-                $this->emailManagerHandler->updateRecordStatus($emRecord, 'in_queue');
 
                 if (!$result) {
                     $passed = false;
                 }
             }
+
+            $this->emailManagerHandler->updateRecordStatus($emRecord, 'in_queue');
 
             $this->deleteExemptEntries($emailId);
         }
@@ -220,7 +224,7 @@ class AddEmailToQueueScheduler extends LegacyHandler implements SchedulerInterfa
         :send_date ';
         $query .= 'FROM prospect_lists_prospects plp ';
         $query .= 'INNER JOIN email_marketing_prospect_lists empl ON empl.prospect_list_id = plp.prospect_list_id ';
-        $query .= 'WHERE empl.id = :prospect_id AND NOT EXISTS (SELECT id FROM emailman WHERE related_id = plp.related_id) ';
+        $query .= 'WHERE empl.id = :prospect_id AND NOT EXISTS (SELECT id FROM emailman WHERE related_id = plp.related_id AND marketing_id = :em_id) ';
         $query .= "AND plp.deleted=0 AND empl.deleted=0 AND empl.email_marketing_id= :em_id AND plp.related_id IN ('" . implode("','", $ids) . "')";
 
         try {
