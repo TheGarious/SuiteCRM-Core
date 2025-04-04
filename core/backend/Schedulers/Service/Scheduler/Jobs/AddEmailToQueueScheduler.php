@@ -33,6 +33,7 @@ use App\Emails\LegacyHandler\EmailManagerHandler;
 use App\Engine\LegacyHandler\LegacyHandler;
 use App\Engine\LegacyHandler\LegacyScopeState;
 use App\Schedulers\Service\SchedulerInterface;
+use App\SystemConfig\LegacyHandler\SystemConfigHandler;
 use Doctrine\DBAL\Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -45,6 +46,9 @@ class AddEmailToQueueScheduler extends LegacyHandler implements SchedulerInterfa
     protected LoggerInterface $logger;
     protected EmailManagerHandler $emailManagerHandler;
     protected RecordProviderInterface $recordProvider;
+    protected SystemConfigHandler $systemConfigHandler;
+
+    protected string $limit;
 
     public function __construct(
         string $projectDir,
@@ -56,7 +60,8 @@ class AddEmailToQueueScheduler extends LegacyHandler implements SchedulerInterfa
         PreparedStatementHandler $preparedStatementHandler,
         LoggerInterface $logger,
         EmailManagerHandler $emailManagerHandler,
-        RecordProviderInterface $recordProvider
+        RecordProviderInterface $recordProvider,
+        SystemConfigHandler $systemConfigHandler
     )
     {
         parent::__construct(
@@ -71,6 +76,9 @@ class AddEmailToQueueScheduler extends LegacyHandler implements SchedulerInterfa
         $this->logger = $logger;
         $this->emailManagerHandler = $emailManagerHandler;
         $this->recordProvider = $recordProvider;
+        $this->systemConfigHandler = $systemConfigHandler;
+
+        $this->limit = $this->getLimit();
     }
 
     public function getKey(): string
@@ -225,7 +233,8 @@ class AddEmailToQueueScheduler extends LegacyHandler implements SchedulerInterfa
         $query .= 'FROM prospect_lists_prospects plp ';
         $query .= 'INNER JOIN email_marketing_prospect_lists empl ON empl.prospect_list_id = plp.prospect_list_id ';
         $query .= 'WHERE empl.id = :prospect_id AND NOT EXISTS (SELECT id FROM emailman WHERE related_id = plp.related_id AND marketing_id = :em_id) ';
-        $query .= "AND plp.deleted=0 AND empl.deleted=0 AND empl.email_marketing_id= :em_id AND plp.related_id IN ('" . implode("','", $ids) . "')";
+        $query .= "AND plp.deleted=0 AND empl.deleted=0 AND empl.email_marketing_id= :em_id AND plp.related_id IN ('" . implode("','", $ids) . "') ";
+        $query .= 'LIMIT ' . (int)$this->limit;
 
         try {
             $result = $this->preparedStatementHandler->update($query,
@@ -249,6 +258,8 @@ class AddEmailToQueueScheduler extends LegacyHandler implements SchedulerInterfa
             $this->logger->error($e->getMessage());
             $result = '';
         }
+
+        $this->limit -= $result;
 
         return !(empty($result) && $result !== 0);
     }
@@ -358,5 +369,10 @@ class AddEmailToQueueScheduler extends LegacyHandler implements SchedulerInterfa
         }
 
         return true;
+    }
+
+    protected function getLimit(): string
+    {
+        return $this->systemConfigHandler->getSystemConfig('emails_per_run')?->getValue() ?? '50';
     }
 }
