@@ -52,6 +52,8 @@ class SendEmailScheduler extends LegacyHandler implements SchedulerInterface
     protected EmailProcessProcessor $emailProcessProcessor;
     protected EmailManagerHandler $emailManagerHandler;
 
+    protected string $limit;
+
 
     public function __construct(
         string                   $projectDir,
@@ -82,6 +84,8 @@ class SendEmailScheduler extends LegacyHandler implements SchedulerInterface
         $this->recordProvider = $recordProvider;
         $this->emailProcessProcessor = $emailProcessProcessor;
         $this->emailManagerHandler = $emailManagerHandler;
+
+        $this->limit = $this->getLimit();
     }
 
     public function getHandlerKey(): string
@@ -95,42 +99,50 @@ class SendEmailScheduler extends LegacyHandler implements SchedulerInterface
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public function run(): bool
     {
 
-        $timedate = $this->emailManagerHandler->getTimeDate();
+        $sending = $this->getMarketingByStatus('sending');
 
-        $maxPerRun = $this->systemConfigHandler->getSystemConfig('emails_per_run')?->getValue() ?? '500';
-        $emailMan = $this->emailManagerHandler->getBean('EmailMan');
-        $table = $this->emailManagerHandler->getTable();
+        foreach ($sending as $item) {
+            $id = $item['id'];
+
+            $toSend = $this->getEmailsToSend($id);
+
+            $this->buildAndSend($id, $toSend);
+
+            $this->setStatus('EmailMarketing', $id, 'sent');
+        }
+
+        $inQueue = $this->getMarketingByStatus('in_queue');
+
+        foreach ($inQueue as $queued) {
+            $id = $queued['id'];
+            $this->setStatus('EmailMarketing', $id, 'sending');
+
+            $toSend = $this->getEmailsToSend($id);
+
+            $this->buildAndSend($id, $toSend);
+
+            $this->setStatus('EmailMarketing', $id, 'sent');
+        }
+
+        return true;
+    }
+
+
+    /**
+     * @throws \Exception
+     */
+    protected function buildAndSend(string $id, array $toSend): void
+    {
+        $user = $this->getUser();
+        $suppressedEmails = $this->emailManagerHandler->getSuppressedEmails($id);
         $confirmOptInEnabled = $this->emailManagerHandler->getConfigurator()->isConfirmOptInEnabled();
 
-        $now = $timedate->nowDb();
-        $str = strtotime($timedate->fromString("-1 day")?->asDb());
-
-        $query = "SELECT * FROM $table WHERE send_date_time <= :now ";
-        $query .= "AND deleted = 0 ";
-        $query .= "AND (in_queue ='0' OR in_queue IS NULL OR ( in_queue ='1' AND in_queue_date <= :queue_date )) ";
-        $query .= ($confirmOptInEnabled ? ' OR related_confirm_opt_in = 1 ' : ' AND related_confirm_opt_in = 0 ');
-        $query .= "ORDER BY send_date_time ASC, user_id, list_id ";
-        $query .= "LIMIT " . (int)$maxPerRun;
-
-        $results = $this->preparedStatementHandler->fetchAll($query,
-            [
-                'now' => $now,
-                'queue_date' => $str,
-            ],
-            [
-                ['param' => 'now', 'type' => 'string'],
-                ['param' => 'queue_date', 'type' => 'smallint'],
-            ]
-        );
-
-        $user = $this->getUser();
-
-        foreach ($results as $row) {
+        foreach ($toSend as $row) {
 
             $confirmOptIn = $row['related_confirm_opt_in'] ?? 0;
 
@@ -139,40 +151,21 @@ class SendEmailScheduler extends LegacyHandler implements SchedulerInterface
                 continue;
             }
 
-            if (empty($confirmOptIn) && empty($row['marketing_id'])) {
-                $this->logger->error('Unable to find Campaign ID for' . $row['id']);
-                continue;
-            }
-
             if (!$user->id || $row['user_id'] !== $user->id) {
                 $user->retrieve($row['user_id']);
             }
 
-            $marketingId = $row['marketing_id'];
-
-            if (!$marketingId) {
-                continue;
-            }
 
             $prospectBean = $this->emailManagerHandler->getBean($row['related_type'], $row['related_id']);
             $email = $prospectBean->email1 ?? $prospectBean->email ?? '';
-
-            $prospect = $this->emailManagerHandler->getRecord($row['related_type'], $row['related_id']);
-            $prospectId = $prospect->getAttributes()['id'] ?? '';
-            $emRecord = $this->emailManagerHandler->getRecord('EmailMarketing', $marketingId);
-
-            $outboundEmailId = $emRecord->getAttributes()['outbound_email_id'] ?? '';
-
-            $suppressedEmails = $this->emailManagerHandler->getSuppressedEmails($marketingId);
-
-            $emailRecord = $this->buildEmailRecord($emRecord, $prospect, $outboundEmailId);
+            $prospectId = $row['related_id'];
+            $prospectListId = $row['list_id'];
 
             $validated = $this->emailManagerHandler->validateEmail(
                 $prospectBean,
-                $emRecord->getAttributes()['campaign_id'] ?? '',
-                $emRecord->getId(),
-                $emailMan,
-                $row['list_id'] ?? '',
+                $row['campaign_id'] ?? '',
+                $id,
+                $prospectListId,
                 $suppressedEmails
             );
 
@@ -180,27 +173,29 @@ class SendEmailScheduler extends LegacyHandler implements SchedulerInterface
                 continue;
             }
 
-            $isDuplicate = $this->emailManagerHandler->checkForDuplicateEmail($email, $marketingId);
+            $isDuplicate = $this->emailManagerHandler->checkForDuplicateEmail($email, $id);
 
             if ($isDuplicate){
                 $this->logger->info('duplicate email');
                 $this->emailManagerHandler->setSentStatus(
                     $email,
-                    $row['related_id'],
+                    $prospectId,
                     $row['related_type'] ,
                     true,
                     'blocked',
-                    $prospectId,
-                    $emRecord->getAttributes()['campaign_id'] ?? '',
-                    $marketingId
+                    $prospectListId,
+                    $row['campaign_id'] ?? '',
+                    $id
                 );
                 continue;
             }
 
+            $prospectRecord = $this->recordProvider->getRecord($row['related_type'], $row['related_id']);
+
             if (!empty($confirmOptIn)){
 
                 if ($confirmOptInEnabled) {
-                    $email = $this->buildOptInEmail($prospect, $outboundEmailId);
+                    $email = $this->buildOptInEmail($prospectRecord);
                     $this->emailProcessProcessor->processEmail($email);
                     continue;
                 }
@@ -209,19 +204,22 @@ class SendEmailScheduler extends LegacyHandler implements SchedulerInterface
                 continue;
             }
 
+            $emRecord = $this->recordProvider->getRecord('EmailMarketing', $id);
+            $emailRecord = $this->buildEmailRecord($emRecord, $prospectRecord);
+
             $result = $this->emailProcessProcessor->processEmail($emailRecord);
 
             if (!$result['success']){
-                $this->logger->warning('Failed to send email.' . $prospect->getAttributes()['email1']);
+                $this->logger->warning('Failed to send email.' . $email);
                 $this->emailManagerHandler->setSentStatus(
                     $email,
-                    $row['related_id'],
+                    $prospectId,
                     $row['related_type'] ,
                     true,
                     'send error',
-                    $prospectId,
-                    $emRecord->getAttributes()['campaign_id'] ?? '',
-                    $marketingId
+                    $prospectListId,
+                    $row['campaign_id'] ?? '',
+                    $id
                 );
 
                 continue;
@@ -230,17 +228,15 @@ class SendEmailScheduler extends LegacyHandler implements SchedulerInterface
             $this->logger->info('Email sent');
             $this->emailManagerHandler->setSentStatus(
                 $email,
-                $row['related_id'],
+                $prospectId,
                 $row['related_type'] ,
                 true,
                 'targeted',
-                $prospectId,
-                $emRecord->getAttributes()['campaign_id'] ?? '',
-                $marketingId
+                $prospectListId,
+                $row['campaign_id'] ?? '',
+                $id
             );
         }
-
-        return true;
     }
 
     protected function getUser()
@@ -254,7 +250,7 @@ class SendEmailScheduler extends LegacyHandler implements SchedulerInterface
         return $user;
     }
 
-    protected function buildEmailRecord(Record $record, Record $prospect, string $outboundId): Record
+    protected function buildEmailRecord(Record $record, Record $prospect): Record
     {
         $recordAttributes = $record->getAttributes() ?? [];
         $prospectAttr = $prospect->getAttributes() ?? [];
@@ -265,7 +261,7 @@ class SendEmailScheduler extends LegacyHandler implements SchedulerInterface
             'name' => $recordAttributes['subject'] ?? '',
             'description' => $recordAttributes['body'] ?? '',
             'description_html' => $recordAttributes['body_html'] ?? '',
-            'outbound_email_id' => $outboundId,
+            'outbound_email_id' => $recordAttributes['outbound_email_id'] ?? '',
             'parent_type' => $prospectAttr['module_name'] ?? '',
             'parent_id' => $prospectAttr['id'] ?? '',
             'to_addrs_names' => [
@@ -282,7 +278,7 @@ class SendEmailScheduler extends LegacyHandler implements SchedulerInterface
         return $emailRecord;
     }
 
-    protected function buildOptInEmail(Record $prospect, string $outboundId): Record|bool
+    protected function buildOptInEmail(Record $prospect): Record|bool
     {
         $configurator = $this->emailManagerHandler->getConfigurator();
 
@@ -297,7 +293,78 @@ class SendEmailScheduler extends LegacyHandler implements SchedulerInterface
         $emailTemplate->retrieve($templateId);
         $templateRecord = $this->recordProvider->mapToRecord($emailTemplate);
 
-        return $this->buildEmailRecord($templateRecord, $prospect, $outboundId);
+        return $this->buildEmailRecord($templateRecord, $prospect);
+    }
+
+    public function getEmailsToSend(string $marketingId): mixed
+    {
+        $timedate = $this->emailManagerHandler->getTimeDate();
+        $now = $timedate->nowDb();
+        $str = strtotime($timedate->fromString("-1 day")?->asDb());
+        $table = $this->emailManagerHandler->getTable();
+        $confirmOptInEnabled = $this->emailManagerHandler->getConfigurator()->isConfirmOptInEnabled();
+
+        $query = "SELECT * FROM $table WHERE marketing_id = :mkt_id AND send_date_time <= :now ";
+        $query .= "AND deleted = 0 ";
+        $query .= "AND (in_queue ='0' OR in_queue IS NULL OR ( in_queue ='1' AND in_queue_date <= :queue_date )) ";
+        $query .= ($confirmOptInEnabled ? ' OR related_confirm_opt_in = 1 ' : ' AND related_confirm_opt_in = 0 ');
+        $query .= "ORDER BY send_date_time ASC, user_id, list_id ";
+        $query .= "LIMIT " . (int)$this->limit;
+
+        try {
+            $results = $this->preparedStatementHandler->fetchAll($query,
+                [
+                    'mkt_id' => $marketingId,
+                    'now' => $now,
+                    'queue_date' => $str,
+                ],
+                [
+                    ['param' => 'now', 'type' => 'string'],
+                    ['param' => 'queue_date', 'type' => 'smallint'],
+                ]
+            );
+        } catch (Exception $e) {
+            $results = [];
+            $this->logger->error($e->getMessage());
+        }
+
+        $this->limit -= count($results);
+
+        return $results;
+    }
+
+    protected function getMarketingByStatus(string $status)
+    {
+        $timedate = $this->emailManagerHandler->getTimeDate();
+        $now = $timedate->nowDb();
+
+        $query = 'SELECT * FROM email_marketing WHERE date_start <= :now AND status = :status AND deleted = 0 ORDER BY date_start ASC';
+
+        try {
+            $emRecords = $this->preparedStatementHandler->fetchAll($query, [
+                'now' => $now,
+                'status' => $status,
+            ]);
+        } catch (Exception $e) {
+            $emRecords = [];
+            $this->logger->error($e->getMessage());
+        }
+
+         return $emRecords;
+    }
+
+    protected function setStatus(string $module, string $id, string $status): void
+    {
+        $record = $this->recordProvider->getRecord($module, $id);
+        $attr = $record->getAttributes();
+        $attr['status'] = $status;
+        $record->setAttributes($attr);
+        $this->recordProvider->saveRecord($record);
+    }
+
+    protected function getLimit(): string
+    {
+        return $this->systemConfigHandler->getSystemConfig('emails_per_run')?->getValue() ?? '500';
     }
 
 }

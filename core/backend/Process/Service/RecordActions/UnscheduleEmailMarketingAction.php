@@ -153,7 +153,7 @@ class UnscheduleEmailMarketingAction extends LegacyHandler implements ProcessHan
         $module = $this->moduleNameMapper->toLegacy($options['module']);
         $id = $options['id'];
 
-        if (!$this->isSending($id)) {
+        if ($this->isSending($id)) {
             $process->setStatus('error');
             $process->setMessages(['LBL_UNABLE_TO_UNSCHEDULE']);
             return;

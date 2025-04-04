@@ -78,7 +78,6 @@ class EmailManagerHandler extends LegacyHandler {
         SugarBean $moduleBean,
         string $campaignId,
         string $emailMarketingId,
-        SugarBean $emailMan,
         string $prospectListId,
         array $suppressedEmails
     ): bool
@@ -86,6 +85,8 @@ class EmailManagerHandler extends LegacyHandler {
         $email = $moduleBean->email1 ?? '';
         $id = $moduleBean->id;
         $type = $moduleBean->module_dir ?? '';
+
+        $emailMan = $this->getBean('EmailMan');
 
         $isPrimary = $emailMan->is_primary_email_address($moduleBean) ?? false;
         $isValid = $emailMan->valid_email_address($email) ?? false;
@@ -190,14 +191,14 @@ class EmailManagerHandler extends LegacyHandler {
 
         $this->deleteFromEmailMan($id);
 
-        $emailMarketing = $this->getRecord('EmailMarketing', $emailMarketingId);
+        $emailMarketing = $this->recordProvider->getRecord('EmailMarketing', $emailMarketingId);
 
         $this->updateRecordStatus($emailMarketing, 'sent');
     }
 
     public function checkForDuplicateEmail(string $email, string $marketingId): bool
     {
-        $query = 'SELECT id FROM campaign_log where more_information = :email and marketing_id = :marketing_id';
+        $query = 'SELECT id FROM campaign_log where more_information = :email and marketing_id = :marketing_id AND deleted = 0';
 
         try {
             $result = $this->preparedStatementHandler->fetch($query, [
