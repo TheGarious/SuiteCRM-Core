@@ -364,7 +364,7 @@ class SendEmailScheduler extends LegacyHandler implements SchedulerInterface
 
     protected function getLimit(): string
     {
-        return $this->systemConfigHandler->getSystemConfig('emails_per_run')?->getValue() ?? '500';
+        return $this->systemConfigHandler->getSystemConfig('emails_per_run')?->getValue() ?? '50';
     }
 
 }
