@@ -101,6 +101,30 @@ $viewdefs ['EmailMarketing'] = [
         ],
         'recordActions' => [
             'actions' => [
+                'edit' => [
+                    'key' => 'edit',
+                    'labelKey' => 'LBL_EDIT',
+                    'modes' => ['detail'],
+                    'params' => [
+                        'expanded' => true,
+                    ],
+                    'acl' => ['edit'],
+                    'displayLogic' => [
+                        'hide-on-scheduled' => [
+                            'modes' => ['detail'],
+                            'params' => [
+                                'activeOnFields' => [
+                                    'status' => [
+                                        [
+                                            'operator' => 'not-equal',
+                                            'values' => ['inactive']
+                                        ],
+                                    ],
+                                ]
+                            ]
+                        ],
+                    ],
+                ],
                 'schedule-email-marketing' => [
                     'key' => 'schedule-email-marketing',
                     'labelKey' => 'LBL_SCHEDULE',
