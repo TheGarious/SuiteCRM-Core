@@ -1,6 +1,6 @@
 /**
  * SuiteCRM is a customer relationship management program developed by SalesAgility Ltd.
- * Copyright (C) 2021 SalesAgility Ltd.
+ * Copyright (C) 2025 SalesAgility Ltd.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by the
@@ -24,30 +24,21 @@
  * the words "Supercharged by SuiteCRM".
  */
 
-import {NgModule} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {RecordHeaderComponent} from './record-header.component';
-import {ModuleTitleModule} from '../../../../components/module-title/module-title.module';
-import {DynamicLabelModule} from '../../../../components/dynamic-label/dynamic-label.module';
-import {ActionGroupMenuModule} from '../../../../components/action-group-menu/action-group-menu.module';
-import {
-    FavoriteToggleModule
-} from '../../../../containers/favorite-toggle/components/favorite-toggle/favorite-toggle.module';
-import {ButtonModule} from "../../../../components/button/button.module";
-import {ButtonGroupModule} from "../../../../components/button-group/button-group.module";
+import {Injectable} from '@angular/core';
+import {BaseRecordHeaderComponent} from "./base-record-header/base-record-header.component";
+import {BaseComponentRegistry} from '../../../../common/components/registry/base-component.registry';
 
-@NgModule({
-    declarations: [RecordHeaderComponent],
-    exports: [RecordHeaderComponent],
-    imports: [
-        CommonModule,
-        ModuleTitleModule,
-        DynamicLabelModule,
-        ActionGroupMenuModule,
-        FavoriteToggleModule,
-        ButtonModule,
-        ButtonGroupModule
-    ]
+@Injectable({
+    providedIn: 'root'
 })
-export class RecordHeaderModule {
+export class RecordHeaderRegistry extends BaseComponentRegistry<BaseRecordHeaderComponent> {
+
+    constructor() {
+        super();
+    }
+
+    protected initDefault(): void {
+
+        this.register('default', 'default', BaseRecordHeaderComponent);
+    }
 }
