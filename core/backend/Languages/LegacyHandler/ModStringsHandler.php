@@ -127,7 +127,7 @@ class ModStringsHandler extends LegacyHandler
             $moduleStrings = return_module_language($language, $module) ?? [];
             $moduleStrings = $this->decodeLabels($moduleStrings);
 
-            $moduleStrings = $this->injectPluginModStrings($language, $moduleStrings);
+            $moduleStrings = $this->injectPluginModStrings($language, $frontendName, $moduleStrings);
 
             if (!empty($moduleStrings)) {
                 $moduleStrings = $this->removeEndingColon($moduleStrings);
@@ -182,12 +182,13 @@ class ModStringsHandler extends LegacyHandler
 
     /**
      * @param string $language
+     * @param string $moduleName
      * @param array $modStringsArray
      * @return array
      */
-    protected function injectPluginModStrings(string $language, array $modStringsArray): array
+    protected function injectPluginModStrings(string $language, string $moduleName, array $modStringsArray): array
     {
-        $modStrings = $this->language[$language]['module']['accounts'] ?? [];
+        $modStrings = $this->language[$language]['module'][$moduleName] ?? [];
         return array_merge($modStringsArray, $modStrings);
     }
 
