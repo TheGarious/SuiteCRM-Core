@@ -75,7 +75,7 @@ export class RecordCancelAction extends RecordActionHandler {
         const currentUrl = this.router.url;
 
         if (currentUrl.includes('edit')) {
-            this.navigateBackToDetail(this.navigation, this.router, this.recordPaginationService, id, moduleName);
+            this.navigateBackToDetail(this.navigation, this.router, this.recordPaginationService, id, moduleName, params);
         } else {
             this.navigateBack(this.navigation, params, id, moduleName, record);
         }

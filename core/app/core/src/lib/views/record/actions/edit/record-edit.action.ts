@@ -45,6 +45,9 @@ export class RecordEditAction extends RecordActionHandler {
     }
 
     shouldDisplay(data: RecordActionData): boolean {
+        if (data.store.section() && !data?.store?.getCurrentSectionMetadata()?.panels?.length) {
+            return false;
+        }
         return this.checkRecordAccess(data, ['edit']);
     }
 }
