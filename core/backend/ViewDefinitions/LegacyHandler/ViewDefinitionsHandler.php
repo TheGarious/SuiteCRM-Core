@@ -94,7 +94,7 @@ class ViewDefinitionsHandler extends LegacyHandler implements ViewDefinitionsPro
     /**
      * @var RecordViewDefinitionHandler
      */
-    private $recordViewDefinitionHandler;
+    protected $recordViewDefinitionHandler;
 
     /**
      * @var RecordModalDefinitionHandler
@@ -126,6 +126,7 @@ class ViewDefinitionsHandler extends LegacyHandler implements ViewDefinitionsPro
      */
     protected $fieldAliasMapper;
     protected array $metadataEntries;
+    protected ViewConfigMappers $viewConfigMappers;
 
     /**
      * ViewDefinitionsHandler constructor.
@@ -146,6 +147,7 @@ class ViewDefinitionsHandler extends LegacyHandler implements ViewDefinitionsPro
      * @param ViewDefinitionMappers $mappers
      * @param RequestStack $session
      * @param array $metadataEntries
+     * @param ViewConfigMappers $viewDefsConfigMappers
      */
     public function __construct(
         string $projectDir,
@@ -164,7 +166,8 @@ class ViewDefinitionsHandler extends LegacyHandler implements ViewDefinitionsPro
         LoggerInterface $logger,
         ViewDefinitionMappers $mappers,
         RequestStack $session,
-        array $metadataEntries
+        array $metadataEntries,
+        ViewConfigMappers $viewDefsConfigMappers
     ) {
         parent::__construct(
             $projectDir,
@@ -185,6 +188,7 @@ class ViewDefinitionsHandler extends LegacyHandler implements ViewDefinitionsPro
         $this->mappers = $mappers;
         $this->fieldAliasMapper = $fieldAliasMapper;
         $this->metadataEntries = $metadataEntries;
+        $this->viewConfigMappers = $viewDefsConfigMappers;
     }
 
     /**
@@ -408,6 +412,9 @@ class ViewDefinitionsHandler extends LegacyHandler implements ViewDefinitionsPro
         }
 
         $definition = $searchDefs['searchdefs'][$module];
+
+        $definition = $this->viewConfigMappers->run($module, 'search', $definition) ?? [];
+
 
         if (isset($definition['templateMeta'])) {
             unset($definition['templateMeta']);
