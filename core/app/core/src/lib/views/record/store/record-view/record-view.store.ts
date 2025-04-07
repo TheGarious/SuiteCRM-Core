@@ -302,6 +302,10 @@ export class RecordViewStore extends ViewStore implements StateStore, BaseRecord
         this.section.set(section);
     }
 
+    getCurrentSectionMetadata(): RecordViewSectionMetadata {
+        return {...this.sectionMetadataSubject.value ?? {} as RecordViewSectionMetadata};
+    }
+
     /**
      * Clean destroy
      */
@@ -324,7 +328,7 @@ export class RecordViewStore extends ViewStore implements StateStore, BaseRecord
         this.internalState.recordID = recordID;
         this.setMode(mode);
         this.initSubpanels(module, recordID);
-        this.calculateCurrentSection();
+        this.calculateCurrentSection(params);
 
         this.calculateShowWidgets();
 
@@ -630,6 +634,11 @@ export class RecordViewStore extends ViewStore implements StateStore, BaseRecord
             show = true;
         }
 
+        if (this.section()) {
+            const sections = recordViewMeta.sections ?? {};
+            show = Object.values(sections).some(section => section?.sidebarWidgets?.length);
+        }
+
         const showSidebarWidgets = this.loadPreference(this.getModuleName(), 'show-sidebar-widgets') ?? null;
 
         if (showSidebarWidgets !== null) {
@@ -640,13 +649,13 @@ export class RecordViewStore extends ViewStore implements StateStore, BaseRecord
 
         this.showBottomWidgets = true;
 
-        this.widgets = show;
+        this.widgets = true;
     }
 
     /**
      * Calculate current section
      */
-    protected calculateCurrentSection(): void {
+    protected calculateCurrentSection(params: Params = {}): void {
         const recordViewMeta = this.getRecordViewMetadata();
         const sections = recordViewMeta?.sections ?? {};
         const sectionKeys = Object.keys(sections);
@@ -657,6 +666,12 @@ export class RecordViewStore extends ViewStore implements StateStore, BaseRecord
         }
 
         this.sectionKeys.set(sectionKeys);
+
+        const section = params?.section ?? ''
+        if (section && sectionKeys.includes(section)) {
+            this.setSection(section);
+            return;
+        }
 
         this.setSection(sectionKeys[0]);
     }

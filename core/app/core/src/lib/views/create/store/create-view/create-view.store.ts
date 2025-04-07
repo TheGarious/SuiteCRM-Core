@@ -104,11 +104,11 @@ export class CreateViewStore extends RecordViewStore {
         this.internalState.recordID = recordID;
         this.setMode(mode);
         this.parseParams(params);
-        this.calculateShowWidgets();
         this.showTopWidget = false;
         this.showBottomWidgets = false;
         this.showSubpanels = false;
-        this.calculateCurrentSection();
+        this.calculateCurrentSection(params);
+        this.calculateShowWidgets();
 
         const isDuplicate = this.params.isDuplicate ?? false;
         const isConvert = this.params.isConvert ?? false;
