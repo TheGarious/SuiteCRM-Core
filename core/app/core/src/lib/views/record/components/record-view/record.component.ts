@@ -24,7 +24,7 @@
  * the words "Supercharged by SuiteCRM".
  */
 
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, Type} from '@angular/core';
 import {AppStateStore} from '../../../../store/app-state/app-state.store';
 import {Observable, Subscription} from 'rxjs';
 import {RecordViewStore} from '../../store/record-view/record-view.store';
@@ -35,6 +35,8 @@ import {RecordActionsAdapter} from '../../adapters/actions.adapter';
 import {RecordViewSidebarWidgetService} from "../../services/record-view-sidebar-widget.service";
 import {RecordPaginationStore} from "../../store/record-pagination/record-pagination.store";
 import {RecordSectionTabActionsAdapter} from "../../adapters/section-tab-actions.adapter";
+import {BaseRecordHeaderComponent} from "../record-header/base-record-header/base-record-header.component";
+import {RecordHeaderRegistry} from "../record-header/record-header.registry";
 
 @Component({
     selector: 'scrm-record',
@@ -46,12 +48,14 @@ export class RecordComponent implements OnInit, OnDestroy {
     recordSub: Subscription;
     vm$: Observable<RecordViewModel> = null;
     showStatusBar = false;
+    recordHeaderComponent: Type<BaseRecordHeaderComponent>;
 
     constructor(
         protected appState: AppStateStore,
         protected recordStore: RecordViewStore,
         private route: ActivatedRoute,
-        protected sidebarWidgetHandler: RecordViewSidebarWidgetService
+        protected sidebarWidgetHandler: RecordViewSidebarWidgetService,
+        protected recordHeaderRegistry: RecordHeaderRegistry
     ) {
     }
 
@@ -68,6 +72,8 @@ export class RecordComponent implements OnInit, OnDestroy {
 
         this.recordSub = this.recordStore.init(this.appState.getModule(), this.route.snapshot.params.record, mode, params).subscribe();
         this.vm$ = this.recordStore.vm$;
+
+        this.initHeaderModuleComponentType();
     }
 
     ngOnDestroy(): void {
@@ -76,5 +82,13 @@ export class RecordComponent implements OnInit, OnDestroy {
         }
         this.sidebarWidgetHandler.destroy();
         this.recordStore.destroy();
+    }
+
+    protected initHeaderModuleComponentType() {
+        let headerModule = 'default';
+        if (this.recordHeaderRegistry.has(this.appState.getModule(), 'default')) {
+            headerModule = this.appState.getModule();
+        }
+        this.recordHeaderComponent = this.recordHeaderRegistry.get(headerModule, 'default');
     }
 }
