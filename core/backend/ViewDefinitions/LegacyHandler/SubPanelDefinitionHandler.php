@@ -63,21 +63,22 @@ class SubPanelDefinitionHandler extends LegacyHandler implements SubPanelDefinit
     /**
      * @var FieldDefinitionsProviderInterface
      */
-    private $fieldDefinitionProvider;
+    protected $fieldDefinitionProvider;
 
     /**
      * @var SubpanelTopActionDefinitionProviderInterface
      */
-    private $subpanelTopActionDefinitionProvider;
+    protected $subpanelTopActionDefinitionProvider;
 
     /**
      * @var SubpanelLineActionDefinitionProviderInterface
      */
-    private $subpanelLineActionDefinitionProvider;
+    protected $subpanelLineActionDefinitionProvider;
     /**
      * @var FieldAliasMapper
      */
-    private $fieldAliasMapper;
+    protected $fieldAliasMapper;
+    protected ViewConfigMappers $viewConfigMappers;
 
     /**
      * ViewDefinitionsHandler constructor.
@@ -92,6 +93,7 @@ class SubPanelDefinitionHandler extends LegacyHandler implements SubPanelDefinit
      * @param SubpanelLineActionDefinitionProviderInterface $subpanelLineActionDefinitionProvider
      * @param FieldAliasMapper $fieldAliasMapper
      * @param RequestStack $session
+     * @param ViewConfigMappers $viewDefsConfigMappers
      */
     public function __construct(
         string $projectDir,
@@ -105,6 +107,7 @@ class SubPanelDefinitionHandler extends LegacyHandler implements SubPanelDefinit
         SubpanelLineActionDefinitionProviderInterface $subpanelLineActionDefinitionProvider,
         FieldAliasMapper $fieldAliasMapper,
         RequestStack $session,
+        ViewConfigMappers $viewDefsConfigMappers
     ) {
         parent::__construct(
             $projectDir,
@@ -119,6 +122,7 @@ class SubPanelDefinitionHandler extends LegacyHandler implements SubPanelDefinit
         $this->subpanelTopActionDefinitionProvider = $subpanelTopActionDefinitionProvider;
         $this->subpanelLineActionDefinitionProvider = $subpanelLineActionDefinitionProvider;
         $this->fieldAliasMapper = $fieldAliasMapper;
+        $this->viewConfigMappers = $viewDefsConfigMappers;
     }
 
     /**
@@ -183,6 +187,8 @@ class SubPanelDefinitionHandler extends LegacyHandler implements SubPanelDefinit
         );
 
         $resultingTabs = [];
+
+        $tabs = $this->viewConfigMappers->run('module', 'subpanel', $tabs);
 
         foreach ($tabs as $key => $tab) {
 
