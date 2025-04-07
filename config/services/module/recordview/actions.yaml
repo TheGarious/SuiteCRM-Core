@@ -11,6 +11,15 @@ parameters:
             - detail
           acl:
             - edit
+        toggle-widgets:
+          key: toggle-widgets
+          labelKey: LBL_INSIGHTS
+          params:
+            expanded: true
+          modes:
+            - detail
+            - edit
+          acl: []
         save:
           key: save
           labelKey: LBL_SAVE_BUTTON_LABEL
