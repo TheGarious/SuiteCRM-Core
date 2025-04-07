@@ -31,8 +31,6 @@ import {RouterModule} from "@angular/router";
 import {LabelModule} from "../../../../components/label/label.module";
 import {ImageModule} from "../../../../components/image/image.module";
 import {ModuleTitleModule} from '../../../../components/module-title/module-title.module';
-import {RecordContainerModule} from "../../../record/components/record-container/record-container.module";
-import {RecordHeaderModule} from "../../../record/components/record-header/record-header.module";
 import {StatusBarModule} from "../../../../components/status-bar/status-bar.module";
 import {FieldModule} from "../../../../fields/field.module";
 import {ButtonModule} from "../../../../components/button/button.module";
@@ -58,8 +56,6 @@ import {FormsModule} from "@angular/forms";
         ModuleTitleModule,
         LabelModule,
         ImageModule,
-        RecordContainerModule,
-        RecordHeaderModule,
         StatusBarModule,
         FieldModule,
         ButtonModule,
