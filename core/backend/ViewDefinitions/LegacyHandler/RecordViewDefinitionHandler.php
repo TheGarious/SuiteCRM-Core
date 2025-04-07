@@ -56,37 +56,38 @@ class RecordViewDefinitionHandler extends LegacyHandler
     /**
      * @var LoggerInterface
      */
-    private $logger;
+    protected $logger;
 
     /**
      * @var RecordActionDefinitionProviderInterface
      */
-    private $actionDefinitionProvider;
+    protected $actionDefinitionProvider;
 
     /**
      * @var WidgetDefinitionProviderInterface
      */
-    private $widgetDefinitionProvider;
+    protected $widgetDefinitionProvider;
 
     /**
      * @var array
      */
-    private $recordViewSidebarWidgets;
+    protected $recordViewSidebarWidgets;
 
     /**
      * @var array
      */
-    private $recordViewBottomWidgets;
+    protected $recordViewBottomWidgets;
 
     /**
      * @var array
      */
-    private $recordViewTopWidgets;
+    protected $recordViewTopWidgets;
 
     /**
      * @var FieldAliasMapper
      */
-    private $fieldAliasMapper;
+    protected $fieldAliasMapper;
+    protected ViewConfigMappers $viewConfigMappers;
 
     /**
      * RecordViewDefinitionHandler constructor.
@@ -103,6 +104,7 @@ class RecordViewDefinitionHandler extends LegacyHandler
      * @param array $recordViewBottomWidgets
      * @param array $recordViewTopWidgets
      * @param RequestStack $session
+     * @param ViewConfigMappers $viewDefsConfigMappers
      */
     public function __construct(
         string $projectDir,
@@ -117,7 +119,8 @@ class RecordViewDefinitionHandler extends LegacyHandler
         array $recordViewSidebarWidgets,
         array $recordViewBottomWidgets,
         array $recordViewTopWidgets,
-        RequestStack $session
+        RequestStack $session,
+        ViewConfigMappers $viewDefsConfigMappers
     ) {
         parent::__construct(
             $projectDir,
@@ -134,6 +137,7 @@ class RecordViewDefinitionHandler extends LegacyHandler
         $this->recordViewBottomWidgets = $recordViewBottomWidgets;
         $this->recordViewTopWidgets = $recordViewTopWidgets;
         $this->fieldAliasMapper = $fieldAliasMapper;
+        $this->viewConfigMappers = $viewDefsConfigMappers;
     }
 
     /**
@@ -182,7 +186,7 @@ class RecordViewDefinitionHandler extends LegacyHandler
         $recordViewDefs = [];
         $editViewDefs = [];
         if ($type === 'detail') {
-            $recordViewDefs = $this->getDetailViewDefs($legacyModuleName);
+            $recordViewDefs = $this->getDetailViewDefs($legacyModuleName, $module);
             $editViewDefs = $this->getEditViewDefs($legacyModuleName);
         } else {
             $recordViewDefs = $this->getRecordViewDefs($legacyModuleName, $type);
@@ -241,10 +245,11 @@ class RecordViewDefinitionHandler extends LegacyHandler
 
     /**
      * Get detail view defs from legacy
+     * @param string $legacyModuleName
      * @param string $module
      * @return array
      */
-    protected function getDetailViewDefs(string $module): array
+    protected function getDetailViewDefs(string $legacyModuleName, string $module): array
     {
         /* @noinspection PhpIncludeInspection */
         require_once 'include/MVC/View/ViewFactory.php';
@@ -252,15 +257,17 @@ class RecordViewDefinitionHandler extends LegacyHandler
         /* @var ViewDetail $view */
         $view = ViewFactory::loadView(
             'detail',
-            $module,
-            BeanFactory::newBean($module)
+            $legacyModuleName,
+            BeanFactory::newBean($legacyModuleName)
         );
 
-        $view->module = $module;
+        $view->module = $legacyModuleName;
 
         $this->loadDetailViewMetadata($view);
 
-        return $view->dv->defs ?? [];
+        $result = $view->dv->defs ?? [];
+
+        return $this->viewConfigMappers->run($module, 'record', $result) ?? [];
     }
 
     /**
