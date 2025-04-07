@@ -25,20 +25,20 @@
  */
 
 import {combineLatestWith, Observable} from 'rxjs';
-import {map, take}from 'rxjs/operators';
+import {map, take} from 'rxjs/operators';
 import {Injectable} from '@angular/core';
 import {Action, ActionContext, ActionHandler, ModeActions} from '../../../common/actions/action.model';
 import {LogicDefinitions} from '../../../common/metadata/metadata.model';
-import {Panel} from '../../../common/metadata/metadata.model';
 import {Record} from '../../../common/record/record.model';
 import {ViewMode} from '../../../common/views/view.model';
-import {MetadataStore, RecordViewMetadata} from '../../../store/metadata/metadata.store.service';
+import {
+    MetadataStore,
+    RecordViewMetadata,
+    RecordViewSectionMetadata
+} from '../../../store/metadata/metadata.store.service';
 import {RecordViewStore} from '../store/record-view/record-view.store';
 import {RecordActionManager} from '../actions/record-action-manager.service';
-import {
-    AsyncActionInput,
-    AsyncActionService,
-} from '../../../services/process/processes/async-action/async-action';
+import {AsyncActionInput, AsyncActionService,} from '../../../services/process/processes/async-action/async-action';
 import {RecordActionData} from '../actions/record.action';
 import {LanguageStore, LanguageStrings} from '../../../store/language/language.store';
 import {MessageService} from '../../../services/message/message.service';
@@ -56,24 +56,8 @@ export class RecordActionsAdapter extends BaseRecordActionsAdapter<RecordActionD
 
     defaultActions: ModeActions = {
         detail: [
-            {
-                key: 'toggle-widgets',
-                labelKey: 'LBL_INSIGHTS',
-                params: {
-                    expanded: true
-                },
-                acl: []
-            },
         ],
         edit: [
-            {
-                key: 'toggle-widgets',
-                labelKey: 'LBL_INSIGHTS',
-                params: {
-                    expanded: true
-                },
-                acl: []
-            }
         ],
     };
 
