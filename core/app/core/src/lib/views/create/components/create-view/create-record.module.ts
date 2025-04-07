@@ -29,10 +29,13 @@ import {CommonModule} from '@angular/common';
 import {FieldModule} from '../../../../fields/field.module';
 import {RecordContainerModule} from '../../../record/components/record-container/record-container.module';
 import {CreateRecordComponent} from './create-record.component';
-import {RecordHeaderModule} from '../../../record/components/record-header/record-header.module';
 import {StatusBarModule} from '../../../../components/status-bar/status-bar.module';
 import {RecordModule} from '../../../record/components/record-view/record.module';
 import {SubpanelModule} from '../../../../containers/subpanel/components/subpanel/subpanel.module';
+import {DynamicComponent} from "ng-dynamic-component";
+import {
+    BaseRecordHeaderModule
+} from "../../../record/components/record-header/base-record-header/base-record-header.module";
 
 @NgModule({
     declarations: [CreateRecordComponent],
@@ -42,9 +45,10 @@ import {SubpanelModule} from '../../../../containers/subpanel/components/subpane
         FieldModule,
         RecordModule,
         RecordContainerModule,
-        RecordHeaderModule,
+        BaseRecordHeaderModule,
         StatusBarModule,
-        SubpanelModule
+        SubpanelModule,
+        DynamicComponent
     ],
 })
 export class CreateRecordModule {

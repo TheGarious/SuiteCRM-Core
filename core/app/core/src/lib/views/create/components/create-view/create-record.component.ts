@@ -24,7 +24,7 @@
  * the words "Supercharged by SuiteCRM".
  */
 
-import {Component, HostListener, OnDestroy, OnInit} from '@angular/core';
+import {Component, HostListener, OnDestroy, OnInit, Type} from '@angular/core';
 import {combineLatestWith, Observable, Subscription} from 'rxjs';
 import {ActivatedRoute, Params} from '@angular/router';
 import {CreateViewStore} from '../../store/create-view/create-view.store';
@@ -38,6 +38,10 @@ import {RecordPaginationStore} from "../../../record/store/record-pagination/rec
 import {RecordSectionTabActionsAdapter} from "../../../record/adapters/section-tab-actions.adapter";
 import {RecordViewSidebarWidgetService} from "../../../record/services/record-view-sidebar-widget.service";
 import {filter, map} from "rxjs/operators";
+import {
+    BaseRecordHeaderComponent
+} from "../../../record/components/record-header/base-record-header/base-record-header.component";
+import {RecordHeaderRegistry} from "../../../record/components/record-header/record-header.registry";
 
 @Component({
     selector: 'scrm-create-record',
@@ -61,8 +65,9 @@ export class CreateRecordComponent implements OnInit, OnDestroy {
     showStatusBar = false;
     saveAction: Action;
     context: ActionContext;
+    recordHeaderComponent: Type<BaseRecordHeaderComponent>;
 
-    actionConfig$ =  this.recordStore.mode$.pipe(
+    actionConfig$ = this.recordStore.mode$.pipe(
         combineLatestWith(
             this.actionsAdapter.getActions(),
             this.getViewContext$()),
@@ -86,8 +91,10 @@ export class CreateRecordComponent implements OnInit, OnDestroy {
         protected appState: AppStateStore,
         protected recordStore: CreateViewStore,
         protected actionsAdapter: RecordActionsAdapter,
-        private route: ActivatedRoute
-    ) {}
+        private route: ActivatedRoute,
+        protected recordHeaderRegistry: RecordHeaderRegistry
+    ) {
+    }
 
     ngOnInit(): void {
         let mode = 'detail' as ViewMode;
@@ -128,6 +135,8 @@ export class CreateRecordComponent implements OnInit, OnDestroy {
                 });
             })
         );
+
+        this.initHeaderModuleComponentType();
     }
 
     getViewContext$(): Observable<ViewContext> {
@@ -138,5 +147,13 @@ export class CreateRecordComponent implements OnInit, OnDestroy {
         this.subs.forEach(sub => sub.unsubscribe());
 
         this.recordStore.destroy();
+    }
+
+    protected initHeaderModuleComponentType() {
+        let headerModule = 'default';
+        if (this.recordHeaderRegistry.has(this.appState.getModule(), 'default')) {
+            headerModule = this.appState.getModule();
+        }
+        this.recordHeaderComponent = this.recordHeaderRegistry.get(headerModule, 'default');
     }
 }
