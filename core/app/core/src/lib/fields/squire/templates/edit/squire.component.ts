@@ -79,7 +79,7 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
     baseButtonLayout: WritableSignal<Array<ButtonInterface[]>> = signal([]);
     collapsedButtons: WritableSignal<ButtonInterface[]> = signal([]);
     collapsedDropdownButton: WritableSignal<ButtonInterface> = signal(null);
-    minHeight: WritableSignal<string> = signal('43vh');
+    minHeight: WritableSignal<string> = signal('40vh');
     height: WritableSignal<string> = signal('18vh');
     maxHeight: WritableSignal<string> = signal('45vh');
     maxWidth: WritableSignal<string> = signal('100vh');
@@ -123,12 +123,11 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
                 this.minHeight.set('39vh');
             } else if (size !== ScreenSize.XSmall && this.isMobile()) {
                 this.isMobile.set(false);
-                this.minHeight.set('43vh');
 
                 if (this?.settings?.minHeight) {
                     this.minHeight.set(this?.settings?.minHeight);
                 } else {
-                    this.minHeight.set('43vh');
+                    this.minHeight.set('40vh');
                 }
             }
         }));
