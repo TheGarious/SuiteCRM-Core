@@ -28,10 +28,10 @@ import {
     Component,
     computed,
     HostBinding,
-    Input,
+    Input, OnDestroy,
     OnInit, signal,
     Signal,
-    Type
+    Type, WritableSignal
 } from '@angular/core';
 import {Record} from '../../common/record/record.model';
 import {Field} from '../../common/record/field.model';
@@ -44,13 +44,15 @@ import {DynamicLabelService} from '../../services/language/dynamic-label.service
 import {
     LinkRouteAsyncActionService
 } from '../../services/navigation/link-route-async-action/link-route-async-action.service';
+import {Subscription} from "rxjs";
+import {ControlEvent, TouchedChangeEvent} from "@angular/forms";
 
 @Component({
     selector: 'scrm-dynamic-field',
     templateUrl: './dynamic-field.component.html',
     styleUrls: []
 })
-export class DynamicFieldComponent implements OnInit {
+export class DynamicFieldComponent implements OnInit, OnDestroy {
 
     @Input('mode') mode: string;
     @Input('originalMode') originalMode: string;
@@ -64,7 +66,9 @@ export class DynamicFieldComponent implements OnInit {
     @HostBinding('class') class = 'dynamic-field';
 
     isInvalid: Signal<boolean> = signal(false);
+    touched: WritableSignal<boolean> = signal(false);
     validateOnlyOnSubmit: boolean = false;
+    protected subs: Subscription[] = [];
 
     constructor(
         protected navigation: ModuleNavigation,
@@ -105,6 +109,41 @@ export class DynamicFieldComponent implements OnInit {
                 return false;
             })
         }
+
+        if (this?.field?.formControl?.touched) {
+            this.touched.set(this.field.formControl.touched)
+        }
+
+        if (this?.field?.formControl?.events) {
+            this.subs.push(this.field.formControl.events.subscribe((event: ControlEvent) => {
+                if (!(event instanceof TouchedChangeEvent)){
+                    return;
+                }
+
+                const touched = event?.touched ?? null;
+
+                if (touched === null) {
+                    return;
+                }
+
+                if (event.touched && !this.touched()){
+                    this.touched.set(event.touched);
+                    return;
+                }
+
+                if (!event.touched && this.touched()){
+                    this.touched.set(event.touched);
+                    return;
+                }
+
+
+            }));
+        }
+    }
+
+    ngOnDestroy() {
+        this.subs.forEach(sub => sub.unsubscribe());
+        this.subs = [];
     }
 
     isLink(): boolean {
