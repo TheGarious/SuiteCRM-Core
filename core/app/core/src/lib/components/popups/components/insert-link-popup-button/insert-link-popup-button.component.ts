@@ -72,10 +72,6 @@ export class InsertLinkPopupButtonComponent implements OnInit, OnDestroy {
                     ...item,
                     onClick: (event) => {
                         item?.onClick(this.linkUrl);
-                        setTimeout(() => {
-                            this.linkUrl = ''
-                        }, 0)
-
                     },
                 })
             });
