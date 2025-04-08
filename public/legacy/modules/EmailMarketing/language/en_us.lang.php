@@ -68,9 +68,11 @@ $mod_strings = array(
     'LBL_FROM_ADDR' => 'From Email Address: ',
     'LBL_DATE_START' => 'Start Date',
     'LBL_SEND_DATE' => 'Send Date',
+    'LBL_SCHEDULED_START_DATE' => 'Scheduled Start Date',
     'LBL_TIME_START' => 'Start Time',
     'LBL_START_DATE_TIME' => 'Start Date & Time: ',
     'LBL_TEMPLATE' => 'Email Template: ',
+    'LBL_TEMPLATE_SELECTED' => 'Template',
 
     'LBL_MODIFIED_BY' => 'Modified by: ',
     'LBL_CREATED_BY' => 'Created by: ',
@@ -93,6 +95,7 @@ $mod_strings = array(
     'LBL_ALL_PROSPECT_LISTS' => 'Select to choose all Target List(s) in the Campaign.',
     'LBL_RELATED_PROSPECT_LISTS' => 'All Target List(s) related to this message.',
     'LBL_PROSPECT_LIST_NAME' => 'Target List Name',
+    'LBL_TARGET_LISTS' => 'Target List(s)',
 
     'LBL_LIST_PROSPECT_LIST_NAME' => 'Targeted Lists',
     'LBL_MODULE_SEND_TEST' => 'Campaign: Send Test',

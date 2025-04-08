@@ -129,7 +129,7 @@ $dictionary['EmailMarketing'] = [
         ],
         'date_start' => [
             'name' => 'date_start',
-            'vname' => 'LBL_SEND_DATE',
+            'vname' => 'LBL_SCHEDULED_START_DATE',
             'type' => 'datetime',
             'importable' => 'required',
             'required' => true
@@ -179,12 +179,12 @@ $dictionary['EmailMarketing'] = [
             ],
             'layout' => [
                 'name',
+                'status',
                 'outbound_email_name',
+                'prospect_list_name',
                 'template_name',
                 'date_start',
-                'status',
                 'type',
-                'prospect_list_name',
                 'survey_name',
                 'campaign_name',
             ],
@@ -356,7 +356,7 @@ $dictionary['EmailMarketing'] = [
             'name' => 'template_name',
             'rname' => 'name',
             'id_name' => 'template_id',
-            'vname' => 'LBL_TEMPLATE_NAME',
+            'vname' => 'LBL_TEMPLATE_SELECTED',
             'type' => 'relate',
             'table' => 'email_templates',
             'isnull' => 'true',
@@ -373,7 +373,7 @@ $dictionary['EmailMarketing'] = [
         ],
         'prospect_list_name' => [
             'name' => 'prospect_list_name',
-            'vname' => 'LBL_PROSPECT_LIST_NAME',
+            'vname' => 'LBL_TARGET_LISTS',
             'type' => 'multirelate',
             'link' => 'prospectlists',
             'source' => 'non-db',

@@ -167,7 +167,7 @@ $viewdefs ['EmailMarketing'] = [
                                     'status' => [
                                         [
                                             'operator' => 'is-equal',
-                                            'values' => ['inactive', 'sent', 'sending']
+                                            'values' => ['inactive']
                                         ],
                                     ],
                                 ]
@@ -254,7 +254,25 @@ $viewdefs ['EmailMarketing'] = [
                         ],
                     ],
                     'acl' => ['view'],
+                    'displayLogic' => [
+                        'hide-on-sending' => [
+                            'modes' => ['detail'],
+                            'params' => [
+                                'activeOnFields' => [
+                                    'status' => [
+                                        [
+                                            'operator' => 'is-equal',
+                                            'values' => ['inactive', 'sent', 'sending']
+                                        ],
+                                    ],
+                                ]
+                            ]
+                        ],
+                    ],
                 ],
+            ],
+            'exclude' => [
+                'duplicate'
             ]
         ],
         'panels' => [
