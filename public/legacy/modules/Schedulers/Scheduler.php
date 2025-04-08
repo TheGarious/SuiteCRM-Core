@@ -992,7 +992,7 @@ class Scheduler extends SugarBean
 
         $sched19 = new Scheduler;
         $sched19->name = $mod_strings['LBL_OOTB_SEND_EMAIL_FROM_QUEUE'];
-        $sched19->job = 'scheduler::send-email';
+        $sched19->job = 'scheduler::send-from-queue';
         $sched19->date_time_start = create_date(2015, 1, 1) . ' ' . create_time(0, 0, 1);
         $sched19->date_time_end = null;
         $sched19->job_interval = '*::*::*::*::*';
