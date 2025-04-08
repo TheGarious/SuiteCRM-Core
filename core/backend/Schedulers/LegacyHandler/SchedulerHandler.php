@@ -38,7 +38,8 @@ use Doctrine\DBAL\Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-class SchedulerHandler extends LegacyHandler {
+class SchedulerHandler extends LegacyHandler
+{
 
     public const HANDLER_KEY = 'scheduler-handler';
 
@@ -71,8 +72,7 @@ class SchedulerHandler extends LegacyHandler {
         LegacySchedulerRunner $legacySchedulerRunner,
         SchedulerRunner $schedulerRunner,
         LoggerInterface $logger
-    )
-    {
+    ) {
         parent::__construct(
             $projectDir,
             $legacyDir,
@@ -97,9 +97,10 @@ class SchedulerHandler extends LegacyHandler {
         return self::HANDLER_KEY;
     }
 
-    public function runSchedulers(): array {
+    public function runSchedulers(): array
+    {
 
-        if (!$this->throttle()){
+        if (!$this->throttle()) {
             $this->logger->error('Jobs run too frequently, throttled to protect the system');
         }
 
@@ -136,7 +137,7 @@ class SchedulerHandler extends LegacyHandler {
         $response = [];
         $cutoff = time() + $this->maxRuntime;
 
-        if (empty($this->maxJobs)){
+        if (empty($this->maxJobs)) {
             $this->logger->error('Cron hit max jobs');
         }
 
@@ -144,7 +145,7 @@ class SchedulerHandler extends LegacyHandler {
 
             $job = $this->getNextScheduler();
 
-            if ($job === null){
+            if ($job === null) {
                 break;
             }
 
@@ -153,12 +154,15 @@ class SchedulerHandler extends LegacyHandler {
                 break;
             }
 
-            if (str_contains($job->target, 'function::')) {
-                $this->init();
-                $status = $this->legacySchedulerRunner->run($job);
-                $this->close();
-            } else {
-                $status = $this->schedulerRunner->run($job);
+            try {
+                if (str_contains($job->target, 'function::')) {
+                    $status = $this->legacySchedulerRunner->run($job);
+                } else {
+                    $status = $this->schedulerRunner->run($job);
+                }
+            } catch (\Exception $e) {
+                $this->logger->error('Exception running job -  ' . $job->target . ' | job id - ' . $job->id ?? '' . ' | message | ' . $e->getMessage(), ['trace' => $e->getTrace()]);
+                $status = false;
             }
 
             $this->resolveJob($job->id, $status);
@@ -190,7 +194,7 @@ class SchedulerHandler extends LegacyHandler {
             $job->resolution = 'failed';
             $job->failure_count++;
 
-            if ($job->requeue && $job->retry_count > 0){
+            if ($job->requeue && $job->retry_count > 0) {
                 $this->requeueJob($job);
             }
         }
@@ -259,16 +263,18 @@ class SchedulerHandler extends LegacyHandler {
 
         $query = "SELECT id FROM $jobQueueTable WHERE execute_time <= :now AND status = 'queued' ORDER BY date_entered ASC";
 
-        while ($tries--){
+        while ($tries--) {
             try {
-                $result = $this->preparedStatementHandler->fetch($query, [
+                $result = $this->preparedStatementHandler->fetch(
+                    $query, [
                     'now' => $timedate->nowDb()
-                ]);
+                ]
+                );
             } catch (\Doctrine\DBAL\Exception $e) {
                 $this->logger->error($e->getMessage());
             }
 
-            if (empty($result['id'])){
+            if (empty($result['id'])) {
                 return null;
             }
 
@@ -289,7 +295,8 @@ class SchedulerHandler extends LegacyHandler {
             $result = [];
 
             try {
-                $result = $this->preparedStatementHandler->update($update, [
+                $result = $this->preparedStatementHandler->update(
+                    $update, [
                     'job_status' => $job->status,
                     'now' => $timedate->nowDb(),
                     'client_id' => $job->client,
@@ -301,12 +308,13 @@ class SchedulerHandler extends LegacyHandler {
                     ['param' => 'client_id', 'type' => 'string'],
                     ['param' => 'job_id', 'type' => 'string'],
                     ['param' => 'status', 'type' => 'string']
-                ]);
+                ]
+                );
             } catch (\Doctrine\DBAL\Exception $e) {
                 $this->logger->error($e->getMessage());
             }
 
-            if (empty($result)){
+            if (empty($result)) {
                 continue;
             }
 
@@ -344,7 +352,7 @@ class SchedulerHandler extends LegacyHandler {
     {
         $minInterval = $this->getCronConfig()['min_cron_interval'];
 
-        if ($minInterval === 0){
+        if ($minInterval === 0) {
             return true;
         }
         $this->init();
@@ -367,7 +375,7 @@ class SchedulerHandler extends LegacyHandler {
 
     protected function markLastRun($lockfile = null): void
     {
-        if (!file_put_contents($lockfile, time())){
+        if (!file_put_contents($lockfile, time())) {
             $this->logger->error('Scheduler cannot write PID file.  Please check permissions on ' . $lockfile);
         }
     }
@@ -512,10 +520,12 @@ class SchedulerHandler extends LegacyHandler {
         $query = "UPDATE $table SET last_run = :now WHERE id = :id";
 
         try {
-            $this->preparedStatementHandler->update($query, ["now" => $timedate->nowDb(), "id" => $id], [
+            $this->preparedStatementHandler->update(
+                $query, ["now" => $timedate->nowDb(), "id" => $id], [
                 ['param' => 'now', 'type' => 'string'],
                 ['param' => 'id', 'type' => 'string']
-            ]);
+            ]
+            );
         } catch (Exception $e) {
             $this->logger->error($e->getMessage());
         }
@@ -546,7 +556,8 @@ class SchedulerHandler extends LegacyHandler {
         $this->logger->info("Will retry job $job->name at $job->execute_time $job->retry_count");
     }
 
-    protected function getJobQueueTable(): string {
+    protected function getJobQueueTable(): string
+    {
 
         $this->init();
 
@@ -557,7 +568,8 @@ class SchedulerHandler extends LegacyHandler {
         return $table;
     }
 
-    protected function getSchedulerTable(): string {
+    protected function getSchedulerTable(): string
+    {
 
         $this->init();
 

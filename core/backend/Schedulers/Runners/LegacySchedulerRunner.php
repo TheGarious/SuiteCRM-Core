@@ -27,15 +27,24 @@
 
 namespace App\Schedulers\Runners;
 
-class LegacySchedulerRunner {
+use App\Engine\LegacyHandler\LegacyHandler;
+
+class LegacySchedulerRunner extends LegacyHandler {
+
+    public function getHandlerKey(): string
+    {
+        return 'legacy-scheduler-runner';
+    }
 
     public function run(\SugarBean $job): bool
     {
+        $this->init();
         $status = true;
 
         if (!$job->runJob()) {
             $status = false;
         }
+        $this->close();
 
         return $status;
     }
