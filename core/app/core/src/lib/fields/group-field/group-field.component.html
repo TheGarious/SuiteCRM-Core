@@ -54,7 +54,7 @@
                         <scrm-label
                                 [labelKey]="groupField.labelKey"
                                 [module]="getModule()"
-                                [ngClass]="groupField?.required() ? 'pl-1' : ''"
+                                [ngClass]="groupField?.required() && (['edit', 'create'].includes(mode)) ? 'pl-1' : ''"
                         ></scrm-label>
                         <ng-container *ngIf="groupField?.required() && (['edit', 'create'].includes(mode))">
                             <span class="required">*</span>
