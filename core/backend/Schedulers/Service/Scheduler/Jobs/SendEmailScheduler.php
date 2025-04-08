@@ -56,20 +56,19 @@ class SendEmailScheduler extends LegacyHandler implements SchedulerInterface
 
 
     public function __construct(
-        string                   $projectDir,
-        string                   $legacyDir,
-        string                   $legacySessionName,
-        string                   $defaultSessionName,
-        LegacyScopeState         $legacyScopeState,
-        RequestStack             $requestStack,
+        string $projectDir,
+        string $legacyDir,
+        string $legacySessionName,
+        string $defaultSessionName,
+        LegacyScopeState $legacyScopeState,
+        RequestStack $requestStack,
         PreparedStatementHandler $preparedStatementHandler,
-        SystemConfigHandler      $systemConfigHandler,
-        LoggerInterface          $logger,
-        RecordProviderInterface  $recordProvider,
+        SystemConfigHandler $systemConfigHandler,
+        LoggerInterface $logger,
+        RecordProviderInterface $recordProvider,
         EmailProcessProcessor $emailProcessProcessor,
-        EmailManagerHandler     $emailManagerHandler
-    )
-    {
+        EmailManagerHandler $emailManagerHandler
+    ) {
         parent::__construct(
             $projectDir,
             $legacyDir,
@@ -111,22 +110,27 @@ class SendEmailScheduler extends LegacyHandler implements SchedulerInterface
 
             $toSend = $this->getEmailsToSend($id);
 
-            $this->buildAndSend($id, $toSend);
+            if (empty($toSend)) {
+                $this->setStatus('EmailMarketing', $id, 'sent');
+                continue;
+            }
 
-            $this->setStatus('EmailMarketing', $id, 'sent');
+            $this->buildAndSend($id, $toSend);
         }
 
         $inQueue = $this->getMarketingByStatus('in_queue');
 
         foreach ($inQueue as $queued) {
             $id = $queued['id'];
-            $this->setStatus('EmailMarketing', $id, 'sending');
-
             $toSend = $this->getEmailsToSend($id);
 
-            $this->buildAndSend($id, $toSend);
+            if (empty($toSend)) {
+                $this->setStatus('EmailMarketing', $id, 'sent');
+                continue;
+            }
 
-            $this->setStatus('EmailMarketing', $id, 'sent');
+            $this->setStatus('EmailMarketing', $id, 'sending');
+            $this->buildAndSend($id, $toSend);
         }
 
         return true;
@@ -147,7 +151,7 @@ class SendEmailScheduler extends LegacyHandler implements SchedulerInterface
             $confirmOptIn = $row['related_confirm_opt_in'] ?? 0;
 
             if (empty($confirmOptIn) && empty($row['campaign_id'])) {
-                $this->logger->error('Unable to find Campaign ID for' . $row['id']);
+                $this->logger->error('SendEmailScheduler::buildAndSend | Unable to find Campaign ID for - ' . $row['id']);
                 continue;
             }
 
@@ -175,12 +179,12 @@ class SendEmailScheduler extends LegacyHandler implements SchedulerInterface
 
             $isDuplicate = $this->emailManagerHandler->checkForDuplicateEmail($email, $id);
 
-            if ($isDuplicate){
-                $this->logger->info('duplicate email');
+            if ($isDuplicate) {
+                $this->logger->info('SendEmailScheduler::buildAndSend | email_marketing - ' . $id . ' | email - ' . $email);
                 $this->emailManagerHandler->setSentStatus(
                     $email,
                     $prospectId,
-                    $row['related_type'] ,
+                    $row['related_type'],
                     true,
                     'blocked',
                     $prospectListId,
@@ -192,7 +196,7 @@ class SendEmailScheduler extends LegacyHandler implements SchedulerInterface
 
             $prospectRecord = $this->recordProvider->getRecord($row['related_type'], $row['related_id']);
 
-            if (!empty($confirmOptIn)){
+            if (!empty($confirmOptIn)) {
 
                 if ($confirmOptInEnabled) {
                     $email = $this->buildOptInEmail($prospectRecord);
@@ -200,7 +204,7 @@ class SendEmailScheduler extends LegacyHandler implements SchedulerInterface
                     continue;
                 }
 
-                $this->logger->warning('Confirm Opt In email in queue but Confirm Opt In is disabled.');
+                $this->logger->warning('SendEmailScheduler::buildAndSend | Confirm Opt In email in queue but Confirm Opt In is disabled.');
                 continue;
             }
 
@@ -209,12 +213,12 @@ class SendEmailScheduler extends LegacyHandler implements SchedulerInterface
 
             $result = $this->emailProcessProcessor->processEmail($emailRecord);
 
-            if (!$result['success']){
-                $this->logger->warning('Failed to send email.' . $email);
+            if (!$result['success']) {
+                $this->logger->warning('SendEmailScheduler::buildAndSend | Failed to send | email_marketing - ' . $id . ' | email - ' . $email);
                 $this->emailManagerHandler->setSentStatus(
                     $email,
                     $prospectId,
-                    $row['related_type'] ,
+                    $row['related_type'],
                     true,
                     'send error',
                     $prospectListId,
@@ -225,11 +229,11 @@ class SendEmailScheduler extends LegacyHandler implements SchedulerInterface
                 continue;
             }
 
-            $this->logger->info('Email sent');
+            $this->logger->debug('SendEmailScheduler::buildAndSend | Email sent | email_marketing - ' . $id . ' | email - ' . $email);
             $this->emailManagerHandler->setSentStatus(
                 $email,
                 $prospectId,
-                $row['related_type'] ,
+                $row['related_type'],
                 true,
                 'targeted',
                 $prospectListId,
@@ -312,7 +316,8 @@ class SendEmailScheduler extends LegacyHandler implements SchedulerInterface
         $query .= "LIMIT " . (int)$this->limit;
 
         try {
-            $results = $this->preparedStatementHandler->fetchAll($query,
+            $results = $this->preparedStatementHandler->fetchAll(
+                $query,
                 [
                     'mkt_id' => $marketingId,
                     'now' => $now,
@@ -325,7 +330,7 @@ class SendEmailScheduler extends LegacyHandler implements SchedulerInterface
             );
         } catch (Exception $e) {
             $results = [];
-            $this->logger->error($e->getMessage());
+            $this->logger->error('SendEmailScheduler::getEmailsToSend | Exception emails to send for email_marketing_id - ' . $marketingId . ' | message | ' . $e->getMessage(), ['trace' => $e->getTrace()]);
         }
 
         $this->limit -= count($results);
@@ -341,16 +346,20 @@ class SendEmailScheduler extends LegacyHandler implements SchedulerInterface
         $query = 'SELECT * FROM email_marketing WHERE date_start <= :now AND status = :status AND deleted = 0 ORDER BY date_start ASC';
 
         try {
-            $emRecords = $this->preparedStatementHandler->fetchAll($query, [
+            $emRecords = $this->preparedStatementHandler->fetchAll(
+                $query, [
                 'now' => $now,
                 'status' => $status,
-            ]);
+            ]
+            );
         } catch (Exception $e) {
             $emRecords = [];
-            $this->logger->error($e->getMessage());
+            $message = '';
+
+            $this->logger->error('SendEmailScheduler::getMarketingByStatus | Exception retriving email_marketing by status -  ' . $status . ' | message | ' . $e->getMessage(), ['trace' => $e->getTrace()]);
         }
 
-         return $emRecords;
+        return $emRecords;
     }
 
     protected function setStatus(string $module, string $id, string $status): void
