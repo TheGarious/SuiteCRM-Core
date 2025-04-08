@@ -73,7 +73,7 @@
   .modal-body {
     padding-top: 0;
     overflow-y: auto;
-    max-height: 76vh;
+    max-height: 80vh;
 
     .record-content.panel-layout {
 
@@ -269,6 +269,7 @@ body.modal-open.detached-modal-open {
 
 @media (min-width: 576px) and (max-width: 991px) {
   .detached-modal {
+
     .modal-dialog.modal-lg, .modal-dialog.modal-xl {
       max-width: 500px;
 
