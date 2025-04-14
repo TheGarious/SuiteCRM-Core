@@ -102,6 +102,7 @@ class SchedulerHandler extends LegacyHandler
 
         if (!$this->throttle()) {
             $this->logger->error('Jobs run too frequently, throttled to protect the system');
+            return [];
         }
 
         $this->cleanup();
