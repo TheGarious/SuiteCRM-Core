@@ -29,6 +29,58 @@ p-multiselect {
     font-size: .875rem;
   }
 
+  .p-multiselect-panel .p-multiselect-items {
+    padding-top: 0;
+
+    .p-multiselect-item {
+      .p-checkbox{
+        vertical-align: middle;
+      }
+
+      .multi-relate-item-header-field {
+        width: 100%;
+        table-layout: fixed;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .multi-relate-item-subheader-field {
+        font-size: 85%;
+        color: $shell-grey;
+        width: 100%;
+        table-layout: fixed;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+
+  }
+
+  .multi-relate-selected-entry {
+    table-layout: fixed;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    .multi-relate-selected-entry-icon {
+      width: 18px;
+    }
+
+    .multi-relate-selected-entry-value {
+      width: 100%;
+      table-layout: fixed;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    svg {
+      fill: $bright-purple;
+      stroke: $bright-purple;
+    }
+  }
+
   .p-multiselect-trigger {
     .pi-spin {
       border: 2px solid #495057;

@@ -108,11 +108,22 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
         if ((this.field?.valueList ?? []).length > 0) {
             this.field.valueObjectArray = deepClone(this.field.valueList);
             this.selectedValues = this.field.valueObjectArray.map(valueElement => {
-                const relateValue = valueElement[relatedFieldName] ?? valueElement.attributes[relatedFieldName] ?? '';
+                const relateValue = valueElement[relatedFieldName] ?? valueElement?.attributes[relatedFieldName] ?? '';
+                const moduleName = this.moduleNameMapper.toFrontend(valueElement['module_name'] ?? valueElement?.attributes['module_name'] ?? '');
+
                 const relateId = valueElement['id'] ?? '';
+
+                const headerField = this.headerFields[moduleName] ?? 'name';
+                const subHeader = this.subHeaderFields[moduleName] ?? '';
+                const headerFieldValue = valueElement[headerField] ?? valueElement?.attributes[headerField] ?? '';
+                const subHeaderFieldValue = valueElement[subHeader] ?? valueElement?.attributes[subHeader] ?? '';
                 return {
+                    ...(valueElement.attributes ?? {}),
                     id: relateId,
-                    [relatedFieldName]: relateValue
+                    [relatedFieldName]: relateValue,
+                    [headerField]: headerFieldValue,
+                    [subHeader]: subHeaderFieldValue,
+                    module_name: valueElement['module_name'] ?? valueElement?.attributes['module_name'] ?? ''
                 };
             });
             this.currentOptions.set(this.selectedValues);
@@ -221,15 +232,12 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
         this.search(term, criteria).pipe(
             take(1),
             map(data => data.filter((item: ObjectMap) => item[relateName] !== '')),
-            map(filteredData => filteredData.map((item: ObjectMap) => ({
-                id: item.id,
-                [relateName]: item[relateName]
-            })))
         ).subscribe(filteredOptions => {
             this.loading.set(false);
-            this.options = filteredOptions;
-            this.currentOptions.set(filteredOptions);
-            this.addCurrentlySelectedToOptions(filteredOptions);
+            const options = this.mapToItem(filteredOptions);
+            this.options = options;
+            this.currentOptions.set(options);
+            this.addCurrentlySelectedToOptions(options);
             this.calculateSelectAll();
         });
     }
@@ -284,10 +292,17 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
      */
     protected setItem(record: Record): void {
         const relateName = this.getRelateFieldName();
+        const moduleName = record?.module ?? '';
+        const headerField = this.headerFields[moduleName] ?? 'name';
+        const subHeader = this.subHeaderFields[moduleName] ?? '';
         const newItem = {
-            id: record?.attributes?.id,
+            id: record.id,
+            label: record[headerField],
+            subLabel: record[subHeader],
+            value: record,
+            module_name: this.moduleNameMapper.toLegacy(moduleName),
             [relateName]: record?.attributes[relateName]
-        } as ObjectMap;
+        } as AttributeMap;
 
         const inList = this.isInList(this.selectedValues, newItem);
 
@@ -414,5 +429,29 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
         });
 
         return records;
+    }
+
+    protected mapToItem(options: AttributeMap[]) {
+        let items = [];
+        const relateField = this.getRelateFieldName();
+        options.forEach((record) => {
+            const moduleName = this.moduleNameMapper.toFrontend(record?.module_name ?? '');
+            const headerField = this.headerFields[moduleName] ?? 'name';
+            const subHeader = this.subHeaderFields[moduleName] ?? '';
+            items.push({
+                id: record.id,
+                label: record[headerField],
+                subLabel: record[subHeader],
+                value: record,
+                module_name: record?.module_name,
+                [relateField]: record[relateField]
+            } as AttributeMap);
+        })
+
+        return items;
+    }
+
+    protected showIcon() {
+        return this.field?.metadata?.showIcon ?? false;
     }
 }

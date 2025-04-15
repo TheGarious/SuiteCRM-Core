@@ -43,9 +43,11 @@ export class BaseRelateComponent extends BaseFieldComponent implements OnInit, O
     selectedValues: AttributeMap[] = [];
     options: AttributeMap[] = [];
     relateFieldName: string = '';
+    headerFields: StringMap = {};
+    subHeaderFields: StringMap = {};
     dynamicOptionLabel: string = '';
     dynamicOptionSubLabel: string = '';
-    dynamicOptionLabelContext: StringMap =  {};
+    dynamicOptionLabelContext: StringMap = {};
 
     status: '' | 'searching' | 'not-found' | 'error' | 'found' | 'no-module' = '';
     initModule: WritableSignal<string> = signal('');
@@ -115,7 +117,7 @@ export class BaseRelateComponent extends BaseFieldComponent implements OnInit, O
 
     search = (text: string, criteria: SearchCriteria = {}): Observable<any> => {
 
-        if(text === '' && !(this.field.definition.filterOnEmpty ?? false)) {
+        if (text === '' && !(this.field.definition.filterOnEmpty ?? false)) {
             return of([]);
         }
 
@@ -159,7 +161,7 @@ export class BaseRelateComponent extends BaseFieldComponent implements OnInit, O
     initDynamicOptionLabel(): void {
         this.dynamicOptionLabel = this?.field?.metadata?.dynamicOptionLabel || this?.field?.definition?.metadata?.dynamicOptionLabel || '';
         this.dynamicOptionSubLabel = this?.field?.metadata?.dynamicOptionSubLabel || this?.field?.definition?.metadata?.dynamicOptionSubLabel || '';
-        this.dynamicOptionLabelContext  = this?.field?.metadata?.dynamicOptionLabelContext || this?.field?.definition?.metadata?.dynamicOptionLabelContext || {};
+        this.dynamicOptionLabelContext = this?.field?.metadata?.dynamicOptionLabelContext || this?.field?.definition?.metadata?.dynamicOptionLabelContext || {};
     }
 
     getRelateIdField(): string {
@@ -222,6 +224,18 @@ export class BaseRelateComponent extends BaseFieldComponent implements OnInit, O
         if (this.relateService) {
             this.relateService.init(this.getRelatedModule());
         }
+
+
+        const metadata = this?.field?.metadata || this?.field?.definition?.metadata || {};
+
+        if (!metadata ?? false) {
+            return;
+        }
+
+        const module = this.getRelatedModule();
+
+        this.headerFields[module] = metadata?.headerField ?? 'name';
+        this.subHeaderFields[module] = metadata?.subHeaderField ?? '';
     }
 
     protected buildRelate(id: string, relateValue: string, other: AttributeMap = {}): any {
