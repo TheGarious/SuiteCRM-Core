@@ -125,6 +125,33 @@ $viewdefs ['EmailMarketing'] = [
                         ],
                     ],
                 ],
+                'delete' => [
+                    'key' => 'delete',
+                    'labelKey' => 'LBL_DELETE',
+                    'modes' => ['detail'],
+                    'asyncProcess' => true,
+                    'params' => [
+                        'displayConfirmation' => true,
+                        'redirectModule' => 'campaigns',
+                        'confirmationLabel' => 'NTC_DELETE_CONFIRMATION',
+                    ],
+                    'acl' => ['delete'],
+                    'displayLogic' => [
+                        'hide-on-send' => [
+                            'modes' => ['detail'],
+                            'params' => [
+                                'activeOnFields' => [
+                                    'status' => [
+                                        [
+                                            'operator' => 'is-equal',
+                                            'values' => ['sending', 'sent']
+                                        ],
+                                    ],
+                                ]
+                            ]
+                        ],
+                    ],
+                ],
                 'schedule-email-marketing' => [
                     'key' => 'schedule-email-marketing',
                     'labelKey' => 'LBL_SCHEDULE',
