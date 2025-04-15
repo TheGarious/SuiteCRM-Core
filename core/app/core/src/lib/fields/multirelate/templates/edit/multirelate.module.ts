@@ -34,6 +34,7 @@ import {SharedModule} from "primeng/api";
 import {DropdownModule} from "primeng/dropdown";
 import {InputTextModule} from "primeng/inputtext";
 import {MultiRelateEditFieldComponent} from "./multirelate.component";
+import {LabelModule} from "../../../../components/label/label.module";
 
 @NgModule({
     declarations: [MultiRelateEditFieldComponent],
@@ -46,7 +47,8 @@ import {MultiRelateEditFieldComponent} from "./multirelate.component";
         MultiSelectModule,
         SharedModule,
         DropdownModule,
-        InputTextModule
+        InputTextModule,
+        LabelModule
     ]
 })
 export class MultiRelateEditFieldModule {

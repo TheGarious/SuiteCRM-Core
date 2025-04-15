@@ -57,6 +57,54 @@
                 [dataKey]="'id'"
                 [filterBy]="getRelateFieldName()"
             >
+                <ng-template let-value pTemplate="selectedItems">
+                    <div class="d-flex">
+                        <ng-container *ngIf="value && value.length > 0 && value.length <= 2">
+                            <ng-container *ngFor="let option of value; let i = index;">
+                                <div *ngIf="i > 0" class="pr-1">,</div>
+                                <div class="d-flex multi-relate-selected-entry align-items-center" >
+                                    <!-- add option -->
+                                    <ng-container *ngIf="showIcon()">
+                                    <scrm-image [image]="option.module_name" class="multi-relate-selected-entry-icon"></scrm-image>
+                                    </ng-container>
+                                    <div class="multi-relate-selected-entry-value">
+                                        {{ option[headerFields[option.module_name] ?? 'name'] ?? '' }}
+                                    </div>
+                                </div>
+                            </ng-container>
+                        </ng-container>
+                        <ng-container *ngIf="value && value.length > 2">
+                            <div class="d-flex multi-relate-selected-entry align-items-center" >
+                                <ng-container *ngIf="showIcon()">
+                                <scrm-image [image]="value[0].module_name" class="multi-relate-selected-entry-icon"></scrm-image>
+                                </ng-container>
+                                <div class="multi-relate-selected-entry-value">{{ value[0][headerFields[value[0].module_name] ?? 'name'] ?? '' }}</div>
+                            </div>
+                            <div class="pr-1">,</div>
+                            <div class="d-flex multi-relate-selected-entry align-items-center" >
+                                <ng-container *ngIf="showIcon()">
+                                <scrm-image [image]="value[1].module_name" class="multi-relate-selected-entry-icon"></scrm-image>
+                                </ng-container>
+                                <div class="multi-relate-selected-entry-value">{{ value[1][headerFields[value[1].module_name] ?? 'name'] ?? '' }}</div>
+                            </div>
+                            <div class="pr-1">, +{{value.length - 2}} </div>
+                        </ng-container>
+
+                        <div *ngIf="!value || value.length === 0"><scrm-label [labelKey]="'LBL_SELECT_ITEM'"></scrm-label></div>
+                    </div>
+
+                </ng-template>
+                <ng-template let-item pTemplate="item">
+                    <div class="d-flex flex-column mutli-relate-relate-item">
+                        <div class="multi-relate-item-header-field">
+                            {{ item.label ?? '' }}
+                        </div>
+                        <div *ngIf="item.subLabel ?? ''"
+                             class="multi-relate-item-subheader-field">
+                            {{ item.subLabel ?? '' }}
+                        </div>
+                    </div>
+                </ng-template>
                 <ng-template pTemplate="dropdownicon">
                     <scrm-image image="down_carret"></scrm-image>
                 </ng-template>
