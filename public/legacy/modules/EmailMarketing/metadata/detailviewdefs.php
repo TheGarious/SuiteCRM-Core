@@ -175,6 +175,34 @@ $viewdefs ['EmailMarketing'] = [
                         ],
                     ],
                 ],
+                'abort-email-marketing' => [
+                    'key' => 'abort-email-marketing',
+                    'labelKey' => 'LBL_ABORT',
+                    'asyncProcess' => true,
+                    'modes' => ['detail'],
+                    'params' => [
+                        'expanded' => true,
+                        'displayConfirmation' => true,
+                        'confirmationLabel' => 'NTC_ABORT_CONFIRMATION',
+                    ],
+                    'acl' => ['view'],
+                    'display' => 'hide',
+                    'displayLogic' => [
+                        'show-on-send' => [
+                            'modes' => ['detail'],
+                            'params' => [
+                                'activeOnFields' => [
+                                    'status' => [
+                                        [
+                                            'operator' => 'is-equal',
+                                            'values' => ['pending_send', 'sending']
+                                        ],
+                                    ],
+                                ]
+                            ]
+                        ],
+                    ],
+                ],
                 'send-test-email' => [
                     'key' => 'send-test-email',
                     'labelKey' => 'LBL_SEND_TEST_EMAIL',
