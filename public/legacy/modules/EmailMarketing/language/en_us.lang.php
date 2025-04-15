@@ -69,6 +69,7 @@ $mod_strings = array(
     'LBL_DATE_START' => 'Start Date',
     'LBL_SEND_DATE' => 'Send Date',
     'LBL_SCHEDULED_START_DATE' => 'Scheduled Start Date',
+    'LBL_CHECK_DUPLICATE' => 'Check Duplicates',
     'LBL_TIME_START' => 'Start Time',
     'LBL_START_DATE_TIME' => 'Start Date & Time: ',
     'LBL_TEMPLATE' => 'Email Template: ',
