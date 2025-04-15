@@ -142,11 +142,16 @@ class DeleteRecordAction implements ProcessHandlerInterface
         }
 
         $options = $process->getOptions();
+        $module = $options['module'] ?? '';
+
+        if (!empty($options['params']['redirectModule'])){
+            $module = $options['params']['redirectModule'];
+        }
 
         $responseData = [
             'handler' => 'redirect',
             'params' => [
-                'route' => $options['module'],
+                'route' => $this->moduleNameMapper->toFrontEnd($module),
                 'queryParams' => []
             ],
             'reloadRecentlyViewed' => true,
