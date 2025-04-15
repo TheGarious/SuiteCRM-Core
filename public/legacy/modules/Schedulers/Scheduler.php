@@ -444,15 +444,22 @@ class Scheduler extends SugarBean
         }
 
         // prep some boundaries - these are not in GMT b/c gmt is a 24hour period, possibly bridging 2 local days
-        if (empty($focus->time_from) && empty($focus->time_to)) {
-            $timeFromTs = 0;
-            $timeToTs = $timedate->getNow(true)->get('+1 day')->ts;
-        } else {
-            $tfrom = $timedate->fromDbType($focus->time_from, 'time');
+        $timeFromTs = 0;
+
+        if ($focus->time_from){
+            $fromTime = $timedate->to_db_time($focus->time_from ?? '');
+            $tfrom = $timedate->fromDbType($fromTime, 'time');
             $timeFromTs = $timedate->getNow(true)->setTime($tfrom->hour, $tfrom->min)->ts;
-            $tto = $timedate->fromDbType($focus->time_to, 'time');
-            $timeToTs = $timedate->getNow(true)->setTime($tto->hour, $tto->min)->ts;
         }
+
+        $timeToTs = $timedate->getNow(true)->get('+1 day')->ts;
+
+        if ($focus->time_to) {
+            $toTime = $timedate->to_db_time($focus->time_to ?? '');
+            $tto = $timedate->fromDbType($toTime, 'time');
+            $timeToTs = $timedate->getNow(true)->setTime($tto->hour, $tto->min)->ts ?? '';
+        }
+
         $timeToTs++;
 
         if (empty($focus->last_run)) {
@@ -467,9 +474,11 @@ class Scheduler extends SugarBean
         $validJobTime = array();
 
         global $timedate;
-        $timeStartTs = $timedate->fromDb($focus->date_time_start)->ts ?? null;
-        if (!empty($focus->date_time_end)) { // do the same for date_time_end if not empty
-            $timeEndTs = $timedate->fromDb($focus->date_time_end)->ts;
+        $dateTimeStart = $timedate->to_db($focus->date_time_start);
+        $timeStartTs = $timedate->fromDb($dateTimeStart)->ts ?? null;
+        if (!empty($focus->date_time_end)) {// do the same for date_time_end if not empty
+            $dateTimeEnd = $timedate->to_db($focus->date_time_end);
+            $timeEndTs = $timedate->fromDb($dateTimeEnd)->ts;
         } else {
             $timeEndTs = $timedate->getNow(true)->get('+1 day')->ts;
             // $dateTimeEnd = '2020-12-31 23:59:59'; // if empty, set it to something ridiculous
