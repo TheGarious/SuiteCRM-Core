@@ -58,16 +58,25 @@ export class SubpanelCreateAction extends SubpanelActionHandler {
 
         const route = `/${moduleName}/${moduleAction}`;
 
+        let returnModule = parentModule;
+        let returnId = parentId;
+
+        if ((data.action?.params?.redirect ?? true) === false) {
+            returnModule = moduleName;
+            returnId = '';
+        }
+
         const queryParams = {
             // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
-            return_module: this.moduleNameMapper.toLegacy(parentModule),
+            return_module: this.moduleNameMapper.toLegacy(returnModule),
             // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
             return_action: 'DetailView',
             // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
-            return_id: parentId,
+            return_id: returnId,
             relate_to: parentModule,
             relate_id: parentId,
         } as Params;
+
         this.addAdditionalFields(data, queryParams);
         this.addParams(data, queryParams);
 
