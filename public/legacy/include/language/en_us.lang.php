@@ -983,6 +983,7 @@ $app_list_strings = array(
         'inactive' => 'Inactive',
         'scheduled' => 'Scheduled',
         'in_queue' => 'In Queue',
+        'aborted' => 'Aborted',
         'sending' => 'Sending',
         'sent' => 'Sent'
     ),
