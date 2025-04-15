@@ -169,7 +169,7 @@ $viewdefs ['EmailMarketing'] = [
                                     'status' => [
                                         [
                                             'operator' => 'not-equal',
-                                            'values' => ['inactive']
+                                            'values' => ['draft']
                                         ],
                                     ],
                                 ]
@@ -187,14 +187,14 @@ $viewdefs ['EmailMarketing'] = [
                     ],
                     'acl' => ['view'],
                     'displayLogic' => [
-                        'hide-on-unscheduled' => [
+                        'hide-on-unscheduled-or-sending' => [
                             'modes' => ['detail'],
                             'params' => [
                                 'activeOnFields' => [
                                     'status' => [
                                         [
                                             'operator' => 'is-equal',
-                                            'values' => ['inactive']
+                                            'values' => ['draft', 'sending', 'pending_send', 'sent']
                                         ],
                                     ],
                                 ]
