@@ -101,17 +101,15 @@ $viewdefs ['Campaigns'] = [
                                     'modified_by' => 'id',
                                     'parent_id' => 'id',
                                     'parent_name' => 'name',
-                                    'return_id' => 'id',
-                                    'return_name' => 'name',
                                 ],
                                 'params' => [
                                     'expanded' => true,
                                     'collapsedMobile' => true,
+                                    'redirect' => false,
                                 ],
                                 'extraParams' => [
                                     'type' => 'marketing',
                                     'parent_type' => 'Campaigns',
-                                    'return_module' => 'Campaigns',
                                     'return_relationship' => 'campaign_email_marketing',
                                     'target_module' => 'email-marketing',
                                 ],
@@ -137,6 +135,9 @@ $viewdefs ['Campaigns'] = [
                                 'action' => 'create',
                                 'key' => 'create',
                                 'module' => 'email-marketing',
+                                'params' => [
+                                    'redirect' => false,
+                                ],
                                 'additionalFields' => [
                                     'campaign_email_marketing_name' => 'name',
                                     'campaign_id' => 'id',
@@ -145,13 +146,10 @@ $viewdefs ['Campaigns'] = [
                                     'modified_by' => 'id',
                                     'parent_id' => 'id',
                                     'parent_name' => 'name',
-                                    'return_id' => 'id',
-                                    'return_name' => 'name',
                                 ],
                                 'extraParams' => [
                                     'type' => 'survey',
                                     'parent_type' => 'Campaigns',
-                                    'return_module' => 'Campaigns',
                                     'return_relationship' => 'campaign_email_marketing',
                                     'target_module' => 'email-marketing',
                                 ],
@@ -164,6 +162,9 @@ $viewdefs ['Campaigns'] = [
                                 'action' => 'create',
                                 'key' => 'create',
                                 'module' => 'email-marketing',
+                                'params' => [
+                                    'redirect' => false,
+                                ],
                                 'additionalFields' => [
                                     'campaign_email_marketing_name' => 'name',
                                     'campaign_id' => 'id',
@@ -172,13 +173,10 @@ $viewdefs ['Campaigns'] = [
                                     'modified_by' => 'id',
                                     'parent_id' => 'id',
                                     'parent_name' => 'name',
-                                    'return_id' => 'id',
-                                    'return_name' => 'name',
                                 ],
                                 'extraParams' => [
                                     'type' => 'transactional',
                                     'parent_type' => 'Campaigns',
-                                    'return_module' => 'Campaigns',
                                     'return_relationship' => 'campaign_email_marketing',
                                     'target_module' => 'email-marketing',
                                 ],
