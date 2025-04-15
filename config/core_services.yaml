@@ -73,6 +73,7 @@ services:
       $sessionExpiredConfig: '%auth.session-expired%'
       $adminOnlyModuleActions: '%system.admin_only_module_actions%'
       $navbarAdministrationOverrides: '%navbar.administration_override%'
+      $navbarOverrides: '%navbar.overrides%'
       $quickActions: '%quick_actions%'
       $graphqlShowDocs: '%graphql.graphql_show_docs%'
       $language: '%language%'
