@@ -987,6 +987,10 @@ $app_list_strings = array(
         'sending' => 'Sending',
         'sent' => 'Sent'
     ),
+    'email_marketing_duplicate_dom' => [
+        'email' => 'Prevent Duplicate Records to single Email',
+        'none' => 'None',
+    ],
     'email_marketing_type_dom' => array(
         'marketing' => 'Marketing',
         'survey' => 'Survey',
