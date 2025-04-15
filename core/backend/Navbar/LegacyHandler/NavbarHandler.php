@@ -78,6 +78,12 @@ class NavbarHandler extends LegacyHandler implements NavigationProviderInterface
     /**
      * @var array
      */
+    protected $navbarOverrides;
+
+
+    /**
+     * @var array
+     */
     protected $quickActionsConfig;
 
     /**
@@ -109,6 +115,7 @@ class NavbarHandler extends LegacyHandler implements NavigationProviderInterface
         RequestStack $session,
         array $moduleRouting,
         array $navbarAdministrationOverrides,
+        array $navbarOverrides,
         array $quickActions
     ) {
         parent::__construct($projectDir, $legacyDir, $legacySessionName, $defaultSessionName, $legacyScopeState,
@@ -119,6 +126,7 @@ class NavbarHandler extends LegacyHandler implements NavigationProviderInterface
         $this->moduleRegistry = $moduleRegistry;
         $this->moduleRouting = $moduleRouting;
         $this->navbarAdministrationOverrides = $navbarAdministrationOverrides;
+        $this->navbarOverrides = $navbarOverrides;
         $this->quickActionsConfig = $quickActions;
     }
 
@@ -284,6 +292,12 @@ class NavbarHandler extends LegacyHandler implements NavigationProviderInterface
         foreach ($this->navbarAdministrationOverrides ?? [] as $specialModule) {
             if (!empty($modules[$specialModule]) && !empty($modules['administration'])) {
                 $modules[$specialModule] = $modules['administration'];
+            }
+        }
+
+        foreach ($this->navbarOverrides ?? [] as $key => $item) {
+            if ($modules[$key] && !empty($modules[$item])) {
+                $modules[$key] = $modules[$item];
             }
         }
 
