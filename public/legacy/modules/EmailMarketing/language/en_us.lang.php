@@ -120,6 +120,7 @@ $mod_strings = array(
     'LBL_SURVEY' => 'Survey',
     'LBL_SCHEDULE' => 'Schedule',
     'LBL_UNSCHEDULE' => 'Unschedule',
+    'LBL_ABORT' => 'Abort',
     'LBL_USERS' => 'Users',
     'LBL_SEND_TEST_EMAIL' => 'Send Test Email',
     'LBL_SELECT_RECORDS_WITH_EMAILS' => 'Please Select Records with Emails',
