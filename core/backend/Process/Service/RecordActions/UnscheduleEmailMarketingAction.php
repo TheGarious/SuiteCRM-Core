@@ -165,7 +165,7 @@ class UnscheduleEmailMarketingAction extends LegacyHandler implements ProcessHan
 
         $bean = BeanFactory::getBean($module, $id);
 
-        $bean->status = 'inactive';
+        $bean->status = 'draft';
 
         $bean->save();
 
