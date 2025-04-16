@@ -264,7 +264,7 @@ class SendEmailScheduler extends LegacyHandler implements SchedulerInterface
         $attributes = [
             'name' => $recordAttributes['subject'] ?? '',
             'description' => $recordAttributes['body'] ?? '',
-            'description_html' => $recordAttributes['body_html'] ?? '',
+            'description_html' => $recordAttributes['body'] ?? '',
             'outbound_email_id' => $recordAttributes['outbound_email_id'] ?? '',
             'parent_type' => $prospectAttr['module_name'] ?? '',
             'parent_id' => $prospectAttr['id'] ?? '',
