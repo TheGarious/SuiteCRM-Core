@@ -176,9 +176,9 @@ class SendTestEmailHandler extends LegacyHandler implements ProcessHandlerInterf
 
         foreach ($emails as $email) {
             $record = new Record();
-            $record->setId($recordOption['id'] ?? '');
-            $record->setModule($recordOption['module'] ?? '');
-            $record->setType($recordOption['type'] ?? '');
+            $record->setId('');
+            $record->setModule('emails');
+            $record->setType('Email');
             $record->setAttributes(
                 [
                     'to_addrs_names' => [
