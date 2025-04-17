@@ -122,7 +122,6 @@ $viewdefs ['Campaigns'] = [
                                 'action' => 'create',
                                 'key' => 'create',
                                 'params' => [
-                                    'expanded' => true,
                                     'collapsedMobile' => true,
                                 ],
                                 'module' => 'surveys',
@@ -163,6 +162,7 @@ $viewdefs ['Campaigns'] = [
                                 'key' => 'create',
                                 'module' => 'email-marketing',
                                 'params' => [
+                                    'expanded' => true,
                                     'redirect' => false,
                                 ],
                                 'additionalFields' => [
