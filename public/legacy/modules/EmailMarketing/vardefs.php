@@ -172,6 +172,7 @@ $dictionary['EmailMarketing'] = [
             'name' => 'email_marketing_config',
             'vname' => 'LBL_CONFIGS',
             'type' => 'varchar',
+            'inline_edit' => false,
             'source' => 'non-db',
             'groupFields' => [
                 'name',
@@ -208,6 +209,7 @@ $dictionary['EmailMarketing'] = [
             'name' => 'email_marketing_template',
             'vname' => 'LBL_EMAIL',
             'type' => 'varchar',
+            'inline_edit' => false,
             'source' => 'non-db',
             'groupFields' => [
                 'subject',
