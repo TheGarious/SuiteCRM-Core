@@ -476,7 +476,7 @@ class EmailTemplate extends SugarBean
                     }
                 }
 
-                if (in_array($focus->field_defs[$field_name]['type'], $decimalTypes)){
+                if (isset($focus->field_defs[$field_name]['type']) && in_array($focus->field_defs[$field_name]['type'], $decimalTypes, true)){
                     $value = formatDecimalInConfigSettings($value, false);
                 }
 

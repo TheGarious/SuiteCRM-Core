@@ -280,8 +280,8 @@ class EmailMarketing extends SugarBean
             $type[0] = 'targeted';
         }
 
-        $query_array['select'] = "SELECT campaign_log.* ";
-        $query_array['where'] .= " AND activity_type='{$type[0]}' AND marketing_id ='$mkt_id'  AND archived=0";
+        $query_array['select'] = "SELECT campaign_log.*, campaign_log.more_information as recipient_email";
+        $query_array['where'] .= " AND activity_type='{$type[0]}' AND archived=0";
 
         if (isset($query_array['group_by'])) {
             $group_by = str_replace("campaign_log", "cl", (string)$query_array['group_by']);
