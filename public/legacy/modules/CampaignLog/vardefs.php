@@ -98,19 +98,6 @@ $dictionary['CampaignLog'] = array('audited'=>false,
             'type' => 'datetime',
             'comment' => 'The date the activity occurred'
             ),
-        'related_id' => array(
-            'name' => 'related_id',
-            'vname' => 'LBL_RELATED_ID',
-            'type' => 'varchar',
-            'len' => '36',
-            'reportable' => false,
-            ),
-        'related_type' => array(
-            'name' => 'related_type',
-            'vname' => 'LBL_RELATED_TYPE',
-            'type' => 'varchar',
-            'len' => 100,
-            ),
         'archived' => array(
             'name' => 'archived',
             'vname' => 'LBL_ARCHIVED',
@@ -199,17 +186,40 @@ $dictionary['CampaignLog'] = array('audited'=>false,
             'source'=>'non-db',
             'vname'=> 'LBL_CAMPAIGNS',
         ),
-        'related_name'=>array(
-            'source'=>'function',
-            'function_name'=>'get_related_name',
-            'function_class'=>'CampaignLog',
-            'function_params'=> array('related_id', 'related_type'),
-            'function_params_source'=>'this',  //valid values are 'parent' or 'this' default is parent.
-            'type'=>'function',
-            'vname'=>'LBL_RELATED_NAME',
-            'name'=>'related_name',
-            'reportable'=>false,
-        ),
+        'related_type' =>
+            array(
+                'name' => 'related_type',
+                'vname' => 'LBL_RELATED_TYPE',
+                'type' => 'parent_type',
+                'dbType' => 'varchar',
+                'group' => 'parent_name',
+                'options' => 'parent_type_display',
+                'required' => false,
+                'len' => '255',
+                'comment' => 'The Sugar object to which the call is related',
+            ),
+
+        'related_name' =>
+            array(
+                'name' => 'related_name',
+                'parent_type' => 'record_type_display',
+                'type_name' => 'related_type',
+                'id_name' => 'related_id',
+                'vname' => 'LBL_LIST_RELATED_TO',
+                'type' => 'parent',
+                'group' => 'parent_name',
+                'source' => 'non-db',
+                'options' => 'parent_type_display',
+            ),
+
+        'related_id' =>
+            array(
+                'name' => 'related_id',
+                'type' => 'id',
+                'group' => 'parent_name',
+                'reportable' => false,
+                'vname' => 'LBL_RELATED_ID',
+            ),
         'date_modified' => array(
             'name' => 'date_modified',
             'vname' => 'LBL_DATE_MODIFIED',
