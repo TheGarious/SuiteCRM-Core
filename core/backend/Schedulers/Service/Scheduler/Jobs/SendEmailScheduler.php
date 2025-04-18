@@ -277,7 +277,8 @@ class SendEmailScheduler extends LegacyHandler implements SchedulerInterface
 
         $emailRecord->setId('');
         $emailRecord->setAttributes($attributes);
-        $emailRecord->setModule('Emails');
+        $emailRecord->setModule('emails');
+        $emailRecord->setType('Emails');
 
         return $emailRecord;
     }
