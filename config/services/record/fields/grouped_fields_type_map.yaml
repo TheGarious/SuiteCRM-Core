@@ -52,7 +52,6 @@ parameters:
         '{name}':
           type: 'relate'
           rname: 'name'
-          module: 'Accounts'
           link: 'flex'
           logic:
             parent:

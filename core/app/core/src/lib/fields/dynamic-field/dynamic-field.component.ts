@@ -80,7 +80,7 @@ export class DynamicFieldComponent implements OnInit, OnDestroy {
     }
 
     get getRelateLink(): string {
-        let linkModule = this.field.definition.module;
+        let linkModule = this.field.definition.module ?? this.record.attributes[this.field.definition.type_name];
 
         if (this.field.definition.type_name === 'parent_type') {
             linkModule = this.record.attributes.parent_type;
