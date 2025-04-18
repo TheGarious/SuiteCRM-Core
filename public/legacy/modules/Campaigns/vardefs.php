@@ -211,6 +211,10 @@ $dictionary['Campaign'] = [
             'vname' => 'LBL_PROSPECT_LISTS',
             'link' => 'prospectlists',
             'source' => 'non-db',
+            'metadata' => [
+                'headerField' => 'name',
+                'subHeaderField' => 'list_type',
+            ],
             'module' => 'ProspectLists',
             'filterOnEmpty' => true,
             'rname' => 'name',
