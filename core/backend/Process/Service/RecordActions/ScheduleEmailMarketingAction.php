@@ -145,6 +145,18 @@ class ScheduleEmailMarketingAction extends LegacyHandler implements ProcessHandl
     {
         $options = $process->getOptions();
 
+        if (empty($options['module']) || $options['module'] !== 'email-marketing') {
+            $process->setStatus('failure');
+            $process->setData([]);
+            $process->setMessages(['LBL_WRONG_MODULE_PROVIDED']);
+        }
+
+        if (empty($options['id'])) {
+            $process->setStatus('failure');
+            $process->setData([]);
+            $process->setMessages(['LBL_INCORRECT_RECORD_ID']);
+        }
+
         $module = $this->moduleNameMapper->toLegacy($options['module']);
         $id = $options['id'];
 
@@ -152,7 +164,25 @@ class ScheduleEmailMarketingAction extends LegacyHandler implements ProcessHandl
 
         $bean = BeanFactory::getBean($module, $id);
 
+        if (empty($bean)) {
+            $process->setStatus('failure');
+            $process->setData([]);
+            $process->setMessages(['LBL_INCORRECT_RECORD_ID']);
+        }
+
+        if ($bean->status !== 'draft') {
+            $process->setStatus('failure');
+            $process->setData([]);
+            $process->setMessages(['LBL_EMAIL_MARKETING_NOT_UNSCHEDULED']);
+            return;
+        }
+
         $bean->status = 'scheduled';
+        $scheduleDate = strtotime($bean->date_start ?? '');
+
+        if ($scheduleDate && (strtotime($bean->date_start) > time())) {
+            $bean->status = 'pending_send';
+        }
 
         $bean->save();
 
