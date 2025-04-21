@@ -196,7 +196,6 @@ $dictionary['CampaignLog'] = array('audited'=>false,
                 'options' => 'parent_type_display',
                 'required' => false,
                 'len' => '255',
-                'comment' => 'The Sugar object to which the call is related',
             ),
 
         'related_name' =>
