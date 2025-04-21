@@ -144,8 +144,6 @@ class SendEmailAction implements ProcessHandlerInterface
             return;
         }
 
-        $options = $process->getOptions();
-
         $responseData = [
             'closeModal' => true
         ];
