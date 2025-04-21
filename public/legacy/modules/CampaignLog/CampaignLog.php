@@ -148,6 +148,8 @@ class CampaignLog extends SugarBean
     {
         global $locale;
         $db= DBManagerFactory::getInstance();
+        $related_id = $db->quote($related_id);
+
         if ($related_type == 'Emails') {
             $query="SELECT name from emails where id='$related_id'";
             $result=$db->query($query);
