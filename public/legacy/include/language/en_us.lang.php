@@ -982,7 +982,7 @@ $app_list_strings = array(
         'active' => 'Active',
         'draft' => 'Draft',
         'scheduled' => 'Scheduled',
-        'in_queue' => 'In Queue',
+        'pending_send' => 'Pending Send',
         'aborted' => 'Aborted',
         'sending' => 'Sending',
         'sent' => 'Sent'
@@ -991,6 +991,11 @@ $app_list_strings = array(
         'email' => 'Prevent Duplicate Records to single Email',
         'none' => 'None',
     ],
+    'email_marketing_queueing_status_dom' => array(
+        'not_started' => 'Not Started',
+        'in_progress' => 'In Progress',
+        'finished' => 'Finished',
+    ),
     'email_marketing_type_dom' => array(
         'marketing' => 'Marketing',
         'survey' => 'Survey',
@@ -4181,3 +4186,6 @@ $app_strings['LBL_COLOR_GRAY'] = 'Gray';
 $app_strings['LBL_COLOR_DARK_GRAY'] = 'Dark Gray';
 $app_strings['LBL_COLOR_LIGHT_GRAY'] = 'Light Gray';
 $app_strings['LBL_COLOR_WHITE'] = 'White';
+
+$app_strings['LBL_EMAIL_MARKETING_NOT_UNSCHEDULED'] = 'Email Marketing is not Un Scheduled cannot schedule';
+$app_strings['LBL_INCORRECT_RECORD_ID'] = 'Incorrect record id';
