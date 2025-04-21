@@ -31,6 +31,7 @@ namespace App\Emails\LegacyHandler;
 use App\Data\Entity\Record;
 use App\Data\LegacyHandler\PreparedStatementHandler;
 use App\Data\Service\RecordProviderInterface;
+use App\Emails\LegacyHandler\Parsers\LegacyParser;
 use App\Engine\LegacyHandler\LegacyHandler;
 use App\Engine\LegacyHandler\LegacyScopeState;
 use PHPMailer\PHPMailer\Exception;
@@ -44,6 +45,7 @@ class EmailProcessProcessor extends LegacyHandler
     protected SendEmailHandler $sendEmailHandler;
     protected RecordProviderInterface $recordProvider;
     protected PreparedStatementHandler $preparedStatementHandler;
+    protected LegacyParser $parser;
     protected LoggerInterface $logger;
 
     public function __construct(
@@ -57,6 +59,7 @@ class EmailProcessProcessor extends LegacyHandler
         RecordProviderInterface $recordProvider,
         PreparedStatementHandler $preparedStatementHandler,
         LoggerInterface $logger,
+        LegacyParser $parser
     ) {
         parent::__construct(
             $projectDir,
@@ -70,6 +73,7 @@ class EmailProcessProcessor extends LegacyHandler
         $this->recordProvider = $recordProvider;
         $this->preparedStatementHandler = $preparedStatementHandler;
         $this->logger = $logger;
+        $this->parser = $parser;
     }
 
     public function getHandlerKey(): string
@@ -107,6 +111,7 @@ class EmailProcessProcessor extends LegacyHandler
         }
 
         $outboundRecord = $this->recordProvider->mapToRecord($outboundEmail);
+        $emailRecord = $this->parser->parseEmail($emailRecord);
 
         $success = false;
         try {
