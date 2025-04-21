@@ -62,4 +62,11 @@ interface RecordProviderInterface
      * @return Record
      */
     public function mapToRecord(\SugarBean $bean): Record;
+
+    /**
+     * Get table name
+     * @param string $module
+     * @return string
+     */
+    public function getTable(string $module): string;
 }

@@ -292,7 +292,7 @@ class RecordHandler extends LegacyHandler implements RecordProviderInterface
         $this->init();
         $this->startLegacyApp();
 
-        $legacyModuleName = $this->moduleNameMapper->toFrontEnd($record->getModule());
+        $legacyModuleName = $this->moduleNameMapper->toLegacy($record->getModule());
 
         $bean = BeanFactory::newBean($legacyModuleName);
         $this->setFields($bean, $record->getAttributes());
@@ -377,5 +377,19 @@ class RecordHandler extends LegacyHandler implements RecordProviderInterface
         foreach ($attributes as $key => $attribute) {
             $bean->updated_fields[] = $key;
         }
+    }
+
+    public function getTable(string $module): string
+    {
+        $this->init();
+
+        $legacyModuleName = $this->moduleNameMapper->toLegacy($module);
+
+        $bean = BeanFactory::newBean($legacyModuleName);
+        $table = $bean->table_name ?? '';
+
+        $this->close();
+
+        return $table;
     }
 }
