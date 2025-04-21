@@ -1,7 +1,7 @@
 <?php
 /**
  * SuiteCRM is a customer relationship management program developed by SalesAgility Ltd.
- * Copyright (C) 2021 SalesAgility Ltd.
+ * Copyright (C) 2025 SalesAgility Ltd.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by the
@@ -25,55 +25,41 @@
  * the words "Supercharged by SuiteCRM".
  */
 
+namespace App\Module\Campaigns\Service\Email\Targets;
 
-namespace App\Module\Service;
+use App\Data\Entity\Record;
+use App\Module\Campaigns\Service\Email\Targets\Validation\EmailTargetValidatorRegistry;
+use App\Module\Campaigns\Service\Email\Targets\Validation\ValidationFeedback;
 
-use Traversable;
-
-abstract class ModuleAwareRegistry
+class EmailTargetValidatorManager
 {
-    /**
-     * @var ModuleAwareRegistryItemInterface[][]
-     */
-    protected $registry = [];
-
-    /**
-     * ModuleAwareRegistry constructor.
-     * @param Traversable $handlers
-     */
-    public function __construct(Traversable $handlers)
-    {
-        /**
-         * @var $handlers ModuleAwareRegistryItemInterface[]
-         */
-
-        foreach ($handlers as $handler) {
-            $type = $handler->getKey();
-            $module = $handler->getModule();
-            $mappers = $this->registry[$module] ?? [];
-            $mappers[$type] = $handler;
-            $this->registry[$module] = $mappers;
-        }
-
+    public function __construct(
+        protected EmailTargetValidatorRegistry $validatorRegistry
+    ) {
     }
 
-    /**
-     * Get the items for the module key
-     * @param string $module
-     * @return ModuleAwareRegistryItemInterface[]
-     */
-    abstract public function get(string $module): array;
+    public function validate(
+        Record $record,
+        Record $marketingRecord,
+        string $campaignId,
+        string $prospectListId
+    ): ValidationFeedback {
 
-    /**
-     * Get the items for the module key
-     * @param string $module
-     * @return ModuleAwareRegistryItemInterface[]
-     */
-    protected function retrieve(string $module): array
-    {
-        $defaultDefinitions = $this->registry['default'] ?? [];
-        $moduleDefinitions = $this->registry[$module] ?? [];
+        $validators = $this->validatorRegistry->getAll() ?? [];
 
-        return array_merge($defaultDefinitions, $moduleDefinitions);
+        foreach ($validators as $validator) {
+            if (!$validator->applies($record, $marketingRecord, $campaignId, $prospectListId)) {
+                continue;
+            }
+            $feedback = $validator->validate($record, $marketingRecord, $campaignId, $prospectListId);
+            if (!$feedback->isSuccess()) {
+                return $feedback;
+            }
+        }
+
+        $valid = new ValidationFeedback();
+        $valid->setSuccess(true);
+
+        return $valid;
     }
 }

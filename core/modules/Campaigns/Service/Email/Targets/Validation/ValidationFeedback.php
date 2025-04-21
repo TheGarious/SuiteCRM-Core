@@ -1,7 +1,7 @@
 <?php
 /**
  * SuiteCRM is a customer relationship management program developed by SalesAgility Ltd.
- * Copyright (C) 2021 SalesAgility Ltd.
+ * Copyright (C) 2025 SalesAgility Ltd.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by the
@@ -25,55 +25,21 @@
  * the words "Supercharged by SuiteCRM".
  */
 
+namespace App\Module\Campaigns\Service\Email\Targets\Validation;
 
-namespace App\Module\Service;
+use App\Engine\Model\Feedback;
 
-use Traversable;
-
-abstract class ModuleAwareRegistry
+class ValidationFeedback extends Feedback
 {
-    /**
-     * @var ModuleAwareRegistryItemInterface[][]
-     */
-    protected $registry = [];
+    public string $validatorKey;
 
-    /**
-     * ModuleAwareRegistry constructor.
-     * @param Traversable $handlers
-     */
-    public function __construct(Traversable $handlers)
+    public function getValidatorKey(): string
     {
-        /**
-         * @var $handlers ModuleAwareRegistryItemInterface[]
-         */
-
-        foreach ($handlers as $handler) {
-            $type = $handler->getKey();
-            $module = $handler->getModule();
-            $mappers = $this->registry[$module] ?? [];
-            $mappers[$type] = $handler;
-            $this->registry[$module] = $mappers;
-        }
-
+        return $this->validatorKey;
     }
 
-    /**
-     * Get the items for the module key
-     * @param string $module
-     * @return ModuleAwareRegistryItemInterface[]
-     */
-    abstract public function get(string $module): array;
-
-    /**
-     * Get the items for the module key
-     * @param string $module
-     * @return ModuleAwareRegistryItemInterface[]
-     */
-    protected function retrieve(string $module): array
+    public function setValidatorKey(string $validatorKey): void
     {
-        $defaultDefinitions = $this->registry['default'] ?? [];
-        $moduleDefinitions = $this->registry[$module] ?? [];
-
-        return array_merge($defaultDefinitions, $moduleDefinitions);
+        $this->validatorKey = $validatorKey;
     }
 }
