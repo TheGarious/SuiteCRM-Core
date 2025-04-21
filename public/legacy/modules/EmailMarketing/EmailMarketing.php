@@ -269,7 +269,6 @@ class EmailMarketing extends SugarBean
         $this->load_relationship('log_entries');
         $query_array = $this->log_entries->getQuery(true);
 
-        $mkt_id = $this->db->quote($this->id);
         foreach ($args as $arg) {
             if (isset($arg['group_by'])) {
                 $query_array['group_by'] = $arg['group_by'];
