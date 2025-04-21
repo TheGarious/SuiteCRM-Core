@@ -117,7 +117,7 @@ $viewdefs ['EmailMarketing'] = [
                                     'status' => [
                                         [
                                             'operator' => 'not-equal',
-                                            'values' => ['inactive']
+                                            'values' => ['draft']
                                         ],
                                     ],
                                 ]
@@ -193,8 +193,8 @@ $viewdefs ['EmailMarketing'] = [
                                 'activeOnFields' => [
                                     'status' => [
                                         [
-                                            'operator' => 'is-equal',
-                                            'values' => ['draft', 'sending', 'pending_send', 'sent']
+                                            'operator' => 'not-equal',
+                                            'values' => ['scheduled']
                                         ],
                                     ],
                                 ]
@@ -316,8 +316,8 @@ $viewdefs ['EmailMarketing'] = [
                                 'activeOnFields' => [
                                     'status' => [
                                         [
-                                            'operator' => 'is-equal',
-                                            'values' => ['inactive', 'sent', 'sending']
+                                            'operator' => 'not-equal',
+                                            'values' => ['draft']
                                         ],
                                     ],
                                 ]
