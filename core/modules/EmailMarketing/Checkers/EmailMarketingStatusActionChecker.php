@@ -52,21 +52,25 @@ class EmailMarketingStatusActionChecker implements ActionAvailabilityCheckerInte
      */
     public function checkAvailability(string $module, ?array $entry = [], ?array $context = []): bool
     {
-        $id = $context['record'];
+        $id = $context['record'] ?? '';
+
+        if (empty($id)) {
+            return false;
+        }
 
         $record = $this->recordProvider->getRecord('EmailMarketing', $id);
 
         $status = $record->getAttributes()['status'] ?? '';
 
-        if ($this->canEdit($status)){
+        if ($this->isDraft($status)){
             return true;
         }
 
         return false;
     }
 
-    protected function canEdit(string $status)
+    protected function isDraft(string $status): bool
     {
-        return $status === 'draft' || $status === 'scheduled';
+        return $status === 'draft';
     }
 }
