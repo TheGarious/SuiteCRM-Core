@@ -64,6 +64,7 @@ class EmailMarketing extends SugarBean
     public $campaign_id;
     public $all_prospect_lists;
     public $status;
+    public $queueing_status;
     public $inbound_email_id;
     public $outbound_email_id;
     public $prospectlists;
