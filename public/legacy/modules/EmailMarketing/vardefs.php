@@ -159,6 +159,16 @@ $dictionary['EmailMarketing'] = [
             'default' => 'none',
             'options' => 'email_marketing_duplicate_dom',
         ],
+        'queueing_status' => [
+            'name' => 'queueing_status',
+            'vname' => 'LBL_QUEUEING_STATUS',
+            'type' => 'enum',
+            'default' => 'not_started',
+            'len' => 100,
+            'readonly' => 'true',
+            'options' => 'email_marketing_queueing_status_dom',
+            'importable' => 'required',
+        ],
         'type' => [
             'name' => 'type',
             'vname' => 'LBL_MARKETING_TYPE',
