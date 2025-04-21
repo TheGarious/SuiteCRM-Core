@@ -29,8 +29,8 @@ namespace App\DateTime\LegacyHandler;
 
 use App\Engine\LegacyHandler\LegacyHandler;
 use App\Engine\LegacyHandler\LegacyScopeState;
-use Symfony\Component\HttpFoundation\RequestStack;
 use DateFormatService;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class DateTimeHandler extends LegacyHandler
 {
@@ -130,5 +130,16 @@ class DateTimeHandler extends LegacyHandler
         $this->formatter = new DateFormatService();
 
         return $this->formatter;
+    }
+
+    public function getDateTime(): \SugarDateTime
+    {
+        $this->init();
+
+        global $timedate;
+
+        $this->close();
+
+        return $timedate;
     }
 }
