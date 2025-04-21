@@ -142,13 +142,20 @@ class AbortEmailMarketing extends LegacyHandler implements ProcessHandlerInterfa
     {
         $options = $process->getOptions();
 
-        $module = $this->moduleNameMapper->toLegacy($options['module']);
-        $id = $options['id'];
+        $id = $options['id'] ?? '';
+
+        if (empty($id)) {
+            $this->logger->error('Unable to find Email Marketing ID');
+            $process->setMessages(['LBL_NO_EM_ID']);
+            $process->setStatus('error');
+            return;
+        }
 
         $this->removeFromQueue($id);
 
         $this->init();
 
+        $module = $this->moduleNameMapper->toLegacy($options['module']);
         $bean = \BeanFactory::getBean($module, $id);
 
         $bean->status = 'aborted';
