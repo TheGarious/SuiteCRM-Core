@@ -29,6 +29,7 @@
 namespace App\Data\LegacyHandler;
 
 use Doctrine\DBAL\Exception;
+use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\ORM\EntityManagerInterface;
 
 class PreparedStatementHandler
@@ -116,5 +117,10 @@ class PreparedStatementHandler
         $this->entityManager->flush();
 
         return $result;
+    }
+
+    public function createQueryBuilder(): QueryBuilder
+    {
+        return $this->entityManager->getConnection()->createQueryBuilder();
     }
 }
