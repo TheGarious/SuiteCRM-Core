@@ -33,8 +33,8 @@ use App\Data\LegacyHandler\PreparedStatementHandler;
 use App\Data\Service\RecordProviderInterface;
 use App\Engine\LegacyHandler\LegacyHandler;
 use App\Engine\LegacyHandler\LegacyScopeState;
-use App\Process\Entity\Process;
 use App\Module\Service\ModuleNameMapperInterface;
+use App\Process\Entity\Process;
 use App\Process\Service\ProcessHandlerInterface;
 use BeanFactory;
 use Doctrine\DBAL\Exception;
@@ -150,20 +150,39 @@ class UnscheduleEmailMarketingAction extends LegacyHandler implements ProcessHan
     {
         $options = $process->getOptions();
 
+        if (empty($options['module']) || $options['module'] !== 'email-marketing') {
+            $process->setStatus('failure');
+            $process->setData([]);
+            $process->setMessages(['LBL_WRONG_MODULE_PROVIDED']);
+        }
+
+        if (empty($options['id'])) {
+            $process->setStatus('failure');
+            $process->setData([]);
+            $process->setMessages(['LBL_INCORRECT_RECORD_ID']);
+        }
+
         $module = $this->moduleNameMapper->toLegacy($options['module']);
         $id = $options['id'];
 
-        if ($this->isSending($id)) {
+        $this->init();
+
+        $bean = BeanFactory::getBean($module, $id);
+
+        if (empty($bean)) {
+            $process->setStatus('failure');
+            $process->setData([]);
+            $process->setMessages(['LBL_INCORRECT_RECORD_ID']);
+        }
+
+        if ($this->isAllowedToUnSchedule($bean->status ?? '')) {
             $process->setStatus('error');
             $process->setMessages(['LBL_UNABLE_TO_UNSCHEDULE']);
             return;
         }
 
         $this->removeFromQueue($id);
-
-        $this->init();
-
-        $bean = BeanFactory::getBean($module, $id);
+        $this->removeFromCampaignLog($id);
 
         $bean->status = 'draft';
 
@@ -180,11 +199,13 @@ class UnscheduleEmailMarketingAction extends LegacyHandler implements ProcessHan
         $query = 'DELETE FROM emailman WHERE marketing_id = :id';
 
         try {
-            $result = $this->preparedStatementHandler->update($query, [
+            $result = $this->preparedStatementHandler->update(
+                $query, [
                 'id' => $id
             ], [
-                ['param' => 'id', 'type' => 'string']
-            ]);
+                    ['param' => 'id', 'type' => 'string']
+                ]
+            );
         } catch (Exception $e) {
             $result = '';
             $this->logger->error($e->getMessage());
@@ -195,15 +216,34 @@ class UnscheduleEmailMarketingAction extends LegacyHandler implements ProcessHan
         }
     }
 
+    protected function removeFromCampaignLog(string $id): void
+    {
+        $query = 'DELETE FROM campaign_log WHERE marketing_id = :id';
+
+        try {
+            $result = $this->preparedStatementHandler->update(
+                $query, [
+                'id' => $id
+            ], [
+                    ['param' => 'id', 'type' => 'string']
+                ]
+            );
+        } catch (Exception $e) {
+            $result = '';
+            $this->logger->error($e->getMessage());
+        }
+
+        if (empty($result)) {
+            $this->logger->error('Records in Campaign log may not have deleted with marketing_id:' . $id);
+        }
+    }
+
     /**
      * @throws \Exception
      */
-    protected function isSending(string $id): bool
+    protected function isAllowedToUnSchedule(string $status): bool
     {
-       $record = $this->recordProvider->getRecord('EmailMarketing', $id);
-
-       return $record->getAttributes()['status'] === 'sending';
+        return $status === 'scheduled';
     }
-
 
 }
