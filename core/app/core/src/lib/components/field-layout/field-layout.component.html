@@ -44,7 +44,18 @@
                                 *ngIf="col.field?.required()  && (['edit', 'create'].includes(config.mode))">
                                 <span class="required">*</span>
                             </ng-container>
-                            <label [ngClass]="labelClass">{{col.field.label | uppercase}}</label>
+                            <ng-container *ngIf="col?.field?.metadata?.dynamicFieldLabel">
+                                <scrm-dynamic-label [ngClass]="labelClass"
+                                                    [labelKey]="col.field.metadata.dynamicFieldLabel"
+                                                    [emptyLabel]="col.field.metadata.emptyFieldLabel"
+                                                    [fields]="fields"
+                                                    [context]="{}"
+                                >
+                                </scrm-dynamic-label>
+                            </ng-container>
+                            <ng-container *ngIf="!col.field?.metadata?.dynamicFieldLabel">
+                                <label [ngClass]="labelClass">{{col.field.label | uppercase}}</label>
+                            </ng-container>
                         </strong>
                     </div>
                     <div class="{{col?.valueColumnClass}} d-flex flex-grow-1 field-layout-field-wrapper">
