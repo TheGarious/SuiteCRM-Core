@@ -156,7 +156,10 @@ array(
           1 =>
           array(
             'name' => 'parent_name',
-            'customLabel' => '{sugar_translate label=\'LBL_MODULE_NAME\' module=$fields.parent_type.value}',
+            'metadata' => [
+                'dynamicFieldLabel' => 'LBL_RELATED_TO_DYNAMIC',
+                'emptyFieldLabel' => 'LBL_RELATED_TO',
+            ]
           ),
         ),
         2 =>
