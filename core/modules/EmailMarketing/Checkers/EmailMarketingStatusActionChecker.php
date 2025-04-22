@@ -54,10 +54,6 @@ class EmailMarketingStatusActionChecker implements ActionAvailabilityCheckerInte
     {
         $id = $context['record'] ?? '';
 
-        if (empty($id)) {
-            return false;
-        }
-
         $record = $this->recordProvider->getRecord('EmailMarketing', $id);
 
         $status = $record->getAttributes()['status'] ?? '';
