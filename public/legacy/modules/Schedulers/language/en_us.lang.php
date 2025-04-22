@@ -57,8 +57,8 @@ $mod_strings = array(
     'LBL_OOTB_REMOVE_DOCUMENTS_FROM_FS' => 'Removal of documents from filesystem',
     'LBL_OOTB_GOOGLE_CAL_SYNC' => 'Google Calendar Sync',
     'LBL_OOTB_ELASTIC_INDEX' => 'Perform Elasticsearch Index',
-    'LBL_OOTB_SEND_EMAIL_TO_QUEUE' => 'Send Emails to Queue',
-    'LBL_OOTB_SEND_EMAIL_FROM_QUEUE' => 'Send Emails From Queue',
+    'LBL_OOTB_SEND_EMAIL_TO_QUEUE' => 'Queue Campaign Emails',
+    'LBL_OOTB_SEND_EMAIL_FROM_QUEUE' => 'Send Campaign Emails',
 
 // List Labels
     'LBL_LIST_JOB_INTERVAL' => 'Interval:',
