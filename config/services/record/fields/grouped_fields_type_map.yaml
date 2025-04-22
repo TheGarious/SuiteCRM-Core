@@ -61,4 +61,4 @@ parameters:
                 fieldDependencies: ['{type_name}']
         '{type_name}':
           type: 'enum'
-          modes: ['edit', 'create', 'massupdate', 'filter', 'detail']
+          modes: ['edit', 'create', 'massupdate', 'filter']
