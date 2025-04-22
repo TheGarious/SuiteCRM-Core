@@ -39,6 +39,7 @@ import {DynamicLabelService} from '../../services/language/dynamic-label.service
 export class DynamicLabelComponent implements OnInit, OnChanges, OnDestroy {
     @Input() template = '';
     @Input() labelKey = '';
+    @Input() emptyLabel = '';
     @Input() context: StringMap = {};
     @Input() fields: FieldMap = {};
     @Input() module: string = null;
@@ -81,7 +82,11 @@ export class DynamicLabelComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     protected parseLabel(): void {
-        this.parsedLabel.set(this.dynamicLabels.parse(this.template, this.context, this.fields));
+        let label = this.dynamicLabels.parse(this.template, this.context, this.fields);
+        if (label.length === 0){
+            label = this.language.getFieldLabel(this.emptyLabel, this.module).toUpperCase();
+        }
+        this.parsedLabel.set(label);
     }
 
     protected initFieldSubs(): void {
