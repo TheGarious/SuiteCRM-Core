@@ -190,6 +190,7 @@ $dictionary['EmailMarketing'] = [
                 'template_name',
                 'date_start',
                 'status',
+                'queueing_status',
                 'type',
                 'prospect_list_name',
                 'duplicate',
@@ -199,6 +200,7 @@ $dictionary['EmailMarketing'] = [
             'layout' => [
                 'name',
                 'status',
+                'queueing_status',
                 'outbound_email_name',
                 'prospect_list_name',
                 'template_name',
