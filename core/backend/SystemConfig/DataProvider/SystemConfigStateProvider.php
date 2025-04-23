@@ -68,6 +68,6 @@ final class SystemConfigStateProvider implements ProviderInterface
             return new ArrayPaginator($systemConfigs, 0, count($systemConfigs));
         }
 
-        return $this->systemConfigProvider->getSystemConfig($uriVariables['id'] ?? '');
+        return $this->systemConfigProvider->getSystemConfig($uriVariables['id'] ?? '', true);
     }
 }
