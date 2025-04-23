@@ -117,6 +117,16 @@ class DateTimeHandler extends LegacyHandler
     }
 
     /**
+     * From string format to datetime object
+     * @param string $dateString
+     * @return \SugarDateTime
+     */
+    public function toDateTime(string $dateString): \SugarDateTime
+    {
+        return $this->getFormatter()->toDateTime($dateString);
+    }
+
+    /**
      * @return DateFormatService
      */
     protected function getFormatter(): DateFormatService
@@ -132,7 +142,7 @@ class DateTimeHandler extends LegacyHandler
         return $this->formatter;
     }
 
-    public function getDateTime(): \SugarDateTime
+    public function getDateTime(): \TimeDate
     {
         $this->init();
 
