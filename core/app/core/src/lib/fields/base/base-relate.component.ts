@@ -42,6 +42,7 @@ import {StringMap} from "../../common/types/string-map";
 export class BaseRelateComponent extends BaseFieldComponent implements OnInit, OnDestroy {
     selectedValues: AttributeMap[] = [];
     options: AttributeMap[] = [];
+    currentOptions: WritableSignal<AttributeMap[]> = signal([]);
     relateFieldName: string = '';
     headerFields: StringMap = {};
     subHeaderFields: StringMap = {};
@@ -112,6 +113,7 @@ export class BaseRelateComponent extends BaseFieldComponent implements OnInit, O
             this.status = '';
             this.selectedValues = [];
             this.options = [];
+            this.currentOptions.set([]);
         }
     }
 
