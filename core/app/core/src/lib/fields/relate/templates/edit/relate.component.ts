@@ -61,7 +61,6 @@ export class RelateEditFieldComponent extends BaseRelateComponent implements Aft
     selectButton: ButtonInterface;
     idField: Field;
     selectedValue: AttributeMap = {};
-    currentOptions: WritableSignal<AttributeMap[]> = signal([]);
     loading: WritableSignal<boolean> = signal(false);
 
     placeholderLabel: string = '';

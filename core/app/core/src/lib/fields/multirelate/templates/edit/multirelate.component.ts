@@ -64,7 +64,6 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
     maxSelectedLabels: number = 20;
     selectAll: boolean = false;
     filterValue: string | undefined = '';
-    currentOptions: WritableSignal<AttributeMap[]> = signal([]);
     loading: WritableSignal<boolean> = signal(false);
 
     /**
