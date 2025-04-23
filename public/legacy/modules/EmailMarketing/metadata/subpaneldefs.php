@@ -61,8 +61,32 @@ $layout_defs['EmailMarketing'] = [
             'sort_order' => 'desc',
             'sort_by' => 'campaign_log.id'
         ],
-        'viewed' => [
+        'blocked' => [
             'order' => 120,
+            'module' => 'CampaignLog',
+            'get_subpanel_data' => "function:trackLogEntries",
+            'function_parameters' => [
+                0 => 'blocked',
+            ],
+            'subpanel_name' => 'default',
+            'title_key' => 'LBL_LOG_ENTRIES_BLOCKED_TITLE',
+            'sort_order' => 'desc',
+            'sort_by' => 'campaign_log.id'
+        ],
+        'send_error' => [
+            'order' => 130,
+            'module' => 'CampaignLog',
+            'get_subpanel_data' => "function:trackLogEntries",
+            'function_parameters' => [
+                0 => ['send error', 'invalid email'],
+            ],
+            'subpanel_name' => 'default',
+            'title_key' => 'LBL_LOG_ENTRIES_BOUNCED_TITLE',
+            'sort_order' => 'desc',
+            'sort_by' => 'campaign_log.id'
+        ],
+        'viewed' => [
+            'order' => 140,
             'module' => 'CampaignLog',
             'get_subpanel_data' => "function:trackLogEntries",
             'subpanel_name' => 'default',
@@ -73,20 +97,8 @@ $layout_defs['EmailMarketing'] = [
             'sort_order' => 'desc',
             'sort_by' => 'campaign_log.id'
         ],
-        'link' => [
-            'order' => 130,
-            'module' => 'CampaignLog',
-            'get_subpanel_data' => "function:trackLogEntries",
-            'function_parameters' => [
-                0 => 'link',
-            ],
-            'subpanel_name' => 'default',
-            'title_key' => 'LBL_LOG_ENTRIES_LINK_TITLE',
-            'sort_order' => 'desc',
-            'sort_by' => 'campaign_log.id'
-        ],
         'lead' => [
-            'order' => 140,
+            'order' => 150,
             'module' => 'CampaignLog',
             'get_subpanel_data' => "function:trackLogLeads",
             'subpanel_name' => 'default',
@@ -98,7 +110,7 @@ $layout_defs['EmailMarketing'] = [
             ]
         ],
         'contact' => [
-            'order' => 150,
+            'order' => 160,
             'module' => 'CampaignLog',
             'get_subpanel_data' => "function:trackLogEntries",
             'function_parameters' => [
@@ -109,27 +121,15 @@ $layout_defs['EmailMarketing'] = [
             'sort_order' => 'desc',
             'sort_by' => 'campaign_log.id'
         ],
-        'invalid_email' => [
-            'order' => 160,
-            'module' => 'CampaignLog',
-            'get_subpanel_data' => "function:trackLogEntries",
-            'function_parameters' => [
-                0 => 'invalid email',
-            ],
-            'subpanel_name' => 'default',
-            'title_key' => 'LBL_LOG_ENTRIES_INVALID_EMAIL_TITLE',
-            'sort_order' => 'desc',
-            'sort_by' => 'campaign_log.id'
-        ],
-        'send_error' => [
+        'link' => [
             'order' => 170,
             'module' => 'CampaignLog',
             'get_subpanel_data' => "function:trackLogEntries",
             'function_parameters' => [
-                0 => 'send error',
+                0 => 'link',
             ],
             'subpanel_name' => 'default',
-            'title_key' => 'LBL_LOG_ENTRIES_SEND_ERROR_TITLE',
+            'title_key' => 'LBL_LOG_ENTRIES_LINK_TITLE',
             'sort_order' => 'desc',
             'sort_by' => 'campaign_log.id'
         ],
@@ -142,18 +142,6 @@ $layout_defs['EmailMarketing'] = [
             ],
             'subpanel_name' => 'default',
             'title_key' => 'LBL_LOG_ENTRIES_REMOVED_TITLE',
-            'sort_order' => 'desc',
-            'sort_by' => 'campaign_log.id'
-        ],
-        'blocked' => [
-            'order' => 185,
-            'module' => 'CampaignLog',
-            'get_subpanel_data' => "function:trackLogEntries",
-            'function_parameters' => [
-                0 => 'blocked',
-            ],
-            'subpanel_name' => 'default',
-            'title_key' => 'LBL_LOG_ENTRIES_BLOCKED_TITLE',
             'sort_order' => 'desc',
             'sort_by' => 'campaign_log.id'
         ],
