@@ -244,7 +244,7 @@ class ListViewDefinitionHandler extends LegacyHandler
             ) ?? [];
 
         $metadata['lineActions'] = $this->lineActionDefinitionProvider->getLineActions($module) ?? [];
-        $metadata['tableActions'] = array_values($this->tableActionDefinitionProvider->getActions($module) ?? []);
+        $metadata['tableActions'] = $this->tableActionDefinitionProvider->getActions($module, $listMeta['tableActions'] ?? []);
         $metadata['sidebarWidgets'] = $this->widgetDefinitionProvider->getSidebarWidgets(
             $this->listViewSidebarWidgets,
             $module,

@@ -43,6 +43,7 @@ import {TableActionData} from "../table-actions/table.action";
 import {TableActionManager} from "../table-actions/table-action-manager.service";
 import {AppMetadataStore} from "../../../store/app-metadata/app-metadata.store.service";
 import {FieldModalService} from "../../../services/modals/field-modal.service";
+import {isFalse} from "../../../common/utils/value-utils";
 
 
 @Injectable()
@@ -86,6 +87,38 @@ export class ListViewTableActionsAdapter extends BaseActionsAdapter<TableActionD
      */
     protected getActionName(action: Action) {
         return `table-action-${action.key}`;
+    }
+
+    protected runValidations(action: Action, context: ActionContext = null) {
+        const params = action?.params ?? null;
+
+        if (params === null){
+            return true;
+        }
+
+        const selection = this.store.recordList.selection;
+
+        if (isFalse(params.allowAll) && selection.all) {
+            let message = this.store.appStrings.LBL_SELECT_ALL_NOT_ALLOWED;
+            this.message.addDangerMessage(message);
+            return false;
+        }
+
+        if (params.min && selection.count < params.min) {
+            let message = this.store.appStrings.LBL_TOO_FEW_SELECTED;
+            message = message.replace('{min}', params.min);
+            this.message.addDangerMessage(message);
+            return false;
+        }
+
+        if (params.max && selection.count > params.max) {
+            let message = this.store.appStrings.LBL_TOO_MANY_SELECTED;
+            message = message.replace('{max}', params.max);
+            this.message.addDangerMessage(message);
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -140,7 +173,14 @@ export class ListViewTableActionsAdapter extends BaseActionsAdapter<TableActionD
                 of('list' as ViewMode).pipe(shareReplay())
             ),
             map(([tableActions, mode]: [Action[], ViewMode]) => {
-                return  this.parseModeActions(tableActions, mode, context);
+                let actions = tableActions;
+                if (Object.entries(tableActions).length) {
+                    actions = [];
+                    Object.entries(tableActions).forEach(([key, entry]) => {
+                        actions.push(entry);
+                    })
+                }
+                return this.parseModeActions(actions as Action[], mode, context);
             })
         );
     }
