@@ -96,6 +96,12 @@ export abstract class BaseActionsAdapter<D extends ActionData> implements Action
 
         const fieldModal = action?.params?.fieldModal ?? null;
 
+        const isValid = this.runValidations(action, context);
+
+        if (!isValid){
+            return;
+        }
+
         if (displayConfirmation) {
             this.confirmation.showModal(confirmationLabel, () => {
                 if (!selectModule && !fieldModal) {
@@ -405,5 +411,9 @@ export abstract class BaseActionsAdapter<D extends ActionData> implements Action
             }
             this.callAction(action, context);
         });
+    }
+
+    protected runValidations(action: Action, context: ActionContext = null) {
+        return true;
     }
 }
