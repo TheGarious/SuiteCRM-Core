@@ -41,7 +41,26 @@ if (!defined('sugarEntry') || !sugarEntry) {
  * display the words "Powered by SugarCRM" and "Supercharged by SuiteCRM".
  */
 
-
+$viewdefs['EmailMan'] = [
+    'ListView' => [
+        'tableActions' => [
+            'actions' => [
+                'send-batched-campaign-emails' => [
+                    'key' => 'send-batched-campaign-emails',
+                    'labelKey' => 'LBL_CAMPAIGNS_SEND_NEXT_BATCH',
+                    'modes' => ['list'],
+                    'acl' => ['list'],
+                    'asyncProcess' => true,
+                    'params' => [
+                        'expanded' => true,
+                        'displayConfirmation' => true,
+                        'confirmationLabel' => 'NTC_SEND_QUEUED_CAMPAIGN_EMAILS'
+                    ]
+                ],
+            ]
+        ]
+    ]
+];
 
 $listViewDefs['EmailMan'] = [
     'CAMPAIGN_NAME' => [
