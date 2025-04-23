@@ -31,7 +31,8 @@ use ApiPlatform\Exception\ItemNotFoundException;
 use App\Schedulers\Service\SchedulerRegistry;
 use Psr\Log\LoggerInterface;
 
-class SchedulerRunner {
+class SchedulerRunner
+{
 
     protected SchedulerRegistry $schedulerRegistry;
     protected LoggerInterface $logger;
@@ -39,15 +40,15 @@ class SchedulerRunner {
     public function __construct(
         SchedulerRegistry $schedulerRegistry,
         LoggerInterface $logger
-    )
-    {
+    ) {
         $this->schedulerRegistry = $schedulerRegistry;
         $this->logger = $logger;
     }
 
-    public function run(\SugarBean $job): bool {
+    public function run(\SugarBean $job): bool
+    {
 
-        if (!($job->target ?? false)){
+        if (!($job->target ?? false)) {
             $this->logger->error('SchedulerRunner::run | Unable to get target for Job with id' . $job->id);
             return false;
         }
@@ -59,10 +60,25 @@ class SchedulerRunner {
             $this->logger->error('SchedulerRunner::run | Unable to get scheduler for Job with target - ' . $job->target ?? '');
         }
 
-        if (empty($scheduler)){
+        if (empty($scheduler)) {
             return false;
         }
 
-        return $scheduler->run();
+        $this->logger->debug('Schedulers:SchedulerRunner::run | Running scheduler with target - ' . $job->target ?? '');
+
+        $result = false;
+        try {
+            $result = $scheduler->run();
+        } catch (\Throwable $t) {
+            $this->logger->error(
+                'Schedulers:SchedulerRunner::run | Error running scheduler with target - ' . $job->target ?? '' . ' |  message - ' . $t->getMessage() ?? '',
+                [
+                    'message' => $t->getMessage(),
+                    'trace' => $t->getTrace(),
+                ]
+            );
+        }
+
+        return $result;
     }
 }
