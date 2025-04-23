@@ -175,13 +175,13 @@ class RecordHandler extends LegacyHandler implements RecordProviderInterface
      */
     private function validateModuleName($moduleName): string
     {
-        $moduleName = $this->moduleNameMapper->toLegacy($moduleName);
+        $legacyModuleName = $this->moduleNameMapper->toLegacy($moduleName);
 
-        if (!$this->moduleNameMapper->isValidModule($moduleName)) {
-            throw new InvalidArgumentException('Invalid module name: ' . $moduleName);
+        if (!$this->moduleNameMapper->isValidModule($legacyModuleName)) {
+            throw new InvalidArgumentException('Invalid module name | legacy - ' . $legacyModuleName . '| input - ' . $moduleName );
         }
 
-        return $moduleName;
+        return $legacyModuleName;
     }
 
     /**
