@@ -133,7 +133,22 @@ class CampaignSendStatus extends LegacyHandler implements StatisticsProviderInte
         $nameField = 'activity_type';
         $valueField = 'hits';
 
-        $series = $this->buildSingleSeries($result, $nameField, $valueField, $activities, [], true);
+        $parsedResult = [];
+
+        foreach ($activities as $activityKey => $activityLabel) {
+            foreach ($result as $key => $row) {
+                if ($activityKey === $row['activity_type'] || str_starts_with($row['activity_type'], $activityKey)) {
+                    $parsedResult[$activityKey] = $parsedResult[$activityKey] ?? [
+                        'activity_type' => $activityKey,
+                        'hits' => 0
+                    ];
+                    $hits = $parsedResult[$activityKey]['hits'] ?? 0;
+                    $parsedResult[$activityKey]['hits'] = $hits + (int)($row['hits'] ?? 0);
+                }
+            }
+        }
+
+        $series = $this->buildSingleSeries($parsedResult, $nameField, $valueField, $activities, [], true);
 
         $chartOptions = new ChartOptions();
 
@@ -151,11 +166,21 @@ class CampaignSendStatus extends LegacyHandler implements StatisticsProviderInte
 
         $id = $db->quote($id);
 
-        $query['select'] = "SELECT activity_type,target_type, count(*) hits ";
+        $query['select'] = "SELECT activity_type, count(*) hits ";
         $query['from'] = " FROM campaign_log ";
-        $query['where'] = " WHERE campaign_id = '$id' AND archived=0 AND deleted=0 AND activity_type in ('" . implode("','", array_keys($activities)) . "')";
-        $query['group_by'] = " GROUP BY  activity_type, target_type";
-        $query['order_by'] = " ORDER BY  activity_type, target_type";
+        $query['where'] = " WHERE campaign_id = '$id' AND archived=0 AND deleted=0 ";
+
+        $typeClauses = [];
+        foreach ($activities as $key => $label) {
+            $typeClauses[] = " activity_type like '" . $db->quote($key) . "%'";
+        }
+
+        if (!empty($typeClauses)) {
+            $query['where'] .= " AND (" . implode(" OR ", $typeClauses) . ") ";
+        }
+
+        $query['group_by'] = " GROUP BY  activity_type";
+        $query['order_by'] = " ORDER BY  activity_type";
 
         if ($emailMarketingId !== null) {
             $emailMarketingId = $db->quote($emailMarketingId);
