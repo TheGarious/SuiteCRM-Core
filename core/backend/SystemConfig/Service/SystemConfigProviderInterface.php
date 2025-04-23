@@ -43,9 +43,10 @@ interface SystemConfigProviderInterface
     /**
      * Get system config
      * @param string $configKey
+     * @param bool $filterNonExposed
      * @return SystemConfig|null
      */
-    public function getSystemConfig(string $configKey): ?SystemConfig;
+    public function getSystemConfig(string $configKey, bool $filterNonExposed = false): ?SystemConfig;
 
     /**
      * Get legacy config array

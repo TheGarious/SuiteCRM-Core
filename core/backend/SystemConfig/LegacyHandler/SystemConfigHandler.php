@@ -332,10 +332,11 @@ class SystemConfigHandler extends LegacyHandler implements SystemConfigProviderI
 
     /**
      * Load system config with given $key
-     * @param $configKey
+     * @param string $configKey
+     * @param bool $filterNonExposed
      * @return SystemConfig|null
      */
-    protected function loadSystemConfig(string $configKey): ?SystemConfig
+    protected function loadSystemConfig(string $configKey, bool $filterNonExposed = false): ?SystemConfig
     {
         global $sugar_config;
 
@@ -343,7 +344,7 @@ class SystemConfigHandler extends LegacyHandler implements SystemConfigProviderI
             return null;
         }
 
-        if (!isset($this->exposedSystemConfigs[$configKey])) {
+        if ($filterNonExposed && !isset($this->exposedSystemConfigs[$configKey])) {
             throw new ItemNotFoundException(self::MSG_CONFIG_NOT_FOUND . "'$configKey'");
         }
 
@@ -453,9 +454,10 @@ class SystemConfigHandler extends LegacyHandler implements SystemConfigProviderI
     /**
      * Get system config
      * @param string $configKey
+     * @param bool $filterNonExposed
      * @return SystemConfig|null
      */
-    public function getSystemConfig(string $configKey): ?SystemConfig
+    public function getSystemConfig(string $configKey, bool $filterNonExposed = false): ?SystemConfig
     {
         if (!$this->isInstalled()) {
             return $this->getInstallConfig($configKey);
@@ -466,7 +468,7 @@ class SystemConfigHandler extends LegacyHandler implements SystemConfigProviderI
         $this->loadSystemUser();
         $this->initInjectedConfigs();
 
-        $config = $this->loadSystemConfig($configKey);
+        $config = $this->loadSystemConfig($configKey, $filterNonExposed);
 
         $this->mapConfigValues($config);
         $this->mapKey($config);
