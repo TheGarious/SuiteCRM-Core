@@ -127,8 +127,9 @@ $mod_strings = array(
     'LBL_DEFAULT' => 'All Target Lists',
     'LBL_MESSAGE_QUEUE_TITLE' => 'Message Queue',
 
-    'LBL_LOG_ENTRIES_TARGETED_TITLE' => 'Message Sent/Attempted',
+    'LBL_LOG_ENTRIES_TARGETED_TITLE' => 'Sent/Attempted',
     'LBL_LOG_ENTRIES_SEND_ERROR_TITLE' => 'Bounced Messages, Other',
+    'LBL_LOG_ENTRIES_BOUNCED_TITLE' => 'Bounced Messages',
     'LBL_LOG_ENTRIES_INVALID_EMAIL_TITLE' => 'Bounced Messages, Invalid Email',
     'LBL_LOG_ENTRIES_LINK_TITLE' => 'Click-thru Link',
     'LBL_LOG_ENTRIES_VIEWED_TITLE' => 'Viewed Message',
@@ -348,7 +349,7 @@ $mod_strings = array(
     //Campaign charts
     'LBL_CAMPAIGN_RETURN_ON_INVESTMENT' => 'Campaign Return On Investment',
     'LBL_CAMPAIGN_RESPONSE_BY_RECIPIENT_ACTIVITY' => 'Campaign Response by Recipient Activity',
-    'LBL_LOG_ENTRIES_BLOCKED_TITLE' => 'Suppressed by Email Address or domain',
+    'LBL_LOG_ENTRIES_BLOCKED_TITLE' => 'Suppressed/Blocked',
 
     'LBL_AMOUNT_IN' => 'Amount in',
 

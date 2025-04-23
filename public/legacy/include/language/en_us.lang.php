@@ -988,7 +988,7 @@ $app_list_strings = array(
         'sent' => 'Sent'
     ),
     'email_marketing_duplicate_dom' => [
-        'email' => 'Prevent Duplicate Records to single Email',
+        'email' => 'Prevent sending to duplicate email addresses',
         'none' => 'None',
     ],
     'email_marketing_queueing_status_dom' => array(
@@ -1004,7 +1004,7 @@ $app_list_strings = array(
 
     'campainglog_activity_type_dom' => array(
         '' => '',
-        'targeted' => 'Message Sent/Attempted',
+        'targeted' => 'Sent/Attempted',
         'send error' => 'Bounced Messages,Other',
         'invalid email' => 'Bounced Messages,Invalid Email',
         'link' => 'Click-thru Link',
@@ -1643,8 +1643,9 @@ $app_strings = array(
     'LBL_EMAIL_MARKETING_SEND_STATUS' => 'Email Marketing Send Status',
     'LBL_CAMPAIGN_RESPONSE_BY_RECIPIENT_ACTIVITY' => 'Campaign Response By Recipent Activity',
     'LBL_EMAIL_MARKETING_RESPONSE_BY_RECIPIENT_ACTIVITY' => 'Email Marketing Response By Recipent Activity',
-    'LBL_LOG_ENTRIES_TARGETED_TITLE' => 'Message Sent/Attempted',
+    'LBL_LOG_ENTRIES_TARGETED_TITLE' => 'Sent/Attempted',
     'LBL_LOG_ENTRIES_SEND_ERROR_TITLE' => 'Bounced Messages, Other',
+    'LBL_LOG_ENTRIES_BOUNCED_TITLE' => 'Bounced Messages',
     'LBL_LOG_ENTRIES_INVALID_EMAIL_TITLE' => 'Bounced Messages, Invalid Email',
     'LBL_LOG_ENTRIES_LINK_TITLE' => 'Click-thru Link',
     'LBL_LOG_ENTRIES_VIEWED_TITLE' => 'Viewed Message',
@@ -1653,7 +1654,7 @@ $app_strings = array(
     'LBL_CAMPAIGN_LEAD_SUBPANEL_TITLE' => 'Leads',
     'LBL_OPPORTUNITY_SUBPANEL_TITLE' => 'Opportunities',
     'LBL_LOG_ENTRIES_CONTACT_TITLE' => 'Contacts Created',
-    'LBL_LOG_ENTRIES_BLOCKED_TITLE' => 'Suppressed by Email Address or domain',
+    'LBL_LOG_ENTRIES_BLOCKED_TITLE' => 'Suppressed/Blocked',
     'LBL_THEME' => 'Theme:',
     'LBL_FOUND_IN_RELEASE' => 'Found In Release',
     'LBL_FIXED_IN_RELEASE' => 'Fixed In Release',
