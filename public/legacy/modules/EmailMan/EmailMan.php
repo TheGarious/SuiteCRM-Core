@@ -199,7 +199,9 @@ class EmailMan extends SugarBean
             . $this->table_name
             . '.* , '
             . 'campaigns.name as campaign_name, '
+            . 'campaigns.id as campaign_id, '
             . 'email_marketing.name as message_name, '
+            . 'email_marketing.id as marketing_id, '
             . '(CASE related_type '
             . 'WHEN \'Contacts\' THEN '
             . $this->db->concat('contacts', array('first_name', 'last_name'), '&nbsp;')
