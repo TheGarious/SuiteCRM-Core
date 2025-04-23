@@ -265,6 +265,7 @@ class EmailMarketing extends SugarBean
 
     public function trackLogEntries($type = array())
     {
+        global $db;
         $args = func_get_args();
 
         $this->load_relationship('log_entries');
@@ -280,8 +281,22 @@ class EmailMarketing extends SugarBean
             $type[0] = 'targeted';
         }
 
+        if (is_array($type[0])) {
+            $type = $type[0];
+        }
+
+        $mkt_id = $this->db->quote($this->id);
         $query_array['select'] = "SELECT campaign_log.*, campaign_log.more_information as recipient_email";
-        $query_array['where'] .= " AND activity_type='{$type[0]}' AND archived=0";
+        $query_array['where'] .= " AND campaign_log.marketing_id = '$mkt_id' AND archived=0 ";
+
+        $typeClauses = [];
+        foreach ($type as $item) {
+            $typeClauses[] = " activity_type like '" . $db->quote($item) . "%'";
+        }
+
+        if (!empty($typeClauses)) {
+            $query_array['where'] .= " AND (" . implode(" OR ", $typeClauses) . ")";
+        }
 
         if (isset($query_array['group_by'])) {
             $group_by = str_replace("campaign_log", "cl", (string)$query_array['group_by']);
