@@ -123,6 +123,7 @@ class SchedulerHandler extends LegacyHandler
         }
 
         if (empty($schedulers)) {
+            $this->logger->debug('Schedulers:SchedulerHandler::runSchedulers | No schedulers found');
             return [];
         }
 
@@ -162,7 +163,10 @@ class SchedulerHandler extends LegacyHandler
                     $status = $this->schedulerRunner->run($job);
                 }
             } catch (\Exception $e) {
-                $this->logger->error('Exception running job -  ' . $job->target . ' | job id - ' . $job->id ?? '' . ' | message | ' . $e->getMessage(), ['trace' => $e->getTrace()]);
+                $this->logger->error('Schedulers:SchedulerHandler::runSchedulers -  Exception running job -  ' . $job->target . ' | job id - ' . $job->id ?? '' . ' | message | ' . $e->getMessage(), [
+                    'message' => $e->getMessage(),
+                    'trace' => $e->getTrace()
+                ]);
                 $status = false;
             }
 
@@ -394,6 +398,7 @@ class SchedulerHandler extends LegacyHandler
 
         $job = $this->buildJob($scheduler);
         $this->submitJob($job);
+        $this->logger->debug('Schedulers:SchedulerHandler::createJob - job added | name - ' . $job->name . ' | target - ' . $job->target);
 
         $this->close();
     }

@@ -28,8 +28,41 @@
 namespace App\Schedulers\Runners;
 
 use App\Engine\LegacyHandler\LegacyHandler;
+use App\Engine\LegacyHandler\LegacyScopeState;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
-class LegacySchedulerRunner extends LegacyHandler {
+class LegacySchedulerRunner extends LegacyHandler
+{
+
+    /**
+     * LegacyHandler constructor.
+     * @param string $projectDir
+     * @param string $legacyDir
+     * @param string $legacySessionName
+     * @param string $defaultSessionName
+     * @param LegacyScopeState $legacyScopeState
+     * @param RequestStack $requestStack
+     * @param LoggerInterface $logger
+     */
+    public function __construct(
+        string $projectDir,
+        string $legacyDir,
+        string $legacySessionName,
+        string $defaultSessionName,
+        LegacyScopeState $legacyScopeState,
+        RequestStack $requestStack,
+        protected LoggerInterface $logger
+    ) {
+        parent::__construct(
+            $projectDir,
+            $legacyDir,
+            $legacySessionName,
+            $defaultSessionName,
+            $legacyScopeState,
+            $requestStack
+        );
+    }
 
     public function getHandlerKey(): string
     {
@@ -41,6 +74,7 @@ class LegacySchedulerRunner extends LegacyHandler {
         $this->init();
         $status = true;
 
+        $this->logger->debug('Schedulers:LegacySchedulerRunner::run | Running legacy scheduler with target - ' . $job->target ?? '');
         if (!$job->runJob()) {
             $status = false;
         }
