@@ -465,6 +465,7 @@ class Scheduler extends SugarBean
         if (empty($focus->last_run)) {
             $lastRunTs = 0;
         } else {
+            $focus->last_run = $timedate->to_db($focus->last_run);
             $lastRunTs = $timedate->fromDb($focus->last_run)->ts ?? null;
         }
 
@@ -485,7 +486,6 @@ class Scheduler extends SugarBean
         }
         $timeEndTs++;
         $dateobj = $timedate->getNow();
-        $nowTs = $dateobj->ts;
         $GLOBALS['log']->debug(sprintf(
             "Constraints: start: %s from: %s end: %s to: %s now: %s",
             gmdate('Y-m-d H:i:s', $timeStartTs),
