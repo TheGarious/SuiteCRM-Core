@@ -108,7 +108,7 @@ class UpdateEmailTemplateBody extends LegacyHandler implements ProcessHandlerInt
         $this->close();
 
         $responseData = [
-            'value' => $templateBean->body ?? ''
+            'value' => html_entity_decode($templateBean->body_html) ?? ''
         ];
 
         $process->setStatus('success');
