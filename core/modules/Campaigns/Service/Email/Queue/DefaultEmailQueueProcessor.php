@@ -118,6 +118,15 @@ class DefaultEmailQueueProcessor implements EmailQueueProcessorInterface
 
                 $this->handleSuccessfulSend($campaignId, $emailMarketingId, $targetRecord, $targetListId, $targetId, $targetType);
             }
+
+            $nextQueueEntries = $this->getQueueEntries($emailMarketingId);
+            if (empty($nextQueueEntries) && !$isQueueingFinished) {
+                continue;
+            }
+
+            if (empty($nextQueueEntries) && $isQueueingFinished) {
+                $this->setSent($emRecord);
+            }
         }
     }
 
