@@ -31,10 +31,10 @@ use App\Data\Entity\Record;
 use App\Data\LegacyHandler\PreparedStatementHandler;
 use App\Data\Service\RecordProviderInterface;
 use App\Module\Campaigns\Service\Email\Log\EmailCampaignLogManagerInterface;
+use App\Module\Campaigns\Service\Email\Targets\EmailTargetProviderInterface;
 use App\Module\Campaigns\Service\Email\Targets\EmailTargetValidatorManager;
 use App\Module\Campaigns\Service\Email\Targets\Validation\ValidationFeedback;
 use App\Module\Campaigns\Service\EmailMarketing\EmailMarketingManagerInterface;
-use App\Module\Campaigns\Service\Targets\TargetProviderInterface;
 use App\SystemConfig\LegacyHandler\SystemConfigHandler;
 use Psr\Log\LoggerInterface;
 
@@ -47,7 +47,7 @@ class DefaultEmailQueueingService implements EmailQueueingServiceInterface
         protected RecordProviderInterface $recordProvider,
         protected SystemConfigHandler $systemConfigHandler,
         protected EmailQueueManagerInterface $queueManager,
-        protected TargetProviderInterface $targetProvider,
+        protected EmailTargetProviderInterface $targetProvider,
         protected EmailTargetValidatorManager $targetValidatorManager,
         protected EmailCampaignLogManagerInterface $campaignLogManager,
         protected EmailMarketingManagerInterface $emailMarketingManager
@@ -103,6 +103,11 @@ class DefaultEmailQueueingService implements EmailQueueingServiceInterface
                     $target['target_type'],
                     $sendDate
                 );
+            }
+
+            $nextTargets = $this->getTargets($emailMarketingId);
+            if (empty($nextTargets)) {
+                $this->setQueueingFinished($emailMarketingId, $emRecord);
             }
         }
 
