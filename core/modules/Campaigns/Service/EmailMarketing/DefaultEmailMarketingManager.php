@@ -120,6 +120,7 @@ class DefaultEmailMarketingManager implements EmailMarketingManagerInterface
                 ->from($table, 'mkt')
                 ->where('mkt.deleted = 0')
                 ->andWhere("mkt.status IN ('scheduled', 'pending_send', 'sending')")
+                ->andWhere('mkt.date_start <= NOW()')
                 ->executeQuery()
                 ->fetchAllAssociative();
         } catch (Exception $e) {
