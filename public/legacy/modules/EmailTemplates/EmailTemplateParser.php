@@ -101,9 +101,9 @@ class EmailTemplateParser
      * @param string $trackerId
      */
     public function __construct(
-        EmailTemplate $template,
-        Campaign $campaign,
-        EmailInterface $module,
+        ?EmailTemplate $template,
+        ?Campaign $campaign,
+        ?EmailInterface $module,
         $siteUrl,
         $trackerId
     ) {
@@ -135,7 +135,7 @@ class EmailTemplateParser
      *
      * @return string
      */
-    private function getParsedValue($attributeValue)
+    public function getParsedValue($attributeValue)
     {
         $matches = preg_match_all(static::PATTERN, $attributeValue, $variables);
 
