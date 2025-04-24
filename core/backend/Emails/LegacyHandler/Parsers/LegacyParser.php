@@ -28,24 +28,24 @@
 namespace App\Emails\LegacyHandler\Parsers;
 
 use App\Data\Entity\Record;
+use App\DateTime\LegacyHandler\DateTimeHandler;
 use App\Engine\LegacyHandler\LegacyHandler;
 use App\Engine\LegacyHandler\LegacyScopeState;
 use App\SystemConfig\LegacyHandler\SystemConfigHandler;
-use ResetPassword;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class LegacyParser extends LegacyHandler
 {
-    protected SystemConfigHandler $systemConfigHandler;
 
     public function __construct(
-        string              $projectDir,
-        string              $legacyDir,
-        string              $legacySessionName,
-        string              $defaultSessionName,
-        LegacyScopeState    $legacyScopeState,
-        RequestStack        $requestStack,
-        SystemConfigHandler $systemConfigHandler
+        string                        $projectDir,
+        string                        $legacyDir,
+        string                        $legacySessionName,
+        string                        $defaultSessionName,
+        LegacyScopeState              $legacyScopeState,
+        RequestStack                  $requestStack,
+        protected SystemConfigHandler $systemConfigHandler,
+        protected DateTimeHandler     $dateTimeHandler
     )
     {
         parent::__construct(
@@ -55,7 +55,6 @@ class LegacyParser extends LegacyHandler
             $defaultSessionName,
             $legacyScopeState, $requestStack
         );
-        $this->systemConfigHandler = $systemConfigHandler;
     }
 
     public function getHandlerKey(): string
@@ -70,21 +69,23 @@ class LegacyParser extends LegacyHandler
         $this->init();
         $this->startLegacyApp();
 
-        $arr = [];
+        $parentType = $attributes['parent_type'] ?? '';
+        $parentId = $attributes['parent_type'] ?? '';
+
+        if (empty($parentId)) {
+            return $email;
+        }
+
+        $bean = \BeanFactory::getBean($attributes['parent_type'], $attributes['parent_id']);
 
         $attributes['description_html'] = $this->parse($attributes['description_html']);
         $attributes['name'] = $this->parse($attributes['name']);
 
-        $template = \BeanFactory::getBean('EmailTemplates');
-        $bean = \BeanFactory::getBean($attributes['parent_type'], $attributes['parent_id']);
+        $attributes = $this->parseModule($attributes, $parentType, $bean);
 
-        $templateData = $template->parse_email_template([
-            'subject' => $attributes['name'],
-            'body' => $attributes['description_html'],
-        ], $attributes['parent_type'], $bean, $arr);
-
-        $attributes['name'] = $templateData['subject'];
-        $attributes['description_html'] = $templateData['body'];
+        if ($parentType === 'Prospects' || $parentType === 'Leads') {
+            $attributes = $this->parseModule($attributes, 'Contacts', $bean);
+        }
 
         $email->setAttributes($attributes);
 
@@ -93,10 +94,8 @@ class LegacyParser extends LegacyHandler
         return $email;
     }
 
-    protected function parse(string $string)
+    protected function parse(string $string): string
     {
-        global $timedate;
-
         $siteUrl = $this->systemConfigHandler->getSystemConfig('site_url')?->getValue() ?? '';
 
         return str_replace([
@@ -108,8 +107,25 @@ class LegacyParser extends LegacyHandler
             $siteUrl,
             $siteUrl,
             $bean->name ?? '',
-            $timedate->nowDb()
+            $this->dateTimeHandler->getDateTime()->nowDb()
         ], $string);
+    }
+
+    protected function parseModule($attributes, string $module, \SugarBean|bool $bean)
+    {
+        $template = \BeanFactory::getBean('EmailTemplates');
+        $arr = [];
+
+        $template = $template->parse_email_template([
+            'subject' => $attributes['name'],
+            'body' => $attributes['description_html'],
+        ], $module, $bean, $arr);
+
+
+        $attributes['name'] = $template['subject'];
+        $attributes['description_html'] = $template['body'];
+
+        return $attributes;
     }
 
 }
