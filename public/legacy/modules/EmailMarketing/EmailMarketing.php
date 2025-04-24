@@ -287,7 +287,7 @@ class EmailMarketing extends SugarBean
 
         $mkt_id = $this->db->quote($this->id);
         $query_array['select'] = "SELECT campaign_log.*, campaign_log.more_information as recipient_email";
-        $query_array['where'] .= " AND campaign_log.marketing_id = '$mkt_id' AND archived=0 ";
+        $query_array['where'] .= " AND campaign_log.archived=0 ";
 
         $typeClauses = [];
         foreach ($type as $item) {
@@ -295,7 +295,7 @@ class EmailMarketing extends SugarBean
         }
 
         if (!empty($typeClauses)) {
-            $query_array['where'] .= " AND (" . implode(" OR ", $typeClauses) . ")";
+            $query_array['where'] .= " AND (" . implode(" OR ", $typeClauses) . ") ";
         }
 
         if (isset($query_array['group_by'])) {
