@@ -813,7 +813,7 @@ class Scheduler extends SugarBean
                         ' . $mod_strings['LBL_CRON_LINUX_DESC1'] . '<br>
                         <b>sudo crontab -e -u ' . $webServerUser . '</b><br> ' . $mod_strings['LBL_CRON_LINUX_DESC2'] . '<br>
                         <b>*&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;&nbsp;&nbsp;&nbsp;
-                        [path/to/php] ' . realpath('../../') . '/bin/console schedulers:run > /dev/null 2>&1</b>
+                        [path/to/php] ' . realpath('../../') . '/bin/console -e [env] schedulers:run > /dev/null 2>&1</b>
                         <br>' . $error . '
                     </span></td>
                 </tr>
