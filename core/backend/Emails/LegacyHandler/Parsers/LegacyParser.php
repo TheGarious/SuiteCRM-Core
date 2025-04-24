@@ -70,22 +70,15 @@ class LegacyParser extends LegacyHandler
         $this->startLegacyApp();
 
         $parentType = $attributes['parent_type'] ?? '';
-        $parentId = $attributes['parent_type'] ?? '';
+        $parentId = $attributes['parent_id'] ?? '';
 
         if (empty($parentId)) {
             return $email;
         }
 
-        $bean = \BeanFactory::getBean($attributes['parent_type'], $attributes['parent_id']);
+        $bean = \BeanFactory::getBean($parentType, $parentId);
 
-        $attributes['description_html'] = $this->parse($attributes['description_html']);
-        $attributes['name'] = $this->parse($attributes['name']);
-
-        $attributes = $this->parseModule($attributes, $parentType, $bean);
-
-        if ($parentType === 'Prospects' || $parentType === 'Leads') {
-            $attributes = $this->parseModule($attributes, 'Contacts', $bean);
-        }
+        $attributes = $this->parse($attributes, $bean);
 
         $email->setAttributes($attributes);
 
@@ -94,11 +87,12 @@ class LegacyParser extends LegacyHandler
         return $email;
     }
 
-    protected function parse(string $string): string
+    protected function parse($attributes, \SugarBean|bool $bean)
     {
-        $siteUrl = $this->systemConfigHandler->getSystemConfig('site_url')?->getValue() ?? '';
+        $siteUrl = $this->getSiteUrl();
 
-        return str_replace([
+
+        $attributes['name'] =  str_replace([
             '$config_site_url',
             '$sugarurl',
             '$contact_user_user_name',
@@ -108,24 +102,48 @@ class LegacyParser extends LegacyHandler
             $siteUrl,
             $bean->name ?? '',
             $this->dateTimeHandler->getDateTime()->nowDb()
-        ], $string);
-    }
+        ], $attributes['name']);
 
-    protected function parseModule($attributes, string $module, \SugarBean|bool $bean)
-    {
-        $template = \BeanFactory::getBean('EmailTemplates');
-        $arr = [];
+        $attributes['description_html'] =  str_replace([
+            '$config_site_url',
+            '$sugarurl',
+            '$contact_user_user_name',
+            '$contact_user_pwd_last_changed',
+        ], [
+            $siteUrl,
+            $siteUrl,
+            $bean->name ?? '',
+            $this->dateTimeHandler->getDateTime()->nowDb()
+        ], $attributes['description_html']);
 
-        $template = $template->parse_email_template([
-            'subject' => $attributes['name'],
-            'body' => $attributes['description_html'],
-        ], $module, $bean, $arr);
+        require_once $this->legacyDir . '/modules/EmailTemplates/EmailTemplateParser.php';
 
-
-        $attributes['name'] = $template['subject'];
-        $attributes['description_html'] = $template['body'];
+        $attributes['name'] = $this->useTemplateParser($bean, $siteUrl, $attributes['name']);
+        $attributes['description_html'] = $this->useTemplateParser($bean, $siteUrl, $attributes['description_html']);
 
         return $attributes;
+    }
+
+    protected function getSiteUrl()
+    {
+        return $this->systemConfigHandler->getSystemConfig('site_url')?->getValue() ?? '';
+    }
+
+    /**
+     * @param \SugarBean|bool $bean
+     * @param string $siteUrl
+     * @param $description_html
+     * @return string
+     */
+    public function useTemplateParser(\SugarBean|bool $bean, string $siteUrl, $description_html): string
+    {
+        return (new \EmailTemplateParser(
+            null,
+            null,
+            $bean,
+            $siteUrl,
+            null
+        ))->getParsedValue($description_html);
     }
 
 }
