@@ -897,7 +897,7 @@ class Scheduler extends SugarBean
         $sched6->date_time_start  = create_date(2015, 1, 1) . ' ' . create_time(0, 0, 1);
         $sched6->date_time_end    = null;
         $sched6->job_interval     = '0::2-6::*::*::*';
-        $sched6->status           = 'Active';
+        $sched6->status           = 'Inactive';
         $sched6->created_by       = '1';
         $sched6->modified_user_id = '1';
         $sched6->catch_up         = '1';
