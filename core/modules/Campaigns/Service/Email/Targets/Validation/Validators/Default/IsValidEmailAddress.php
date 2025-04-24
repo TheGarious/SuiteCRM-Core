@@ -65,7 +65,7 @@ class IsValidEmailAddress extends BaseEmailTargetValidator
         string $prospectListId
     ): ValidationFeedback {
 
-        $emailAddress = trim($targetRecord->getAttributes()['email1'] ?? '');
+        $emailAddress = trim($targetRecord->getAttributes()['email1'] ?? $targetRecord->getAttributes()['email'] ?? '');
 
         $isValidEmailAddress = false;
         if (!empty($emailAddress)) {

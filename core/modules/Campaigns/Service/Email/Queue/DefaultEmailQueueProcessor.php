@@ -107,7 +107,7 @@ class DefaultEmailQueueProcessor implements EmailQueueProcessorInterface
                     $this->handlerFailedSend(
                         $campaignId,
                         $emailMarketingId,
-                        $targetRecord->getAttributes()['email1'] ?? '',
+                        $targetRecord->getAttributes()['email1'] ?? $targetRecord->getAttributes()['email'] ?? '',
                         'send error',
                         $targetListId,
                         $targetId,
@@ -297,7 +297,7 @@ class DefaultEmailQueueProcessor implements EmailQueueProcessorInterface
         $this->campaignLogManager->createCampaignLogEntry(
             $campaignId,
             $emailMarketingId,
-            $targetRecord->getAttributes()['email1'] ?? '',
+            $targetRecord->getAttributes()['email1'] ?? $targetRecord->getAttributes()['email'] ?? '',
             'targeted',
             $targetListId,
             $targetId,
@@ -354,7 +354,7 @@ class DefaultEmailQueueProcessor implements EmailQueueProcessorInterface
         $this->campaignLogManager->createCampaignLogEntry(
             $campaignId,
             $emailMarketingId,
-            $targetRecord->getAttributes()['email1'] ?? '',
+            $targetRecord->getAttributes()['email1'] ?? $targetRecord->getAttributes()['email'] ?? '',
             'blocked-' . $feedback->getValidatorKey(),
             $targetListId,
             $targetId,
