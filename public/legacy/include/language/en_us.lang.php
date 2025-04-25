@@ -976,8 +976,8 @@ $app_list_strings = array(
         'sent' => 'Sent'
     ),
     'email_marketing_duplicate_dom' => [
-        'email' => 'Prevent sending to duplicate email addresses',
-        'none' => 'None',
+        'email' => 'Prevent sending to duplicate records and email addresses',
+        'record' => 'Prevent sending to duplicate records',
     ],
     'email_marketing_queueing_status_dom' => array(
         'not_started' => 'Not Started',
@@ -2267,7 +2267,7 @@ $app_strings = array(
     'LBL_DATE_START' => 'Date Start',
     'LBL_SEND_DATE' => 'Send Date',
     'LBL_SCHEDULE_BUTTON_LABEL' => 'Schedule',
-    'LBL_UNABLE_TO_UNSCHEDULE' => 'Unable to unschedule as not in queue, or sending',
+    'LBL_UNABLE_TO_UNSCHEDULE' => 'Unable to unschedule as not scheduled',
     'LBL_SAVE_BUTTON_TITLE' => 'Save',
     'LBL_SAVE_CONTINUE_LABEL' => 'Save And Continue',
     'LBL_CANCEL_BUTTON_KEY' => 'l',
