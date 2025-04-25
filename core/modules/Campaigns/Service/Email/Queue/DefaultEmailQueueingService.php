@@ -86,7 +86,7 @@ class DefaultEmailQueueingService implements EmailQueueingServiceInterface
                     $this->campaignLogManager->createCampaignLogEntry(
                         $campaignId,
                         $emailMarketingId,
-                        $targetRecord->getAttributes()['email1'] ?? '',
+                        $targetRecord->getAttributes()['email1'] ?? $targetRecord->getAttributes()['email'],
                         'blocked-' . $feedback->getValidatorKey(),
                         $target['target_list_id'],
                         $target['target_id'],
@@ -101,6 +101,7 @@ class DefaultEmailQueueingService implements EmailQueueingServiceInterface
                     $target['target_list_id'],
                     $target['target_id'],
                     $target['target_type'],
+                    $targetRecord->getAttributes()['email1'] ?? $targetRecord->getAttributes()['email'],
                     $sendDate
                 );
             }

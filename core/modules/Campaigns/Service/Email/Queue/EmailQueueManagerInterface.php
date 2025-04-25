@@ -35,6 +35,7 @@ interface EmailQueueManagerInterface
         string $targetListId,
         string $targetId,
         string $targetType,
+        string $targetEmail,
         string $sendDate
     ): void;
 
