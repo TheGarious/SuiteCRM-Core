@@ -27,15 +27,16 @@
 
 namespace App\Emails\LegacyHandler\Parsers;
 
-use App\Data\Entity\Record;
 use App\DateTime\LegacyHandler\DateTimeHandler;
+use App\Emails\Service\EmailParserHandler\EmailParserInterface;
 use App\Engine\LegacyHandler\LegacyHandler;
 use App\Engine\LegacyHandler\LegacyScopeState;
 use App\SystemConfig\LegacyHandler\SystemConfigHandler;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-class LegacyParser extends LegacyHandler
+class LegacyEmailParser extends LegacyHandler implements EmailParserInterface
 {
+    public const KEY = 'legacy-email-parser';
 
     public function __construct(
         string                        $projectDir,
@@ -57,42 +58,36 @@ class LegacyParser extends LegacyHandler
         );
     }
 
+    public function getKey(): string
+    {
+        return self::KEY;
+    }
+
+    public function applies(): bool
+    {
+        return true;
+    }
+
+    public function getModule(): string
+    {
+        return 'default';
+    }
+
+    public function getOrder(): int
+    {
+        return 0;
+    }
+
     public function getHandlerKey(): string
     {
-        return 'legacy-parser';
+        return self::KEY;
     }
 
-    public function parseEmail(Record $email): Record
-    {
-        $attributes = $email->getAttributes();
-
-        $this->init();
-        $this->startLegacyApp();
-
-        $parentType = $attributes['parent_type'] ?? '';
-        $parentId = $attributes['parent_id'] ?? '';
-
-        if (empty($parentId)) {
-            return $email;
-        }
-
-        $bean = \BeanFactory::getBean($parentType, $parentId);
-
-        $attributes = $this->parse($attributes, $bean);
-
-        $email->setAttributes($attributes);
-
-        $this->close();
-
-        return $email;
-    }
-
-    protected function parse($attributes, \SugarBean|bool $bean)
+    public function parse($string, $bean): string
     {
         $siteUrl = $this->getSiteUrl();
 
-
-        $attributes['name'] =  str_replace([
+        $string =  str_replace([
             '$config_site_url',
             '$sugarurl',
             '$contact_user_user_name',
@@ -102,26 +97,13 @@ class LegacyParser extends LegacyHandler
             $siteUrl,
             $bean->name ?? '',
             $this->dateTimeHandler->getDateTime()->nowDb()
-        ], $attributes['name']);
-
-        $attributes['description_html'] =  str_replace([
-            '$config_site_url',
-            '$sugarurl',
-            '$contact_user_user_name',
-            '$contact_user_pwd_last_changed',
-        ], [
-            $siteUrl,
-            $siteUrl,
-            $bean->name ?? '',
-            $this->dateTimeHandler->getDateTime()->nowDb()
-        ], $attributes['description_html']);
+        ], $string);
 
         require_once $this->legacyDir . '/modules/EmailTemplates/EmailTemplateParser.php';
 
-        $attributes['name'] = $this->useTemplateParser($bean, $siteUrl, $attributes['name']);
-        $attributes['description_html'] = $this->useTemplateParser($bean, $siteUrl, $attributes['description_html']);
+        $string = $this->useTemplateParser($bean, $siteUrl, $string);
 
-        return $attributes;
+        return $string;
     }
 
     protected function getSiteUrl()

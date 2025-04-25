@@ -32,21 +32,15 @@ use App\Data\Entity\Record;
 use App\Data\LegacyHandler\PreparedStatementHandler;
 use App\Data\Service\RecordProviderInterface;
 use App\Emails\LegacyHandler\Parsers\LegacyParser;
+use App\Emails\Service\EmailParserHandler\EmailParserManager;
 use App\Engine\LegacyHandler\LegacyHandler;
 use App\Engine\LegacyHandler\LegacyScopeState;
-use PHPMailer\PHPMailer\Exception;
 use Psr\Log\LoggerInterface;
 use SugarEmailAddress;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class EmailProcessProcessor extends LegacyHandler
 {
-
-    protected SendEmailHandler $sendEmailHandler;
-    protected RecordProviderInterface $recordProvider;
-    protected PreparedStatementHandler $preparedStatementHandler;
-    protected LegacyParser $parser;
-    protected LoggerInterface $logger;
 
     public function __construct(
         string $projectDir,
@@ -55,11 +49,11 @@ class EmailProcessProcessor extends LegacyHandler
         string $defaultSessionName,
         LegacyScopeState $legacyScopeState,
         RequestStack $requestStack,
-        SendEmailHandler $sendEmailHandler,
-        RecordProviderInterface $recordProvider,
-        PreparedStatementHandler $preparedStatementHandler,
-        LoggerInterface $logger,
-        LegacyParser $parser
+        protected SendEmailHandler $sendEmailHandler,
+        protected RecordProviderInterface $recordProvider,
+        protected PreparedStatementHandler $preparedStatementHandler,
+        protected LoggerInterface $logger,
+        protected EmailParserManager $parserManager
     ) {
         parent::__construct(
             $projectDir,
@@ -69,11 +63,6 @@ class EmailProcessProcessor extends LegacyHandler
             $legacyScopeState,
             $requestStack
         );
-        $this->sendEmailHandler = $sendEmailHandler;
-        $this->recordProvider = $recordProvider;
-        $this->preparedStatementHandler = $preparedStatementHandler;
-        $this->logger = $logger;
-        $this->parser = $parser;
     }
 
     public function getHandlerKey(): string
@@ -111,7 +100,8 @@ class EmailProcessProcessor extends LegacyHandler
         }
 
         $outboundRecord = $this->recordProvider->mapToRecord($outboundEmail);
-        $emailRecord = $this->parser->parseEmail($emailRecord);
+
+        $emailRecord = $this->parseEmail($emailRecord);
 
         $success = false;
         try {
@@ -260,6 +250,25 @@ class EmailProcessProcessor extends LegacyHandler
                 $this->linkEmailToAddress($id, $emailId, $type);
             }
         }
+    }
+
+    protected function parseEmail(Record $emailRecord): Record
+    {
+        $attributes = $emailRecord->getAttributes();
+
+        $this->init();
+
+        $bean = \BeanFactory::getBean($attributes['parent_type'], $attributes['parent_id']);
+
+        $this->close();
+
+        $attributes['name'] = $this->parserManager->parse($attributes['name'] ?? '', $bean, 'default');
+        $attributes['description_html'] = $this->parserManager->parse($attributes['description_html'] ?? '', $bean, 'default');
+        $attributes['description'] = $this->parserManager->parse($attributes['description'] ?? '', $bean, 'default');
+
+        $emailRecord->setAttributes($attributes);
+
+        return $emailRecord;
     }
 
 }
