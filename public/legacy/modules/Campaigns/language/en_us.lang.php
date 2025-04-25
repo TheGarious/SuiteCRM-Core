@@ -472,5 +472,8 @@ $mod_strings = array(
     'LBL_SURVEYRESPONSES_CAMPAIGNS_FROM_SURVEYRESPONSES_TITLE' => 'Survey Responses',
     'LBL_CAMPAIGN_SURVEY' => "Survey",
     'LBL_CAMPAIGN_ACTIONS' => 'Campaign Actions',
-    'LBL_NEW_EM_SURVEY' => 'Create Survey Email Marketing'
+    'LBL_NEW_EM_SURVEY' => 'Create Survey Email Marketing',
+    'LBL_TARGET_LISTS_HELP' => 'Target lists that are available on marketing records.',
+    'LBL_CAMPAIGN_START_DATE_HELP' => 'Reference date for the campaign to start.',
+    'LBL_CAMPAIGN_END_DATE_HELP' => 'Reference date for the campaign to end. Does not impact marketing send process.',
 );

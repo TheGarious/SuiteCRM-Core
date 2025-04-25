@@ -110,6 +110,12 @@ $dictionary['Campaign'] = [
             'validation' => ['type' => 'isbefore', 'compareto' => 'end_date'],
             'enable_range_search' => true,
             'options' => 'date_range_search_dom',
+            'footnotes' => [
+                [
+                    'labelKey' => 'LBL_CAMPAIGN_START_DATE_HELP',
+                    'displayModes' => ['edit', 'create']
+                ]
+            ]
         ],
         'end_date' => [
             'name' => 'end_date',
@@ -121,6 +127,12 @@ $dictionary['Campaign'] = [
             'required' => true,
             'enable_range_search' => true,
             'options' => 'date_range_search_dom',
+            'footnotes' => [
+                [
+                    'labelKey' => 'LBL_CAMPAIGN_END_DATE_HELP',
+                    'displayModes' => ['edit', 'create']
+                ]
+            ]
         ],
         'status' => [
             'name' => 'status',
@@ -209,6 +221,12 @@ $dictionary['Campaign'] = [
             'name' => 'propects_lists',
             'type' => 'multirelate',
             'vname' => 'LBL_PROSPECT_LISTS',
+            'footnotes' => [
+                [
+                    'labelKey' => 'LBL_TARGET_LISTS_HELP',
+                    'displayModes' => ['edit', 'create']
+                ]
+            ],
             'link' => 'prospectlists',
             'source' => 'non-db',
             'metadata' => [
