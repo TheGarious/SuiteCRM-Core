@@ -79,8 +79,8 @@
             <div>
                 <scrm-action-group-menu
                         [config]="field.fieldActions.adapter"
-                        [buttonGroupClass] = "field.fieldActions?.containerKlass ?? ''"
-                        [klass] = "field.fieldActions?.klass ?? ''"
+                        [buttonGroupClass]="field.fieldActions?.containerKlass ?? ''"
+                        [klass]="field.fieldActions?.klass ?? ''"
                 >
                 </scrm-action-group-menu>
             </div>
@@ -90,9 +90,22 @@
 </ng-container>
 
 <ng-container *ngIf="field?.loading()">
-   <div class= "dynamic-field">
+    <div class="dynamic-field">
         <div class="flex-grow-1 text-break rounded box-loading skeleton-field-content"></div>
-   </div>
+    </div>
+</ng-container>
+<ng-container *ngIf="activeFootnotes().length">
+    <ng-container *ngFor="let footnote of activeFootnotes()">
+        <div class="form-text small text-muted {{footnote?.klass ?? ''}}">
+            <scrm-image *ngIf="footnote?.icon" [image]="footnote?.icon" [klass]="footnote?.iconKlass ?? ''"></scrm-image>
+            <scrm-dynamic-label [context]="footnote.context"
+                                [fields]="{field: field}"
+                                [labelKey]="footnote?.labelKey ?? ''"
+                                [module]="this?.record?.module ?? ''"
+            >
+            </scrm-dynamic-label>
+        </div>
+    </ng-container>
 </ng-container>
 <ng-container *ngIf="isEdit() && field.formControl && field.formControl.errors && touched()">
     <ng-container *ngIf="validateOnlyOnSubmit ? isInvalid() : (field.formControl.invalid && field.formControl.touched)">

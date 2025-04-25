@@ -28,10 +28,13 @@ import {
     Component,
     computed,
     HostBinding,
-    Input, OnDestroy,
-    OnInit, signal,
+    Input,
+    OnDestroy,
+    OnInit,
+    signal,
     Signal,
-    Type, WritableSignal
+    Type,
+    WritableSignal
 } from '@angular/core';
 import {Record} from '../../common/record/record.model';
 import {Field} from '../../common/record/field.model';
@@ -46,6 +49,8 @@ import {
 } from '../../services/navigation/link-route-async-action/link-route-async-action.service';
 import {Subscription} from "rxjs";
 import {ControlEvent, TouchedChangeEvent} from "@angular/forms";
+import {ActiveFieldsChecker} from "../../services/condition-operators/active-fields-checker.service";
+import {deepClone} from "../../common/utils/object-utils";
 
 @Component({
     selector: 'scrm-dynamic-field',
@@ -67,6 +72,7 @@ export class DynamicFieldComponent implements OnInit, OnDestroy {
 
     isInvalid: Signal<boolean> = signal(false);
     touched: WritableSignal<boolean> = signal(false);
+    activeFootnotes: WritableSignal<any[]> = signal([]);
     validateOnlyOnSubmit: boolean = false;
     protected subs: Subscription[] = [];
 
@@ -76,6 +82,7 @@ export class DynamicFieldComponent implements OnInit, OnDestroy {
         protected router: Router,
         protected dynamicLabelService: DynamicLabelService,
         protected linkRouteAsyncActionService: LinkRouteAsyncActionService,
+        protected activeFieldsChecker: ActiveFieldsChecker
     ) {
     }
 
@@ -101,9 +108,9 @@ export class DynamicFieldComponent implements OnInit, OnDestroy {
         this.setHostClass();
         this.validateOnlyOnSubmit = this.record?.metadata?.validateOnlyOnSubmit;
 
-        if(this.record?.validationTriggered) {
+        if (this.record?.validationTriggered) {
             this.isInvalid = computed(() => {
-                if(this.validateOnlyOnSubmit && this.record?.validationTriggered() && this.field.formControl?.invalid) {
+                if (this.validateOnlyOnSubmit && this.record?.validationTriggered() && this.field.formControl?.invalid) {
                     return true;
                 }
                 return false;
@@ -116,7 +123,7 @@ export class DynamicFieldComponent implements OnInit, OnDestroy {
 
         if (this?.field?.formControl?.events) {
             this.subs.push(this.field.formControl.events.subscribe((event: ControlEvent) => {
-                if (!(event instanceof TouchedChangeEvent)){
+                if (!(event instanceof TouchedChangeEvent)) {
                     return;
                 }
 
@@ -126,12 +133,12 @@ export class DynamicFieldComponent implements OnInit, OnDestroy {
                     return;
                 }
 
-                if (event.touched && !this.touched()){
+                if (event.touched && !this.touched()) {
                     this.touched.set(event.touched);
                     return;
                 }
 
-                if (!event.touched && this.touched()){
+                if (!event.touched && this.touched()) {
                     this.touched.set(event.touched);
                     return;
                 }
@@ -139,6 +146,8 @@ export class DynamicFieldComponent implements OnInit, OnDestroy {
 
             }));
         }
+
+        this.initHelpFootnotes();
     }
 
     ngOnDestroy() {
@@ -236,6 +245,74 @@ export class DynamicFieldComponent implements OnInit, OnDestroy {
         }
 
         this.class = classes.join(' ');
+    }
+
+    protected initHelpFootnotes(): void {
+
+        const footnotes = this?.field?.definition?.footnotes ?? [];
+        if (!footnotes.length) {
+            this.activeFootnotes.set([]);
+            return;
+        }
+
+        this.initActiveFootnotes();
+        this.subs.push(this.field.valueChanges$.subscribe(() => {
+            this.initActiveFootnotes();
+        }));
+
+    }
+
+    protected initActiveFootnotes() {
+        const footnotes = this?.field?.definition?.footnotes ?? [];
+
+        const activeFootnotes: any[] = [];
+        const defaultFootnotes: any[] = [];
+        footnotes.forEach((footnote) => {
+
+            const activeFootnote = this.initFootnote(footnote);
+            if (!activeFootnote) {
+                return;
+            }
+
+            if (activeFootnote?.default) {
+                defaultFootnotes.push(activeFootnote);
+                return;
+            }
+
+            if (!activeFootnote?.activeOn) {
+                activeFootnotes.push(activeFootnote);
+                return;
+            }
+
+            const isActive = this.activeFieldsChecker.isValueActive(this.record, this.field, footnote.activeOn);
+            if (isActive) {
+                activeFootnotes.push(activeFootnote);
+            }
+        });
+
+        if (!activeFootnotes?.length && defaultFootnotes.length) {
+            this.activeFootnotes.set(defaultFootnotes);
+            return;
+        }
+
+        this.activeFootnotes.set(activeFootnotes);
+    }
+
+    protected initFootnote(footnote: any): any {
+        const displayModes = footnote?.displayModes ?? [];
+        if (!displayModes?.length) {
+            return null;
+        }
+
+        if (!displayModes.includes(this.originalMode)) {
+            return null;
+        }
+
+        const footnoteEntry = deepClone(footnote);
+        footnoteEntry.context = footnote?.context ?? {};
+        footnoteEntry.context.module = this.record?.module ?? '';
+
+        return footnoteEntry;
     }
 
 }
