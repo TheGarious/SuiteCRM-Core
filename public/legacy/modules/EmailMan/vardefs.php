@@ -97,6 +97,12 @@ $dictionary['EmailMan'] = [
             'len' => '36',
             'comment' => 'User ID who last modified record',
         ],
+        'more_information'=> [
+            'name'=>'more_information',
+            'vname'=>'LBL_MORE_INFO',
+            'type'=>'varchar',
+            'len'=>'100',
+        ],
         'in_queue' => [
             'name' => 'in_queue',
             'vname' => 'LBL_IN_QUEUE',

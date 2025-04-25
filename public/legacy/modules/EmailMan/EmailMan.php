@@ -198,6 +198,8 @@ class EmailMan extends SugarBean
             'SELECT '
             . $this->table_name
             . '.* , '
+            . $this->table_name
+            . '.more_information as recipient_email , '
             . 'campaigns.name as campaign_name, '
             . 'campaigns.id as campaign_id, '
             . 'email_marketing.name as message_name, '
@@ -304,7 +306,7 @@ class EmailMan extends SugarBean
         }
 
         $query =
-            "SELECT $this->table_name.* , campaigns.name as campaign_name, email_marketing.name as message_name, $this->table_name.send_date_time as send_on, (CASE related_type WHEN 'Contacts' THEN "
+            "SELECT $this->table_name.*, $this->table_name.more_information as recipient_email, campaigns.name as campaign_name, email_marketing.name as message_name, $this->table_name.send_date_time as send_on, (CASE related_type WHEN 'Contacts' THEN "
             . $this->db->concat('contacts', array('first_name', 'last_name'), '&nbsp;') . " WHEN 'Leads' THEN "
             . $this->db->concat('leads', array('first_name', 'last_name'), '&nbsp;') . " WHEN 'Accounts' THEN accounts.name WHEN 'Users' THEN "
             . $this->db->concat('users', array('first_name', 'last_name'), '&nbsp;') . " WHEN 'Prospects' THEN "
