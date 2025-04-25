@@ -50,6 +50,7 @@ class DefaultEmailQueueManager implements EmailQueueManagerInterface
         string $targetListId,
         string $targetId,
         string $targetType,
+        string $targetEmail,
         string $sendDate
     ): void {
         $timedate = $this->dateTimeHandler->getDateTime();
@@ -66,7 +67,8 @@ class DefaultEmailQueueManager implements EmailQueueManagerInterface
                              'list_id' => '?',
                              'related_id' => '?',
                              'related_type' => '?',
-                             'send_date_time' => '?'
+                             'send_date_time' => '?',
+                             'more_information' => '?'
                          ]
                      )
                      ->setParameter(0, $timedate->nowDb())
@@ -76,7 +78,8 @@ class DefaultEmailQueueManager implements EmailQueueManagerInterface
                      ->setParameter(4, $targetListId)
                      ->setParameter(5, $targetId)
                      ->setParameter(6, $targetType)
-                     ->setParameter(7, $sendDate);
+                     ->setParameter(7, $sendDate)
+                     ->setParameter(8, $targetEmail);
 
 
         try {
