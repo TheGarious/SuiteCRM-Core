@@ -31,6 +31,7 @@ import {DynamicAttributesDirective, DynamicModule} from 'ng-dynamic-component';
 import {DynamicFieldComponent} from './dynamic-field.component';
 import {DynamicLabelModule} from '../../components/dynamic-label/dynamic-label.module';
 import {ActionGroupMenuModule} from "../../components/action-group-menu/action-group-menu.module";
+import {ImageModule} from "../../components/image/image.module";
 
 @NgModule({
     declarations: [DynamicFieldComponent],
@@ -44,6 +45,7 @@ import {ActionGroupMenuModule} from "../../components/action-group-menu/action-g
         DynamicModule,
         ActionGroupMenuModule,
         DynamicAttributesDirective,
+        ImageModule
     ]
 })
 export class DynamicFieldModule {

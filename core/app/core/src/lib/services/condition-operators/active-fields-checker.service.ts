@@ -75,7 +75,7 @@ export class ActiveFieldsChecker {
      * @param {object} record
      * @param {object} activeOnAttributes
      */
-    protected areAttributesActive(
+    public areAttributesActive(
         relatedAttributesFields: string[],
         record: Record,
         activeOnAttributes: StringArrayMatrix
@@ -107,7 +107,7 @@ export class ActiveFieldsChecker {
      * @param {object} record
      * @param {object} activeOnFields
      */
-    protected areFieldsActive(relatedFields: string[], record: Record, activeOnFields: StringArrayMap): boolean {
+    public areFieldsActive(relatedFields: string[], record: Record, activeOnFields: StringArrayMap): boolean {
         return relatedFields.every(fieldKey => {
             const fields = record.fields;
             const field = (fields && record.fields[fieldKey]) || null;
@@ -125,7 +125,7 @@ export class ActiveFieldsChecker {
      * @param {object} field
      * @param {array} activeValues
      */
-    protected isValueActive(record: Record, field: Field, activeValues: string[] | any): boolean {
+    public isValueActive(record: Record, field: Field, activeValues: string[] | any): boolean {
 
         let isActive = false;
         if (field.valueList && field.valueList.length) {
@@ -165,6 +165,9 @@ export class ActiveFieldsChecker {
             }
 
             const operator = this.operatorManager.get(operatorKey);
+            if (!operator) {
+                return;
+            }
             opsArr.push(operator.run(record, field, activeValue))
             isActive = opsArr.every(data => data);
         })
