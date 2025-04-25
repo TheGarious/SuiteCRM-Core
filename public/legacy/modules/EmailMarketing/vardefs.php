@@ -132,7 +132,13 @@ $dictionary['EmailMarketing'] = [
             'vname' => 'LBL_SCHEDULED_START_DATE',
             'type' => 'datetime',
             'importable' => 'required',
-            'required' => true
+            'required' => true,
+            'footnotes' => [
+                [
+                    'labelKey' => 'LBL_SCHEDULED_START_DATE_HELP',
+                    'displayModes' => ['edit', 'create', 'detail']
+                ]
+            ]
         ],
 
         'template_id' => [
@@ -151,12 +157,25 @@ $dictionary['EmailMarketing'] = [
             'readonly' => 'true',
             'options' => 'email_marketing_status_dom',
             'importable' => 'required',
+            'footnotes' => [
+                [
+                    'labelKey' => 'LBL_STATUS_DRAFT_NOT_SEND_HELP',
+                    'displayModes' => ['edit', 'create', 'detail'],
+                    'klass' => 'alert alert-warning pl-2 pb-2 pt-2 mb-1',
+                    'activeOn' => [
+                        [
+                            'operator' => 'is-equal',
+                            'values' => ['draft']
+                        ]
+                    ]
+                ]
+            ]
         ],
         'duplicate' => [
             'name' => 'duplicate',
             'vname' => 'LBL_CHECK_DUPLICATE',
             'type' => 'enum',
-            'default' => 'none',
+            'default' => 'email',
             'options' => 'email_marketing_duplicate_dom',
         ],
         'queueing_status' => [
@@ -177,6 +196,39 @@ $dictionary['EmailMarketing'] = [
             'readonly' => 'true',
             'options' => 'email_marketing_type_dom',
             'importable' => 'required',
+            'footnotes' => [
+                [
+                    'labelKey' => 'LBL_TYPE_MARKETING_HELP',
+                    'displayModes' => ['edit', 'create', 'detail'],
+                    'activeOn' => [
+                        [
+                            'operator' => 'not-equal',
+                            'values' => ['transactional']
+                        ]
+                    ]
+                ],
+                [
+                    'labelKey' => 'LBL_TYPE_TRANSACTIONAL_HELP',
+                    'displayModes' => ['edit', 'create'],
+                    'klass' => 'alert alert-warning pl-2 pb-2 pt-2 mb-1',
+                    'activeOn' => [
+                        [
+                            'operator' => 'is-equal',
+                            'values' => ['transactional']
+                        ]
+                    ]
+                ],
+                [
+                    'labelKey' => 'LBL_TYPE_TRANSACTIONAL_HELP',
+                    'displayModes' => ['detail'],
+                    'activeOn' => [
+                        [
+                            'operator' => 'is-equal',
+                            'values' => ['transactional']
+                        ]
+                    ]
+                ],
+            ]
         ],
         'email_marketing_config' => [
             'name' => 'email_marketing_config',
@@ -401,6 +453,12 @@ $dictionary['EmailMarketing'] = [
             ],
             'name' => 'prospect_list_name',
             'vname' => 'LBL_TARGET_LISTS',
+            'footnotes' => [
+                [
+                    'labelKey' => 'LBL_TARGET_LISTS_HELP',
+                    'displayModes' => ['edit', 'create']
+                ]
+            ],
             'type' => 'multirelate',
             'link' => 'prospectlists',
             'source' => 'non-db',
