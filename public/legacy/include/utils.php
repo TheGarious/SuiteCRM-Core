@@ -290,6 +290,7 @@ function make_sugar_config(&$sugar_config)
             'max_cron_runtime' => 60, // max runtime for cron jobs
             'min_cron_interval' => 30, // minimal interval between cron jobs
         ),
+        'emails_per_run' => 50,
         'strict_id_validation' => false,
         'legacy_email_behaviour' => false,
         'snooze_alert_timer' => 600,
@@ -596,6 +597,7 @@ function get_sugar_config_defaults(): array
             'max_cron_runtime' => 30, // max runtime for cron jobs
             'min_cron_interval' => 30, // minimal interval between cron jobs
         ],
+        'emails_per_run' => 50,
         'strict_id_validation' => false,
         'id_validation_pattern' => '/^[a-zA-Z0-9_-]*$/i',
         'session_gc' => [
