@@ -61,7 +61,7 @@ export class BaseMultiEnumComponent extends BaseEnumComponent {
     protected updateInternalState(value: string | string[] = []): void {
         const valueArray = isArray(value) ? value : [value];
 
-        this.selectedValues = valueArray.map(valueElement=>this.buildOptionFromValue(valueElement));
+        this.selectedValues = valueArray.map(valueElement=>this.buildOptionFromValue(valueElement, ''));
         this.selectedValues = uniqBy(this.selectedValues, 'value');
 
         this.syncSelectedValuesWithForm();

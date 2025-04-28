@@ -369,7 +369,7 @@ export class BaseEnumComponent extends BaseFieldComponent implements OnInit, OnD
         }
     }
 
-    protected buildOptionFromValue(value: string): Option {
+    protected buildOptionFromValue(value: string, link = ''): Option {
         const option: Option = {value: '', label: ''};
 
         if (isNull(value)) {

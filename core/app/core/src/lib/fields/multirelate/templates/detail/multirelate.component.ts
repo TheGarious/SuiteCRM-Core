@@ -33,6 +33,8 @@ import {BaseMultiEnumComponent} from "../../../base/base-multienum.component";
 import {isEmpty, isEqual, isNull, isObject, uniqBy} from "lodash-es";
 import {Option} from "../../../../common/record/field.model";
 import {isVoid} from "../../../../common/utils/value-utils";
+import {ModuleNavigation} from "../../../../services/navigation/module-navigation/module-navigation.service";
+import {ModuleNameMapper} from "../../../../services/navigation/module-name-mapper/module-name-mapper.service";
 
 @Component({
     selector: 'scrm-multirelate-detail',
@@ -46,7 +48,9 @@ export class MultiRelateDetailFieldComponent extends BaseMultiEnumComponent {
         protected languages: LanguageStore,
         protected typeFormatter: DataTypeFormatter,
         protected logic: FieldLogicManager,
-        protected logicDisplay: FieldLogicDisplayManager
+        protected logicDisplay: FieldLogicDisplayManager,
+        protected moduleNameMapper: ModuleNameMapper,
+        protected navigation: ModuleNavigation,
     ) {
         super(languages, typeFormatter, logic, logicDisplay);
     }
@@ -61,19 +65,21 @@ export class MultiRelateDetailFieldComponent extends BaseMultiEnumComponent {
 
         this.selectedValues = fieldValueList.map(valueElement => {
             const relateValue = valueElement['attributes'][relateName] ?? '';
-            return this.buildOptionFromValue(relateValue);
+            const link = this.buildLink(valueElement['attributes']['id']) ?? '';
+            return this.buildOptionFromValue(relateValue, link);
         });
         this.selectedValues = uniqBy(this.selectedValues, 'value');
     }
 
-    protected buildOptionFromValue(value: string): Option {
-        const option: Option = { value: '', label: '' };
+    protected buildOptionFromValue(value: string, link: string): Option {
+        const option: Option = { value: '', label: '', };
 
         if (isNull(value)) {
             return option;
         }
         option.value = (typeof value !== 'string' ? JSON.stringify(value) : value).trim();
         option.label = option.value;
+        option.link = link;
         return option;
     }
 
@@ -82,5 +88,23 @@ export class MultiRelateDetailFieldComponent extends BaseMultiEnumComponent {
             return (this.field && this.field.definition && this.field.definition.rname) || 'name';
         }
         return this.field.definition.metadata.relateSearchField;
+    }
+
+     buildLink(id: string): string {
+        let linkModule = this.field.definition.module ?? '';
+
+        if (!linkModule){
+            return '';
+        }
+
+        if (linkModule && id) {
+            const moduleName = this.moduleNameMapper.toFrontend(linkModule);
+            return this.navigation.getRecordRouterLink(
+                moduleName,
+                id
+            );
+        }
+
+        return '';
     }
 }

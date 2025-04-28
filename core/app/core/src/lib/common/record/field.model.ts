@@ -39,6 +39,7 @@ export type DisplayType = 'none' | 'show' | 'readonly' | 'inline' | 'disabled' |
 export interface Option {
     value: string;
     label?: string;
+    link?: string;
     labelKey?: string;
 }
 
