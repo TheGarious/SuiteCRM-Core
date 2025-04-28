@@ -27,11 +27,12 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {MultiRelateDetailFieldComponent} from "./multirelate.component";
+import {RouterLink} from "@angular/router";
 
 @NgModule({
     declarations: [MultiRelateDetailFieldComponent],
     exports: [MultiRelateDetailFieldComponent],
-    imports: [CommonModule]
+    imports: [CommonModule, RouterLink]
 })
 export class MultiRelateDetailFieldModule {
 }

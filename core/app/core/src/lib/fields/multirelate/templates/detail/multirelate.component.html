@@ -26,5 +26,9 @@
 */
 -->
 <ul>
-    <li *ngFor="let selected of selectedValues;">{{selected.label}}</li>
+    <li *ngFor="let selected of selectedValues;">
+        <a [routerLink]="selected.link" >
+        {{selected.value}}
+        </a>
+    </li>
 </ul>
