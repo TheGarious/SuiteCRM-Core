@@ -180,7 +180,7 @@ class ScheduleEmailMarketingAction extends LegacyHandler implements ProcessHandl
         $bean->status = 'scheduled';
         $scheduleDate = strtotime($bean->date_start ?? '');
 
-        if ($scheduleDate && (strtotime($bean->date_start) > time())) {
+        if ($scheduleDate && (strtotime($bean->date_start) < time())) {
             $bean->status = 'pending_send';
         }
 
