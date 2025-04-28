@@ -204,6 +204,30 @@ export class RelateEditFieldComponent extends BaseRelateComponent implements Aft
         return;
     }
 
+    onModuleChange(): void {
+
+        const currentModule = this.initModule();
+        const newModule = this?.field?.definition?.module ?? '';
+
+        if (currentModule === newModule) {
+            return;
+        }
+
+        this.initModule.set(newModule);
+
+        if (currentModule === '' && currentModule !== newModule) {
+            this.init();
+        }
+
+        if (newModule === '') {
+            this.status = 'no-module';
+        } else {
+            this.init();
+            this.status = '';
+            this.tag.clear();
+        }
+    }
+
     /**
      * Handle item removal
      */
