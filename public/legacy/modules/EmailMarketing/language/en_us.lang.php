@@ -129,7 +129,7 @@ $mod_strings = array(
     'LBL_MESSAGE_QUEUE_TITLE' => 'Message Queue',
     'LBL_SCHEDULED_START_DATE_HELP' => 'Sending will be processed in batches. This may take minutes/hours.',
     'LBL_TARGET_LISTS_HELP' => 'Marketing recipients. Recipients on suppression lists will be blocked.',
-    'LBL_STATUS_DRAFT_NOT_SEND_HELP' => '⚠️ Marketing process will only start when scheduled.',
-    'LBL_TYPE_MARKETING_HELP' => 'ℹ️ Recipients are subject to opt-out validation.',
-    'LBL_TYPE_TRANSACTIONAL_HELP' => '⚠️ Recipients are NOT subject to opt-out validation.',
+    'LBL_STATUS_DRAFT_NOT_SEND_HELP' => 'Marketing process will only start when scheduled.',
+    'LBL_TYPE_MARKETING_HELP' => 'Recipients are subject to opt-out validation.',
+    'LBL_TYPE_TRANSACTIONAL_HELP' => 'Recipients are NOT subject to opt-out validation.',
 );
