@@ -206,6 +206,39 @@ ul li::marker {
   stroke: $complementary-light;
 }
 
+
+.fill-info {
+  fill: $info;
+}
+
+.stroke-info {
+  stroke: $info;
+}
+
+.fill-hover-info:hover {
+  fill: $info;
+}
+
+.stroke-hover-info:hover {
+  stroke: $info;
+}
+
+.fill-info-light {
+  fill: $info-light;
+}
+
+.stroke-info-light {
+  stroke: $info-light;
+}
+
+.fill-hover-info-light:hover {
+  fill: $info-light;
+}
+
+.stroke-hover-info-light:hover {
+  stroke: $info-light;
+}
+
 .shadow-md {
   box-shadow: .1rem .15rem .2rem rgba(0, 0, 0, .25) !important;
 }
