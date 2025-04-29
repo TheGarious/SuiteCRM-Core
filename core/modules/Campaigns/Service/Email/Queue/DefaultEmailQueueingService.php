@@ -36,6 +36,7 @@ use App\Module\Campaigns\Service\Email\Targets\EmailTargetValidatorManager;
 use App\Module\Campaigns\Service\Email\Targets\Validation\ValidationFeedback;
 use App\Module\Campaigns\Service\EmailMarketing\EmailMarketingManagerInterface;
 use App\SystemConfig\LegacyHandler\SystemConfigHandler;
+use Exception;
 use Psr\Log\LoggerInterface;
 
 class DefaultEmailQueueingService implements EmailQueueingServiceInterface
@@ -64,7 +65,11 @@ class DefaultEmailQueueingService implements EmailQueueingServiceInterface
             $sendDate = $emailMarketing['date_start'];
 
             $targets = $this->getTargets($emailMarketingId);
-            $emRecord = $this->emailMarketingManager->getRecord($emailMarketingId);
+            $emRecord = $this->getEmailMarketingRecord($emailMarketingId);
+
+            if ($emRecord === null) {
+                continue;
+            }
 
             if (empty($targets)) {
                 $this->setQueueingFinished($emailMarketingId, $emRecord);
@@ -77,33 +82,30 @@ class DefaultEmailQueueingService implements EmailQueueingServiceInterface
             }
 
             foreach ($targets as $target) {
+                $targetType = $target['target_type'] ?? '';
+                $targetId = $target['target_id'] ?? '';
+                $targetListId = $target['target_list_id'] ?? '';
 
-                $targetRecord = $this->recordProvider->getRecord($target['target_type'], $target['target_id']);
+                $targetRecord = $this->getTargetRecord($target);
 
-                $feedback = $this->validateTarget($targetRecord, $emRecord, $campaignId, $target['target_list_id']);
-
-                if (!$feedback->isSuccess()) {
-                    $this->campaignLogManager->createCampaignLogEntry(
-                        $campaignId,
-                        $emailMarketingId,
-                        $targetRecord->getAttributes()['email1'] ?? $targetRecord->getAttributes()['email'],
-                        'blocked-' . $feedback->getValidatorKey(),
-                        $target['target_list_id'],
-                        $target['target_id'],
-                        $target['target_type']
-                    );
+                if ($targetRecord === null) {
+                    $this->handleException($campaignId, $emailMarketingId, 'blocked-target-not-found', $targetListId, $targetId, $targetType);
                     continue;
                 }
 
-                $this->queueManager->addToQueue(
-                    $campaignId,
-                    $emailMarketingId,
-                    $target['target_list_id'],
-                    $target['target_id'],
-                    $target['target_type'],
-                    $targetRecord->getAttributes()['email1'] ?? $targetRecord->getAttributes()['email'],
-                    $sendDate
-                );
+                $feedback = $this->validateTarget($targetRecord, $emRecord, $campaignId, $targetListId);
+
+                if ($feedback === null) {
+                    $this->handleException($campaignId, $emailMarketingId, 'blocked-validation-exception', $targetListId, $targetId, $targetType);
+                    continue;
+                }
+
+                if (!$feedback->isSuccess()) {
+                    $this->handleInvalidTarget($campaignId, $emailMarketingId, $targetRecord, $feedback, $targetListId, $targetId, $targetType);
+                    continue;
+                }
+
+                $this->addToQueue($campaignId, $emailMarketingId, $target, $targetRecord, $sendDate);
             }
 
             $nextTargets = $this->getTargets($emailMarketingId);
@@ -145,16 +147,38 @@ class DefaultEmailQueueingService implements EmailQueueingServiceInterface
      * @param Record $emRecord
      * @param string $campaignId
      * @param string $targetListId
-     * @return ValidationFeedback
+     * @return ValidationFeedback|null
      */
-    protected function validateTarget(Record $targetRecord, Record $emRecord, string $campaignId, string $targetListId): ValidationFeedback
+    protected function validateTarget(Record $targetRecord, Record $emRecord, string $campaignId, string $targetListId): ?ValidationFeedback
     {
-        $feedback = $this->targetValidatorManager->validate(
-            $targetRecord,
-            $emRecord,
-            $campaignId,
-            $targetListId
-        );
+
+        try {
+            $feedback = $this->targetValidatorManager->validate(
+                $targetRecord,
+                $emRecord,
+                $campaignId,
+                $targetListId
+            );
+
+        } catch (Exception $e) {
+            $this->logger->error(
+                sprintf(
+                    'Campaigns:DefaultEmailQueueingService::queueEmails - Exception while validating target record for email marketing ID %s, target ID %s, target type %s - %s',
+                    $emRecord->getId(),
+                    $targetRecord->getId() ?? 'unknown',
+                    $targetRecord->getModule() ?? 'unknown',
+                    $e->getMessage()
+                ),
+                [
+                    'emailMarketingId' => $emRecord->getId(),
+                    'targetId' => $targetRecord->getId() ?? 'unknown',
+                    'targetType' => $targetRecord->getModule() ?? 'unknown',
+                    'exceptionMessage' => $e->getMessage(),
+                    'exceptionTrace' => $e->getTrace(),
+                ]
+            );
+            return null;
+        }
 
         $message = 'Campaigns:DefaultEmailQueueingService::validateTarget - Validation feedback for target - ' . $targetRecord->getId() . ' - isValid -  ' . $feedback->isSuccess() ? 'true' : 'false';
         if (!$feedback->isSuccess()) {
@@ -194,5 +218,146 @@ class DefaultEmailQueueingService implements EmailQueueingServiceInterface
     {
         $this->logger->debug('Campaigns:DefaultEmailQueueingService::queueEmails - Setting queueing status as in progress for email marketing id - ' . $emailMarketingId);
         $this->emailMarketingManager->setQueueingInProgress($emRecord);
+    }
+
+    /**
+     * @param string $campaignId
+     * @param string $emailMarketingId
+     * @param array $target
+     * @param Record $targetRecord
+     * @param string $sendDate
+     * @return void
+     */
+    protected function addToQueue(string $campaignId, string $emailMarketingId, array $target, Record $targetRecord, string $sendDate): void
+    {
+        try {
+            $this->queueManager->addToQueue(
+                $campaignId,
+                $emailMarketingId,
+                $target['target_list_id'],
+                $target['target_id'],
+                $target['target_type'],
+                $targetRecord->getAttributes()['email1'] ?? $targetRecord->getAttributes()['email'],
+                $sendDate
+            );
+        } catch (Exception $e) {
+            $this->logger->error(
+                sprintf(
+                    'Campaigns:DefaultEmailQueueingService::queueEmails - Error queueing target record for email marketing ID %s, target ID %s, target type %s - %s',
+                    $emailMarketingId,
+                    $target['target_id'] ?? 'unknown',
+                    $target['target_type'] ?? 'unknown',
+                    $e->getMessage()
+                ),
+                [
+                    'emailMarketingId' => $emailMarketingId,
+                    'targetId' => $target['target_id'] ?? 'unknown',
+                    'targetType' => $target['target_type'] ?? 'unknown',
+                    'exceptionMessage' => $e->getMessage(),
+                    'exceptionTrace' => $e->getTrace(),
+                ]
+            );
+        }
+    }
+
+    /**
+     * @param array $target
+     * @return Record|null
+     */
+    protected function getTargetRecord(array $target): ?Record
+    {
+        $record = null;
+        try {
+            $record = $this->recordProvider->getRecord($target['target_type'], $target['target_id']);
+        } catch (Exception $e) {
+            $this->logger->error(
+                sprintf(
+                    'Campaigns:DefaultEmailQueueingService::queueEmails - Exception while retrieving target record target ID %s, target type %s - %s',
+                    $target['target_id'] ?? 'unknown',
+                    $target['target_type'] ?? 'unknown',
+                    $e->getMessage()
+                ),
+                [
+                    'targetId' => $target['target_id'] ?? 'unknown',
+                    'targetType' => $target['target_type'] ?? 'unknown',
+                    'exceptionMessage' => $e->getMessage(),
+                    'exceptionTrace' => $e->getTrace(),
+                ]
+            );
+        }
+
+        return $record;
+    }
+
+    /**
+     * @param string $emailMarketingId
+     * @return Record|null
+     */
+    protected function getEmailMarketingRecord(string $emailMarketingId): ?Record
+    {
+        $record = null;
+        try {
+            $record = $this->emailMarketingManager->getRecord($emailMarketingId);
+        } catch (Exception $e) {
+            $this->logger->error(
+                sprintf(
+                    'Campaigns:DefaultEmailQueueingService::queueEmails - Exception while retrieving email marketing record with ID %s - %s',
+                    $emailMarketingId ?? '',
+                    $e->getMessage()
+                ),
+                [
+                    '$emailMarketingId' => $emailMarketingId ?? 'unknown',
+                    'exceptionMessage' => $e->getMessage(),
+                    'exceptionTrace' => $e->getTrace(),
+                ]
+            );
+        }
+
+        return $record;
+    }
+
+    /**
+     * @param string $campaignId
+     * @param string $emailMarketingId
+     * @param string $reason
+     * @param string $targetListId
+     * @param string $targetId
+     * @param string $targetType
+     * @return void
+     */
+    protected function handleException(string $campaignId, string $emailMarketingId, string $reason, string $targetListId, string $targetId, string $targetType): void
+    {
+        $this->campaignLogManager->createCampaignLogEntry(
+            $campaignId,
+            $emailMarketingId,
+            '',
+            $reason,
+            $targetListId,
+            $targetId,
+            $targetType
+        );
+    }
+
+    /**
+     * @param string $campaignId
+     * @param string $emailMarketingId
+     * @param Record $targetRecord
+     * @param ValidationFeedback $feedback
+     * @param string $targetListId
+     * @param string $targetId
+     * @param string $targetType
+     * @return void
+     */
+    protected function handleInvalidTarget(string $campaignId, string $emailMarketingId, Record $targetRecord, ValidationFeedback $feedback, string $targetListId, string $targetId, string $targetType): void
+    {
+        $this->campaignLogManager->createCampaignLogEntry(
+            $campaignId,
+            $emailMarketingId,
+            $targetRecord->getAttributes()['email1'] ?? $targetRecord->getAttributes()['email'],
+            'blocked-' . $feedback->getValidatorKey(),
+            $targetListId,
+            $targetId,
+            $targetType
+        );
     }
 }
