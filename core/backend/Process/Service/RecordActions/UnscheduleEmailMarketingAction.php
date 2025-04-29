@@ -175,7 +175,7 @@ class UnscheduleEmailMarketingAction extends LegacyHandler implements ProcessHan
             $process->setMessages(['LBL_INCORRECT_RECORD_ID']);
         }
 
-        if ($this->isAllowedToUnSchedule($bean->status ?? '')) {
+        if (!$this->isAllowedToUnSchedule($bean->status ?? '')) {
             $process->setStatus('error');
             $process->setMessages(['LBL_UNABLE_TO_UNSCHEDULE']);
             return;
