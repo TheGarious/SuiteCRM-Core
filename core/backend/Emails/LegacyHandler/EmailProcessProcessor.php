@@ -258,6 +258,10 @@ class EmailProcessProcessor extends LegacyHandler
 
         $this->init();
 
+        if (!($attributes['parent_type'] ?? false) || !($attributes['parent_id'] ?? false)){
+            return $emailRecord;
+        }
+
         $bean = \BeanFactory::getBean($attributes['parent_type'], $attributes['parent_id']);
 
         $this->close();
