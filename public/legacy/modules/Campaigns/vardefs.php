@@ -230,8 +230,16 @@ $dictionary['Campaign'] = [
             'link' => 'prospectlists',
             'source' => 'non-db',
             'metadata' => [
-                'headerField' => 'name',
-                'subHeaderField' => 'list_type',
+                'headerField' => [
+                    'name',
+                ],
+                'subHeaderField' => [
+                    'name' => 'list_type',
+                    'type' => 'enum',
+                    'definition' => [
+                        'options' => 'prospect_list_type_dom',
+                    ]
+                ],
             ],
             'module' => 'ProspectLists',
             'filterOnEmpty' => true,
