@@ -448,8 +448,16 @@ $dictionary['EmailMarketing'] = [
         ],
         'prospect_list_name' => [
             'metadata' => [
-                'headerField' => 'name',
-                'subHeaderField' => 'list_type',
+                'headerField' => [
+                    'name',
+                ],
+                'subHeaderField' => [
+                    'name' => 'list_type',
+                    'type' => 'enum',
+                    'definition' => [
+                        'options' => 'prospect_list_type_dom',
+                    ]
+                ],
             ],
             'name' => 'prospect_list_name',
             'vname' => 'LBL_TARGET_LISTS',
