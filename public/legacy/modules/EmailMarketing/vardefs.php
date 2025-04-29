@@ -162,6 +162,8 @@ $dictionary['EmailMarketing'] = [
                     'labelKey' => 'LBL_STATUS_DRAFT_NOT_SEND_HELP',
                     'displayModes' => ['edit', 'create', 'detail'],
                     'klass' => 'alert alert-warning pl-2 pb-2 pt-2 mb-1',
+                    'icon' => 'exclamation-triangle',
+                    'iconKlass' => 'mr-1 align-text-top svg-size-3',
                     'activeOn' => [
                         [
                             'operator' => 'is-equal',
@@ -200,6 +202,8 @@ $dictionary['EmailMarketing'] = [
                 [
                     'labelKey' => 'LBL_TYPE_MARKETING_HELP',
                     'displayModes' => ['edit', 'create', 'detail'],
+                    'icon' => 'info_circled',
+                    'iconKlass' => 'mr-1 align-text-bottom svg-size-3 stroke-info fill-info',
                     'activeOn' => [
                         [
                             'operator' => 'not-equal',
@@ -211,6 +215,8 @@ $dictionary['EmailMarketing'] = [
                     'labelKey' => 'LBL_TYPE_TRANSACTIONAL_HELP',
                     'displayModes' => ['edit', 'create'],
                     'klass' => 'alert alert-warning pl-2 pb-2 pt-2 mb-1',
+                    'icon' => 'exclamation-triangle',
+                    'iconKlass' => 'mr-1 align-text-top svg-size-3',
                     'activeOn' => [
                         [
                             'operator' => 'is-equal',
