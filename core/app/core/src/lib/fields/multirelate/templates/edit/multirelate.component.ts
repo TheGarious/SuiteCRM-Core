@@ -440,7 +440,7 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
             items.push({
                 id: record.id,
                 label: record[headerField],
-                subLabel: record[subHeader],
+                subLabel: this.getSubLabel(record, subHeader),
                 value: record,
                 module_name: record?.module_name,
                 [relateField]: record[relateField]
@@ -452,5 +452,22 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
 
     protected showIcon() {
         return this.field?.metadata?.showIcon ?? false;
+    }
+
+    protected getSubLabel(record, field): string {
+
+        if (!field){
+            return '';
+        }
+
+        const type = field.type ?? '';
+        const key = field.name;
+
+        if (type === 'enum') {
+            const map = this.languages.getAppListString(field.definition.options);
+            return map[record[key]];
+        }
+
+        return record[key];
     }
 }
