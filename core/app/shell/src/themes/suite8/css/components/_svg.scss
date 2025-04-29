@@ -140,6 +140,16 @@
   height: 15em;
 }
 
+svg.svg-size-2 {
+  width: 1.2em;
+  height: 1.2em;
+}
+
+svg.svg-size-3 {
+  width: 1.3em;
+  height: 1.3em;
+}
+
 .recent-link scrm-svg-icon > svg {
   margin: 0.3em 0.8em 0.8em 0;
 }
@@ -303,3 +313,4 @@
     fill: $off-white;
   }
 }
+
