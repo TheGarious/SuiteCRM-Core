@@ -231,7 +231,7 @@ $dictionary['Campaign'] = [
             'source' => 'non-db',
             'metadata' => [
                 'headerField' => [
-                    'name',
+                    'name' => 'name',
                 ],
                 'subHeaderField' => [
                     'name' => 'list_type',
