@@ -455,7 +455,7 @@ $dictionary['EmailMarketing'] = [
         'prospect_list_name' => [
             'metadata' => [
                 'headerField' => [
-                    'name',
+                    'name' => 'name',
                 ],
                 'subHeaderField' => [
                     'name' => 'list_type',
