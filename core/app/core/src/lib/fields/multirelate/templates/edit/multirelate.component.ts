@@ -439,7 +439,7 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
             const subHeader = this.subHeaderFields[moduleName] ?? '';
             items.push({
                 id: record.id,
-                label: record[headerField],
+                label: this.getLabel(record, headerField),
                 subLabel: this.getSubLabel(record, subHeader),
                 value: record,
                 module_name: record?.module_name,
@@ -469,5 +469,19 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
         }
 
         return record[key];
+    }
+
+
+    protected getLabel(record, field): string {
+
+        if (!field){
+            return '';
+        }
+
+        if (field === 'name') {
+            return record[field];
+        }
+
+        return record[field.name] ?? '';
     }
 }
