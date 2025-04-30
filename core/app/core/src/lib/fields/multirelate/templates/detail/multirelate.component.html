@@ -25,10 +25,91 @@
 * the words "Supercharged by SuiteCRM".
 */
 -->
-<ul>
-    <li *ngFor="let selected of selectedValues;">
-        <a [routerLink]="selected.link" >
-        {{selected.value}}
+<ng-container *ngIf="getDirection() === 'inline'">
+    <div class="d-flex">
+        <ng-container
+                *ngIf="selectedValues && selectedValues.length > 0 && selectedValues.length <= this.getBreakpoint()">
+            <ng-container *ngFor="let option of selectedValues; let i = index;">
+                <div *ngIf="i > 0" class="pr-1 align-content-center">,</div>
+                <div class="d-flex align-items-center">
+                    <div class="">
+                        <a [routerLink]="option.link">
+                            {{ option.value }}
+                        </a>
+                    </div>
+                </div>
+            </ng-container>
+        </ng-container>
+        <ng-container *ngIf="selectedValues && selectedValues.length > this.getBreakpoint()">
+            <ng-container *ngFor="let option of selectedValues | slice:0:this.getBreakpoint(); let i = index">
+                <div *ngIf="i > 0" class="pr-1 align-content-center">,</div>
+                <div class="d-flex align-items-center">
+                    <div class="">
+                        <a [routerLink]="option.link">
+                            {{ option.value }}
+                        </a>
+                    </div>
+                </div>
+            </ng-container>
+
+            <ng-template #popContent>
+                <ul class="mb-1">
+                    <div class="container container-popover scrollbar-thin"
+                         *ngFor="let selected of getExtraOptions();">
+                        <li>
+                            <a [routerLink]="selected.link">
+                                {{ selected.value }}
+                            </a>
+                        </li>
+                    </div>
+                </ul>
+            </ng-template>
+            <a class="clickable" [ngbPopover]="popContent">
+                <div class="pr-1 align-content-center">, +{{ selectedValues.length - this.getBreakpoint() }}
+                    <scrm-label [labelKey]="'LBL_MORE'"></scrm-label>
+                </div>
+            </a>
+        </ng-container>
+    </div>
+</ng-container>
+<ng-container *ngIf="getDirection() === 'vertical'">
+    <ng-container *ngIf="selectedValues && selectedValues.length > 0 && selectedValues.length <= this.getBreakpoint()">
+        <ul class="mb-1">
+            <ng-container *ngFor="let option of selectedValues; let i = index;">
+                <li>
+                    <a [routerLink]="option.link">
+                        {{ option.value }}
+                    </a>
+                </li>
+            </ng-container>
+        </ul>
+    </ng-container>
+    <ng-container *ngIf="selectedValues && selectedValues.length > this.getBreakpoint()">
+        <ul class="mb-1">
+            <ng-container *ngFor="let option of selectedValues | slice:0:this.getBreakpoint(); let i = index">
+                <li>
+                    <a [routerLink]="option.link">
+                        {{ option.value }}
+                    </a>
+                </li>
+            </ng-container>
+        </ul>
+        <ng-template #popContent>
+            <ul class="mb-1">
+                <div class="container container-popover scrollbar-thin"
+                     *ngFor="let selected of getExtraOptions();">
+                    <li>
+                        <a [routerLink]="selected.link">
+                            {{ selected.value }}
+                        </a>
+                    </li>
+                </div>
+            </ul>
+        </ng-template>
+        <a class="clickable" [ngbPopover]="popContent" [placement]="'bottom-left'">
+            <div class="pr-1 align-content-center">+{{ selectedValues.length - this.getBreakpoint() }}
+                <scrm-label [labelKey]="'LBL_MORE'"></scrm-label>
+            </div>
         </a>
-    </li>
-</ul>
+    </ng-container>
+</ng-container>

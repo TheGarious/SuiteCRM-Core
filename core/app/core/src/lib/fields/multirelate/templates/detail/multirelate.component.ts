@@ -35,6 +35,7 @@ import {Option} from "../../../../common/record/field.model";
 import {isVoid} from "../../../../common/utils/value-utils";
 import {ModuleNavigation} from "../../../../services/navigation/module-navigation/module-navigation.service";
 import {ModuleNameMapper} from "../../../../services/navigation/module-name-mapper/module-name-mapper.service";
+import {SystemConfigStore} from "../../../../store/system-config/system-config.store";
 
 @Component({
     selector: 'scrm-multirelate-detail',
@@ -48,6 +49,7 @@ export class MultiRelateDetailFieldComponent extends BaseMultiEnumComponent {
         protected languages: LanguageStore,
         protected typeFormatter: DataTypeFormatter,
         protected logic: FieldLogicManager,
+        protected systemConfigStore: SystemConfigStore,
         protected logicDisplay: FieldLogicDisplayManager,
         protected moduleNameMapper: ModuleNameMapper,
         protected navigation: ModuleNavigation,
@@ -106,5 +108,18 @@ export class MultiRelateDetailFieldComponent extends BaseMultiEnumComponent {
         }
 
         return '';
+    }
+
+    getDirection(): string {
+        return this.field.definition.displayDirection ?? 'vertical';
+    }
+
+    getBreakpoint() {
+        const breakpoint = this.systemConfigStore.getUi('multiselect_record_breakpoint');
+        return this.field.definition.breakpoint ?? breakpoint;
+    }
+
+    getExtraOptions() {
+        return this.selectedValues.slice(this.getBreakpoint());
     }
 }

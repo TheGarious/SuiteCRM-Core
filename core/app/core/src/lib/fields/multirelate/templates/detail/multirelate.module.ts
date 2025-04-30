@@ -28,11 +28,13 @@ import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {MultiRelateDetailFieldComponent} from "./multirelate.component";
 import {RouterLink} from "@angular/router";
+import {LabelModule} from "../../../../components/label/label.module";
+import {NgbPopover} from "@ng-bootstrap/ng-bootstrap";
 
 @NgModule({
     declarations: [MultiRelateDetailFieldComponent],
     exports: [MultiRelateDetailFieldComponent],
-    imports: [CommonModule, RouterLink]
+    imports: [CommonModule, RouterLink, LabelModule, NgbPopover]
 })
 export class MultiRelateDetailFieldModule {
 }
