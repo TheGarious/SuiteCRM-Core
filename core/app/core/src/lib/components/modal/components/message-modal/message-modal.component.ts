@@ -30,6 +30,8 @@ import {animate, transition, trigger} from '@angular/animations';
 import {ButtonInterface} from '../../../../common/components/button/button.model';
 import {AnyModalButtonInterface, ModalButtonGroupInterface, ModalCloseFeedBack} from '../../../../common/components/modal/modal.model';
 import {Observable, of} from 'rxjs';
+import {StringMap} from "../../../../common/types/string-map";
+import {FieldMap} from "../../../../common/record/field.model";
 
 
 @Component({
@@ -47,6 +49,10 @@ import {Observable, of} from 'rxjs';
 export class MessageModalComponent implements OnInit {
 
     @Input() titleKey: string;
+    @Input() labelKeys: [];
+    @Input() descriptionKey: string;
+    @Input() context: StringMap = {};
+    @Input() fields: FieldMap = {};
     @Input() textKey: string;
     @Input() buttons: AnyModalButtonInterface[] = [];
 

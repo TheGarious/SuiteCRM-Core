@@ -29,9 +29,9 @@ import {CommonModule} from '@angular/common';
 import {MessageModalComponent} from './message-modal.component';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {ButtonGroupModule} from '../../../button-group/button-group.module';
-import {LabelModule} from '../../../label/label.module';
 import {ModalModule} from '../modal/modal.module';
 import {ModalButtonGroupModule} from '../modal-button-group/modal-button-group.module';
+import {DynamicLabelModule} from "../../../dynamic-label/dynamic-label.module";
 
 
 @NgModule({
@@ -41,9 +41,9 @@ import {ModalButtonGroupModule} from '../modal-button-group/modal-button-group.m
         CommonModule,
         ModalModule,
         ButtonGroupModule,
-        LabelModule,
         ModalButtonGroupModule,
-        NgbModule
+        NgbModule,
+        DynamicLabelModule
     ]
 })
 export class MessageModalModule {
