@@ -1865,6 +1865,7 @@ $app_strings = array(
     'LBL_TRACK_EMAIL_BUTTON_LABEL' => 'Archive Email',
     'LBL_TRACK_EMAIL_BUTTON_TITLE' => 'Archive Email',
     'LBL_TOO_MANY_ADDRESSES' => 'You have selected too many email addresses.',
+    'LBL_NO_ADDRESSES_SELECTED' => 'Please select an address to send to.',
     'LBL_NOT_ALL_SENT' => 'Not all Emails sent. See logs for more info.',
     'LBL_ALL_EMAILS_SENT' => 'All test Emails sent successfully',
     'LBL_UNDELETE_BUTTON_LABEL' => 'Undelete',
