@@ -210,5 +210,6 @@ $dictionary['EmailMan'] = [
         ['name' => 'idx_eman_list', 'type' => 'index', 'fields' => ['list_id', 'user_id', 'deleted']],
         ['name' => 'idx_eman_campaign_id', 'type' => 'index', 'fields' => ['campaign_id']],
         ['name' => 'idx_eman_relid_reltype_id', 'type' => 'index', 'fields' => ['related_id', 'related_type', 'campaign_id']],
+        ['name' => 'idx_eman_related', 'type' => 'index', 'fields' => ['related_id', 'related_type', 'marketing_id', 'deleted']],
     ]
 ];

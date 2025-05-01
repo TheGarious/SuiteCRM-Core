@@ -227,6 +227,8 @@ $dictionary['EmailMarketing'] = [
                 [
                     'labelKey' => 'LBL_TYPE_TRANSACTIONAL_HELP',
                     'displayModes' => ['detail'],
+                    'icon' => 'exclamation-triangle',
+                    'iconKlass' => 'mr-1 align-text-top svg-size-3',
                     'activeOn' => [
                         [
                             'operator' => 'is-equal',
@@ -604,6 +606,20 @@ $dictionary['EmailMarketing'] = [
             'type' => 'index',
             'fields' => [
                 'deleted'
+            ]
+        ],
+        [
+            'name' => 'idx_status',
+            'type' => 'index',
+            'fields' => [
+                'status'
+            ]
+        ],
+        [
+            'name' => 'idx_date_start',
+            'type' => 'index',
+            'fields' => [
+                'date_start'
             ]
         ],
         [

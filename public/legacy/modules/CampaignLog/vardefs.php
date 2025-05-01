@@ -307,6 +307,11 @@ $dictionary['CampaignLog'] = array('audited'=>false,
             'fields'=>array('target_id')
         ),
         array(
+            'name' =>'idx_related',
+            'type' =>'index',
+            'fields'=> array('related_id', 'related_type', 'marketing_id', 'deleted')
+        ),
+        array(
             'name' =>'idx_target_id_deleted',
 
             'type' =>'index',

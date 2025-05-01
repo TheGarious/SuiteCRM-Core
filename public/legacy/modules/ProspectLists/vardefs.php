@@ -244,15 +244,24 @@ $dictionary['ProspectList'] = array(
             'type' => 'index',
             'fields' => array('name')
         ),
+        array(
+            'name' => 'idx_list_type',
+            'type' => 'index',
+            'fields' => array('list_type')
+        ),
     ),
     'relationships' => array(
         'prospectlists_assigned_user' =>
-            array('lhs_module' => 'Users', 'lhs_table' => 'users', 'lhs_key' => 'id',
+            array(
+                'lhs_module' => 'Users', 'lhs_table' => 'users', 'lhs_key' => 'id',
                 'rhs_module' => 'ProspectLists', 'rhs_table' => 'prospect_lists', 'rhs_key' => 'assigned_user_id',
-                'relationship_type' => 'one-to-many')
+                'relationship_type' => 'one-to-many'
+            )
     )
 );
 
-VardefManager::createVardef('ProspectLists', 'ProspectList', array(
+VardefManager::createVardef(
+    'ProspectLists', 'ProspectList', array(
     'assignable', 'security_groups',
-));
+)
+);
