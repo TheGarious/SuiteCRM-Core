@@ -85,7 +85,7 @@ class DefaultEmailOptInManager implements EmailOptInManagerInterface
         try {
             $emailAddressInfo = $queryBuilder->fetchAssociative();
         } catch (Exception $e) {
-            $this->logger->error('EmailOptInManager::isOptedIn query failed  |  target - ' . $record->getId() . ' | ' . $e->getMessage());
+            $this->logger->error('EmailOptInManager::isOptedIn query failed  |  target - ' . $targetRecord->getId() . ' | ' . $e->getMessage());
         }
 
         $this->logger->debug('EmailOptInManager::isOptedIn - Email address info | target - ' . $targetRecord->getId() . ' | email address - ' . $email_address, [
