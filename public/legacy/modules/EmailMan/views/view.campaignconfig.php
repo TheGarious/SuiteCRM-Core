@@ -104,9 +104,21 @@ class ViewCampaignconfig extends SugarView
         if (isset($focus->settings['massemailer_campaign_emails_per_run']) && !empty($focus->settings['massemailer_campaign_emails_per_run'])) {
             $this->ss->assign("EMAILS_PER_RUN", $focus->settings['massemailer_campaign_emails_per_run']);
         } else {
-            $this->ss->assign("EMAILS_PER_RUN", 500);
+            $this->ss->assign("EMAILS_PER_RUN", $sugar_config['emails_per_run'] ?? 50);
         }
-        
+
+        if (isset($focus->settings['massemailer_trackers_enabled']) && isTrue($focus->settings['massemailer_trackers_enabled'])) {
+            $this->ss->assign("TRACKERS_ENABLED", 'true');
+        } else {
+            $this->ss->assign("TRACKERS_ENABLED", 'false');
+        }
+
+        if (isset($focus->settings['massemailer_campaign_marketing_items_per_run']) && is_numeric($focus->settings['massemailer_campaign_marketing_items_per_run'])) {
+            $this->ss->assign("CAMPAIGN_MARKETING_RECORDS_PER_RUN", $focus->settings['massemailer_campaign_marketing_items_per_run']);
+        } else {
+            $this->ss->assign("CAMPAIGN_MARKETING_RECORDS_PER_RUN", $sugar_config['campaign_marketing_items_per_run'] ?? 3);
+        }
+
         if (!isset($focus->settings['massemailer_tracking_entities_location_type']) || empty($focus->settings['massemailer_tracking_entities_location_type']) || $focus->settings['massemailer_tracking_entities_location_type']=='1') {
             $this->ss->assign("default_checked", "checked");
             $this->ss->assign("TRACKING_ENTRIES_LOCATION_STATE", "disabled");
