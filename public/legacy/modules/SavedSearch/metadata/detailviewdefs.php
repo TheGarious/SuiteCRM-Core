@@ -61,7 +61,7 @@ $viewdefs ['SavedSearch'] = [
                     'params' => [
                         'expanded' => true,
                         'displayConfirmation' => true,
-                        'confirmationLabel' => 'NTC_DELETE_CONFIRMATION'
+                        'confirmationMessages' => ['NTC_DELETE_CONFIRMATION']
                     ],
                     'modes' => ['detail', 'edit'],
                     'acl' => [],

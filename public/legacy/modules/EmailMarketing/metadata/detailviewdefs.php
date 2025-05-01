@@ -133,7 +133,7 @@ $viewdefs ['EmailMarketing'] = [
                     'params' => [
                         'displayConfirmation' => true,
                         'redirectModule' => 'campaigns',
-                        'confirmationLabel' => 'NTC_DELETE_CONFIRMATION',
+                        'confirmationMessages' => ['NTC_DELETE_CONFIRMATION'],
                     ],
                     'acl' => ['delete'],
                     'displayLogic' => [
@@ -159,6 +159,8 @@ $viewdefs ['EmailMarketing'] = [
                     'modes' => ['detail'],
                     'params' => [
                         'expanded' => true,
+                        'displayConfirmation' => true,
+                        'confirmationMessages' => ['NTC_SCHEDULE_CONFIRMATION', 'NTC_PROCEED'],
                     ],
                     'acl' => ['view'],
                     'displayLogic' => [
@@ -184,6 +186,8 @@ $viewdefs ['EmailMarketing'] = [
                     'modes' => ['detail'],
                     'params' => [
                         'expanded' => true,
+                        'displayConfirmation' => true,
+                        'confirmationMessages' => ['NTC_UNSCHEDULE_CONFIRMATION', 'NTC_UNSCHEDULE_CONFIRMATION_OTHER', 'NTC_PROCEED'],
                     ],
                     'acl' => ['view'],
                     'displayLogic' => [
@@ -212,7 +216,7 @@ $viewdefs ['EmailMarketing'] = [
                     'params' => [
                         'expanded' => true,
                         'displayConfirmation' => true,
-                        'confirmationLabel' => 'NTC_ABORT_CONFIRMATION',
+                        'confirmationMessages' => ['NTC_ABORT_CONFIRMATION'],
                     ],
                     'acl' => ['view'],
                     'display' => 'hide',

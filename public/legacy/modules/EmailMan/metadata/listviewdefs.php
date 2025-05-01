@@ -54,7 +54,7 @@ $viewdefs['EmailMan'] = [
                     'params' => [
                         'expanded' => true,
                         'displayConfirmation' => true,
-                        'confirmationLabel' => 'NTC_SEND_QUEUED_CAMPAIGN_EMAILS'
+                        'confirmationMessages' => ['NTC_SEND_QUEUED_CAMPAIGN_EMAILS']
                     ]
                 ],
             ]
