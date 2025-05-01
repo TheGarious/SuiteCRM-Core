@@ -31,7 +31,11 @@
             klass="message-modal">
 
     <div class="p-3" modal-body>
-        <span><scrm-label [labelKey]="textKey"></scrm-label></span>
+        <ng-container *ngFor="let labelKey of labelKeys">
+            <div class="pb-1">
+                <scrm-dynamic-label [labelKey]="labelKey" [fields]="fields" [context]="context"></scrm-dynamic-label>
+            </div>
+        </ng-container>
     </div>
 
     <div modal-footer>
