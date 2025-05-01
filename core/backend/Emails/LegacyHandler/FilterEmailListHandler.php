@@ -29,37 +29,11 @@
 namespace App\Emails\LegacyHandler;
 
 use App\Engine\LegacyHandler\LegacyHandler;
-use App\Engine\LegacyHandler\LegacyScopeState;
-use App\Module\ProspectLists\Service\MultiRelate\ProspectListsEmailMapper;
 use BeanFactory;
-use Symfony\Component\HttpFoundation\RequestStack;
 
 class FilterEmailListHandler extends LegacyHandler
 {
     protected const HANDLER_KEY = 'record-filter-email-list';
-
-    protected ProspectListsEmailMapper $prospectListsEmailMapper;
-
-    public function __construct(
-        string                   $projectDir,
-        string                   $legacyDir,
-        string                   $legacySessionName,
-        string                   $defaultSessionName,
-        LegacyScopeState         $legacyScopeState,
-        RequestStack             $requestStack,
-        ProspectListsEmailMapper $prospectListsEmailMapper,
-    )
-    {
-        parent::__construct(
-            $projectDir,
-            $legacyDir,
-            $legacySessionName,
-            $defaultSessionName,
-            $legacyScopeState,
-            $requestStack
-        );
-        $this->prospectListsEmailMapper = $prospectListsEmailMapper;
-    }
 
     public function getHandlerKey(): string
     {
@@ -72,17 +46,11 @@ class FilterEmailListHandler extends LegacyHandler
      * @param bool $isTest
      * @return array|null
      */
-    public function getEmails(array $fields, $max, bool $isTest = false): ?array
+    public function getBeans(array $fields): ?array
     {
-        $emails = [];
-        $count = 0;
+        $beans = [];
 
         foreach ($fields as $field) {
-
-            if ($isTest && $count > $max) {
-                return null;
-            }
-
             $module = $field['module'];
             $value = $field['value'] ?? [];
 
@@ -91,53 +59,62 @@ class FilterEmailListHandler extends LegacyHandler
             }
 
             if ($module === 'ProspectLists') {
-                $this->prospectListsEmailMapper->getEmailFromMultiRelate($emails, $count, $module, $value, $max, $isTest);
-                if ($isTest && $count > $max){
-                    return null;
-                }
-
+                $this->getTargets($beans, $value, $module);
                 continue;
             }
 
             if ($module === 'Users') {
-                $this->getUserEmails($emails, $count, $module, $value, $isTest);
-                if ($isTest && $count > $max){
-                    return null;
-                }
-
+                $this->getUsers($beans, $value, $module);
                 continue;
             }
 
             foreach ($value as $key => $item) {
-                if ($isTest && $count >= $max){
-                    return null;
-                }
-
-                $emails[$item] = $item;
-
-                $count++;
+                $beans['emails'][$item] = $item;
             }
         }
 
-        return $emails;
+        return $beans;
     }
 
-    /**
-     * @param array $emails
-     * @param $count
-     * @param string $module
-     * @param mixed $value
-     * @param $isTest
-     * @return void
-     */
-    public function getUserEmails(array &$emails, &$count, string $module, mixed $value, $isTest): void
+    protected function getTargets(&$beans, $value, $module): void
     {
         foreach ($value as $key => $item) {
             $id = $item['id'];
             $bean = BeanFactory::getBean($module, $id);
-            $emails[$bean->email1] = $bean->email1;
 
-            $count++;
+            $linkedFields = $bean->get_linked_fields();
+
+            foreach ($linkedFields as $linkedField) {
+                $name = $linkedField['name'];
+
+                if (!isset($linkedField['metadata']['member'])){
+                    continue;
+                }
+
+                $bean->load_relationship($name);
+                $this->getLoadedBeans($beans, $bean, $name);
+            }
+        }
+    }
+
+    protected function getUsers(array &$beans, mixed $value, string $module): void
+    {
+        foreach ($value as $key => $item) {
+            $id = $item['id'];
+            $bean = BeanFactory::getBean($module, $id);
+            $beans[$module][] = $bean;
+        }
+    }
+
+    protected function getLoadedBeans(&$beans, $bean, $name): void
+    {
+        $loadedBeans = $bean->$name->getBeans();
+        if (empty($loadedBeans)){
+            return;
+        }
+
+        foreach ($loadedBeans as $loadedBean) {
+            $beans[$name][] = $loadedBean;
         }
     }
 }

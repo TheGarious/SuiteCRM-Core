@@ -130,9 +130,22 @@ class SendTestEmailValidation extends LegacyHandler implements ProcessHandlerInt
 
         $max = $this->systemConfigHandler->getSystemConfig('test_email_limit')?->getValue();
 
-        $emails = $this->filterEmailListHandler->getEmails($fields, $max, true);
+        $beans = $this->filterEmailListHandler->getBeans($fields);
 
-        if ($emails === null) {
+        $count = 0;
+
+        foreach ($beans as $key => $item){
+            $count += count($item);
+        }
+
+        if ($count === 0){
+            $process->setStatus('error');
+            $process->setMessages(['LBL_NO_ADDRESSES_SELECTED']);
+            $process->setData([]);
+            return;
+        }
+
+        if ($count > $max) {
             $process->setStatus('error');
             $process->setMessages(['LBL_TOO_MANY_ADDRESSES']);
             $process->setData([]);
