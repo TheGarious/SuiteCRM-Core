@@ -8,7 +8,8 @@ parameters:
           params:
             min: 1
             displayConfirmation: true
-            confirmationLabel: NTC_DELETE_CONFIRMATION_MULTIPLE
+            confirmationMessages:
+              - NTC_DELETE_CONFIRMATION_MULTIPLE
           acl:
             - delete
         export:
@@ -53,7 +54,8 @@ parameters:
                     max: 200
                     bulkAction: massupdate
                     displayConfirmation: true
-                    confirmationLabel: LBL_BULK_ACTION_MASS_UPDATE_CONFIRMATION
+                    confirmationMessages:
+                      - LBL_BULK_ACTION_MASS_UPDATE_CONFIRMATION
           acl:
             - massupdate
           availability:
