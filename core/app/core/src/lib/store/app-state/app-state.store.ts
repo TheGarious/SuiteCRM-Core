@@ -141,6 +141,7 @@ export class AppStateStore implements StateStore {
     }
 
     public clearAuthBased(): void {
+        this.closeAllModals();
     }
 
     public init(): void {
