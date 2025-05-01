@@ -56,7 +56,7 @@ class IsOptedIn extends BaseEmailTargetValidator
         string $prospectListId
     ): bool
     {
-        $marketingType = $targetRecord->getAttributes()['type'] ?? '';
+        $marketingType = $marketingRecord->getAttributes()['type'] ?? '';
         return $marketingType !== 'transactional';
     }
 
