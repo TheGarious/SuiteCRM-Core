@@ -56,9 +56,13 @@ export class CurrencyService {
             return field.value;
         }
 
-        const userCurrency = this.getUserCurrency();
+        let currency = this.getUserCurrency();
 
-        return this.baseToCurrency(userCurrency.id, value).toString();
+        if (!currency?.id) {
+            currency = this.getBaseCurrency();
+        }
+
+        return this.baseToCurrency(currency, value).toString();
     }
 
     baseToCurrency(currencyId: string, value: number): number {
