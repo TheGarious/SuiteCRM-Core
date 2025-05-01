@@ -258,7 +258,7 @@ class EmailProcessProcessor extends LegacyHandler
 
         $this->init();
 
-        if (!($attributes['parent_type'] ?? false) || !($attributes['parent_id'] ?? false)){
+        if (!isset($attributes['parent_type'], $attributes['parent_id'])){
             return $emailRecord;
         }
 
