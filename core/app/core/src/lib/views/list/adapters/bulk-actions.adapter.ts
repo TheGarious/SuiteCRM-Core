@@ -128,7 +128,7 @@ export class BulkActionsAdapter implements BulkActionDataSource {
 
         const params = (definition && definition.params) || {} as { [key: string]: any };
         const displayConfirmation = params.displayConfirmation || false;
-        const confirmationLabel = params.confirmationLabel || '';
+        const confirmationMessages = params.confirmationMessages || [];
         const selectModal = definition.params && definition.params.selectModal;
         const selectModule = selectModal && selectModal.module;
         const recordPanel = definition.params && definition.params.recordPanel;
@@ -140,7 +140,7 @@ export class BulkActionsAdapter implements BulkActionDataSource {
 
 
         if (displayConfirmation) {
-            this.confirmation.showModal(confirmationLabel, () => {
+            this.confirmation.showModal(confirmationMessages, () => {
                 if (!selectModule) {
                     this.runBulkAction(actionName, data);
                     return;

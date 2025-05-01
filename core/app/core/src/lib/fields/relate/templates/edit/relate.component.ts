@@ -174,9 +174,9 @@ export class RelateEditFieldComponent extends BaseRelateComponent implements Aft
 
         if (item) {
             if (event && (this.field?.metadata?.selectConfirmation ?? false)) {
-                const confirmationLabel = this.field.metadata.confirmationLabel ?? '';
+                const confirmationMessages = this.field.metadata.confirmationMessages ?? [];
                 this.confirmation.showModal(
-                    confirmationLabel,
+                    confirmationMessages,
                     () => {
                         this.tag.writeValue(item);
                         this.setValue(item.id, item[relateName], item);
@@ -354,9 +354,9 @@ export class RelateEditFieldComponent extends BaseRelateComponent implements Aft
             }
 
             if (this.field?.metadata?.selectConfirmation ?? false) {
-                const confirmationLabel = this.field.metadata.confirmationLabel ?? '';
+                const confirmationMessages = this.field.metadata.confirmationMessages ?? [];
                 this.confirmation.showModal(
-                    confirmationLabel,
+                    confirmationMessages,
                     () => {
                         const record = this.getSelectedRecord(data);
                         this.setItem(record);

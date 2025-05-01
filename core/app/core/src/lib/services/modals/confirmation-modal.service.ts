@@ -28,6 +28,8 @@ import {Injectable} from '@angular/core';
 import {MessageModalComponent} from '../../components/modal/components/message-modal/message-modal.component';
 import {ModalButtonInterface} from '../../common/components/modal/modal.model';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {StringMap} from "../../common/types/string-map";
+import {FieldMap} from "../../common/record/field.model";
 
 @Injectable({
     providedIn: 'root',
@@ -39,10 +41,12 @@ export class ConfirmationModalService {
     ) {
     }
 
-    public showModal(messageLabel: string, onProceed: Function, onClose: Function = () => {}): void {
+    public showModal(confirmationMessages: [], onProceed: Function, onClose: Function = () => {}, fields = {} as FieldMap, context = {} as StringMap): void {
         const modal = this.modalService.open(MessageModalComponent);
 
-        modal.componentInstance.textKey = messageLabel ?? 'LBL_GENERIC_CONFIRMATION';
+        modal.componentInstance.labelKeys = confirmationMessages ?? 'LBL_GENERIC_CONFIRMATION';
+        modal.componentInstance.fields = fields;
+        modal.componentInstance.context = context;
         modal.componentInstance.buttons = [
             {
                 labelKey: 'LBL_CANCEL',
