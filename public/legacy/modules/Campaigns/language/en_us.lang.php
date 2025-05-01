@@ -267,7 +267,8 @@ $mod_strings = array(
     //email setup wizard
     'LBL_WIZ_FROM_NAME' => 'From Name:',
     'LBL_WIZ_FROM_ADDRESS' => 'From Address:',
-    'LBL_EMAILS_PER_RUN' => 'Number of emails sent per batch:',
+    'LBL_EMAILS_PER_RUN' => 'Number of emails processed/sent per batch:',
+    'LBL_CAMPAIGN_MARKETING_RECORDS_PER_RUN' => 'Number of emails marketing records to process per run:',
     'LBL_CUSTOM_LOCATION' => 'User Defined',
     'LBL_DEFAULT_LOCATION' => 'Default',
     'ERR_INT_ONLY_EMAIL_PER_RUN' => 'Only integer values are allow for Number of emails sent per batch',
