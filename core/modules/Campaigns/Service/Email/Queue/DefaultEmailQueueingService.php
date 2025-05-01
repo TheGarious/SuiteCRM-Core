@@ -36,6 +36,7 @@ use App\Module\Campaigns\Service\Email\Targets\EmailTargetValidatorManager;
 use App\Module\Campaigns\Service\Email\Targets\Validation\ValidationFeedback;
 use App\Module\Campaigns\Service\EmailMarketing\EmailMarketingManagerInterface;
 use App\SystemConfig\LegacyHandler\SystemConfigHandler;
+use App\SystemConfig\Service\SettingsProviderInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
 
@@ -47,6 +48,7 @@ class DefaultEmailQueueingService implements EmailQueueingServiceInterface
         protected LoggerInterface $logger,
         protected RecordProviderInterface $recordProvider,
         protected SystemConfigHandler $systemConfigHandler,
+        protected SettingsProviderInterface $settingsProvider,
         protected EmailQueueManagerInterface $queueManager,
         protected EmailTargetProviderInterface $targetProvider,
         protected EmailTargetValidatorManager $targetValidatorManager,
@@ -116,9 +118,26 @@ class DefaultEmailQueueingService implements EmailQueueingServiceInterface
 
     }
 
-    protected function getBatchSize(): int
+    protected function getTargetBatchSize(): int
     {
-        return (int)($this->systemConfigHandler->getSystemConfig('emails_per_run')?->getValue() ?? 50);
+        $batchSize = $this->settingsProvider->get('massemailer', 'campaign_emails_per_run');
+
+        if ($batchSize === null || $batchSize === '') {
+            $batchSize = (int)($this->systemConfigHandler->getSystemConfig('emails_per_run')?->getValue() ?? 50);
+        }
+
+        return (int)$batchSize;
+    }
+
+    protected function getEmailMarketingBatchSize(): int
+    {
+        $batchSize = $this->settingsProvider->get('massemailer', 'campaign_marketing_items_per_run');
+
+        if ($batchSize === null || $batchSize === '') {
+            $batchSize = (int)($this->systemConfigHandler->getSystemConfig('campaign_marketing_items_per_run')?->getValue() ?? 3);
+        }
+
+        return (int)$batchSize;
     }
 
     /**
@@ -126,7 +145,7 @@ class DefaultEmailQueueingService implements EmailQueueingServiceInterface
      */
     protected function getRecordsForQueueing(): array
     {
-        $records = $this->emailMarketingManager->getRecordsForQueueing();
+        $records = $this->emailMarketingManager->getRecordsForQueueing($this->getEmailMarketingBatchSize());
         $this->logger->debug('Campaigns:DefaultEmailQueueingService::getRecordsForQueueing - ' . count($records ?? []) . ' email marketing records found for queueing');
         return $records;
     }
@@ -137,7 +156,7 @@ class DefaultEmailQueueingService implements EmailQueueingServiceInterface
      */
     protected function getTargets(string $emailMarketingId): array
     {
-        $targets = $this->targetProvider->getTargets($emailMarketingId, $this->getBatchSize());
+        $targets = $this->targetProvider->getTargets($emailMarketingId, $this->getTargetBatchSize());
         $this->logger->debug('Campaigns:DefaultEmailQueueingService::getTargets - ' . count($targets ?? []) . ' targets found for email marketing id - ' . $emailMarketingId);
         return $targets;
     }

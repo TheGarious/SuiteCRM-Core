@@ -108,7 +108,7 @@ class DefaultEmailMarketingManager implements EmailMarketingManagerInterface
         $this->recordProvider->saveRecord($record);
     }
 
-    public function getRecordsForQueueProcessing(): array
+    public function getRecordsForQueueProcessing(int $batchSize, array $options = []): array
     {
         $table = $this->getTable();
         $emailMarketingRecords = [];
@@ -121,6 +121,8 @@ class DefaultEmailMarketingManager implements EmailMarketingManagerInterface
                 ->where('mkt.deleted = 0')
                 ->andWhere("mkt.status IN ('scheduled', 'pending_send', 'sending')")
                 ->andWhere('mkt.date_start <= NOW()')
+                ->orderBy('mkt.date_start', 'ASC')
+                ->setMaxResults($batchSize)
                 ->executeQuery()
                 ->fetchAllAssociative();
         } catch (Exception $e) {
@@ -137,7 +139,7 @@ class DefaultEmailMarketingManager implements EmailMarketingManagerInterface
         return $emailMarketingRecords;
     }
 
-    public function getRecordsForQueueing(): array
+    public function getRecordsForQueueing(int $batchSize, array $options = []): array
     {
         $table = $this->getTable();
         $emailMarketingRecords = [];
@@ -148,6 +150,8 @@ class DefaultEmailMarketingManager implements EmailMarketingManagerInterface
                 ->from($table, 'mkt')
                 ->where('mkt.deleted = 0')
                 ->andWhere("mkt.status IN ('scheduled', 'pending_send', 'sending')")
+                ->orderBy('mkt.date_start', 'ASC')
+                ->setMaxResults($batchSize)
                 ->executeQuery()
                 ->fetchAllAssociative();
         } catch (Exception $e) {
