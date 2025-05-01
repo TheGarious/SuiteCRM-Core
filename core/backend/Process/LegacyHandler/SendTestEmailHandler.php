@@ -30,8 +30,8 @@ namespace App\Process\LegacyHandler;
 
 
 use ApiPlatform\Exception\InvalidArgumentException;
+use ApiPlatform\Metadata\Exception\ItemNotFoundException;
 use App\Data\Entity\Record;
-use App\Emails\LegacyHandler\EmailBuilderHandler;
 use App\Emails\LegacyHandler\EmailProcessProcessor;
 use App\Emails\LegacyHandler\FilterEmailListHandler;
 use App\Emails\LegacyHandler\SendEmailHandler;
@@ -43,18 +43,16 @@ use App\Process\Service\ProcessHandlerInterface;
 use App\SystemConfig\LegacyHandler\SystemConfigHandler;
 use BeanFactory;
 use PHPMailer\PHPMailer\Exception;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class SendTestEmailHandler extends LegacyHandler implements ProcessHandlerInterface
 {
     protected const MSG_OPTIONS_NOT_FOUND = 'Process options is not defined';
+    protected const ID_NOT_FOUND = 'Unable to retrieve ID';
     protected const PROCESS_TYPE = 'record-send-test-email';
 
-    protected FilterEmailListHandler $filterEmailListHandler;
-    protected ModuleNameMapperInterface $moduleNameMapper;
-    protected SendEmailHandler $sendEmailHandler;
-    protected SystemConfigHandler $systemConfigHandler;
-    protected EmailProcessProcessor $emailProcessProcessor;
+
 
     public function __construct(
         string $projectDir,
@@ -63,11 +61,12 @@ class SendTestEmailHandler extends LegacyHandler implements ProcessHandlerInterf
         string $defaultSessionName,
         LegacyScopeState $legacyScopeState,
         RequestStack $requestStack,
-        FilterEmailListHandler $filterEmailListHandler,
-        ModuleNameMapperInterface $moduleNameMapper,
-        SendEmailHandler $sendEmailHandler,
-        SystemConfigHandler $systemConfigHandler,
-        EmailProcessProcessor $emailProcessProcessor
+        protected FilterEmailListHandler $filterEmailListHandler,
+        protected ModuleNameMapperInterface $moduleNameMapper,
+        protected SendEmailHandler $sendEmailHandler,
+        protected SystemConfigHandler $systemConfigHandler,
+        protected EmailProcessProcessor $emailProcessProcessor,
+        protected LoggerInterface $logger,
     ) {
         parent::__construct(
             $projectDir,
@@ -77,11 +76,6 @@ class SendTestEmailHandler extends LegacyHandler implements ProcessHandlerInterf
             $legacyScopeState,
             $requestStack
         );
-        $this->filterEmailListHandler = $filterEmailListHandler;
-        $this->moduleNameMapper = $moduleNameMapper;
-        $this->sendEmailHandler = $sendEmailHandler;
-        $this->systemConfigHandler = $systemConfigHandler;
-        $this->emailProcessProcessor = $emailProcessProcessor;
     }
 
     /**
@@ -134,6 +128,12 @@ class SendTestEmailHandler extends LegacyHandler implements ProcessHandlerInterf
         if (empty($process->getOptions())) {
             throw new InvalidArgumentException(self::MSG_OPTIONS_NOT_FOUND);
         }
+
+        $options = $process->getOptions();
+
+        if (empty($options['id'])) {
+            throw new ItemNotFoundException(self::ID_NOT_FOUND);
+        }
     }
 
     /**
@@ -145,60 +145,35 @@ class SendTestEmailHandler extends LegacyHandler implements ProcessHandlerInterf
         $options = $process->getOptions();
 
         $fields = $options['params']['fields'];
-        $module = $options['module'];
-        $id = $options['id'];
 
         $this->init();
         $this->startLegacyApp();
 
+        $beans = $this->filterEmailListHandler->getBeans($fields);
+
+        $module = $this->moduleNameMapper->toLegacy($options['module']);
+        $marketingBean = BeanFactory::getBean($module, $options['id']);
+
         $outboundEmail = null;
-
-        $module = $this->moduleNameMapper->toLegacy($module);
-        $bean = BeanFactory::getBean($module, $id);
-        $max = $this->systemConfigHandler->getSystemConfig('test_email_limit')?->getValue();
-        $emails = $this->filterEmailListHandler->getEmails($fields, $max, true);
-
-        if ($emails === null) {
-            $process->setStatus('error');
-            $process->setMessages(['LBL_TOO_MANY_ADDRESSES']);
-            $process->setData([]);
-            return;
+        if ($marketingBean?->outbound_email_id ?? false) {
+            $outboundEmail = BeanFactory::getBean('OutboundEmailAccounts', $marketingBean->outbound_email_id);
         }
 
-        if ($bean?->outbound_email_id ?? false) {
-            $outboundEmail = BeanFactory::getBean('OutboundEmailAccounts', $bean->outbound_email_id);
-        }
+        $subject = $marketingBean->subject;
+        $body = $marketingBean->body;
 
-        $subject = $bean->subject;
-        $body = $bean->body;
+        $this->close();
 
         $allSent = true;
 
-        foreach ($emails as $email) {
-            $record = new Record();
-            $record->setId('');
-            $record->setModule('emails');
-            $record->setType('Email');
-            $record->setAttributes(
-                [
-                    'to_addrs_names' => [
-                        [
-                            'email1' => $email,
-                        ]
-                    ],
-                    'cc_addrs_names' => [],
-                    'bcc_addrs_names' => [],
-                    'name' => $subject,
-                    'description_html' => $body,
-                    'outbound_email_id' => $outboundEmail->id,
-                ]
-            );
+        foreach ($beans as $key => $value) {
+            foreach ($value as $item) {
+                $sent = $this->sendEmail($item, $subject, $body, $outboundEmail->id);
 
-            $success = $this->emailProcessProcessor->processEmail($record, true);
-            if ($success) {
-                continue;
+                if (!$sent){
+                    $allSent = false;
+                }
             }
-            $allSent = false;
         }
 
         if (!$allSent) {
@@ -211,5 +186,69 @@ class SendTestEmailHandler extends LegacyHandler implements ProcessHandlerInterf
         $process->setStatus('success');
         $process->setMessages(['LBL_ALL_EMAILS_SENT']);
         $process->setData([]);
+    }
+
+    protected function buildRecord($value, $subject, $body, $outboundId): Record
+    {
+        $record = new Record();
+        $record->setId('');
+        $record->setModule('emails');
+        $record->setType('Email');
+
+        if (is_string($value)){
+            $record->setAttributes(
+                [
+                    'to_addrs_names' => [
+                        [
+                            'email1' => $value,
+                        ]
+                    ],
+                    'cc_addrs_names' => [],
+                    'bcc_addrs_names' => [],
+                    'name' => $subject,
+                    'description_html' => $body,
+                    'outbound_email_id' => $outboundId,
+                ]
+            );
+
+            return $record;
+        }
+
+        $record->setAttributes(
+            [
+                'to_addrs_names' => [
+                    [
+                        'email1' => $value->email1 ?? $value->email,
+                    ]
+                ],
+                'parent_id' => $value->id,
+                'parent_type' => $value->module_dir,
+                'cc_addrs_names' => [],
+                'bcc_addrs_names' => [],
+                'name' => $subject,
+                'description_html' => $body,
+                'outbound_email_id' => $outboundId,
+            ]
+        );
+
+        return $record;
+    }
+
+    protected function sendEmail($value, $subject, $body, $outboundId): bool
+    {
+        $record = $this->buildRecord($value, $subject, $body, $outboundId);
+
+        $success = false;
+
+        try {
+            $success = $this->emailProcessProcessor->processEmail($record, true);
+        } catch (\Doctrine\DBAL\Exception $e) {
+            $this->logger->error($e->getMessage());
+        }
+        if ($success) {
+            return true;
+        }
+
+        return false;
     }
 }
