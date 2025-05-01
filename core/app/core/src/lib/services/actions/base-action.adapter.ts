@@ -46,7 +46,8 @@ import {SelectModalService} from '../modals/select-modal.service';
 import {MetadataStore} from '../../store/metadata/metadata.store.service';
 import {AppMetadataStore} from "../../store/app-metadata/app-metadata.store.service";
 import {FieldModalService} from "../modals/field-modal.service";
-import {Field} from "../../common/record/field.model";
+import {Field, FieldMap} from "../../common/record/field.model";
+import {StringMap} from "../../common/types/string-map";
 
 export abstract class BaseActionsAdapter<D extends ActionData> implements ActionDataSource {
 
@@ -89,7 +90,9 @@ export abstract class BaseActionsAdapter<D extends ActionData> implements Action
     runAction(action: Action, context: ActionContext = null): void {
         const params = (action && action.params) || {} as { [key: string]: any };
         const displayConfirmation = params.displayConfirmation || false;
-        const confirmationLabel = params.confirmationLabel || '';
+        const confirmationMessages = params.confirmationMessages || '';
+        const modalContext = params.context || {} as StringMap;
+        const fields = params.fields || {} as FieldMap;
 
         const selectModal = action.params && action.params.selectModal;
         const selectModule = selectModal && selectModal.module;
@@ -103,7 +106,7 @@ export abstract class BaseActionsAdapter<D extends ActionData> implements Action
         }
 
         if (displayConfirmation) {
-            this.confirmation.showModal(confirmationLabel, () => {
+            this.confirmation.showModal(confirmationMessages, () => {
                 if (!selectModule && !fieldModal) {
                     this.callAction(action, context);
                     return;
@@ -117,7 +120,7 @@ export abstract class BaseActionsAdapter<D extends ActionData> implements Action
                     this.showFieldModal(action, context);
                     return;
                 }
-            });
+            }, () => {}, fields, modalContext);
 
             return;
         }
