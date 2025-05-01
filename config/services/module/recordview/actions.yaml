@@ -81,7 +81,8 @@ parameters:
           asyncProcess: true
           params:
             displayConfirmation: true
-            confirmationLabel: NTC_DELETE_CONFIRMATION
+            confirmationMessages:
+              - NTC_DELETE_CONFIRMATION
           modes:
             - detail
           acl:

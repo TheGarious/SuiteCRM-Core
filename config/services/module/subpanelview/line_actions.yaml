@@ -23,7 +23,8 @@ parameters:
           routing: false
           params:
             displayConfirmation: true
-            confirmationLabel: LBL_UNLINK_RELATIONSHIP_CONFIRM
+            confirmationMessages:
+              - LBL_UNLINK_RELATIONSHIP_CONFIRM
           modes:
             - list
           acl:
