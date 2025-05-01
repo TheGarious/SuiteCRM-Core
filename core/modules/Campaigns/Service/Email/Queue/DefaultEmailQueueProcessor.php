@@ -36,6 +36,7 @@ use App\Module\Campaigns\Service\Email\Targets\Validation\ValidationFeedback;
 use App\Module\Campaigns\Service\EmailMarketing\EmailMarketingManagerInterface;
 use App\Module\Service\ModuleNameMapperInterface;
 use App\SystemConfig\LegacyHandler\SystemConfigHandler;
+use App\SystemConfig\Service\SettingsProviderInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
 
@@ -48,6 +49,7 @@ class DefaultEmailQueueProcessor implements EmailQueueProcessorInterface
         protected EmailCampaignLogManagerInterface $campaignLogManager,
         protected EmailTargetValidatorManager $targetValidatorManager,
         protected SystemConfigHandler $systemConfigHandler,
+        protected SettingsProviderInterface $settingsProvider,
         protected LoggerInterface $logger,
         protected EmailMarketingManagerInterface $emailMarketingManager,
         protected EmailQueueManagerInterface $emailQueueManager,
@@ -57,7 +59,7 @@ class DefaultEmailQueueProcessor implements EmailQueueProcessorInterface
 
     public function processQueue(array $options = []): void
     {
-        $emailMarketingRecords = $this->emailMarketingManager->getRecordsForQueueProcessing();
+        $emailMarketingRecords = $this->emailMarketingManager->getRecordsForQueueProcessing($this->getEmailMarketingBatchSize());
 
         foreach ($emailMarketingRecords as $emailMarketing) {
             $emailMarketingId = $emailMarketing['id'];
@@ -148,7 +150,24 @@ class DefaultEmailQueueProcessor implements EmailQueueProcessorInterface
 
     protected function getBatchSize(): int
     {
-        return (int)($this->systemConfigHandler->getSystemConfig('emails_per_run')?->getValue() ?? 50);
+        $batchSize = $this->settingsProvider->get('massemailer', 'campaign_emails_per_run');
+
+        if ($batchSize === null || $batchSize === '') {
+            $batchSize = (int)($this->systemConfigHandler->getSystemConfig('emails_per_run')?->getValue() ?? 50);
+        }
+
+        return (int)$batchSize;
+    }
+
+    protected function getEmailMarketingBatchSize(): int
+    {
+        $batchSize = $this->settingsProvider->get('massemailer', 'campaign_marketing_items_per_run');
+
+        if ($batchSize === null || $batchSize === '') {
+            $batchSize = (int)($this->systemConfigHandler->getSystemConfig('campaign_marketing_items_per_run')?->getValue() ?? 3);
+        }
+
+        return (int)$batchSize;
     }
 
     protected function buildEmailRecord(Record $record, Record $prospect): Record

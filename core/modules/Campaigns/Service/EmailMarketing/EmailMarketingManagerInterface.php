@@ -32,9 +32,9 @@ use App\Data\Entity\Record;
 interface EmailMarketingManagerInterface
 {
 
-    public function getRecordsForQueueing(): array;
+    public function getRecordsForQueueing(int $batchSize, array $options = []): array;
 
-    public function getRecordsForQueueProcessing(): array;
+    public function getRecordsForQueueProcessing(int $batchSize, array $options = []): array;
 
     public function updateStatus(Record $record, string $queueingStatus): void;
 
