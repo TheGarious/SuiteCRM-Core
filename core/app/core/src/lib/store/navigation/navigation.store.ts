@@ -81,6 +81,7 @@ export interface ModuleAction {
     quickAction?: boolean;
     type?: string;
     process?: string;
+    processParams?: { [key: string]: string };
 }
 
 const initialState: Navigation = {

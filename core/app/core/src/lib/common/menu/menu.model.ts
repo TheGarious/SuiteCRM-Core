@@ -32,6 +32,7 @@ export interface MenuItemLink {
     route?: string;
     params?: { [key: string]: string };
     process?: string;
+    processParams?: { [key: string]: string };
 }
 
 export interface MenuItem {

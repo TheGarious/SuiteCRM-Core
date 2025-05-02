@@ -38,6 +38,7 @@ export interface NavigationRoute {
     url: string;
     params: { [key: string]: string };
     process?: string;
+    processParams?: { [key: string]: string };
 }
 
 const ROUTE_PREFIX = './#';
@@ -155,6 +156,7 @@ export class ModuleNavigation {
         let route = null;
         let params = {};
         let process = action?.process
+        let processParams = action?.processParams ?? {};
 
         if (url.startsWith(ROUTE_PREFIX)) {
             route = url.replace(ROUTE_PREFIX, '');
@@ -178,7 +180,7 @@ export class ModuleNavigation {
             }
         }
 
-        return {route, url, params, process};
+        return {route, url, params, process, processParams};
     }
 
     /**
