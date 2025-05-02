@@ -45,7 +45,9 @@ export class RecordModalService {
         protected recordFieldInjector: RecordFieldInjector,
         protected modalService: NgbModal
     ) {
+    }
 
+    init(): void {
         this.appState.recordModalOpenEventEmitter.subscribe((options) => {
             this.showModal(options);
         });
@@ -80,14 +82,17 @@ export class RecordModalService {
             minimizable = true;
         }
 
-        let mappedFieldsConfig = recordModalOptions?.mapFields[parentModule] ?? null;
-        if (!mappedFieldsConfig) {
-            mappedFieldsConfig = recordModalOptions?.mapFields['default'] ?? null;
+        if (recordModalOptions?.mapFields ?? false){
+            let mappedFieldsConfig = recordModalOptions?.mapFields[parentModule] ?? null;
+            if (!mappedFieldsConfig) {
+                mappedFieldsConfig = recordModalOptions?.mapFields['default'] ?? null;
+            }
+
+            if (recordModalOptions?.record && mappedFieldsConfig) {
+                modal.componentInstance.mappedFields = deepClone(this.recordFieldInjector.getInjectFieldsMap(recordModalOptions.record, mappedFieldsConfig));
+            }
         }
 
-        if (recordModalOptions?.record && mappedFieldsConfig) {
-            modal.componentInstance.mappedFields = deepClone(this.recordFieldInjector.getInjectFieldsMap(recordModalOptions.record, mappedFieldsConfig));
-        }
 
         modal.componentInstance.metadataView = recordModalOptions?.metadataView ?? 'recordView';
         modal.componentInstance.module = moduleName;
