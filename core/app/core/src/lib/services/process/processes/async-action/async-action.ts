@@ -40,6 +40,7 @@ import {NoopAsyncAction} from './actions/noop/noop.async-action';
 import {ChangelogAsyncAction} from './actions/changelog/changelog.async-action';
 import {UpdateFieldsAsyncAction} from "./actions/update-fields/update-fields.async-action";
 import {ActionData} from "../../../../common/actions/action.model";
+import {RecordModalAsyncAction} from "./actions/record-modal/record-modal.async-action";
 
 export interface AsyncActionInput {
     action?: string;
@@ -70,13 +71,15 @@ export class AsyncActionService {
         protected exportAction: ExportAsyncAction,
         protected noopAction: NoopAsyncAction,
         protected changelogAction: ChangelogAsyncAction,
-        protected updateFields: UpdateFieldsAsyncAction
+        protected updateFields: UpdateFieldsAsyncAction,
+        protected recordModal: RecordModalAsyncAction
     ) {
         this.registerHandler(redirectAction);
         this.registerHandler(exportAction);
         this.registerHandler(noopAction);
         this.registerHandler(changelogAction);
         this.registerHandler(updateFields);
+        this.registerHandler(recordModal);
     }
 
     public registerHandler(handler: AsyncActionHandler): void {
