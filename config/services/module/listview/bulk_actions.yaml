@@ -8,8 +8,7 @@ parameters:
           params:
             min: 1
             displayConfirmation: true
-            confirmationMessages:
-              - NTC_DELETE_CONFIRMATION_MULTIPLE
+            confirmationLabel: NTC_DELETE_CONFIRMATION_MULTIPLE
           acl:
             - delete
         export:
