@@ -144,8 +144,7 @@ parameters:
         asyncProcess: true
         params:
           displayConfirmation: true
-          confirmationMessages:
-            - 'NTC_DELETE_CONFIRMATION'
+          confirmationLabel: 'NTC_DELETE_CONFIRMATION'
           module: 'alerts'
         klass: ['']
         modes: []
