@@ -120,6 +120,6 @@ export class RecordFieldInjector {
             return valueHolder;
         }
 
-        return value;
+        return path;
     }
 }

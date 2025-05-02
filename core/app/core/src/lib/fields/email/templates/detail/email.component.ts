@@ -57,7 +57,8 @@ export class EmailDetailFieldsComponent extends BaseFieldComponent implements On
         this.linkType = this.preferences.getUserPreference('email_link_type') || 'mailto';
     }
 
-    openEmailModal() {
+    openEmailModal(event) {
+
         const options = {
             mapFields: this.getMappedFields(),
             record: this.parent,
@@ -74,10 +75,20 @@ export class EmailDetailFieldsComponent extends BaseFieldComponent implements On
             }
         } as RecordModalOptions;
 
+        const selectedEmail = event?.target?.text ?? '';
+        const primaryEmail = this.getPrimaryEmail()
+        if (selectedEmail !== primaryEmail){
+            options.mapFields = this.getMappedFields(selectedEmail);
+        }
+
         this.appStateStore.openRecordModal(options);
     }
 
-    getMappedFields() {
+    getPrimaryEmail(): string {
+        return this.parent?.fields['email1']?.value ?? this.parent?.fields['email']?.value ?? '';
+    }
+
+    getMappedFields(email = null) {
         return {
             default: {
                 'parent_id': 'id',
@@ -85,9 +96,9 @@ export class EmailDetailFieldsComponent extends BaseFieldComponent implements On
                 'parent_type': 'attributes.module_name',
                 'to_addrs_names': [
                     {
-                        'id': 'id',
-                        'name': 'fields.name',
-                        'email1': 'attributes.email1',
+                        'id': email ?? 'id',
+                        'name': email ?? 'fields.name',
+                        'email1': email ?? 'attributes.email1',
                         'module_name': 'attributes.module_name'
                     }
                 ],
