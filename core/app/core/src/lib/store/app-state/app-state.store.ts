@@ -24,7 +24,7 @@
  * the words "Supercharged by SuiteCRM".
  */
 
-import {Injectable, signal, WritableSignal} from '@angular/core';
+import {EventEmitter, Injectable, signal, WritableSignal} from '@angular/core';
 import {BehaviorSubject, combineLatestWith, Observable, Subscription} from 'rxjs';
 import {distinctUntilChanged, map} from 'rxjs/operators';
 import {isVoid} from '../../common/utils/value-utils';
@@ -35,6 +35,7 @@ import {LoadingBufferFactory} from '../../services/ui/loading-buffer/loading-buf
 import {LoadingBuffer} from '../../services/ui/loading-buffer/loading-buffer.service';
 import {SystemConfigStore} from '../system-config/system-config.store';
 import {NgbModalRef} from "@ng-bootstrap/ng-bootstrap/modal/modal-ref";
+import {RecordModalOptions} from "../../services/modals/record-modal.model";
 
 export interface AppState {
     loading?: boolean;
@@ -83,6 +84,7 @@ export class AppStateStore implements StateStore {
     activeRequests$: Observable<number>;
     isSidebarVisible$: Observable<boolean>;
     activeNavbarDropdown$: Observable<number>;
+    recordModalOpenEventEmitter: EventEmitter<RecordModalOptions> = new EventEmitter<RecordModalOptions>();
 
     /**
      * ViewModel that resolves once all the data is ready (or updated)...
@@ -496,5 +498,9 @@ export class AppStateStore implements StateStore {
 
     public getLoginWizardComplete(): boolean {
         return this.isLoginWizardCompleted();
+    }
+
+    public openRecordModal(options: RecordModalOptions) {
+        this.recordModalOpenEventEmitter.emit(options);
     }
 }
