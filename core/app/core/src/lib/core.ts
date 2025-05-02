@@ -557,6 +557,8 @@ export * from './services/metadata/base-module.resolver';
 export * from './services/metadata/base-record.resolver';
 export * from './services/modals/confirmation-modal.service';
 export * from './services/modals/field-modal.service';
+export * from './services/modals/record-modal.service';
+export * from './services/modals/record-modal.model';
 export * from './services/modals/select-modal.service';
 export * from './services/navigation/action-name-mapper/action-name-mapper.service';
 export * from './services/navigation/favorites/favorites.service';
