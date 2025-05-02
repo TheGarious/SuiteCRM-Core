@@ -16,6 +16,9 @@ parameters:
           labelKey: LBL_QUICK_CREATE
           action: modal-create
           params:
+            modalOptions:
+              size: xl
+              scrollable: true
           modes:
             - list
           acl:
