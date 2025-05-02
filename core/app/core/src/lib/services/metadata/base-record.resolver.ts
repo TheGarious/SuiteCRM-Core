@@ -43,6 +43,7 @@ import {AppMetadataStore} from '../../store/app-metadata/app-metadata.store.serv
 import {concatMap, tap} from 'rxjs/operators';
 import {AuthService} from '../auth/auth.service';
 import {RecentlyViewedService} from '../navigation/recently-viewed/recently-viewed.service';
+import {RecordModalService} from "../modals/record-modal.service";
 
 @Injectable({providedIn: 'root'})
 export class BaseRecordResolver extends BaseModuleResolver {
@@ -61,6 +62,7 @@ export class BaseRecordResolver extends BaseModuleResolver {
         protected routeConverter: RouteConverter,
         protected router: Router,
         protected appMetadata: AppMetadataStore,
+        protected recordModalService: RecordModalService,
         protected auth: AuthService,
         protected recentlyViewed: RecentlyViewedService
     ) {
@@ -76,6 +78,7 @@ export class BaseRecordResolver extends BaseModuleResolver {
             messageService,
             routeConverter,
             appMetadata,
+            recordModalService,
             auth
         );
     }
