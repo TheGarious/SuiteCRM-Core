@@ -27,10 +27,10 @@
 import {Injectable} from '@angular/core';
 import {RecordActionData, RecordActionHandler} from '../record.action';
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {RecordModalComponent} from "../../../../containers/record-modal/components/record-modal/record-modal.component";
-import {ActivatedRoute} from "@angular/router";
 import {AppStateStore} from "../../../../store/app-state/app-state.store";
 import {ViewMode} from "../../../../common/views/view.model";
+import {RecordModalService} from "../../../../services/modals/record-modal.service";
+import {RecordModalOptions} from "../../../../services/modals/record-modal.model";
 
 @Injectable({
     providedIn: 'root'
@@ -42,18 +42,19 @@ export class ModalCreateAction extends RecordActionHandler {
 
     constructor(
         protected modalService: NgbModal,
-        protected activatedRoute: ActivatedRoute,
+        protected recordModalService: RecordModalService,
         protected appState: AppStateStore
     ) {
         super();
     }
 
     run(data: RecordActionData): void {
-        const modal = this.modalService.open(RecordModalComponent, {size: 'xl', scrollable: true});
-        const module = this.appState.getModule();
-        const mode = 'create' as ViewMode;
-        modal.componentInstance.module = module;
-        modal.componentInstance.mode = mode;
+        const options = {
+            ...data.action.params,
+            module: this.appState.getModule(),
+        } as RecordModalOptions;
+        options.mode = 'create' as ViewMode;
+        this.recordModalService.showModal(options);
     }
 
     shouldDisplay(data: RecordActionData): boolean {
