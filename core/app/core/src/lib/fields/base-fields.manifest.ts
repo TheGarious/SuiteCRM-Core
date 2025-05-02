@@ -117,6 +117,7 @@ import {MultiRelateDetailFieldModule} from "./multirelate/templates/detail/multi
 import {CurrencyEditFieldModule} from "./currency/templates/edit/currency.module";
 import {MultiFlexRelateEditFieldModule} from "./multiflexrelate/templates/edit/multiflexrelate.module";
 import {MultiFlexRelateEditFieldComponent} from "./multiflexrelate/templates/edit/multiflexrelate.component";
+import {EmailDetailFieldsComponent} from "./email/templates/detail/email.component";
 
 export const baseFieldModules = [
     VarcharDetailFieldModule,
@@ -187,6 +188,7 @@ export const baseFieldComponents = [
     CurrencyDetailFieldComponent,
     CurrencyEditFieldComponent,
     EmailListFieldsComponent,
+    EmailDetailFieldsComponent,
     TextDetailFieldComponent,
     TextEditFieldComponent,
     TextListFieldComponent,
@@ -252,7 +254,7 @@ export const baseViewFieldsMap: FieldComponentMap = {
     'currency.detail': CurrencyDetailFieldComponent,
     'currency.edit': CurrencyEditFieldComponent,
     'email.list': EmailListFieldsComponent,
-    'email.detail': EmailListFieldsComponent,
+    'email.detail': EmailDetailFieldsComponent,
     'text.detail': TextDetailFieldComponent,
     'text.edit': TextEditFieldComponent,
     'text.list': TextListFieldComponent,

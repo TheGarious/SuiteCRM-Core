@@ -24,24 +24,74 @@
  * the words "Supercharged by SuiteCRM".
  */
 
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {BaseFieldComponent} from '../../../base/base-field.component';
 import {DataTypeFormatter} from '../../../../services/formatters/data-type.formatter.service';
 import {FieldLogicManager} from '../../../field-logic/field-logic.manager';
 import {FieldLogicDisplayManager} from '../../../field-logic-display/field-logic-display.manager';
+import {RecordModalOptions} from "../../../../services/modals/record-modal.model";
+import {AppStateStore} from "../../../../store/app-state/app-state.store";
+import {UserPreferenceStore} from "../../../../store/user-preference/user-preference.store";
+import {ObjectMap} from "../../../../common/types/object-map";
 
 @Component({
     selector: 'scrm-email-detail',
     templateUrl: './email.component.html',
     styleUrls: []
 })
-export class EmailDetailFieldsComponent extends BaseFieldComponent {
+export class EmailDetailFieldsComponent extends BaseFieldComponent implements OnInit {
+
+    linkType: string;
 
     constructor(
         protected typeFormatter: DataTypeFormatter,
         protected logic: FieldLogicManager,
-        protected logicDisplay: FieldLogicDisplayManager
+        protected logicDisplay: FieldLogicDisplayManager,
+        protected appStateStore: AppStateStore,
+        protected preferences: UserPreferenceStore,
     ) {
         super(typeFormatter, logic, logicDisplay);
+    }
+
+    ngOnInit(): void {
+        this.linkType = this.preferences.getUserPreference('email_link_type') || 'mailto';
+    }
+
+    openEmailModal() {
+        const options = {
+            mapFields: this.getMappedFields(),
+            record: this.parent,
+            parentId: this.parent.id,
+            parentModule: this.parent.module,
+            module: 'emails',
+            metadataView: 'composeView',
+            detached: true,
+            headerClass: 'left-aligned-title',
+            dynamicTitleKey: 'LBL_EMAIL_MODAL_DYNAMIC_TITLE',
+            modalOptions: {
+                size: 'lg',
+                scrollable: false
+            }
+        } as RecordModalOptions;
+
+        this.appStateStore.openRecordModal(options);
+    }
+
+    getMappedFields() {
+        return {
+            default: {
+                'parent_id': 'id',
+                'parent_name': 'fields.name',
+                'parent_type': 'attributes.module_name',
+                'to_addrs_names': [
+                    {
+                        'id': 'id',
+                        'name': 'fields.name',
+                        'email1': 'attributes.email1',
+                        'module_name': 'attributes.module_name'
+                    }
+                ],
+            }
+        } as ObjectMap;
     }
 }
