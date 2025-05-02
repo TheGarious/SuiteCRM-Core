@@ -539,7 +539,8 @@ class AppMetadataProvider implements AppMetadataProviderInterface
     {
         $modules = [
             $module,
-            'saved-search'
+            'saved-search',
+            'emails',
         ];
 
         $toExclude = [
