@@ -363,6 +363,7 @@ class NavbarHandler extends LegacyHandler implements NavigationProviderInterface
                 'labelKey' => $this->mapEntry($frontendModule, $action, 'labelKey', $label),
                 'url' => $this->mapEntry($frontendModule, $action, 'url', $routeInfo['route'] ?? ''),
                 'process' => $process['process'] ?? '',
+                'processParams' => $process['params'] ?? [],
                 'params' => $routeInfo['params'] ?? [],
                 'icon' => $this->mapEntry($frontendModule, $action, 'icon', ''),
                 'actionLabelKey' => $this->mapEntry($frontendModule, $action, 'actionLabelKey', ''),

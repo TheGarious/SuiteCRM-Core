@@ -31,6 +31,7 @@ import {AsyncActionInput, AsyncActionService} from '../../../services/process/pr
 import {AppStateStore} from '../../../store/app-state/app-state.store';
 import {MenuItemLinkConfig} from "./menu-item-link-config.model";
 import {SystemConfigStore} from "../../../store/system-config/system-config.store";
+import {Params} from "@angular/router";
 
 @Component({
     selector: 'scrm-base-menu-item-link',
@@ -60,7 +61,7 @@ export class BaseMenuItemLinkComponent implements OnInit{
         this.charSize = {...characterSizes}
     }
 
-    handleProcess(process: string) {
+    handleProcess(process: string, params: Params = {}) {
 
         if (!process) {
             return;
@@ -71,6 +72,7 @@ export class BaseMenuItemLinkComponent implements OnInit{
         const options = {
             action: processType,
             module: this.appState.getModule(),
+            params: params
         } as AsyncActionInput;
 
         this.asyncActionService.run(processType, options).pipe(take(1)).subscribe();

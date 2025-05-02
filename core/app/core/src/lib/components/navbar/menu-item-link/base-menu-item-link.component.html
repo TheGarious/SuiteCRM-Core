@@ -60,7 +60,7 @@
     </a>
 </ng-container>
 <ng-container *ngIf="link.process">
-    <a [ngClass]="class" (click)="handleProcess(link.process)">
+    <a [ngClass]="class" (click)="handleProcess(link.process, link?.processParams ?? {})">
         <scrm-image *ngIf="icon" image="{{ icon }}"></scrm-image>
         {{ link.label }}
     </a>
