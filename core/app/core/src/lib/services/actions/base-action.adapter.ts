@@ -90,6 +90,7 @@ export abstract class BaseActionsAdapter<D extends ActionData> implements Action
     runAction(action: Action, context: ActionContext = null): void {
         const params = (action && action.params) || {} as { [key: string]: any };
         const displayConfirmation = params.displayConfirmation || false;
+        const confirmationLabel = params.confirmationLabel || '';
         const confirmationMessages = params.confirmationMessages || '';
         const modalContext = params.context || {} as StringMap;
         const fields = params.fields || {} as FieldMap;
@@ -105,8 +106,10 @@ export abstract class BaseActionsAdapter<D extends ActionData> implements Action
             return;
         }
 
+        const confirmation = [confirmationLabel, ...confirmationMessages];
+
         if (displayConfirmation) {
-            this.confirmation.showModal(confirmationMessages, () => {
+            this.confirmation.showModal(confirmation, () => {
                 if (!selectModule && !fieldModal) {
                     this.callAction(action, context);
                     return;
