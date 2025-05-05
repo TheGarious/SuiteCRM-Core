@@ -29,7 +29,6 @@ import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {AppStateStore} from "../../../../store/app-state/app-state.store";
 import {ViewMode} from "../../../../common/views/view.model";
 import {SubpanelActionData, SubpanelActionHandler} from "../subpanel.action";
-import {RecordModalService} from "../../../../services/modals/record-modal.service";
 import {RecordModalOptions} from "../../../../services/modals/record-modal.model";
 
 @Injectable({
@@ -43,7 +42,6 @@ export class SubpanelModalCreateAction extends SubpanelActionHandler {
     constructor(
         protected modalService: NgbModal,
         protected appState: AppStateStore,
-        protected recordModalService: RecordModalService,
     ) {
         super();
     }
@@ -61,7 +59,9 @@ export class SubpanelModalCreateAction extends SubpanelActionHandler {
             parentModule: data.parentModule,
             metadataView: data.action.metadataView ?? 'recordView'
         } as RecordModalOptions;
+
         options.mode = 'create' as ViewMode;
-        this.recordModalService.showModal(options);
+
+        this.appState.openRecordModal(options);
     }
 }
