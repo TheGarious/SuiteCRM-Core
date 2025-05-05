@@ -503,7 +503,7 @@ export class RecordModalStore implements StateStore, BaseRecordContainerStoreInt
      * @returns {object} metadata RecordViewMetadata
      */
     protected getRecordViewMetadata(): RecordViewMetadata {
-        return deepClone(this?.metadataState?.value?.recordView || {}) as RecordViewMetadata;
+        return this?.metadataState?.value?.recordView || {} as RecordViewMetadata;
     }
 
     protected initFieldActions(): void {
