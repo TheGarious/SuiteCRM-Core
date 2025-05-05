@@ -29,7 +29,6 @@ import {RecordActionData, RecordActionHandler} from '../record.action';
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {AppStateStore} from "../../../../store/app-state/app-state.store";
 import {ViewMode} from "../../../../common/views/view.model";
-import {RecordModalService} from "../../../../services/modals/record-modal.service";
 import {RecordModalOptions} from "../../../../services/modals/record-modal.model";
 
 @Injectable({
@@ -42,7 +41,6 @@ export class ModalCreateAction extends RecordActionHandler {
 
     constructor(
         protected modalService: NgbModal,
-        protected recordModalService: RecordModalService,
         protected appState: AppStateStore
     ) {
         super();
@@ -54,7 +52,8 @@ export class ModalCreateAction extends RecordActionHandler {
             module: this.appState.getModule(),
         } as RecordModalOptions;
         options.mode = 'create' as ViewMode;
-        this.recordModalService.showModal(options);
+
+        this.appState.openRecordModal(options);
     }
 
     shouldDisplay(data: RecordActionData): boolean {
