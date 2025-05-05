@@ -112,13 +112,17 @@ class CampaignResponseByRecipientType extends LegacyHandler implements Statistic
         $this->init();
         $this->startLegacyApp();
 
-        $legacyName = $this->moduleNameMapper->toLegacy($module);
-        $bean = BeanFactory::newBean($legacyName);
-
         if ($module === 'email-marketing') {
             $emailMarketingId = $id;
             $id = $this->getCampaignId($id);
         }
+
+        if (empty($id)){
+            return $this->getEmptySeriesResponse(self::KEY);
+        }
+
+        $legacyName = $this->moduleNameMapper->toLegacy($module);
+        $bean = BeanFactory::newBean($legacyName);
 
         if (!$bean instanceof SugarBean) {
             return $this->getEmptySeriesResponse(self::KEY);
@@ -212,7 +216,7 @@ class CampaignResponseByRecipientType extends LegacyHandler implements Statistic
 
         $result = $this->runQuery($query, $bean);
 
-        $campaignId = null;
+        $campaignId = '';
 
         foreach ($result as $row) {
             $campaignId = $row['campaign_id'];
