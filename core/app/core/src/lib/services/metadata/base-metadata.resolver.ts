@@ -67,7 +67,9 @@ export class BaseMetadataResolver  {
                 if (this.auth.isLoggedIn()) {
                     setTimeout(() => {
                         this.appMetadata.loadModuleMetadata(module).pipe(take(1)).subscribe(() => {
-                            this.recordModalService.init();
+                            if (!this.recordModalService.initialized) {
+                                this.recordModalService.init();
+                            }
                         });
                     }, 0)
                 }

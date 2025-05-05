@@ -31,7 +31,6 @@ import {RecordModalComponent} from "../../containers/record-modal/components/rec
 import {ViewMode} from "../../common/views/view.model";
 import {deepClone} from "../../common/utils/object-utils";
 import {RecordFieldInjector} from "../record/record-field-injector.service";
-import {Subscription} from 'rxjs';
 import {AppStateStore} from "../../store/app-state/app-state.store";
 import {RecordModalOptions} from "./record-modal.model";
 
@@ -39,6 +38,8 @@ import {RecordModalOptions} from "./record-modal.model";
     providedIn: 'root'
 })
 export class RecordModalService {
+
+    initialized = false;
 
     constructor(
         protected appState: AppStateStore,
@@ -48,6 +49,7 @@ export class RecordModalService {
     }
 
     init(): void {
+        this.initialized = true;
         this.appState.recordModalOpenEventEmitter.subscribe((options) => {
             this.showModal(options);
         });
