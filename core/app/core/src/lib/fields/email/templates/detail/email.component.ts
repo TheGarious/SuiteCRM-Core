@@ -54,7 +54,7 @@ export class EmailDetailFieldsComponent extends BaseFieldComponent implements On
     }
 
     ngOnInit(): void {
-        this.linkType = this.preferences.getUserPreference('email_link_type') || 'mailto';
+        this.linkType = this.preferences.getUserPreference('email_link_type') || 'sugar';
     }
 
     openEmailModal(event) {
