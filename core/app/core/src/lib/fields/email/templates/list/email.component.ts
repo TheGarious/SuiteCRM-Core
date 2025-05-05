@@ -53,7 +53,7 @@ export class EmailListFieldsComponent extends BaseFieldComponent implements OnIn
     }
 
     ngOnInit(): void {
-        this.linkType = this.preferences.getUserPreference('email_link_type') || 'mailto';
+        this.linkType = this.preferences.getUserPreference('email_link_type') || 'sugar';
     }
 
     openEmailModal() {
@@ -76,7 +76,7 @@ export class EmailListFieldsComponent extends BaseFieldComponent implements OnIn
         this.appStateStore.openRecordModal(options);
     }
 
-    getMappedFields() {
+    getMappedFields(): ObjectMap {
         return {
             default: {
                 'parent_id': 'id',
