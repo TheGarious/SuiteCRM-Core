@@ -505,7 +505,7 @@ $dictionary['EmailMarketing'] = [
         'survey' => [
             'name' => 'survey',
             'type' => 'link',
-            'relationship' => 'email_template_survey',
+            'relationship' => 'email_marketing_survey',
             'source' => 'non-db',
             'module' => 'Surveys',
             'bean_name' => 'Surveys',
@@ -577,10 +577,9 @@ $dictionary['EmailMarketing'] = [
             'source' => 'non-db',
         ],
         'surveylink' => [
-            'name' => 'emailtemplate',
-            'vname' => 'LBL_EMAIL_TEMPLATE',
+            'name' => 'surveylink',
             'type' => 'link',
-            'relationship' => 'email_template_survey',
+            'relationship' => 'email_marketing_survey',
             'source' => 'non-db',
             'bean_name' => 'Surveys',
             'id_name' => 'survey_id'
@@ -638,6 +637,15 @@ $dictionary['EmailMarketing'] = [
             'rhs_module' => 'EmailMarketing',
             'rhs_table' => 'email_marketing',
             'rhs_key' => 'template_id',
+            'relationship_type' => 'one-to-many'
+        ],
+        'email_marketing_survey' => [
+            'lhs_module' => 'Surveys',
+            'lhs_table' => 'surveys',
+            'lhs_key' => 'id',
+            'rhs_module' => 'EmailMarketing',
+            'rhs_table' => 'email_marketing',
+            'rhs_key' => 'survey_id',
             'relationship_type' => 'one-to-many'
         ],
         'email_marketing_outbound_email_accounts' => [
