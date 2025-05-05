@@ -636,6 +636,7 @@ $dictionary['Email'] = array(
             'name' => 'outbound_email_name',
             'rname' => 'from_addr',
             'id_name' => 'outbound_email_id',
+            'db_concat_fields' => [0 => 'smtp_from_name', 1 => 'smtp_from_addr'],
             'vname' => 'LBL_FROM',
             'join_name' => 'outbound_email',
             'type' => 'relate',
@@ -785,8 +786,8 @@ $dictionary['Email'] = array(
             'lhs_module' => 'OutboundEmailAccounts',
             'lhs_table' => 'outbound_email',
             'lhs_key' => 'id',
-            'rhs_module' => 'Email',
-            'rhs_table' => 'email',
+            'rhs_module' => 'Emails',
+            'rhs_table' => 'emails',
             'rhs_key' => 'outbound_email_id',
             'relationship_type' => 'one-to-many'
         ],
