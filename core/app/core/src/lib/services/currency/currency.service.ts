@@ -62,7 +62,7 @@ export class CurrencyService {
             currency = this.getBaseCurrency();
         }
 
-        return this.baseToCurrency(currency, value).toString();
+        return this.baseToCurrency(currency.id, value).toString();
     }
 
     baseToCurrency(currencyId: string, value: number): number {
