@@ -57,7 +57,7 @@ export class EmailDetailFieldsComponent extends BaseFieldComponent implements On
         this.linkType = this.preferences.getUserPreference('email_link_type') || 'sugar';
     }
 
-    openEmailModal(event) {
+    openEmailModal() {
 
         const options = {
             mapFields: this.getMappedFields(),
@@ -75,7 +75,7 @@ export class EmailDetailFieldsComponent extends BaseFieldComponent implements On
             }
         } as RecordModalOptions;
 
-        const selectedEmail = event?.target?.text ?? '';
+        const selectedEmail = this.field?.value ?? '';
         const primaryEmail = this.getPrimaryEmail()
         if (selectedEmail !== primaryEmail){
             options.mapFields = this.getMappedFields(selectedEmail);
