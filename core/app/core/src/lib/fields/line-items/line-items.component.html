@@ -37,7 +37,7 @@
             <div class="d-flex {{getDirection()}} justify-content-start align-items-end line-item h-100">
                 <ng-container *ngFor="let item of field.items; index as i">
                     <div *ngIf="!(item && item.attributes && item.attributes.deleted)"
-                         class="d-flex flex-row line-item-entry w-100 align-items-end">
+                         class="d-flex flex-row line-item-entry w-100">
 
                         <div class="flex-grow-1 line-item-entry-composite">
                             <div *ngFor="let itemField of getItemFields(item)"
@@ -63,7 +63,7 @@
 
 
             </div>
-            <div class="line-item-buttons d-flex justify-content-end mt-1">
+            <div class="line-item-buttons d-flex justify-content-end">
                 <scrm-button *ngIf="isEditable()" [config]="getAddItemButton()">
                 </scrm-button>
             </div>

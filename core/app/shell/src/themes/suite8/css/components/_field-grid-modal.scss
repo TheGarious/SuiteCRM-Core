@@ -28,6 +28,12 @@
   .modal-header {
     padding: .5rem 1rem;
   }
+
+  .modal-body {
+    .line-item-entry {
+      align-items: start !important;
+    }
+  }
 }
 
 @media (min-width: 991px) {
