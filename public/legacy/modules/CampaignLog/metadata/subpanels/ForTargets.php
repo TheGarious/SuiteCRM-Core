@@ -58,6 +58,13 @@ $subpanel_layout = array(
             'target_record_key' => 'campaign_id',
             'target_module' => 'Campaigns',
         ),
+        'marketing_name'=>array(
+            'vname' => 'LBL_LIST_MARKETING_NAME',
+            'width' => '20%',
+            'widget_class' => 'SubPanelDetailViewLink',
+            'target_record_key' => 'marketing_id',
+            'target_module' => 'EmailMarketing',
+        ),
         'activity_type' => array(
             'vname' => 'LBL_ACTIVITY_TYPE',
             'width' => '10%',

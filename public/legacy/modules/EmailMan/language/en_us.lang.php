@@ -97,6 +97,7 @@ $mod_strings = array(
     'LBL_EXCHANGE_SMTPSERVER' => 'Exchange Server',
     'LBL_EMAIL_LINK_TYPE' => 'Email Client',
     'LBL_MARKETING_ID' => 'Marketing Id',
+    'LBL_LIST_MARKETING_NAME' => 'Marketing Name',
     'LBL_MODULE_ID' => 'EmailMan',
     'LBL_MODULE_NAME' => 'Email Settings',
     'LBL_MODULE_TITLE' => 'Outbound Email Queue Management',
