@@ -185,6 +185,7 @@ class UnscheduleEmailMarketingAction extends LegacyHandler implements ProcessHan
         $this->removeFromCampaignLog($id);
 
         $bean->status = 'draft';
+        $bean->queueing_status = 'not_started';
 
         $bean->save();
 
