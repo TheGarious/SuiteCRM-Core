@@ -94,7 +94,7 @@ $mod_strings = array(
     'LBL_MORE_INFO' => 'More Information',
 
     'LBL_CAMPAIGNS' => 'Campaigns',
-    'LBL_LIST_MARKETING_NAME' => 'Marketing Id',
+    'LBL_LIST_MARKETING_NAME' => 'Marketing Name',
 
     'LBL_MARKETING_ID' => 'Marketing Id',
     'LBL_RELATED_NAME' => 'Related Name',
