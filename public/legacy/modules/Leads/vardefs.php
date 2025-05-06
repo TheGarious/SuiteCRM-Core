@@ -650,9 +650,9 @@ $dictionary['Lead'] = array('table' => 'leads', 'audited' => true, 'unified_sear
             'lhs_key' => 'id',
             'rhs_module' => 'CampaignLog',
             'rhs_table' => 'campaign_log',
-            'rhs_key' => 'target_id',
+            'rhs_key' => 'related_id',
             'relationship_type' => 'one-to-many',
-            'relationship_role_column' => 'target_type',
+            'relationship_role_column' => 'related_type',
             'relationship_role_column_value' => 'Leads'
         )
 
