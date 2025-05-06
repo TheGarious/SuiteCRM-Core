@@ -108,6 +108,7 @@ $dictionary['EmailMan'] = [
             'vname' => 'LBL_IN_QUEUE',
             'type' => 'bool',
             'default' => '0',
+            'displayType' => 'checkbox',
             'comment' => 'Flag indicating if item still in queue',
         ],
         'in_queue_date' => [
