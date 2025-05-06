@@ -78,6 +78,7 @@ export class SubpanelStore implements StateStore {
     filterList: FilterListStore;
     criteria$: Observable<SearchCriteria>;
     showFilter: WritableSignal<boolean> = signal(false);
+    loaded: WritableSignal<boolean> = signal(false);
     filterApplied = false;
 
     preferenceKey = null;
@@ -215,6 +216,7 @@ export class SubpanelStore implements StateStore {
      * @returns {object} Observable<RecordList>
      */
     public load(useCache = true): Observable<RecordList> {
+        this.loaded.set(true);
         return this.recordList.load(useCache);
     }
 
