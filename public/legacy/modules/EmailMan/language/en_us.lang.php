@@ -44,6 +44,7 @@ if (!defined('sugarEntry') || !sugarEntry) {
 
 $mod_strings = array(
     'LBL_SEND_DATE_TIME' => 'Send Date',
+    'LBL_SEND_ON' => 'Send On',
     'LBL_IN_QUEUE' => 'In Process',
     'LBL_IN_QUEUE_DATE' => 'Queued Date',
 
