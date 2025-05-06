@@ -70,6 +70,17 @@ class SearchDefsAddOnlyFieldsMapper implements ViewDefinitionMapperInterface {
             }
         }
 
+        foreach ($advanced as $key => $item) {
+            if (!empty($item['name'] ?? false) && str_contains($item['name'], '_only')) {
+
+                $item['fieldDefinition'] = [
+                    'displayType' => 'checkbox'
+                ];
+
+                $advanced[$item['name']] = $item;
+            }
+        }
+
         $search['layout']['advanced'] = $advanced;
 
         $definition->setSearch($search);
