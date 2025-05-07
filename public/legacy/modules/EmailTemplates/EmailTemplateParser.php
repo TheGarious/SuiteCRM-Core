@@ -103,7 +103,7 @@ class EmailTemplateParser
     public function __construct(
         ?EmailTemplate $template,
         ?Campaign $campaign,
-        ?EmailInterface $module,
+        ?SugarBean $module,
         $siteUrl,
         $trackerId
     ) {
