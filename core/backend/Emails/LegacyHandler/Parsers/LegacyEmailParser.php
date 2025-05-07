@@ -87,6 +87,10 @@ class LegacyEmailParser extends LegacyHandler implements EmailParserInterface
     {
         $siteUrl = $this->getSiteUrl();
 
+        if ($bean->module_name === 'Surveys') {
+            $string = $this->buildSurveyUrl($string, $bean);
+        }
+
         $string =  str_replace([
             '$config_site_url',
             '$sugarurl',
@@ -96,14 +100,12 @@ class LegacyEmailParser extends LegacyHandler implements EmailParserInterface
             $siteUrl,
             $siteUrl,
             $bean->name ?? '',
-            $this->dateTimeHandler->getDateTime()->nowDb()
+            $this->dateTimeHandler->getDateTime()->nowDb(),
         ], $string);
 
         require_once $this->legacyDir . '/modules/EmailTemplates/EmailTemplateParser.php';
 
-        $string = $this->useTemplateParser($bean, $siteUrl, $string);
-
-        return $string;
+        return $this->useTemplateParser($bean, $siteUrl, $string);
     }
 
     protected function getSiteUrl()
@@ -126,6 +128,16 @@ class LegacyEmailParser extends LegacyHandler implements EmailParserInterface
             $siteUrl,
             null
         ))->getParsedValue($description_html);
+    }
+
+    protected function buildSurveyUrl($string, $bean): string {
+        if ($bean->status !== 'Public') {
+            return $string;
+        }
+
+        $url = $this->getSiteUrl() . '/index.php?entryPoint=survey&id=' . $bean->id;
+
+        return str_replace('$surveys_survey_url_display', $url, $string);
     }
 
 }

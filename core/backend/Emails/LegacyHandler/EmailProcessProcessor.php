@@ -258,7 +258,14 @@ class EmailProcessProcessor extends LegacyHandler
 
         $this->init();
 
-        if (!isset($attributes['parent_type'], $attributes['parent_id'])){
+        if (isset($attributes['survey_id'])) {
+            $survey = \BeanFactory::getBean('Surveys', $attributes['survey_id']);
+            $attributes = $this->parseBean($attributes, $survey);
+        }
+
+        if (!isset($attributes['parent_type'], $attributes['parent_id'])) {
+            $this->close();
+            $emailRecord->setAttributes($attributes);
             return $emailRecord;
         }
 
@@ -266,13 +273,20 @@ class EmailProcessProcessor extends LegacyHandler
 
         $this->close();
 
-        $attributes['name'] = $this->parserManager->parse($attributes['name'] ?? '', $bean, 'default');
-        $attributes['description_html'] = $this->parserManager->parse($attributes['description_html'] ?? '', $bean, 'default');
-        $attributes['description'] = $this->parserManager->parse($attributes['description'] ?? '', $bean, 'default');
+        $attributes = $this->parseBean($attributes, $bean);
 
         $emailRecord->setAttributes($attributes);
 
         return $emailRecord;
+    }
+
+    protected function parseBean(array $attributes, \SugarBean|bool $bean): array
+    {
+        $attributes['name'] = $this->parserManager->parse($attributes['name'] ?? '', $bean, 'default');
+        $attributes['description_html'] = $this->parserManager->parse($attributes['description_html'] ?? '', $bean, 'default');
+        $attributes['description'] = $this->parserManager->parse($attributes['description'] ?? '', $bean, 'default');
+
+        return $attributes;
     }
 
 }

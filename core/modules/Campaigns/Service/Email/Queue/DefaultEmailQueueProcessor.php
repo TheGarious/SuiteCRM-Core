@@ -184,6 +184,7 @@ class DefaultEmailQueueProcessor implements EmailQueueProcessorInterface
             'outbound_email_id' => $recordAttributes['outbound_email_id'] ?? '',
             'parent_type' => $prospectAttr['module_name'] ?? '',
             'parent_id' => $prospectAttr['id'] ?? '',
+            'survey_id' => $recordAttributes['survey_id'] ?? null,
             'to_addrs_names' => [
                 [
                     'email1' => $prospectAttr['email1'] ?? $prospectAttr['email'] ?? '',
