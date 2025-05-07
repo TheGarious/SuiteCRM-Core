@@ -51,6 +51,7 @@ $searchFields['EmailMan'] = [
     'recipient_name' => [
         'query_type' => 'default',
         'db_field' => [
+            'accounts.name',
             'contacts.first_name',
             'contacts.last_name',
             'leads.first_name',
@@ -61,15 +62,16 @@ $searchFields['EmailMan'] = [
     ],
     'recipient_email' => [
         'query_type' => 'default',
-        'db_field' => [
-            'contacts.email1',
-            'leads.email1',
-            'prospects.email1'
-        ]
+        'operator' => 'subquery',
+        'subquery' => 'SELECT eabr.bean_id FROM email_addr_bean_rel eabr JOIN email_addresses ea ON (ea.id = eabr.email_address_id) WHERE eabr.deleted=0 AND ea.email_address LIKE',
+        'db_field' =>
+            array(
+                0 => 'related_id',
+            ),
     ],
     'current_user_only' => [
         'query_type' => 'default',
-        'db_field' => ['assigned_user_id'],
+        'db_field' => ['user_id'],
         'my_items' => true,
         'vname' => 'LBL_CURRENT_USER_FILTER',
         'type' => 'bool'
