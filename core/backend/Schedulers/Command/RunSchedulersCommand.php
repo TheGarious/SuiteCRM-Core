@@ -120,7 +120,7 @@ class RunSchedulersCommand extends BaseCommand
         foreach ($results as $result) {
 
             if ($result['result'] === false) {
-                $label = '(' .  $appStrings['LBL_NEW'] . ')';
+                $label = '(' .  $appStrings['LBL_FAILED'] . ')';
                 $color = 'red';
             }
 
