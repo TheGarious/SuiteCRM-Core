@@ -1839,6 +1839,7 @@ $app_strings = array(
     'LBL_RUN_SCHEDULERS' => 'Running Schedulers',
     'LBL_LEGACY_SCHEDULER_FAILED' => 'Not all Schedulers were successful. See Logs.',
     'LBL_PASSED' => 'Passed',
+    'LBL_FAILED' => 'Failed',
 
     'LBL_SCENARIO_SALES' => 'Sales',
     'LBL_SCENARIO_MARKETING' => 'Marketing',
