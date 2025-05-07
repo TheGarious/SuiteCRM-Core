@@ -360,6 +360,7 @@ export class BaseNavbarComponent implements OnInit, OnDestroy, AfterViewInit {
         const options = {
             action: processType,
             module: action.module,
+            params: action.processParams ?? []
         } as AsyncActionInput;
 
         this.asyncActionService.run(processType, options).pipe(take(1)).subscribe();
