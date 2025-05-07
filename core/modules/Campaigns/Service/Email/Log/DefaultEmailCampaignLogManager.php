@@ -64,8 +64,8 @@ class DefaultEmailCampaignLogManager implements EmailCampaignLogManagerInterface
                 'activity_type' => $activityType,
                 'activity_date' => $timedate->nowDb(),
                 'list_id' => $prospectListId ?? null,
-                'related_id' => $targetId,
-                'related_type' => $targetType,
+                'target_id' => $targetId,
+                'target_type' => $targetType,
                 'resend_type' => null,
             ]
         );
