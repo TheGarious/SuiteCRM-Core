@@ -74,14 +74,7 @@ $subpanel_layout = array(
             'width' => '10%',
         ),
         'related_name' => array(
-            'widget_class' => 'SubPanelDetailViewLink',
-            'target_record_key' => 'related_id',
-            'target_module_key' => 'related_type',
-            'parent_id' =>'target_id',
-            'parent_module'=>'target_type',
-            'vname' => 'LBL_RELATED',
-            'width' => '60%',
-            'sortable'=>false,
+            'usage' =>'query_only',
         ),
         'related_id'=>array(
             'usage' =>'query_only',
