@@ -143,7 +143,7 @@ export class ActionMenuComponent implements OnInit {
             label: this.actionHandler.getActionLabel(module, action, language, labelKey),
             onClick: (): void => {
                 if(action?.process) {
-                    this.handleProcess(module, action?.process)
+                    this.handleProcess(module, action)
                     return ;
                 }
                 this.actionHandler.navigate(action).then();
@@ -151,17 +151,18 @@ export class ActionMenuComponent implements OnInit {
         };
     }
 
-    protected handleProcess(moduleName: string, process: string) {
+    protected handleProcess(moduleName: string, action: ModuleAction) {
 
-        if(!process) {
+        if(!action.process) {
             return;
         }
 
-        const processType = process;
+        const processType = action.process;
 
         const options = {
             action: processType,
             module: moduleName,
+            params: action?.processParams ?? [],
         } as AsyncActionInput;
 
         this.asyncActionService.run(processType, options).pipe(take(1)).subscribe();
