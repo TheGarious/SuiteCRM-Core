@@ -161,6 +161,7 @@ class SendTestEmailHandler extends LegacyHandler implements ProcessHandlerInterf
 
         $subject = $marketingBean->subject;
         $body = $marketingBean->body;
+        $survey = $marketingBean->survey_id ?? '';
 
         $this->close();
 
@@ -168,7 +169,7 @@ class SendTestEmailHandler extends LegacyHandler implements ProcessHandlerInterf
 
         foreach ($beans as $key => $value) {
             foreach ($value as $item) {
-                $sent = $this->sendEmail($item, $subject, $body, $outboundEmail->id);
+                $sent = $this->sendEmail($item, $subject, $body, $outboundEmail->id, $survey);
 
                 if (!$sent){
                     $allSent = false;
@@ -188,7 +189,7 @@ class SendTestEmailHandler extends LegacyHandler implements ProcessHandlerInterf
         $process->setData([]);
     }
 
-    protected function buildRecord($value, $subject, $body, $outboundId): Record
+    protected function buildRecord($value, $subject, $body, $outboundId, $survey): Record
     {
         $record = new Record();
         $record->setId('');
@@ -208,6 +209,7 @@ class SendTestEmailHandler extends LegacyHandler implements ProcessHandlerInterf
                     'name' => $subject,
                     'description_html' => $body,
                     'outbound_email_id' => $outboundId,
+                    'survey_id' => $survey,
                 ]
             );
 
@@ -228,15 +230,16 @@ class SendTestEmailHandler extends LegacyHandler implements ProcessHandlerInterf
                 'name' => $subject,
                 'description_html' => $body,
                 'outbound_email_id' => $outboundId,
+                'survey_id' => $survey,
             ]
         );
 
         return $record;
     }
 
-    protected function sendEmail($value, $subject, $body, $outboundId): bool
+    protected function sendEmail($value, $subject, $body, $outboundId, $survey): bool
     {
-        $record = $this->buildRecord($value, $subject, $body, $outboundId);
+        $record = $this->buildRecord($value, $subject, $body, $outboundId, $survey);
 
         $success = false;
 
