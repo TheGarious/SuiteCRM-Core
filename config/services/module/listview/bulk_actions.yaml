@@ -61,6 +61,10 @@ parameters:
             - acls
             - massupdate
     modules:
+      emailman:
+        exclude:
+          - massupdate
+          - merge
       employees:
         exclude:
           - delete
