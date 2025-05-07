@@ -100,14 +100,6 @@ $searchdefs['EmailMan'] = [
                 'name' => 'message_name',
                 'type' => 'name', 'label' => 'LBL_LIST_MESSAGE_NAME'
             ],
-            'send_date_time' => [
-                'name' => 'send_date_time',
-                'type' => 'datetime', 'label' => 'LBL_SEND_ON'
-            ],
-            'send_attempts' => [
-                'name' => 'send_attempts',
-                'type' => 'int', 'label' => 'LBL_SEND_ATTEMPTS'
-            ],
             'in_queue' => [
                 'name' => 'in_queue',
                 'label' => 'LBL_IN_QUEUE'
@@ -119,7 +111,6 @@ $searchdefs['EmailMan'] = [
                     'default' => true,
                     'width' => '10%',
             ],
-            'date_entered' => ['name' => 'date_entered', 'label' => 'LBL_DATE_ENTERED'],
         ],
     ],
 ];
