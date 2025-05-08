@@ -120,33 +120,36 @@
     "use strict";
 
     const options = {
-      record: {},
-      mapFields: {
-        default: {
-          'parent_id': $(source).attr('data-record-id'),
-          'parent_name': $(source).attr('data-module-name'),
-          'parent_type': $(source).attr('data-module'),
-          'to_addrs_names': [
-            {
-              'id':$(source).attr('data-record-id'),
-              'name': $(source).attr('data-module-name'),
-              'email1': $(source).attr('data-email-address'),
-              'module_name':  $(source).attr('data-module'),
-            }
-          ],
+      type: 'record-modal',
+      params: {
+        record: {},
+        mapFields: {
+          default: {
+            'parent_id': $(source).attr('data-record-id'),
+            'parent_name': $(source).attr('data-module-name'),
+            'parent_type': $(source).attr('data-module'),
+            'to_addrs_names': [
+              {
+                'id':$(source).attr('data-record-id'),
+                'name': $(source).attr('data-module-name'),
+                'email1': $(source).attr('data-email-address'),
+                'module_name':  $(source).attr('data-module'),
+              }
+            ],
+          }
+        },
+        parentId: $(source).attr('data-record-id'),
+        parentName: $(source).attr('data-module-name'),
+        parentModule: $(source).attr('data-module'),
+        module: 'emails',
+        metadataView: 'composeView',
+        detached: true,
+        headerClass: 'left-aligned-title',
+        dynamicTitleKey: 'LBL_EMAIL_MODAL_DYNAMIC_TITLE',
+        modalOptions: {
+          size: 'lg',
+          scrollable: false
         }
-      },
-      parentId: $(source).attr('data-record-id'),
-      parentName: $(source).attr('data-module-name'),
-      parentModule: $(source).attr('data-module'),
-      module: 'emails',
-      metadataView: 'composeView',
-      detached: true,
-      headerClass: 'left-aligned-title',
-      dynamicTitleKey: 'LBL_EMAIL_MODAL_DYNAMIC_TITLE',
-      modalOptions: {
-        size: 'lg',
-        scrollable: false
       }
     };
 
