@@ -51,8 +51,11 @@ export class ClassicViewUiComponent implements OnInit, OnDestroy, AfterViewInit 
 
     @HostListener('window:message', ['$event'])
     onMessage(event) {
-        const options = JSON.parse(event.data) as RecordModalOptions;
-        this.loadModal(options);
+        const options = JSON.parse(event.data);
+        if (options.type === 'record-modal'){
+            const modalOptions = options.params as RecordModalOptions;
+            this.loadModal(modalOptions);
+        }
     }
 
     public wrapper: any;
