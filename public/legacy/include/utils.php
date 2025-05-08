@@ -1771,32 +1771,7 @@ function is_guid($guid)
  */
 function create_guid()
 {
-    $microTime = microtime();
-    list($a_dec, $a_sec) = explode(' ', $microTime);
-
-    $dec_hex_number = $a_dec * 1000000;
-
-    $dec_hex = dechex($dec_hex_number);
-
-    $sec_hex = dechex($a_sec);
-
-    ensure_length($dec_hex, 5);
-    ensure_length($sec_hex, 6);
-
-    $guid = '';
-    $guid .= $dec_hex;
-    $guid .= create_guid_section(3);
-    $guid .= '-';
-    $guid .= create_guid_section(4);
-    $guid .= '-';
-    $guid .= create_guid_section(4);
-    $guid .= '-';
-    $guid .= create_guid_section(4);
-    $guid .= '-';
-    $guid .= $sec_hex;
-    $guid .= create_guid_section(6);
-
-    return $guid;
+    return uuid_create();
 }
 
 function create_guid_section($characters)
