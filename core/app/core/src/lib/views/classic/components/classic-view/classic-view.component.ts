@@ -24,15 +24,17 @@
  * the words "Supercharged by SuiteCRM".
  */
 
-import {AfterViewInit, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, HostListener, NgZone, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {DomSanitizer} from '@angular/platform-browser';
 import {IframeResizeHandlerHandler} from '../../services/iframe-resize-handler.service';
 import {SystemConfigStore} from '../../../../store/system-config/system-config.store';
 import {AuthService} from '../../../../services/auth/auth.service';
+import {AppStateStore} from '../../../../store/app-state/app-state.store';
 import {RouteConverter, RouteInfo} from '../../../../services/navigation/route-converter/route-converter.service';
 import {IframePageChangeObserver} from '../../services/iframe-page-change-observer.service';
 import {take} from "rxjs/operators";
+import {RecordModalOptions} from "../../../../services/modals/record-modal.model";
 
 interface RoutingExclusions {
     [key: string]: string[];
@@ -46,6 +48,13 @@ interface RoutingExclusions {
 export class ClassicViewUiComponent implements OnInit, OnDestroy, AfterViewInit {
 
     @ViewChild('dataContainer', {static: true}) dataContainer: ElementRef;
+
+    @HostListener('window:message', ['$event'])
+    onMessage(event) {
+        const options = JSON.parse(event.data) as RecordModalOptions;
+        this.loadModal(options);
+    }
+
     public wrapper: any;
     public url: string;
     protected iframe = null;
@@ -60,6 +69,7 @@ export class ClassicViewUiComponent implements OnInit, OnDestroy, AfterViewInit 
         private auth: AuthService,
         private ngZone: NgZone,
         private systemConfigs: SystemConfigStore,
+        protected appStateStore: AppStateStore,
     ) {
     }
 
@@ -177,6 +187,10 @@ export class ClassicViewUiComponent implements OnInit, OnDestroy, AfterViewInit 
             this.onIFrameLoad.bind(this),
             this.onIFrameUnload.bind(this),
         );
+    }
+
+    protected loadModal(options: RecordModalOptions): void {
+        this.appStateStore.recordModalOpenEventEmitter.emit(options);
     }
 
     protected buildIframeResizeHandlerHandler(): IframeResizeHandlerHandler {
