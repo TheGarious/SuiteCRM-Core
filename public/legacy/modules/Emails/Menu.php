@@ -64,7 +64,9 @@ if (ACLController::checkAccess('Emails', 'edit', true)) {
                 'modalOptions' => [
                     'size' => 'lg',
                     'scrollable' => false,
-                ]
+                ],
+                'confirmationModal' => true,
+                'confirmationLabel' => 'LBL_CLOSE_EMAIL_MODAL',
             ]
         ]
     );
