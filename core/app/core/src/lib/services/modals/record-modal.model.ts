@@ -48,7 +48,6 @@ export interface RecordModalOptions {
     headerClass?: string;
     descriptionLabelKey?: string;
     dynamicTitleContext?: string;
-    mode: string;
     metadataView?: string;
     topButtonsDropdownLabelKey?: string;
     centered?: boolean;
