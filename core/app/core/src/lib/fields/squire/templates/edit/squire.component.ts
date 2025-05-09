@@ -83,6 +83,7 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
     height: WritableSignal<string> = signal('18vh');
     maxHeight: WritableSignal<string> = signal('45vh');
     maxWidth: WritableSignal<string> = signal('100vh');
+    styleSignal: WritableSignal<string> = signal('');
 
     protected currentEditorPath: WritableSignal<string> = signal('');
     protected editor: Squire;
@@ -230,13 +231,15 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
                 const hasBold = this?.editor?.hasFormat('B');
                 if (hasBold) {
                     this?.editor?.removeBold();
+                    this.styleSignal.set('non-bold');
                     return;
                 }
-
                 this?.editor?.bold();
+                this.styleSignal.set('bold');
             },
             dynamicClass: computed((): string => {
                 const path = this.currentEditorPath();
+                const trigger = this.styleSignal();
                 return this?.editor?.hasFormat('B') ? 'active squire-editor-button-active' : '';
             })
         } as ButtonInterface;
@@ -252,13 +255,16 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
                 const hasItalic = this?.editor?.hasFormat('I');
                 if (hasItalic) {
                     this?.editor?.removeItalic();
+                    this.styleSignal.set('non-italic');
                     return;
                 }
 
                 this?.editor?.italic();
+                this.styleSignal.set('italic');
             },
             dynamicClass: computed((): string => {
                 const path = this.currentEditorPath();
+                const trigger = this.styleSignal();
                 return this?.editor?.hasFormat('I') ? 'active squire-editor-button-active' : '';
             })
         } as ButtonInterface;
@@ -274,13 +280,16 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
                 const hasUnderline = this?.editor?.hasFormat('U');
                 if (hasUnderline) {
                     this?.editor?.removeUnderline();
+                    this.styleSignal.set('non-underline');
                     return;
                 }
 
                 this?.editor?.underline();
+                this.styleSignal.set('underline');
             },
             dynamicClass: computed((): string => {
                 const path = this.currentEditorPath();
+                const trigger = this.styleSignal();
                 return this?.editor?.hasFormat('U') ? 'active squire-editor-button-active' : '';
             })
         } as ButtonInterface;
@@ -296,13 +305,16 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
                 const hasStrikeThrough = this?.editor?.hasFormat('S');
                 if (hasStrikeThrough) {
                     this?.editor?.removeStrikethrough();
+                    this.styleSignal.set('non-strikethrough');
                     return;
                 }
 
                 this?.editor?.strikethrough();
+                this.styleSignal.set('strikethrough');
             },
             dynamicClass: computed((): string => {
                 const path = this.currentEditorPath();
+                const trigger = this.styleSignal();
                 return this?.editor?.hasFormat('S') ? 'active squire-editor-button-active' : '';
             })
         } as ButtonInterface;
@@ -425,6 +437,7 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
             type: 'insert-link',
             dynamicIcon: computed((): string => {
                 const path = this.currentEditorPath();
+                const trigger = this.styleSignal();
                 return this?.editor?.hasFormat('A') ? 'unlink-45deg' : 'link-45deg';
             }),
             titleKey: 'LBL_INSERT_LINK',
@@ -432,6 +445,7 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
             hotkey: 'ctrl+k',
             dynamicClass: computed((): string => {
                 const path = this.currentEditorPath();
+                const trigger = this.styleSignal();
                 return this?.editor?.hasFormat('A') ? 'active squire-editor-button-active' : '';
             }),
             metadata: {
@@ -445,6 +459,7 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
             const isLink = this?.editor?.hasFormat('A');
             if (isLink) {
                 this?.editor?.removeLink();
+                this.styleSignal.set('non-link');
                 return;
             }
 
@@ -455,6 +470,7 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
                 insertLink.metadata.linkURL = '';
             }
 
+            this.styleSignal.set('link');
             insertLink.metadata.openStatusEventEmitter.emit(true);
         };
 
@@ -495,13 +511,16 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
                 const isUL = this?.editor?.hasFormat('UL');
                 if (isUL) {
                     this?.editor?.removeList();
+                    this.styleSignal.set('non-unordered-list');
                     return;
                 }
 
                 this?.editor?.makeUnorderedList();
+                this.styleSignal.set('unordered-list');
             },
             dynamicClass: computed((): string => {
                 const path = this.currentEditorPath();
+                const trigger = this.styleSignal();
                 return this?.editor?.hasFormat('UL') ? 'active squire-editor-button-active' : '';
             })
         } as ButtonInterface;
@@ -517,13 +536,16 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
                 const isOL = this?.editor?.hasFormat('OL');
                 if (isOL) {
                     this?.editor?.removeList();
+                    this.styleSignal.set('non-ordered-list');
                     return;
                 }
 
                 this?.editor?.makeOrderedList();
+                this.styleSignal.set('ordered-list');
             },
             dynamicClass: computed((): string => {
                 const path = this.currentEditorPath();
+                const trigger = this.styleSignal();
                 return this?.editor?.hasFormat('OL') ? 'active squire-editor-button-active' : '';
             })
         } as ButtonInterface;
