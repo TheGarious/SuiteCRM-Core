@@ -212,7 +212,7 @@ class UnscheduleEmailMarketingAction extends LegacyHandler implements ProcessHan
             $this->logger->error($e->getMessage());
         }
 
-        if (empty($result)) {
+        if ($result !== 0 && empty($result)) {
             $this->logger->error('Records in EmailMan may not have deleted with marketing_id:' . $id);
         }
     }
@@ -234,7 +234,7 @@ class UnscheduleEmailMarketingAction extends LegacyHandler implements ProcessHan
             $this->logger->error($e->getMessage());
         }
 
-        if (empty($result)) {
+        if ($result !== 0 && empty($result)) {
             $this->logger->error('Records in Campaign log may not have deleted with marketing_id:' . $id);
         }
     }
