@@ -282,6 +282,9 @@ class EmailProcessProcessor extends LegacyHandler
 
     protected function parseBean(array $attributes, \SugarBean|bool $bean): array
     {
+        if ($bean === false) {
+            return $attributes;
+        }
         $attributes['name'] = $this->parserManager->parse($attributes['name'] ?? '', $bean, 'default');
         $attributes['description_html'] = $this->parserManager->parse($attributes['description_html'] ?? '', $bean, 'default');
         $attributes['description'] = $this->parserManager->parse($attributes['description'] ?? '', $bean, 'default');
