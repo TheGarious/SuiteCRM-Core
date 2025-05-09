@@ -48,6 +48,7 @@ import {ObjectMap} from "../../../../common/types/object-map";
 import {StringMap} from "../../../../common/types/string-map";
 import {FieldMap} from "../../../../common/record/field.model";
 import {deepClone} from "../../../../common/utils/object-utils";
+import {ConfirmationModalService} from "../../../../services/modals/confirmation-modal.service";
 
 @Component({
     selector: 'scrm-record-modal',
@@ -92,6 +93,9 @@ export class RecordModalComponent implements OnInit, OnDestroy {
     @Input() wrapperClass: string = '';
     @Input() context: WritableSignal<StringMap> = signal({});
     @Input() fields: WritableSignal<FieldMap> = signal({});
+    @Input() confirmationLabel: string = '';
+    @Input() confirmationMessages: string[] = [];
+    @Input() confirmationModal: boolean = false;
 
     record: Record;
     modalStore: RecordModalStore;
@@ -105,6 +109,7 @@ export class RecordModalComponent implements OnInit, OnDestroy {
     constructor(
         protected activeModal: NgbActiveModal,
         protected storeFactory: RecordModalStoreFactory,
+        protected confirmation: ConfirmationModalService,
         protected recordModalContentAdapterFactory: RecordModalContentAdapterFactory,
         protected recordModalActionsAdapterFactory: RecordModalActionsAdapterFactory
     ) {
@@ -116,6 +121,16 @@ export class RecordModalComponent implements OnInit, OnDestroy {
         this.closeButton = {
             klass: ['btn', 'btn-outline-light', 'btn-sm'],
             onClick: (): void => {
+
+                if (this.confirmationModal) {
+                    const confirmation = [this.confirmationLabel, ...this.confirmationMessages] ?? [];
+                    this.confirmation.showModal(confirmation, () => {
+                        this.activeModal.close({
+                            type: 'close-button'
+                        } as ModalCloseFeedBack);
+                    });
+                    return;
+                }
                 this.activeModal.close({
                     type: 'close-button'
                 } as ModalCloseFeedBack);
