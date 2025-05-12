@@ -133,7 +133,7 @@ services:
       tags: [ 'record.saveHandlers.field' ]
     App\Data\Service\Record\RecordSaveHandlers\RecordFieldTypeSaveHandlerInterface:
       tags: [ 'record.saveHandlers.fieldType' ]
-    \App\Data\Service\Record\RecordSaveHandlers\RecordSaveHandlerInterface:
+    App\Data\Service\Record\RecordSaveHandlers\RecordSaveHandlerInterface:
       tags: [ 'record.saveHandlers.record' ]
     App\Module\Campaigns\Service\Email\Targets\Validation\EmailTargetValidatorInterface:
       tags: [ 'email.target.validator' ]
@@ -414,6 +414,7 @@ services:
       - !tagged { tag: 'record.saveHandlers.fieldType' }
 
   App\Data\Service\Record\RecordSaveHandlers\RecordSaveHandlerRegistry:
+    lazy: true
     arguments:
       - !tagged { tag: 'record.saveHandlers.record' }
 
