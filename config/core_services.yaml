@@ -139,6 +139,8 @@ services:
       tags: [ 'email.target.validator' ]
     App\Emails\Service\EmailParserHandler\EmailParserInterface:
       tags: [ 'email.parser' ]
+    App\Module\Campaigns\Service\Email\Parser\CampaignEmailParserInterface:
+      tags: [ 'campaign.email.parser' ]
 
   # makes classes in src/ available to be used as services
   # this creates a service per class whose id is the fully-qualified class name
@@ -421,6 +423,10 @@ services:
   App\Emails\Service\EmailParserHandler\EmailParserRegistry:
     arguments:
       - !tagged { tag: 'email.parser' }
+
+  App\Module\Campaigns\Service\Email\Parser\CampaignEmailParserRegistry:
+    arguments:
+      - !tagged { tag: 'campaign.email.parser' }
 
   App\Module\Campaigns\Service\Email\Targets\Validation\EmailTargetValidatorRegistry:
     arguments:
