@@ -93,9 +93,9 @@ export class RecordModalComponent implements OnInit, OnDestroy {
     @Input() wrapperClass: string = '';
     @Input() context: WritableSignal<StringMap> = signal({});
     @Input() fields: WritableSignal<FieldMap> = signal({});
-    @Input() confirmationLabel: string = '';
-    @Input() confirmationMessages: string[] = [];
-    @Input() confirmationModal: boolean = false;
+    @Input() closeConfirmationLabel: string = '';
+    @Input() closeConfirmationMessages: string[] = [];
+    @Input() closeConfirmationModal: boolean = false;
 
     record: Record;
     modalStore: RecordModalStore;
@@ -122,8 +122,8 @@ export class RecordModalComponent implements OnInit, OnDestroy {
             klass: ['btn', 'btn-outline-light', 'btn-sm'],
             onClick: (): void => {
 
-                if (this.confirmationModal) {
-                    const confirmation = [this.confirmationLabel, ...this.confirmationMessages] ?? [];
+                if (this.closeConfirmationModal) {
+                    const confirmation = [this.closeConfirmationLabel, ...this.closeConfirmationMessages] ?? [];
                     this.confirmation.showModal(confirmation, () => {
                         this.activeModal.close({
                             type: 'close-button'
