@@ -84,14 +84,14 @@ class DefaultEmailTargetProvider implements EmailTargetProviderInterface
                 'campaign_log',
                 'log',
                 "log.deleted = 0
-                AND log.related_id = plp.related_id
-                AND log.related_type = plp.related_type
+                AND log.target_id = plp.related_id
+                AND log.target_type = plp.related_type
                 AND log.marketing_id = empl.email_marketing_id"
             )
             ->where('plp.deleted = 0')
             ->andWhere('empl.email_marketing_id = :id')
             ->andWhere('queue.related_id IS NULL') // filter all that are already on email queue
-            ->andWhere('log.related_id IS NULL') // filter all that are already on campaign log, meaning that they were sent or were suppressed
+            ->andWhere('log.target_id IS NULL') // filter all that are already on campaign log, meaning that they were sent or were suppressed
             ->groupBy('plp.related_type, plp.related_id')
             ->setMaxResults($batchSize)
             ->setParameter('id', $marketingId);
