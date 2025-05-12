@@ -36,7 +36,8 @@ interface EmailCampaignLogManagerInterface
         string $activityType,
         string $prospectListId,
         string $targetId,
-        string $targetType
+        string $targetType,
+        string $trackerId = ''
     ): void;
 
 }
