@@ -48,37 +48,51 @@ class DefaultEmailCampaignLogManager implements EmailCampaignLogManagerInterface
         string $activityType,
         string $prospectListId,
         string $targetId,
-        string $targetType
+        string $targetType,
+        string $trackerId = '',
+        string $relatedId = '',
+        string $relatedType = '',
     ): void {
 
         $timedate = $this->dateTimeHandler->getDateTime();
 
         $record = new Record();
         $record->setModule('campaign-log');
+        $attributes = [
+            'module_name' => 'CampaignLog',
+            'campaign_id' => $campaignId,
+            'marketing_id' => $marketingId,
+            'more_information' => $email,
+            'activity_type' => $activityType,
+            'activity_date' => $timedate->nowDb(),
+            'list_id' => $prospectListId ?? null,
+            'related_id' => $targetId,
+            'related_type' => $targetType,
+            'target_id' => $targetId,
+            'target_type' => $targetType,
+            'resend_type' => null,
+        ];
+
+        if ($trackerId !== '') {
+            $attributes['target_tracker_key'] = $trackerId;
+        }
+
         $record->setAttributes(
-            [
-                'module_name' => 'CampaignLog',
-                'campaign_id' => $campaignId,
-                'marketing_id' => $marketingId,
-                'more_information' => $email,
-                'activity_type' => $activityType,
-                'activity_date' => $timedate->nowDb(),
-                'list_id' => $prospectListId ?? null,
-                'target_id' => $targetId,
-                'target_type' => $targetType,
-                'resend_type' => null,
-            ]
+            $attributes
         );
 
         $savedRecord = $this->recordProvider->saveRecord($record);
-        $this->logger->debug('Campaigns:DefaultEmailCampaignLogManager::createCampaignLogEntry - Campaign log entry created - id: ' . $savedRecord->getId() , [
-            'campaignLogId' => $savedRecord->getId(),
-            'campaignId' => $campaignId,
-            'marketingId' => $marketingId,
-            'activityType' => $activityType,
-            'prospectListId' => $prospectListId,
-            'targetId' => $targetId,
-            'targetType' => $targetType,
-        ]);
+        $this->logger->debug(
+            'Campaigns:DefaultEmailCampaignLogManager::createCampaignLogEntry - Campaign log entry created - id: ' . $savedRecord->getId(), [
+                'campaignLogId' => $savedRecord->getId(),
+                'campaignId' => $campaignId,
+                'marketingId' => $marketingId,
+                'activityType' => $activityType,
+                'prospectListId' => $prospectListId,
+                'targetId' => $targetId,
+                'targetType' => $targetType,
+                '$trackerId' => $trackerId
+            ]
+        );
     }
 }
