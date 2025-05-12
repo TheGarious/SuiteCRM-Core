@@ -132,8 +132,9 @@ class RecordHandler extends LegacyHandler implements RecordProviderInterface
         $bean = $this->retrieveBean($module, $id);
 
         $record = $this->buildRecord($id, $module, $bean, 'retrieve');
-
         $this->close();
+
+        $this->entityRecordMapperRunner->toExternal($record, 'retrieve');
 
         return $record;
     }
@@ -178,7 +179,7 @@ class RecordHandler extends LegacyHandler implements RecordProviderInterface
         $legacyModuleName = $this->moduleNameMapper->toLegacy($moduleName);
 
         if (!$this->moduleNameMapper->isValidModule($legacyModuleName)) {
-            throw new InvalidArgumentException('Invalid module name | legacy - ' . $legacyModuleName . '| input - ' . $moduleName );
+            throw new InvalidArgumentException('Invalid module name | legacy - ' . $legacyModuleName . '| input - ' . $moduleName);
         }
 
         return $legacyModuleName;
@@ -210,6 +211,11 @@ class RecordHandler extends LegacyHandler implements RecordProviderInterface
      */
     public function buildRecord(string $id, string $module, SugarBean $bean, ?string $mode = ''): Record
     {
+        $activeScope = $this->state->getActiveScope();
+        if (!$activeScope) {
+            $this->init();
+        }
+
         $record = new Record();
         /* @noinspection PhpIncludeInspection */
         require_once 'include/portability/ApiBeanMapper/ApiBeanMapper.php';
@@ -229,8 +235,6 @@ class RecordHandler extends LegacyHandler implements RecordProviderInterface
         $record->setAttributes($mappedBean);
         $record->setAcls($this->acl->getRecordAcls($bean));
         $record->setFavorite($this->favorites->isFavorite($module, $id));
-
-        $this->entityRecordMapperRunner->toExternal($record, $mode);
 
         return $record;
     }
@@ -260,24 +264,28 @@ class RecordHandler extends LegacyHandler implements RecordProviderInterface
         $previousVersion = null;
         if (!empty($bean->id) && empty($bean->new_with_id)) {
             $previousVersion = $this->buildRecord($bean->id, $record->getModule(), $bean, 'retrieve');
+            $this->close();
+            $this->entityRecordMapperRunner->toExternal($previousVersion, 'retrieve');
+            $this->init();
         }
 
+        $this->close();
         $this->entityRecordMapperRunner->toInternal($record, 'save');
         $this->saveHandlerRunner->run($previousVersion, $record, null, 'before-save');
+        $this->init();
 
         $this->setFields($bean, $record->getAttributes());
         $this->setUpdatedFields($bean, $record->getAttributes());
 
         $this->save($bean);
 
-
         $refreshedBean = $this->retrieveBean($record->getModule(), $bean->id);
 
         $savedRecord = $this->buildRecord($bean->id, $record->getModule(), $refreshedBean, 'save');
-
-        $this->saveHandlerRunner->run($previousVersion, $record, $savedRecord, 'after-save');
-
         $this->close();
+
+        $this->entityRecordMapperRunner->toExternal($savedRecord, 'save');
+        $this->saveHandlerRunner->run($previousVersion, $record, $savedRecord, 'after-save');
 
         return $savedRecord;
     }
@@ -316,8 +324,9 @@ class RecordHandler extends LegacyHandler implements RecordProviderInterface
         $moduleName = $this->moduleNameMapper->toFrontEnd($bean->module_name);
 
         $record = $this->buildRecord($bean->id, $moduleName, $bean, 'map');
-
         $this->close();
+
+        $this->entityRecordMapperRunner->toExternal($record, 'map');
 
         return $record;
     }
