@@ -30,9 +30,9 @@ namespace App\Module\Campaigns\Service\Email\Targets;
 
 use App\Data\Entity\Record;
 use App\Data\LegacyHandler\PreparedStatementHandler;
+use App\Module\Campaigns\Service\Email\Trackers\EmailTrackerManagerInterface;
 use App\SystemConfig\LegacyHandler\SystemConfigHandler;
 use Doctrine\DBAL\Exception;
-use PhpCsFixer\RuleSet\Sets\PSR1Set;
 use Psr\Log\LoggerInterface;
 
 class DefaultEmailOptInManager implements EmailOptInManagerInterface
@@ -40,7 +40,8 @@ class DefaultEmailOptInManager implements EmailOptInManagerInterface
     public function __construct(
         protected SystemConfigHandler $systemConfigHandler,
         protected PreparedStatementHandler $preparedStatementHandler,
-        protected LoggerInterface $logger
+        protected LoggerInterface $logger,
+        protected EmailTrackerManagerInterface $emailTrackerManager
     ) {
     }
 
@@ -49,8 +50,7 @@ class DefaultEmailOptInManager implements EmailOptInManagerInterface
         Record $marketingRecord,
         string $campaignId,
         string $prospectListId
-    ): bool
-    {
+    ): bool {
         $optInLevel = '';
 
         $config = $this->systemConfigHandler->getSystemConfig('email_enable_confirm_opt_in');
@@ -88,9 +88,11 @@ class DefaultEmailOptInManager implements EmailOptInManagerInterface
             $this->logger->error('EmailOptInManager::isOptedIn query failed  |  target - ' . $targetRecord->getId() . ' | ' . $e->getMessage());
         }
 
-        $this->logger->debug('EmailOptInManager::isOptedIn - Email address info | target - ' . $targetRecord->getId() . ' | email address - ' . $email_address, [
-            'emailAddressInfo' => $emailAddressInfo,
-        ]);
+        $this->logger->debug(
+            'EmailOptInManager::isOptedIn - Email address info | target - ' . $targetRecord->getId() . ' | email address - ' . $email_address, [
+                'emailAddressInfo' => $emailAddressInfo,
+            ]
+        );
 
         if (!empty($emailAddressInfo)) {
             if ((int)$emailAddressInfo['opt_out'] === 1) {
@@ -125,5 +127,58 @@ class DefaultEmailOptInManager implements EmailOptInManagerInterface
         }
 
         return true;
+    }
+
+    public function addUnsubscribeLink(string $trackerId, string $emailBody, array $context): string
+    {
+        $url = $this->emailTrackerManager->getTrackingUrl() . "index.php?entryPoint=removeme&identifier=$trackerId";
+
+            $containsLinkVariable = $this->containsUnsubscribeLinkVariable($emailBody);
+
+        if ($containsLinkVariable) {
+
+            $replaced = preg_replace(
+                '/{{\s*unsubscribe_link\s*}}/',
+                $url,
+                $emailBody
+            );
+
+            $replaced = preg_replace(
+                '/%7B%7B\s*unsubscribe_link\s*%7D%7D/',
+                $url,
+                $replaced
+            );
+
+            $this->logger->debug(
+                'Campaigns:DefaultEmailOptInManager::addUnsubscribeLink - Added unsubscribe link to tag - id: ' . $trackerId, [
+                    'trackerId' => $trackerId,
+                    'unsubscribeUrl' => $url,
+                    'newEmailBody' => $replaced,
+                ]
+            );
+
+            return $replaced;
+        }
+
+        $emailBody .= "<br /><span style='font-size:0.8em'><a href='" . $url . " '>Unsubscribe</a></span>";
+
+        $this->logger->debug(
+            'Campaigns:DefaultEmailOptInManager::addUnsubscribeLink - Added new tag with unsubscribe link - id: ' . $trackerId, [
+                'trackerId' => $trackerId,
+                'unsubscribeUrl' => $url,
+                'newEmailBody' => $emailBody,
+            ]
+        );
+
+        return $emailBody;
+    }
+
+    /**
+     * @param string $value
+     * @return bool
+     */
+    public function containsUnsubscribeLinkVariable(string $value): bool
+    {
+        return (bool)(preg_match('/{{\s*unsubscribe_link\s*}}/', $value) || preg_match('/%7B%7B\s*unsubscribe_link\s*%7D%7D/', $value));
     }
 }
