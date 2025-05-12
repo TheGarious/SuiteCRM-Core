@@ -297,6 +297,7 @@ $viewdefs ['Campaigns'] = [
                         'name' => 'assigned_user_name',
                         'label' => 'LBL_ASSIGNED_TO',
                     ],
+                    ''
                 ],
             ],
             'LBL_NAVIGATION_MENU_GEN2' => [
