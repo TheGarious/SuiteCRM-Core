@@ -30,13 +30,35 @@ namespace App\Emails\LegacyHandler\Mailers;
 use App\Data\Entity\Record;
 use App\Emails\Entity\EmailAddress;
 use App\Engine\LegacyHandler\LegacyHandler;
+use App\Engine\LegacyHandler\LegacyScopeState;
 use PHPMailer\PHPMailer\Exception;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Mailer\Envelope;
 use Symfony\Component\Mime\Email;
 
 class LegacyMailer extends LegacyHandler
 {
 
+    public function __construct(
+        string $projectDir,
+        string $legacyDir,
+        string $legacySessionName,
+        string $defaultSessionName,
+        LegacyScopeState $legacyScopeState,
+        RequestStack $requestStack,
+        protected LoggerInterface $logger
+    )
+    {
+        parent::__construct(
+            $projectDir,
+            $legacyDir,
+            $legacySessionName,
+            $defaultSessionName,
+            $legacyScopeState,
+            $requestStack
+        );
+    }
 
     public function getHandlerKey(): string
     {
