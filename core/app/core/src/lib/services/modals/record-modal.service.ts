@@ -72,7 +72,11 @@ export class RecordModalService {
 
         const modal = this.modalService.open(RecordModalComponent, modalOptions);
 
-        const mode = 'create' as ViewMode;
+        let mode = recordModalOptions?.mode ?? '';
+
+        if (mode === ''){
+            mode = 'create';
+        }
 
         const moduleName = recordModalOptions?.module;
 
@@ -98,7 +102,7 @@ export class RecordModalService {
 
         modal.componentInstance.metadataView = recordModalOptions?.metadataView ?? 'recordView';
         modal.componentInstance.module = moduleName;
-        modal.componentInstance.mode = mode;
+        modal.componentInstance.mode = mode as ViewMode;
         modal.componentInstance.minimizable = minimizable;
         modal.componentInstance.titleKey =recordModalOptions?.headerLabelKey ?? recordModalOptions?.labelKey ?? '';
         modal.componentInstance.dynamicTitleKey = recordModalOptions?.dynamicTitleKey ??'';
@@ -112,9 +116,9 @@ export class RecordModalService {
         modal.componentInstance.bodyClass = recordModalOptions.bodyClass ?? '';
         modal.componentInstance.footerClass = recordModalOptions.footerClass ?? '';
         modal.componentInstance.wrapperClass = recordModalOptions.wrapperClass ?? '';
-        modal.componentInstance.confirmationMessages = recordModalOptions.confirmationMessage ?? [];
-        modal.componentInstance.confirmationLabel = recordModalOptions.confirmationLabel ?? '';
-        modal.componentInstance.confirmationModal = recordModalOptions.confirmationModal ?? false;
+        modal.componentInstance.closeConfirmationMessages = recordModalOptions.closeConfirmationMessage ?? [];
+        modal.componentInstance.closeConfirmationLabel = recordModalOptions.closeConfirmationLabel ?? '';
+        modal.componentInstance.closeConfirmationModal = recordModalOptions.closeConfirmationModal ?? false;
 
         modal.componentInstance.init();
 
