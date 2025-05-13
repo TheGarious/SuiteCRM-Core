@@ -56,6 +56,13 @@ class RecordToEmailService
         $email->text($emailRecordAttributes['description'] ?? '');
         $email->html($emailRecordAttributes['description_html'] ?? '');
 
+        $headers = $emailRecordAttributes['headers'] ?? [];
+
+        foreach ($headers as $headerName => $headerValue) {
+            if (is_string($headerValue)) {
+                $email->getHeaders()->addHeader($headerName, $headerValue);
+            }
+        }
         return $email;
     }
 

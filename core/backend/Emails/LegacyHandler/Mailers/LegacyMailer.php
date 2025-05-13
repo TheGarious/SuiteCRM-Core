@@ -168,6 +168,14 @@ class LegacyMailer extends LegacyHandler
         $mail->handleAttachments($attachments);
         //$mail->prepForOutbound();
 
+        $headers = $message->getHeaders()->all() ?? [];
+
+        foreach ($headers as $headerName => $headerValue) {
+            if (is_string($headerValue)) {
+                $mail->addCustomHeader($headerName, $headerValue);
+            }
+        }
+
         return $mail;
     }
 
