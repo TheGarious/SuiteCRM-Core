@@ -681,6 +681,21 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
             klass: 'squire-editor-button btn btn-sm',
             onClick: () => this?.editor?.removeAllFormatting(),
         } as ButtonInterface;
+
+        if (this.record.module !== 'email-marketing'){
+            return;
+        }
+
+        if (this.field.metadata.injectUnsubscribe) {
+            this.availableButtons.injectUnsubscribe = {
+                key: 'injectUnsubscribe',
+                type: 'button',
+                icon: 'unsubscribe',
+                titleKey: 'LBL_INJECT_UNSUBSCRIBE',
+                klass: 'squire-editor-button btn btn-sm',
+                onClick: () => this.editor.insertHTML('{{ unsubscribe_link }}'),
+            } as ButtonInterface;
+        }
     }
 
 
@@ -725,6 +740,7 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
             ],
             [
                 'insertLink',
+                'injectUnsubscribe'
             ],
             [
                 'unorderedList',
