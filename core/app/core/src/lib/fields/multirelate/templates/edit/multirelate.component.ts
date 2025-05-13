@@ -117,7 +117,7 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
                 const headerFieldValue = valueElement[headerField] ?? valueElement?.attributes[headerField] ?? '';
                 const subHeaderFieldValue = valueElement[subHeader] ?? valueElement?.attributes[subHeader] ?? '';
                 return {
-                    ...(valueElement.attributes ?? {}),
+                    attributes: valueElement.attributes ?? {},
                     id: relateId,
                     [relatedFieldName]: relateValue,
                     [headerField]: headerFieldValue,
@@ -244,6 +244,7 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
     protected updateFieldValues(): void {
         this.field.valueObjectArray = deepClone(this.selectedValues ?? []);
         this.field.value = deepClone(this.selectedValues ?? []);
+        this.field.valueList = deepClone(this.selectedValues ?? []);
     }
 
     /**
@@ -298,7 +299,7 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
             id: record.id,
             label: record[headerField],
             subLabel: record[subHeader],
-            value: record,
+            attributes: record,
             module_name: this.moduleNameMapper.toLegacy(moduleName),
             [relateName]: record?.attributes[relateName]
         } as AttributeMap;
@@ -441,7 +442,7 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
                 id: record.id,
                 label: this.getLabel(record, headerField),
                 subLabel: this.getSubLabel(record, subHeader),
-                value: record,
+                attributes: record,
                 module_name: record?.module_name,
                 [relateField]: record[relateField]
             } as AttributeMap);
