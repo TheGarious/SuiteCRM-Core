@@ -414,6 +414,7 @@ $dictionary['EmailMarketing'] = [
             'metadata' => [
                 'trustHTML' => true,
                 'purifyHtml' => false,
+                'injectUnsubscribe' => true,
             ],
             'logic' => [
                 'update-email-template-body' => [
