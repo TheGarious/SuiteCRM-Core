@@ -245,6 +245,7 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
         this.field.valueObjectArray = deepClone(this.selectedValues ?? []);
         this.field.value = deepClone(this.selectedValues ?? []);
         this.field.valueList = deepClone(this.selectedValues ?? []);
+        this.field.formControl.setValue(this.field.value);
     }
 
     /**
