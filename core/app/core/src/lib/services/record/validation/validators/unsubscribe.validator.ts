@@ -33,10 +33,15 @@ import {AbstractControl} from "@angular/forms";
 export const unsubscribeValidator = (viewField: ViewFieldDefinition, record: Record): StandardValidatorFn => (
     (control: AbstractControl): StandardValidationErrors | null => {
 
-        console.log('inside unsubscribe validator');
+        const patterns = [new RegExp(/\{\{\s*unsubscribe_link\s*}}/g), new RegExp(/%7B%7B\s*unsubscribe_link\s*%7D%7D/)];
 
-        const regex = new RegExp(/\{\{\s*unsubscribe_link\s*}}/g);
-        const match = regex.test(control.value);
+        let match = false;
+
+        patterns.forEach((regex) => {
+            if (regex.test(control.value)){
+                match = true;
+            }
+        })
 
         if (match) {
             return null;
