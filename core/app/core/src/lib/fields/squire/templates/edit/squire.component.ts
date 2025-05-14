@@ -859,6 +859,7 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
             e.stopPropagation();
             this.currentEditorPath.set(this.editor.getPath());
         });
+        this.editor.focus();
     }
 
     toPlainText(html: any) {
