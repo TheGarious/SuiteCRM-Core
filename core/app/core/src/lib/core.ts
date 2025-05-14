@@ -613,6 +613,7 @@ export * from './services/record/validation/validators/currency.validator';
 export * from './services/record/validation/validators/date.validator';
 export * from './services/record/validation/validators/datetime.validator';
 export * from './services/record/validation/validators/duplicate-email.validator';
+export * from './services/record/validation/validators/unsubscribe.validator';
 export * from './services/record/validation/validators/email.validator';
 export * from './services/record/validation/validators/float.validator';
 export * from './services/record/validation/validators/int.validator';

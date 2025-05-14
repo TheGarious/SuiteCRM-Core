@@ -860,6 +860,7 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
         this.editor.addEventListener('input', (e: Event) => {
             this.value = this.editor.getHTML();
             this.field.value = this.value;
+            this.field.formControl.setValue(this.value);
         });
         this.editor.addEventListener('pathChange', (e: Event) => {
             e.stopPropagation();
