@@ -73,6 +73,10 @@
 
     ul.p-multiselect-items {
       padding-inline-start: 0em;
+
+     .p-multiselect-empty-message{
+       font-size: 0.875rem!important;
+     }
     }
   }
 
