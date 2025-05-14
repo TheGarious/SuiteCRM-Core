@@ -414,7 +414,49 @@ $dictionary['EmailMarketing'] = [
             'metadata' => [
                 'trustHTML' => true,
                 'purifyHtml' => false,
-                'injectUnsubscribe' => true,
+                'squire' => [
+                    'edit' => [
+                        'buttonLayout' => [
+                            [
+                                'bold',
+                                'italic',
+                                'underline',
+                                'strikethrough',
+                            ],
+                            [
+                                'font',
+                                'size',
+                            ],
+                            [
+                                'textColour',
+                                'highlight',
+                            ],
+                            [
+                                'insertLink',
+                                'injectUnsubscribe'
+                            ],
+                            [
+                                'unorderedList',
+                                'orderedList',
+                                'indentMore',
+                                'indentLess',
+                            ],
+                            [
+                                'alignLeft',
+                                'alignCenter',
+                                'alignRight',
+                                'justify',
+                            ],
+                            [
+                                'quote',
+                                'unquote',
+                            ],
+                            [
+                                'clearFormatting',
+                            ],
+                        ]
+                    ]
+                ]
             ],
             'logic' => [
                 'update-email-template-body' => [
@@ -456,6 +498,7 @@ $dictionary['EmailMarketing'] = [
             ]
         ],
         'prospect_list_name' => [
+            'required' => true,
             'metadata' => [
                 'headerField' => [
                     'name' => 'name',
