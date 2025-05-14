@@ -75,7 +75,7 @@ class DefaultEmailTrackerManager implements EmailTrackerManagerInterface
         if ($trackerLocationType === '2' && !empty($trackerLocation)) {
             $trackingUrl = $trackerLocation;
         } else {
-            $trackingUrl = (int)($this->systemConfigHandler->getSystemConfig('site_url')?->getValue() ?? '');
+            $trackingUrl = ($this->systemConfigHandler->getSystemConfig('site_url')?->getValue() ?? '');
         }
 
         //make sure tracking url ends with '/' character
