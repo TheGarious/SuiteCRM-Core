@@ -3983,6 +3983,7 @@ $app_strings['LBL_VALIDATION_ERROR_INT_FORMAT'] = "Invalid int format. Expected:
 $app_strings['LBL_VALIDATION_ERROR_FLOAT_FORMAT'] = "Invalid float format. Expected: '{{context.expected}}'";
 $app_strings['LBL_VALIDATION_ERROR_DATE_FORMAT'] = "Invalid date format. Expected: '{{context.expected}}'";
 $app_strings['LBL_VALIDATION_ERROR_DATETIME_FORMAT'] = "Invalid datetime format. Expected: '{{context.expected}}'";
+$app_strings['LBL_VALIDATION_ERROR_UNSUBSCRIBE_LINK'] = 'Non-Transactional Emails must contain unsubscribe link.';
 $app_strings['LBL_VALIDATION_ERROR_EMAIL_FORMAT'] = "Invalid email format. Expected: '{{context.expected}}'";
 $app_strings['LBL_VALIDATION_ERROR_PHONE_FORMAT'] = "Invalid phone format.";
 $app_strings['LBL_VALIDATION_ERROR_MIN'] = "Invalid value. Value must greater or equal to '{{context.min}}'";
