@@ -61,6 +61,9 @@ parameters:
             - acls
             - massupdate
     modules:
+      campaigns:
+        exclude:
+          - merge
       emailman:
         exclude:
           - massupdate
