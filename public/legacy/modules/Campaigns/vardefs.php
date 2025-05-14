@@ -199,6 +199,7 @@ $dictionary['Campaign'] = [
             'type' => 'enum',
             'options' => 'campaign_type_dom',
             'len' => 100,
+            'massupdate' => false,
             'audited' => true,
             'comment' => 'The type of campaign',
             'importable' => 'required',
@@ -282,6 +283,7 @@ $dictionary['Campaign'] = [
         ],
         'frequency' => [
             'name' => 'frequency',
+            'massupdate' => false,
             'vname' => 'LBL_CAMPAIGN_FREQUENCY',
             'type' => 'enum',
             //'options' => 'campaign_status_dom',
