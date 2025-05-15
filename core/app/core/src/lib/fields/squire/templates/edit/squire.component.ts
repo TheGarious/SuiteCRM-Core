@@ -414,7 +414,7 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
             key: 'textColour',
             type: 'color-selector',
             icon: 'text-colour',
-            titleKey: 'LBL_TEXT_COLOUR',
+            titleKey: 'LBL_TEXT_COLOR',
             klass: 'squire-editor-button btn btn-sm',
             onClick: (color: ColorButton) => {
                 this?.editor?.setTextColor(color.color);
@@ -440,7 +440,7 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
                 const trigger = this.styleSignal();
                 return this?.editor?.hasFormat('A') ? 'unlink-45deg' : 'link-45deg';
             }),
-            titleKey: 'LBL_INSERT_LINK',
+            titleKey: 'LBL_LINK',
             klass: 'squire-editor-button btn btn-sm',
             hotkey: 'ctrl+k',
             dynamicClass: computed((): string => {
@@ -677,7 +677,7 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
             key: 'clearFormatting',
             type: 'button',
             icon: 'clear-formatting',
-            titleKey: 'LBL_CLEAR_FORMATING',
+            titleKey: 'LBL_CLEAR_FORMATTING',
             klass: 'squire-editor-button btn btn-sm',
             onClick: () => this?.editor?.removeAllFormatting(),
         } as ButtonInterface;
