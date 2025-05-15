@@ -617,10 +617,7 @@ class RecordViewDefinitionHandler extends LegacyHandler
 
     protected function addBackButton(array $detailViewDefs, array &$metadata): void
     {
-        $backButton = 'show';
-        if (isset($detailViewDefs['header']['backButton'])){
-            $backButton = $detailViewDefs['header']['backButton'];
-        }
+        $backButton = $detailViewDefs['header']['backButton'] ?? ['display' => true];
 
         $metadata['header']['backButton'] = $backButton;
     }
