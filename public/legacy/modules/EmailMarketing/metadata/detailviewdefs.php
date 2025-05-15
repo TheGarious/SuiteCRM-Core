@@ -41,7 +41,13 @@
 $viewdefs ['EmailMarketing'] = [
     'DetailView' => [
         'header' => [
-            'backButton' => 'hide',
+            'backButton' => [
+                'display' => true,
+                'navigate' => [
+                    'parentId' => 'campaign_id',
+                    'parentModule' => 'campaigns',
+                ],
+            ]
         ],
         'sidebarWidgets' => [
             'email-marketing-charts' => [
