@@ -45,8 +45,22 @@ export interface SummaryTemplates {
     [key: string]: string;
 }
 
+export interface BackButtonConfig {
+    display?: boolean;
+    navigate?: ParentNavigation;
+
+    [key: string]: any;
+}
+
+export interface ParentNavigation {
+    parentId?: string;
+    parentModule?: string;
+}
+
 export interface HeaderMetadata {
-    backButton?: string;
+    backButton?: BackButtonConfig;
+
+    [key: string]: any;
 }
 
 export interface RecordViewMetadata {
