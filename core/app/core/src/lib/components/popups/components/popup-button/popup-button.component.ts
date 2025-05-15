@@ -38,6 +38,7 @@ import {NgbPopover} from "@ng-bootstrap/ng-bootstrap";
 export class PopupButtonComponent implements OnInit, OnDestroy {
 
     @Input() icon: string;
+    @Input() titleKey: string;
     @Input() klass: string = 'line-action-item line-action float-right';
     @Input() placement: string = 'right';
     @Input() popoverClass: string = 'popover-wrapper';
@@ -80,6 +81,7 @@ export class PopupButtonComponent implements OnInit, OnDestroy {
         return {
             icon: this.icon,
             klass: this.klass,
+            titleKey: this.titleKey,
         } as ButtonInterface;
     }
 
