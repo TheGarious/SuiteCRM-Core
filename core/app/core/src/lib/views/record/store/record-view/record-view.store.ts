@@ -405,9 +405,12 @@ export class RecordViewStore extends ViewStore implements StateStore, BaseRecord
 
     showBackButton(): boolean {
         const metadata = this.getRecordViewMetadata();
-        const backButton = metadata?.header?.backButton ?? false;
+        return metadata?.header?.backButton?.display ?? true;
+    }
 
-        return !backButton || backButton === 'show';
+    backButtonNavigation() {
+        const metadata = this.getRecordViewMetadata();
+        return metadata?.header?.backButton?.navigate ?? null;
     }
 
     /**

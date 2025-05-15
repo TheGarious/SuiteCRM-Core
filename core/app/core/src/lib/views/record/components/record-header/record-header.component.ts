@@ -36,6 +36,7 @@ import {Record} from '../../../../common/record/record.model';
 import {ViewMode} from '../../../../common/views/view.model';
 import {AppStateStore} from "../../../../store/app-state/app-state.store";
 import {Router} from "@angular/router";
+import {ModuleNameMapper} from "../../../../services/navigation/module-name-mapper/module-name-mapper.service";
 
 @Component({
     selector: 'scrm-record-header',
@@ -71,6 +72,7 @@ export class RecordHeaderComponent implements OnInit, OnDestroy {
         protected recordViewStore: RecordViewStore,
         protected moduleNavigation: ModuleNavigation,
         protected appState: AppStateStore,
+        protected moduleNameMapper: ModuleNameMapper,
         protected router: Router
     ) {
     }
@@ -130,14 +132,42 @@ export class RecordHeaderComponent implements OnInit, OnDestroy {
     }
 
     setBackButtonConfig(): void {
-        const moduleRoute= this.moduleNavigation.getModuleRoute(this.recordViewStore.vm.appData.module);
 
-        this.backButtonConfig = {
-            icon: 'paginate_previous',
-            klass: 'back-button',
-            onClick: () => {
-                this.router.navigate([moduleRoute.route], { queryParams: { keepPagination: true } }).then();
+        const navigation = this.recordViewStore.backButtonNavigation();
+
+        if (navigation === null) {
+            const moduleRoute = this.moduleNavigation.getModuleRoute(this.recordViewStore.vm.appData.module);
+
+            this.backButtonConfig = {
+                icon: 'paginate_previous',
+                klass: 'back-button',
+                onClick: () => {
+                    this.router.navigate([moduleRoute.route], {queryParams: {keepPagination: true}}).then();
+                }
             }
+
+            return;
         }
+
+        const recordId = this.recordViewStore.getRecordId();
+        const module = this.recordViewStore.getModuleName();
+
+        this.recordViewStore.recordStore.retrieveRecord(module, recordId).subscribe(
+            (record) => {
+                const parentRecord = {
+                    id: record.attributes[navigation.parentId],
+                } as Record
+
+                const module = this.moduleNameMapper.toFrontend(navigation.parentModule);
+
+                this.backButtonConfig = {
+                    icon: 'paginate_previous',
+                    klass: 'back-button',
+                    onClick: () => {
+                        this.moduleNavigation.navigateBack(parentRecord, module, {});
+                    }
+                }
+            }
+        );
     }
 }
