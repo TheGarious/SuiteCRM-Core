@@ -191,6 +191,7 @@ export interface Field {
     defaultDisplay?: string;
     displayType?: string;
     default?: string;
+    defaultValueObject?: any;
     defaultValueModes?: ViewMode[];
     source?: FieldSource;
     valueSource?: 'value' | 'valueList' | 'valueObject' | 'valueObjectArray' | 'criteria';
@@ -214,6 +215,7 @@ export interface Field {
     fieldActions?: FieldActions;
 
     initDefaultValue?: DefaultValueInitCallback;
+    initDefaultValueObject?: DefaultValueInitCallback;
 }
 
 export class BaseField implements Field {
@@ -225,6 +227,7 @@ export class BaseField implements Field {
     loading?: WritableSignal<boolean> = signal(false);
     dynamicLabelKey?: string;
     readonly?: boolean;
+    defaultValueObject?: any;
     display?: WritableSignal<DisplayType>;
     required?: WritableSignal<boolean>;
     defaultDisplay?: string;
@@ -257,6 +260,7 @@ export class BaseField implements Field {
     protected valueObjectState?: any;
     protected valueObjectArrayState?: ObjectMap[];
     defaultValueInitialized: boolean = false;
+    defaultValueObjectInitialized: boolean = false;
 
     constructor() {
         this.valueSubject = new BehaviorSubject<FieldValue>({} as FieldValue);
@@ -335,6 +339,23 @@ export class BaseField implements Field {
             this.defaultValueInitialized = true;
         } else if (this.value === null) {
             this.value = '';
+        }
+    }
+
+
+    initDefaultValueObject(): void {
+
+        if (this.defaultValueObjectInitialized) {
+            return;
+        }
+
+        const defaultValue = this?.defaultValueObject ?? this?.definition?.defaultValueObject ?? null;
+        if (!this.valueObject && defaultValue) {
+            this.valueObject = defaultValue;
+            this?.formControl?.setValue(defaultValue);
+            this.defaultValueObjectInitialized = true;
+        } else if (this.valueObject === null) {
+            this.valueObject = {};
         }
     }
 

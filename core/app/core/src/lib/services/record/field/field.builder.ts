@@ -210,6 +210,11 @@ export class FieldBuilder {
             field.default = defaultValue;
         }
 
+        const defaultValueObject = viewField?.defaultValueObject ?? definition?.defaultValueObject ?? null;
+        if (defaultValueObject) {
+            field.defaultValueObject = defaultValueObject;
+        }
+
         field.defaultValueModes = viewField?.defaultValueModes ?? definition?.defaultValueModes ?? [];
 
         field.validators = validators;
