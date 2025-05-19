@@ -48,4 +48,20 @@ export class BaseFieldHandler<T extends BaseField> implements FieldHandler<T> {
             field.value = '';
         }
     }
+
+    initDefaultValueObject(field: T, record: Record): void {
+
+        if (field.defaultValueObjectInitialized) {
+            return;
+        }
+
+        const defaultValue = field?.defaultValueObject ?? field?.definition?.defaultValueObject ?? null;
+        if (!field.valueObject && defaultValue) {
+            field.valueObject = defaultValue;
+            field?.formControl?.setValue(defaultValue);
+            field.defaultValueObjectInitialized = true;
+        } else if (field.valueObject === null) {
+            field.valueObject = {};
+        }
+    }
 }
