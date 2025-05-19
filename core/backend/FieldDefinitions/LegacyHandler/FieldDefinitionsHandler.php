@@ -31,6 +31,7 @@ use App\Engine\LegacyHandler\LegacyHandler;
 use App\Engine\LegacyHandler\LegacyScopeState;
 use App\FieldDefinitions\Entity\FieldDefinition;
 use App\FieldDefinitions\Service\FieldDefinitionsProviderInterface;
+use App\FieldDefinitions\Service\VardefConfigMapperRegistry;
 use App\Module\Service\ModuleNameMapperInterface;
 use Exception;
 use SugarView;
@@ -73,7 +74,8 @@ class FieldDefinitionsHandler extends LegacyHandler implements FieldDefinitionsP
         LegacyScopeState $legacyScopeState,
         ModuleNameMapperInterface $moduleNameMapper,
         FieldDefinitionMappers $mappers,
-        RequestStack $session
+        RequestStack $session,
+        protected VardefConfigMapperRegistry $vardefConfigMapperRegistry,
     ) {
         parent::__construct($projectDir, $legacyDir, $legacySessionName, $defaultSessionName, $legacyScopeState,
             $session);
@@ -102,7 +104,7 @@ class FieldDefinitionsHandler extends LegacyHandler implements FieldDefinitionsP
 
         $vardefs = new FieldDefinition();
         $vardefs->setId($moduleName);
-        $vardefs->setVardef($this->getDefinitions($legacyModuleName));
+        $vardefs->setVardef($this->getDefinitions($legacyModuleName, $moduleName));
 
         $mappers = $this->mappers->get($moduleName);
 
@@ -120,7 +122,7 @@ class FieldDefinitionsHandler extends LegacyHandler implements FieldDefinitionsP
      * @param string $legacyModuleName
      * @return array|mixed
      */
-    protected function getDefinitions(string $legacyModuleName)
+    protected function getDefinitions(string $legacyModuleName, string $moduleName)
     {
         try {
             $sugarView = new SugarView();
@@ -129,6 +131,15 @@ class FieldDefinitionsHandler extends LegacyHandler implements FieldDefinitionsP
             return [];
         }
 
-        return $data[0][$legacyModuleName] ?? [];
+        $vardefs = $data[0][$legacyModuleName] ?? [];
+
+        $mappers = $this->vardefConfigMapperRegistry->get($moduleName);
+
+        foreach ($mappers as $mapper) {
+            $vardefs = $mapper->map($vardefs);
+        }
+
+        return $vardefs;
+
     }
 }

@@ -92,6 +92,8 @@ services:
       tags: [ 'system.config.mapper' ]
     App\FieldDefinitions\LegacyHandler\FieldDefinitionMapperInterface:
       tags: [ 'field.definition.mapper' ]
+    App\FieldDefinitions\Service\VardefConfigMapperInterface:
+      tags: [ 'vardef.mapper' ]
     App\ViewDefinitions\LegacyHandler\ViewDefinitionMapperInterface:
       tags: [ 'view.definition.mapper' ]
     App\Data\LegacyHandler\PresetListDataHandlerInterface:
@@ -294,6 +296,11 @@ services:
     # inject all services tagged with field.definition.mapper as first argument
     arguments:
       - !tagged { tag: 'field.definition.mapper' }
+
+  App\FieldDefinitions\Service\VardefConfigMapperRegistry:
+    # inject all services tagged with field.definition.mapper as first argument
+    arguments:
+      - !tagged { tag: 'vardef.mapper' }
 
   App\ViewDefinitions\LegacyHandler\ViewDefinitionMappers:
     # inject all services tagged with view.definition.mapper as first argument
