@@ -88,6 +88,11 @@ class OutboundEmailAccounts extends OutboundEmailAccounts_sugar
      */
     public $reply_to_addr;
 
+    public $is_personal;
+    public $is_default;
+
+    public $keyForUsersDefaultOEAccount = 'defaultOEAccount';
+
     /**
      * @var string
      */
@@ -103,9 +108,15 @@ class OutboundEmailAccounts extends OutboundEmailAccounts_sugar
 
     public function save($check_notify = false)
     {
+        global $current_user;
+
         if (!$this->hasAccessToPersonalAccount()) {
             $this->logPersonalAccountAccessDenied('save');
             throw new RuntimeException('Access Denied');
+        }
+
+        if ($this->type === 'user') {
+            $this->is_personal = 1;
         }
 
         $this->keepWriteOnlyFieldValues();
@@ -151,7 +162,15 @@ class OutboundEmailAccounts extends OutboundEmailAccounts_sugar
             $admin->saveSetting('notify', 'fromaddress', $this->smtp_from_addr);
         }
 
+        $currentOECount = $this->getUserPersonalAccountCount($current_user);
+
         $results = parent::save($check_notify);
+
+        //If this is the first personal account the user has setup mark it as default for them.
+        if ($currentOECount === '0') {
+            $this->setUsersDefaultOutboundAccount($current_user, $this->id);
+        }
+
         return $results;
     }
 
@@ -189,6 +208,50 @@ class OutboundEmailAccounts extends OutboundEmailAccounts_sugar
         }
 
         return $this->get_list('', $where)['list'] ?? [];
+    }
+
+    /**
+     * Override's SugarBean's
+     */
+    public function fill_in_additional_list_fields()
+    {
+        $this->fill_in_additional_detail_fields();
+    }
+
+    /**
+     * Override's SugarBean's
+     */
+    public function fill_in_additional_detail_fields(): void
+    {
+        $this->calculateDefault();
+    }
+
+    public function calculateDefault(): void {
+
+        global $current_user;
+
+        if ($this->type === 'user' && $this->getUsersDefaultOutboundServerId($current_user) === $this->id) {
+            $this->is_default = 1;
+        }
+    }
+
+    /**
+     * Get the users default IE account id
+     *
+     * @param User $user
+     * @return string
+     */
+    public function getUsersDefaultOutboundServerId($user)
+    {
+        $id = $user->getPreference($this->keyForUsersDefaultOEAccount, 'Emails', $user);
+        //If no preference has been set, grab the default system id.
+        if (empty($id)) {
+            $oe = new OutboundEmail();
+            $system = $oe->getSystemMailerSettings();
+            $id = empty($system->id) ? '' : $system->id;
+        }
+
+        return $id;
     }
 
     /**
@@ -472,15 +535,15 @@ HTML;
 				};
 
 				function testOutboundSettingsDialog() {
-                    
+
                     var notifyFromAddress = document.getElementById('smtp_from_addr') && document.getElementById('smtp_from_addr').value;
                     var notifyFromName = document.getElementById('smtp_from_name') && document.getElementById('smtp_from_name').value;
-                    
+
                     if (!notifyFromAddress || !notifyFromName) {
 						overlay("{$APP['ERR_INVALID_REQUIRED_FIELDS']}", "{$APP['LBL_EMAIL_SETTINGS_FROM_ADDR_NOT_SET']}", 'alert');
 						return;
 					}
-                    
+
 					// lazy load dialogue
 					if(!EmailMan.testOutboundDialog) {
 						EmailMan.testOutboundDialog = new YAHOO.widget.Dialog("testOutboundDialog", {
@@ -642,5 +705,20 @@ HTML;
     {
         $notAllowed = ['export', 'import', 'massupdate', 'duplicate'];
         return in_array(strtolower($view), $notAllowed);
+    }
+
+    protected function getUserPersonalAccountCount(SugarBean|bool|null $current_user)
+    {
+        $query = "SELECT count(*) as c FROM outbound_email WHERE deleted=0 AND is_personal = '1' AND (user_id='{$current_user->id}' OR created_by='{$current_user->id}')";
+
+        $rs = $this->db->query($query);
+        $row = $this->db->fetchByAssoc($rs);
+
+        return $row['c'];
+    }
+
+    protected function setUsersDefaultOutboundAccount(SugarBean|bool|null $current_user, $id)
+    {
+        $current_user->setPreference($this->keyForUsersDefaultOEAccount, $id, '', 'Emails');
     }
 }

@@ -6,6 +6,18 @@ $viewdefs ['OutboundEmailAccounts'] = [
                 'buttons' => [
                     'EDIT',
                     'DELETE',
+                    [
+                        'customCode' => '
+                            {if $fields.type.value === "user" && $fields.created_by.value == $current_user_id}
+                            <input title="{$MOD.LBL_SET_AS_DEFAULT_BUTTON}"
+                                   type="button"
+                                   class="button"
+                                   id="set-as-default-outbound"
+                                   onClick="document.location.href=\'index.php?module=OutboundEmailAccounts&action=SetDefault&record={$fields.id.value}&return_module=OutboundEmail&return_action=DetailView&return_id={$fields.id.value}\';"
+                                   name="button" value="{$MOD.LBL_SET_AS_DEFAULT_BUTTON}" />
+                           {/if}
+                        '
+                    ]
                 ],
             ],
             'maxColumns' => '2',
@@ -45,7 +57,7 @@ $viewdefs ['OutboundEmailAccounts'] = [
             'default' => [
                 [
                     'name',
-                    ''
+                    'is_default'
                 ],
                 [
                     'type',
