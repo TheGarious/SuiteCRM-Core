@@ -338,6 +338,13 @@ $dictionary['EmailMarketing'] = [
         'outbound_email_name' => [
             'name' => 'outbound_email_name',
             'rname' => 'from_addr',
+            'defaultValueModes' => [
+                'create'
+            ],
+            'metadata' => [
+                'dynamicOptionLabel' => 'LBL_OUTBOUND_EMAIL_NAME_COMPOSE_LABEL',
+                'dynamicOptionSubLabel' => 'LBL_OUTBOUND_EMAIL_NAME_COMPOSE_SUB_LABEL'
+            ],
             'id_name' => 'outbound_email_id',
             'vname' => 'LBL_FROM',
             'join_name' => 'outbound_email',

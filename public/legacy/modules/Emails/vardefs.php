@@ -122,7 +122,6 @@ $dictionary['Email'] = array(
             'vname' => 'LBL_BODY',
             'source' => 'non-db',
             'inline_edit' => false,
-
             'displayType' => 'html',
             'rows' => 5,
             'cols' => 150,
