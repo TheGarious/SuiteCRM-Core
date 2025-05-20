@@ -25,16 +25,15 @@
  * the words "Supercharged by SuiteCRM".
  */
 
-namespace App\FieldDefinitions\LegacyHandler;
+namespace App\FieldDefinitions\LegacyHandler\DefaultMapper;
 
 use App\Engine\LegacyHandler\LegacyHandler;
 use App\Engine\LegacyHandler\LegacyScopeState;
-use App\FieldDefinitions\Entity\FieldDefinition;
 use App\FieldDefinitions\Service\VardefConfigMapperInterface;
 use App\UserPreferences\Service\UserPreferencesProviderInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-class OutboundEmailDefaultMapper extends LegacyHandler implements VardefConfigMapperInterface
+class CurrencyIdDefaultMapper extends LegacyHandler implements VardefConfigMapperInterface
 {
 
     public function __construct(
@@ -52,15 +51,15 @@ class OutboundEmailDefaultMapper extends LegacyHandler implements VardefConfigMa
 
     public function getHandlerKey(): string
     {
-        return 'outbound-email-vardef-mapper';
+        return 'currency-id-vardef-mapper';
     }
 
-        /**
+    /**
      * @inheritDoc
      */
     public function getKey(): string
     {
-        return 'outbound-email-vardef-mapper';
+        return 'currency-id-vardef-mapper';
     }
 
     /**
@@ -73,60 +72,29 @@ class OutboundEmailDefaultMapper extends LegacyHandler implements VardefConfigMa
 
     /**
      * @inheritDoc
-     * @throws \Exception
      */
     public function map(array $vardefs): array
     {
 
         foreach ($vardefs as $fieldName => $fieldDefinition) {
 
-            $type = $fieldDefinition['type'] ?? '';
-            $module = $fieldDefinition['module'] ?? '';
-
-            if (empty($module)){
+            if ($fieldName !== 'currency_id') {
                 continue;
             }
 
-            if ($type !== 'relate' || $module !== 'OutboundEmailAccounts') {
+            $preferences = $this->userPreferenceService->getUserPreference('global')?->getItems() ?? [];
+
+            $currency = $preferences['currency'] ?? [];
+
+            if ($currency === []) {
                 continue;
             }
 
-            $preferences = $this->userPreferenceService->getUserPreference('Emails')?->getItems() ?? [];
-
-            if ($preferences === []) {
-                continue;
-            }
-
-            $id = $preferences['defaultOEAccount'] ?? '';
-
-            if ($id === '') {
-                continue;
-            }
-
-            $bean = $this->getBean('OutboundEmailAccounts', $id);
-
-
-            $fieldDefinition['defaultValueObject'] = [
-                'id' => $id,
-                'smtp_from_name' => $bean->smtp_from_name,
-                'smtp_from_addr' => $bean->smtp_from_addr,
-                'from_addr' => $bean->smtp_from_name . ' ' . $bean->smtp_from_addr,
-            ];
+            $fieldDefinition['defaultValue'] = $currency['id'] ?? '';
 
             $vardefs[$fieldName] = $fieldDefinition;
         }
 
         return $vardefs;
-    }
-
-    protected function getBean(string $module, string $id): \SugarBean|bool
-    {
-        $this->init();
-
-        $bean = \BeanFactory::getBean($module, $id);
-
-        $this->close();
-
-        return $bean;
     }
 }
