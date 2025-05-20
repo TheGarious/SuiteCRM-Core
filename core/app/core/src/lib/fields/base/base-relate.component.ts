@@ -221,7 +221,9 @@ export class BaseRelateComponent extends BaseFieldComponent implements OnInit, O
 
     protected init(): void {
 
-        this.initModule.set(this?.field?.definition?.module ?? '');
+        const module = this?.field?.definition?.module ?? this.record.fields[this.field.definition.type_name].value ?? '';
+
+        this.initModule.set(module);
 
         if (this.relateService) {
             this.relateService.init(this.getRelatedModule());
@@ -234,10 +236,10 @@ export class BaseRelateComponent extends BaseFieldComponent implements OnInit, O
             return;
         }
 
-        const module = this.getRelatedModule();
+        const rmodule = this.getRelatedModule();
 
-        this.headerFields[module] = metadata?.headerField ?? 'name';
-        this.subHeaderFields[module] = metadata?.subHeaderField ?? '';
+        this.headerFields[rmodule] = metadata?.headerField ?? 'name';
+        this.subHeaderFields[rmodule] = metadata?.subHeaderField ?? '';
     }
 
     protected buildRelate(id: string, relateValue: string, other: AttributeMap = {}): any {
