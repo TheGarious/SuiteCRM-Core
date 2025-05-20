@@ -112,7 +112,7 @@ export class RecordStore {
 
         this.initFieldDefaults = initDefaultValues;
 
-        this.initRecord(newRecord, initDefaultValues);
+        this.initRecord(newRecord, false);
 
         this.updateState(newRecord);
     }
