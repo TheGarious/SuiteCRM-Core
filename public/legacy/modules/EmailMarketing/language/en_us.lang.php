@@ -121,6 +121,7 @@ $mod_strings = array(
     'LBL_MARKETING_TYPE' => 'Marketing Type',
     'LBL_SURVEY' => 'Survey',
     'LBL_SCHEDULE' => 'Schedule',
+    'LBL_DELETE_TEST_ENTRIES' => 'Delete Test Entries',
     'LBL_UNSCHEDULE' => 'Unschedule',
     'LBL_ABORT' => 'Abort',
     'LBL_USERS' => 'Users',

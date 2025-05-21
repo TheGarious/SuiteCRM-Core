@@ -1868,6 +1868,7 @@ $app_strings = array(
     'LBL_TOO_MANY_ADDRESSES' => 'You have selected too many email addresses.',
     'LBL_NO_ADDRESSES_SELECTED' => 'Please select an address to send to.',
     'LBL_NOT_ALL_SENT' => 'Not all Emails sent. See logs for more info.',
+    'LBL_NOT_VALID_TARGETS' => 'No targets validated to send to.',
     'LBL_ALL_EMAILS_SENT' => 'All test Emails sent successfully',
     'LBL_UNDELETE_BUTTON_LABEL' => 'Undelete',
     'LBL_UNDELETE_BUTTON_TITLE' => 'Undelete',
@@ -1924,6 +1925,8 @@ $app_strings = array(
     'NTC_DELETE_CONFIRMATION' => 'Are you sure you want to delete this record?',
     'NTC_ABORT_CONFIRMATION' => 'Are you sure you want to abort?',
     'NTC_SCHEDULE_CONFIRMATION' => "When Scheduled, The Sending Process will being once the Scheduled Run Date has been reached.",
+    'NTC_DELETE_TEST_ENTRIES' => 'Scheduling will Delete Test Entries.',
+    'NTC_DELETE_TEST_ENTRIES_CONFIRMATION' => 'Are you sure you want to delete test entries?',
     'NTC_PROCEED' => 'Would you like to proceed?',
     'NTC_UNSCHEDULE_CONFIRMATION' => 'Unscheduling will set the Status to "Draft".',
     'NTC_UNSCHEDULE_CONFIRMATION_OTHER' => 'The Sending Process will no longer begin, unless Re-Scheduled.',
@@ -4210,3 +4213,7 @@ $app_strings['LBL_TEXT_INDENT_RIGHT'] = 'Indent Text Right';
 
 $app_strings['LBL_EMAIL_MARKETING_NOT_UNSCHEDULED'] = 'Email Marketing is not Un Scheduled cannot schedule';
 $app_strings['LBL_INCORRECT_RECORD_ID'] = 'Incorrect record id';
+
+$app_strings['LBL_TEST_ENTRIES_DELETED'] = 'Test Entries Deleted.';
+$app_strings['LBL_UNABLE_TO_GET_ID'] = 'Unable to retrieve Email Marketing ID';
+$app_strings['LBL_UNABLE_TO_DELETE_TEST_ENTRIES'] = 'Error Deleting Test Entries. See logs for more info';

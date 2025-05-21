@@ -158,6 +158,33 @@ $viewdefs ['EmailMarketing'] = [
                         ],
                     ],
                 ],
+                'delete-test-entries' => [
+                    'key' => 'delete-test-entries',
+                    'labelKey' => 'LBL_DELETE_TEST_ENTRIES',
+                    'asyncProcess' => true,
+                    'modes' => ['detail'],
+                    'params' => [
+                        'expanded' => true,
+                        'displayConfirmation' => true,
+                        'confirmationLabel' => 'NTC_DELETE_TEST_ENTRIES_CONFIRMATION',
+                    ],
+                    'acl' => ['view'],
+                    'displayLogic' => [
+                        'hide-on-scheduled' => [
+                            'modes' => ['detail'],
+                            'params' => [
+                                'activeOnFields' => [
+                                    'status' => [
+                                        [
+                                            'operator' => 'not-equal',
+                                            'values' => ['draft']
+                                        ],
+                                    ],
+                                ]
+                            ]
+                        ],
+                    ],
+                ],
                 'schedule-email-marketing' => [
                     'key' => 'schedule-email-marketing',
                     'labelKey' => 'LBL_SCHEDULE',
@@ -166,7 +193,7 @@ $viewdefs ['EmailMarketing'] = [
                     'params' => [
                         'expanded' => true,
                         'displayConfirmation' => true,
-                        'confirmationMessages' => ['NTC_SCHEDULE_CONFIRMATION', 'NTC_PROCEED'],
+                        'confirmationMessages' => ['NTC_SCHEDULE_CONFIRMATION', 'NTC_DELETE_TEST_ENTRIES', 'NTC_PROCEED'],
                     ],
                     'acl' => ['view'],
                     'displayLogic' => [
