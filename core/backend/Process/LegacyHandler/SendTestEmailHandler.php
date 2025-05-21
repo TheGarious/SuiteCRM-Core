@@ -286,35 +286,11 @@ class SendTestEmailHandler extends LegacyHandler implements ProcessHandlerInterf
             $this->logger->error($e->getMessage());
         }
         if ($success) {
-            $this->campaignLogManager->createCampaignLogEntry(
-                $campaignRecord->getAttributes()['id'] ?? null,
-                $emAttributes['id'],
-                $email,
-                'targeted',
-                '',
-                $value->getAttributes()['id'] ?? null,
-                $value->getAttributes()['module_name'] ?? null,
-                $trackerId,
-                $emailRecord->getAttributes()['id'] ?? '',
-                'Emails',
-                true
-            );
+            $this->handleEmail($value, $campaignRecord, 'targeted', $emAttributes, $email, $emailRecord, $trackerId);
             return true;
         }
 
-        $this->campaignLogManager->createCampaignLogEntry(
-            $campaignRecord->getAttributes()['id'] ?? null,
-            $emAttributes['id'],
-            $email,
-            'send error',
-            '',
-            $value->getAttributes()['id'] ?? null,
-            $value->getAttributes()['module_name'] ?? null,
-            $trackerId,
-            '',
-            'Emails',
-            true
-        );
+        $this->handleEmail($value, $campaignRecord,'send-error', $emAttributes, $email, $emailRecord, $trackerId);;
         return false;
     }
 
@@ -337,6 +313,7 @@ class SendTestEmailHandler extends LegacyHandler implements ProcessHandlerInterf
 
                 if (is_string($item)) {
                     $targets['emails'][] = $item;
+                    continue;
                 }
 
                 $targets['records'][] = $this->getTargetRecord($item);
@@ -491,5 +468,47 @@ class SendTestEmailHandler extends LegacyHandler implements ProcessHandlerInterf
         }
 
         return $validatedTargets;
+    }
+
+    protected function handleEmail(
+        $value,
+        Record $campaignRecord,
+        string $activityType,
+        array $emAttributes,
+        string $email,
+        Record $emailRecord,
+        string $trackerId
+    ): void
+    {
+        if (is_string($value)){
+            $this->campaignLogManager->createCampaignLogEntry(
+                $campaignRecord->getAttributes()['id'] ?? null,
+                $emAttributes['id'],
+                $email,
+                    $activityType,
+                '',
+                '',
+                '',
+                $trackerId,
+                $emailRecord->getAttributes()['id'] ?? '',
+                'Emails',
+                true
+            );
+            return;
+        }
+
+        $this->campaignLogManager->createCampaignLogEntry(
+            $campaignRecord->getAttributes()['id'] ?? null,
+            $emAttributes['id'],
+            $email,
+                $activityType,
+            '',
+            $value?->getAttributes()['id'] ?? null,
+            $value?->getAttributes()['module_name'] ?? null,
+            $trackerId,
+            $emailRecord->getAttributes()['id'] ?? '',
+            'Emails',
+            true
+        );
     }
 }
