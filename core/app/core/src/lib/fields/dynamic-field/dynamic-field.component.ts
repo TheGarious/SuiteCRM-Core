@@ -315,4 +315,19 @@ export class DynamicFieldComponent implements OnInit, OnDestroy {
         return footnoteEntry;
     }
 
+    hasLabels(item: any): boolean {
+        return item?.message?.labels?.startLabelKey || item?.message?.labels?.endLabelKey;
+    }
+
+    getValidationIcon(item: any): string {
+        return item?.message?.labels?.icon ?? '';
+    }
+
+    getMessageStartLabelKey(item: any): string {
+        return item?.message?.labels?.startLabelKey ?? '';
+    }
+
+    getMessageEndLabelKey(item: any): string {
+        return item?.message?.labels?.endLabelKey ?? '';
+    }
 }
