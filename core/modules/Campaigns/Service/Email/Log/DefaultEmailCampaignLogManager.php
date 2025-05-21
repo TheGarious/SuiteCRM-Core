@@ -52,6 +52,7 @@ class DefaultEmailCampaignLogManager implements EmailCampaignLogManagerInterface
         string $trackerId = '',
         string $relatedId = '',
         string $relatedType = '',
+        bool $isTest = false
     ): void {
 
         $timedate = $this->dateTimeHandler->getDateTime();
@@ -66,11 +67,12 @@ class DefaultEmailCampaignLogManager implements EmailCampaignLogManagerInterface
             'activity_type' => $activityType,
             'activity_date' => $timedate->nowDb(),
             'list_id' => $prospectListId ?? null,
-            'related_id' => $targetId,
-            'related_type' => $targetType,
+            'related_id' => $relatedId,
+            'related_type' => $relatedType,
             'target_id' => $targetId,
             'target_type' => $targetType,
             'resend_type' => null,
+            'is_test_entry' => $isTest,
         ];
 
         if ($trackerId !== '') {
@@ -91,7 +93,10 @@ class DefaultEmailCampaignLogManager implements EmailCampaignLogManagerInterface
                 'prospectListId' => $prospectListId,
                 'targetId' => $targetId,
                 'targetType' => $targetType,
-                '$trackerId' => $trackerId
+                'relatedId' => $relatedId,
+                'relatedType' => $relatedType,
+                '$trackerId' => $trackerId,
+                'is_test_entry' => $isTest,
             ]
         );
     }

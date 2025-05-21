@@ -123,7 +123,9 @@ class DefaultEmailQueueProcessor implements EmailQueueProcessorInterface
 
                 $trackerId = create_guid();
 
-                $result = $this->sendEmail($emRecord, $targetRecord, $campaignRecord, $trackerId);
+                $emailRecord = $this->buildEmailRecord($emRecord, $targetRecord);
+
+                $result = $this->sendEmail($emailRecord, $emRecord, $targetRecord, $campaignRecord, $trackerId);
 
                 if ($result === null || !$result['success']) {
                     $this->handlerFailedSend(
@@ -146,7 +148,9 @@ class DefaultEmailQueueProcessor implements EmailQueueProcessorInterface
                     $targetListId,
                     $targetId,
                     $targetType,
-                    $trackerId
+                    $trackerId,
+                    $emailRecord->getAttributes()['id'] ?? '',
+                    'Emails',
                 );
             }
 
@@ -206,7 +210,7 @@ class DefaultEmailQueueProcessor implements EmailQueueProcessorInterface
             ],
         ];
 
-        $emailRecord->setId('');
+        $emailRecord->setId(create_guid());
         $emailRecord->setAttributes($attributes);
         $emailRecord->setModule('Emails');
 
@@ -221,7 +225,9 @@ class DefaultEmailQueueProcessor implements EmailQueueProcessorInterface
         string $prospectListId,
         string $targetId,
         string $targetType,
-        string $trackerId = ''
+        string $trackerId = '',
+        string $relatedId = '',
+        string $relatedType = ''
     ): void {
 
         $entry = $this->emailQueueManager->getQueueEntry($marketingId, $targetId, $targetType);
@@ -236,7 +242,9 @@ class DefaultEmailQueueProcessor implements EmailQueueProcessorInterface
                 $prospectListId,
                 $targetId,
                 $targetType,
-                $trackerId
+                $trackerId,
+                $relatedId,
+                $relatedType
             );
 
             $this->emailQueueManager->deleteFromQueue($marketingId, $targetId, $targetType);
@@ -375,7 +383,9 @@ class DefaultEmailQueueProcessor implements EmailQueueProcessorInterface
         string $targetListId,
         string $targetId,
         string $targetType,
-        string $trackerId = ''
+        string $trackerId = '',
+        string $relatedId = '',
+        string $relatedType = ''
     ): void {
         $this->campaignLogManager->createCampaignLogEntry(
             $campaignId,
@@ -385,7 +395,9 @@ class DefaultEmailQueueProcessor implements EmailQueueProcessorInterface
             $targetListId,
             $targetId,
             $targetType,
-            $trackerId
+            $trackerId,
+            $relatedId,
+            $relatedType
         );
 
         $this->emailQueueManager->deleteFromQueue($emailMarketingId, $targetId, $targetType);
@@ -408,12 +420,10 @@ class DefaultEmailQueueProcessor implements EmailQueueProcessorInterface
      * @param string $trackerId
      * @return array|null
      */
-    protected function sendEmail(Record $emRecord, Record $targetRecord, ?Record $campaignRecord, string $trackerId): ?array
+    protected function sendEmail(Record $emailRecord, Record $emRecord, Record $targetRecord, ?Record $campaignRecord, string $trackerId): ?array
     {
         $result = null;
         try {
-            $emailRecord = $this->buildEmailRecord($emRecord, $targetRecord);
-
             $this->logger->debug(
                 'Campaigns:DefaultEmailQueueProcessor::sendEmail - Sending email | email marketing id - ' . $emRecord->getId() . ' | target - ' . $targetRecord->getModule() . '-' . $targetRecord->getId(),
                 [
