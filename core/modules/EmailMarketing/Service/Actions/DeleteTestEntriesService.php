@@ -46,7 +46,6 @@ class DeleteTestEntriesService {
 
         $queryBuilder
             ->delete('campaign_log')
-//            ->from('campaign_log')
             ->where('marketing_id = :id')
             ->andWhere('is_test_entry = 1')
             ->setParameter('id', $id);
