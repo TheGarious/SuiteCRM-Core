@@ -32,16 +32,20 @@ namespace App\Process\LegacyHandler;
 use ApiPlatform\Exception\InvalidArgumentException;
 use ApiPlatform\Metadata\Exception\ItemNotFoundException;
 use App\Data\Entity\Record;
+use App\Data\Service\RecordProviderInterface;
 use App\Emails\LegacyHandler\EmailProcessProcessor;
 use App\Emails\LegacyHandler\FilterEmailListHandler;
 use App\Emails\LegacyHandler\SendEmailHandler;
 use App\Engine\LegacyHandler\LegacyHandler;
 use App\Engine\LegacyHandler\LegacyScopeState;
+use App\Module\Campaigns\Service\Email\Log\EmailCampaignLogManagerInterface;
+use App\Module\Campaigns\Service\Email\Parser\CampaignEmailParserManager;
+use App\Module\Campaigns\Service\Email\Targets\EmailTargetValidatorManager;
+use App\Module\Campaigns\Service\Email\Targets\Validation\ValidationFeedback;
 use App\Module\Service\ModuleNameMapperInterface;
 use App\Process\Entity\Process;
 use App\Process\Service\ProcessHandlerInterface;
 use App\SystemConfig\LegacyHandler\SystemConfigHandler;
-use BeanFactory;
 use PHPMailer\PHPMailer\Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -61,12 +65,16 @@ class SendTestEmailHandler extends LegacyHandler implements ProcessHandlerInterf
         string $defaultSessionName,
         LegacyScopeState $legacyScopeState,
         RequestStack $requestStack,
+        protected EmailCampaignLogManagerInterface $campaignLogManager,
         protected FilterEmailListHandler $filterEmailListHandler,
         protected ModuleNameMapperInterface $moduleNameMapper,
         protected SendEmailHandler $sendEmailHandler,
         protected SystemConfigHandler $systemConfigHandler,
         protected EmailProcessProcessor $emailProcessProcessor,
         protected LoggerInterface $logger,
+        protected RecordProviderInterface $recordProvider,
+        protected CampaignEmailParserManager $emailParserManager,
+        protected EmailTargetValidatorManager $targetValidatorManager
     ) {
         parent::__construct(
             $projectDir,
@@ -139,6 +147,7 @@ class SendTestEmailHandler extends LegacyHandler implements ProcessHandlerInterf
     /**
      * @inheritDoc
      * @throws Exception
+     * @throws \Exception
      */
     public function run(Process $process): void
     {
@@ -149,59 +158,64 @@ class SendTestEmailHandler extends LegacyHandler implements ProcessHandlerInterf
         $this->init();
         $this->startLegacyApp();
 
-        $beans = $this->filterEmailListHandler->getBeans($fields);
-
         $module = $this->moduleNameMapper->toLegacy($options['module']);
-        $marketingBean = BeanFactory::getBean($module, $options['id']);
+        $emRecord = $this->recordProvider->getRecord($module, $options['id']);
+        $campaignId = $emRecord->getAttributes()['campaign_id'] ?? '';
+        $emailMarketingId = $emRecord->getAttributes()['id'] ?? '';
 
-        $outboundEmail = null;
-        if ($marketingBean?->outbound_email_id ?? false) {
-            $outboundEmail = BeanFactory::getBean('OutboundEmailAccounts', $marketingBean->outbound_email_id);
-        }
-
-        $subject = $marketingBean->subject;
-        $body = $marketingBean->body;
-        $survey = $marketingBean->survey_id ?? '';
+        $beans = $this->filterEmailListHandler->getBeans($fields);
+        $targets = $this->getTargetRecords($beans, $emRecord);
 
         $this->close();
 
+        $validatedTargets = $this->validateTargets($targets, $emRecord, $campaignId, $emailMarketingId);
+
+        if (empty($validatedTargets)) {
+            $process->setStatus('error');
+            $process->setMessages(['LBL_NO_VALID_TARGETS']);
+            $process->setData(['reload' => true]);
+        }
+
         $allSent = true;
 
-        foreach ($beans as $key => $value) {
-            foreach ($value as $item) {
-                $sent = $this->sendEmail($item, $subject, $body, $outboundEmail->id, $survey);
+        foreach ($validatedTargets as $key => $value) {
+            $sent = $this->sendEmail($value, $emRecord);
 
-                if (!$sent){
-                    $allSent = false;
-                }
+            if (!$sent){
+                $allSent = false;
             }
         }
 
         if (!$allSent) {
             $process->setStatus('error');
             $process->setMessages(['LBL_NOT_ALL_SENT']);
-            $process->setData([]);
+            $process->setData(['reload' => true]);
             return;
         }
 
         $process->setStatus('success');
         $process->setMessages(['LBL_ALL_EMAILS_SENT']);
-        $process->setData([]);
+        $process->setData(['reload' => true]);
     }
 
-    protected function buildRecord($value, $subject, $body, $outboundId, $survey): Record
+    protected function buildEmailRecord($record, $emAttributes): Record
     {
-        $record = new Record();
-        $record->setId('');
-        $record->setModule('emails');
-        $record->setType('Email');
+        $emailRecord = new Record();
+        $emailRecord->setId(create_guid());
+        $emailRecord->setModule('emails');
+        $emailRecord->setType('Email');
 
-        if (is_string($value)){
-            $record->setAttributes(
+        $outboundId = $emAttributes['outbound_email_id'] ?? '';
+        $survey = $emAttributes['survey_id'] ?? '';
+        $subject = $emAttributes['name'] ?? '';
+        $body = $emAttributes['body'] ?? '';
+
+        if (is_string($record)){
+            $emailRecord->setAttributes(
                 [
                     'to_addrs_names' => [
                         [
-                            'email1' => $value,
+                            'email1' => $record,
                         ]
                     ],
                     'cc_addrs_names' => [],
@@ -213,18 +227,20 @@ class SendTestEmailHandler extends LegacyHandler implements ProcessHandlerInterf
                 ]
             );
 
-            return $record;
+            return $emailRecord;
         }
 
-        $record->setAttributes(
+        $recordAttributes = $record->getAttributes();
+
+        $emailRecord->setAttributes(
             [
                 'to_addrs_names' => [
                     [
-                        'email1' => $value->email1 ?? $value->email,
+                        'email1' => $recordAttributes['email1'] ?? $recordAttributes['email'],
                     ]
                 ],
-                'parent_id' => $value->id,
-                'parent_type' => $value->module_dir,
+                'parent_id' => $recordAttributes['id'],
+                'parent_type' => $recordAttributes['module_name'],
                 'cc_addrs_names' => [],
                 'bcc_addrs_names' => [],
                 'name' => $subject,
@@ -234,24 +250,246 @@ class SendTestEmailHandler extends LegacyHandler implements ProcessHandlerInterf
             ]
         );
 
-        return $record;
+        return $emailRecord;
     }
 
-    protected function sendEmail($value, $subject, $body, $outboundId, $survey): bool
+    /**
+     * @throws \Exception
+     */
+    protected function sendEmail($value, $emRecord): bool
     {
-        $record = $this->buildRecord($value, $subject, $body, $outboundId, $survey);
+        $emAttributes = $emRecord->getAttributes();
+        $campaignRecord = $this->recordProvider->getRecord('Campaigns', $emAttributes['campaign_id'] ?? '');
+        $emailRecord = $this->buildEmailRecord($value, $emAttributes);
+        $targetRecord = null;
+        $trackerId = create_guid();
+
+        $email = $value;
+
+        if (!is_string($value)) {
+            $email = $value->getAttributes()['email1'] ?? $value->getAttributes()['email'];
+        }
+
+        $this->emailParserManager->parse($emailRecord,
+        [
+            'targetRecord' => $targetRecord,
+            'emailMarketingRecord' => $emRecord,
+            'campaignRecord' => $campaignRecord,
+            'trackerId' => $trackerId
+        ]);
 
         $success = false;
 
         try {
-            $success = $this->emailProcessProcessor->processEmail($record, true);
+            $success = $this->emailProcessProcessor->processEmail($emailRecord, true);
         } catch (\Doctrine\DBAL\Exception $e) {
             $this->logger->error($e->getMessage());
         }
         if ($success) {
+            $this->campaignLogManager->createCampaignLogEntry(
+                $campaignRecord->getAttributes()['id'] ?? null,
+                $emAttributes['id'],
+                $email,
+                'targeted',
+                '',
+                $value->getAttributes()['id'] ?? null,
+                $value->getAttributes()['module_name'] ?? null,
+                $trackerId,
+                $emailRecord->getAttributes()['id'] ?? '',
+                'Emails',
+                true
+            );
             return true;
         }
 
+        $this->campaignLogManager->createCampaignLogEntry(
+            $campaignRecord->getAttributes()['id'] ?? null,
+            $emAttributes['id'],
+            $email,
+            'send error',
+            '',
+            $value->getAttributes()['id'] ?? null,
+            $value->getAttributes()['module_name'] ?? null,
+            $trackerId,
+            '',
+            'Emails',
+            true
+        );
         return false;
+    }
+
+    /**
+     * @throws \Exception
+     */
+    protected function getTargetRecord($bean): Record
+    {
+        return $this->recordProvider->getRecord($bean->module_dir, $bean->id);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    protected function getTargetRecords(array $beans, Record $emRecord): array
+    {
+        $targets = [];
+        foreach ($beans as $key => $value) {
+            foreach ($value as $item) {
+
+                if (is_string($item)) {
+                    $targets['emails'][] = $item;
+                }
+
+                $targets['records'][] = $this->getTargetRecord($item);
+            }
+        }
+
+        return $targets;
+    }
+
+    protected function handleException(
+        string $campaignId,
+        string $emailMarketingId,
+        string $email,
+        string $reason,
+        string $targetListId,
+        string $targetId,
+        string $targetType,
+        string $trackerId = '',
+        string $relatedId = '',
+        string $relatedType = '',
+    ): void
+    {
+        $this->campaignLogManager->createCampaignLogEntry(
+            $campaignId,
+            $emailMarketingId,
+            $email,
+            $reason,
+            $targetListId,
+            $targetId,
+            $targetType,
+            $trackerId,
+            $relatedId,
+            $relatedType,
+            true
+        );
+    }
+    protected function handleInvalidTarget(
+        string $campaignId,
+        string $emailMarketingId,
+        Record $targetRecord,
+        ValidationFeedback $feedback,
+        string $targetListId,
+        string $targetId,
+        string $targetType,
+        string $trackerId = '',
+    ): void
+    {
+        $this->campaignLogManager->createCampaignLogEntry(
+            $campaignId,
+            $emailMarketingId,
+            $targetRecord->getAttributes()['email1'] ?? $targetRecord->getAttributes()['email'],
+            'blocked-' . $feedback->getValidatorKey(),
+            $targetListId,
+            $targetId,
+            $targetType,
+            $trackerId,
+            '',
+            '',
+            true
+        );
+    }
+
+    /**
+     * @param array $targets
+     * @param Record $emRecord
+     * @param mixed $campaignId
+     * @param mixed $emailMarketingId
+     * @return array
+     */
+    public function validateTargets(array $targets, Record $emRecord, string $campaignId, string $emailMarketingId): array
+    {
+        $validatedTargets = [];
+        $sentEmails = [];
+        $dupeCheck = $emRecord->getAttributes()['duplicate'] ?? '';
+
+        foreach (($targets['records'] ?? []) as $key => $record) {
+
+            $email = $record->getAttributes()['email1'] ?? $record->getAttributes()['email'];
+            if ($dupeCheck === 'email' && in_array($email, $sentEmails, true)){
+                $this->handleException(
+                    $campaignId,
+                    $emailMarketingId,
+                    $email,
+                    'blocked-duplicate-email',
+                    '',
+                    $record->getAttributes()['id'] ?? '',
+                    $record->getAttributes()['module_name'] ?? '',
+                );
+                continue;
+            }
+
+            $feedback = $this->targetValidatorManager->validate(
+                $record,
+                $emRecord,
+                $campaignId,
+                ''
+            );
+
+            if ($feedback === null) {
+                unset($targets['records'][$key]);
+                $this->handleException(
+                    $campaignId,
+                    $emailMarketingId,
+                    $email,
+                    'blocked-validation-exception',
+                    '',
+                    $record->getAttributes()['id'] ?? '',
+                    $record->getAttributes()['module_name'] ?? '',
+                );
+                continue;
+            }
+
+            if (!$feedback->isSuccess()) {
+                unset($targets['records'][$key]);
+                $this->handleInvalidTarget(
+                    $campaignId,
+                    $emailMarketingId,
+                    $record,
+                    $feedback,
+                    '',
+                    $record->getAttributes()['id'] ?? '',
+                    $record->getAttributes()['module_name'] ?? '',
+                );
+                continue;
+            }
+
+            $sentEmails[] = $email;
+            $validatedTargets[] = $record;
+        }
+
+        $sentEmails = [];
+        foreach (($targets['emails'] ?? []) as $key => $email) {
+            if (!isValidEmailAddress($email)){
+                continue;
+            }
+
+            if ($dupeCheck === 'email' && in_array($email, $sentEmails, true)){
+                $this->handleException(
+                    $campaignId,
+                    $emailMarketingId,
+                    $email,
+                    'blocked-duplicate-email',
+                    '',
+                    '',
+                    '',
+                );
+                continue;
+            }
+
+            $sentEmails[] = $email;
+            $validatedTargets[] = $email;
+        }
+
+        return $validatedTargets;
     }
 }
