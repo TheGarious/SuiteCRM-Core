@@ -46,6 +46,7 @@ import {PrimaryEmailValidator} from './validators/primary-email.validator';
 import {DuplicateEmailValidator} from './validators/duplicate-email.validator';
 import {LineItemsRequiredValidator} from "./validators/line-items-required.validator";
 import {UnsubscribeValidator} from "./validators/unsubscribe.validator";
+import {RemoveUnsubscribeValidator} from "./validators/remove-unsubscribe.validator";
 
 export interface ValidationManagerInterface {
     registerSaveValidator(module: string, key: string, validator: ValidatorInterface): void;
@@ -95,7 +96,8 @@ export class ValidationManager implements ValidationManagerInterface {
         protected primaryEmailValidator: PrimaryEmailValidator,
         protected duplicateEmailValidator: DuplicateEmailValidator,
         protected lineItemsRequiredValidator: LineItemsRequiredValidator,
-        protected unsubscribeValidator: UnsubscribeValidator
+        protected unsubscribeValidator: UnsubscribeValidator,
+        protected removeUnsubscribeValidator: RemoveUnsubscribeValidator,
     ) {
 
         this.saveValidators = new OverridableMap<ValidatorInterface>();
@@ -112,6 +114,7 @@ export class ValidationManager implements ValidationManagerInterface {
         this.saveValidators.addEntry('default', this.getKey('float', 'all'), floatValidator);
         this.saveValidators.addEntry('default', this.getKey('int', 'all'), intValidator);
         this.saveValidators.addEntry('email-marketing', this.getKey('html', 'body'), unsubscribeValidator);
+        this.saveValidators.addEntry('email-marketing', this.getKey('html', 'body'), removeUnsubscribeValidator);
         this.saveValidators.addEntry('default', this.getKey('phone', 'all'), phoneValidator);
         this.itemFormArraySaveValidators.addEntry('default', this.getKey('primary-email', 'all'), primaryEmailValidator);
         this.itemFormArraySaveValidators.addEntry('default', this.getKey('duplicate-email', 'all'), duplicateEmailValidator);
