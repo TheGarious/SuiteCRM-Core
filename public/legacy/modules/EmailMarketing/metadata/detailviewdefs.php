@@ -45,7 +45,7 @@ $viewdefs ['EmailMarketing'] = [
                 'display' => true,
                 'navigate' => [
                     'parentId' => 'campaign_id',
-                    'parentModule' => 'campaigns',
+                    'parentModule' => 'Campaigns',
                 ],
             ]
         ],
