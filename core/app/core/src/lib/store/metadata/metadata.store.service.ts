@@ -53,8 +53,10 @@ export interface BackButtonConfig {
 }
 
 export interface ParentNavigation {
-    parentId?: string;
+    parentIdParam?: string;
+    parentModuleParam?: string;
     parentModule?: string;
+    parentId?: string;
 }
 
 export interface HeaderMetadata {

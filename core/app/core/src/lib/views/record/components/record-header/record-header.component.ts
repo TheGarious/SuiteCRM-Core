@@ -79,13 +79,16 @@ export class RecordHeaderComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.mode = this.recordViewStore.getMode();
-        this.setBackButtonConfig();
 
         this.subs.push(this.recordViewStore.mode$.subscribe(mode => {
             this.mode = mode;
         }));
         this.subs.push(this.recordViewStore.record$.subscribe(record => {
             this.record = record;
+
+            if (Object.entries(this.record.attributes).length !== 0) {
+                this.setBackButtonConfig();
+            }
         }));
 
         this.subs.push(this.recordViewStore.loading$.subscribe(loading => {
@@ -149,25 +152,28 @@ export class RecordHeaderComponent implements OnInit, OnDestroy {
             return;
         }
 
-        const recordId = this.recordViewStore.getRecordId();
-        const module = this.recordViewStore.getModuleName();
+        const parentIdField = navigation?.parentIdParam ?? navigation.parentId ?? '';
 
-        this.recordViewStore.recordStore.retrieveRecord(module, recordId).subscribe(
-            (record) => {
-                const parentRecord = {
-                    id: record.attributes[navigation.parentId],
-                } as Record
+        if (parentIdField === '') {
+            return;
+        }
 
-                const module = this.moduleNameMapper.toFrontend(navigation.parentModule);
+        const parentModule = navigation?.parentModuleParam ?? navigation.parentModule;
 
-                this.backButtonConfig = {
-                    icon: 'paginate_previous',
-                    klass: 'back-button',
-                    onClick: () => {
-                        this.moduleNavigation.navigateBack(parentRecord, module, {});
-                    }
-                }
+        const parentId = this.record.attributes[parentIdField];
+
+        const parentRecord = {
+            id: parentId,
+        } as Record
+
+        const module = this.moduleNameMapper.toFrontend(parentModule);
+
+        this.backButtonConfig = {
+            icon: 'paginate_previous',
+            klass: 'back-button',
+            onClick: () => {
+                this.moduleNavigation.navigateBack(parentRecord, module, {});
             }
-        );
+        }
     }
 }
