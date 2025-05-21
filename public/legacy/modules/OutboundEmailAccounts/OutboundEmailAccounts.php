@@ -656,7 +656,8 @@ HTML;
 
     protected function getUserPersonalAccountCount(SugarBean|bool|null $current_user)
     {
-        $query = "SELECT count(*) as c FROM outbound_email WHERE deleted=0 AND is_personal = '1' AND (user_id='{$current_user->id}' OR created_by='{$current_user->id}')";
+        $id = $this->db->quoted($current_user->id);
+        $query = "SELECT count(*) as c FROM outbound_email WHERE deleted=0 AND is_personal = '1' AND (user_id=$id OR created_by=$id)";
 
         $rs = $this->db->query($query);
         $row = $this->db->fetchByAssoc($rs);
