@@ -58,7 +58,7 @@ class DeleteTestEntriesService {
             $success = false;
             $this->logger->error(
                 sprintf(
-                    'Campaigns:DeleteTestEntries::deleteTestEntries | Unable to delete record from emailman. Marketing ID: %s, Error: %s',
+                    'Campaigns:DeleteTestEntries::deleteTestEntries | Unable to delete record from campaign_log. Marketing ID: %s, Error: %s',
                     $id,
                     $e->getMessage()
                 )
