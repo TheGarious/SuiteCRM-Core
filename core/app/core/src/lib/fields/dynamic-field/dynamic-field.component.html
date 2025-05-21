@@ -110,10 +110,17 @@
 <ng-container *ngIf="isEdit() && field.formControl && field.formControl.errors && touched()">
     <ng-container *ngIf="validateOnlyOnSubmit ? isInvalid() : (field.formControl.invalid && field.formControl.touched)">
         <div *ngFor="let item of field.formControl.errors | keyvalue" class="invalid-feedback d-block">
-            <scrm-dynamic-label [context]="getMessageContext(item.value, record)"
-                                [fields]="{field: field}"
-                                [labelKey]="getMessageLabelKey(item.value)">
-            </scrm-dynamic-label>
+            <ng-container *ngIf="hasLabels(item.value)">
+                <scrm-label [labelKey]="getMessageStartLabelKey(item.value)"> </scrm-label>
+                <scrm-image *ngIf="getValidationIcon(item.value)" [image]="getValidationIcon(item.value)"></scrm-image>
+                <scrm-label [labelKey]="getMessageEndLabelKey(item.value)"> </scrm-label>
+            </ng-container>
+            <ng-container *ngIf="!hasLabels(item.value)">
+                <scrm-dynamic-label [context]="getMessageContext(item.value, record)"
+                                    [fields]="{field: field}"
+                                    [labelKey]="getMessageLabelKey(item.value)">
+                </scrm-dynamic-label>
+            </ng-container>
         </div>
     </ng-container>
 </ng-container>

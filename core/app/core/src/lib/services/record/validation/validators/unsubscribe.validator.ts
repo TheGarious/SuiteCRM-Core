@@ -51,7 +51,10 @@ export const unsubscribeValidator = (viewField: ViewFieldDefinition, record: Rec
             unsubscribeValidator: {
                 value: control.value,
                 message: {
-                    labelKey: 'LBL_VALIDATION_ERROR_UNSUBSCRIBE_LINK',
+                    labels: {
+                        startLabelKey: 'LBL_VALIDATION_ERROR_UNSUBSCRIBE_LINK',
+                        icon: 'unsubscribe',
+                    },
                     context: {}
                 }
             }

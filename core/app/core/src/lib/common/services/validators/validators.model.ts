@@ -38,7 +38,8 @@ export interface StandardValidationError {
 }
 
 export interface MessageInfo {
-    labelKey: string;
+    labels?: StringMap;
+    labelKey?: string;
     context: StringMap;
 }
 
