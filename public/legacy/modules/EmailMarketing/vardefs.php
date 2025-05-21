@@ -394,7 +394,7 @@ $dictionary['EmailMarketing'] = [
                 'update-email-template-subject' => [
                     'key' => 'updateValueBackend',
                     'modes' => ['edit', 'create'],
-                    'triggeringStatus' => ['onFieldInitialize', 'onValueChange'],
+                    'triggeringStatus' => ['onValueChange'],
                     'params' => [
                         'fieldDependencies' => [
                             'template_name',
@@ -469,7 +469,7 @@ $dictionary['EmailMarketing'] = [
                 'update-email-template-body' => [
                     'key' => 'updateValueBackend',
                     'modes' => ['edit', 'create'],
-                    'triggeringStatus' => ['onFieldInitialize', 'onValueChange'],
+                    'triggeringStatus' => ['onValueChange'],
                     'params' => [
                         'fieldDependencies' => [
                             'template_name',
