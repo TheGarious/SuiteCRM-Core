@@ -31,6 +31,7 @@ namespace App\Process\Service\RecordActions;
 use ApiPlatform\Exception\InvalidArgumentException;
 use App\Engine\LegacyHandler\LegacyHandler;
 use App\Engine\LegacyHandler\LegacyScopeState;
+use App\Module\EmailMarketing\Service\Actions\DeleteTestEntriesService;
 use App\Process\Entity\Process;
 use App\Module\Service\ModuleNameMapperInterface;
 use App\Process\Service\ProcessHandlerInterface;
@@ -61,6 +62,7 @@ class ScheduleEmailMarketingAction extends LegacyHandler implements ProcessHandl
         LegacyScopeState $legacyScopeState,
         RequestStack $requestStack,
         ModuleNameMapperInterface $moduleNameMapper,
+        protected DeleteTestEntriesService $deleteTestEntriesService,
     ) {
         parent::__construct(
             $projectDir,
@@ -185,6 +187,8 @@ class ScheduleEmailMarketingAction extends LegacyHandler implements ProcessHandl
         }
 
         $bean->save();
+
+        $this->deleteTestEntriesService->deleteTestEntries($id);
 
         $this->close();
 
