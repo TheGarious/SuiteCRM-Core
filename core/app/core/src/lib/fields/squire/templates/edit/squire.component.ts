@@ -687,7 +687,15 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
             icon: 'unsubscribe',
             titleKey: 'LBL_INJECT_UNSUBSCRIBE',
             klass: 'squire-editor-button btn btn-sm',
-            onClick: () => this.editor.insertHTML('{{ unsubscribe_link }}'),
+            onClick: () => {
+                if (this.editor.getSelectedText() === ''){
+                    this.editor.insertHTML('<a href="{{ unsubscribe_link }}">{{ unsubscribe_link }}</a>');
+                    return;
+                }
+
+                const selectedText = this.editor.getSelectedText();
+                this.editor.makeLink('{{ unsubscribe_link }}', {title: selectedText});
+            },
         } as ButtonInterface;
     }
 
