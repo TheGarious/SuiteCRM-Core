@@ -55,12 +55,12 @@ class TotpPreferenceMapper implements UserPreferencesMapperInterface
     public function map($value): bool
     {
 
-        $user = $this->security->getToken()->getUser();
+        $user = $this->security->getToken()?->getUser();
 
-        if (empty($user)){
+        if ($user === null){
             return false;
         }
 
-        return $user->isTotpAuthenticationEnabled();
+        return $user?->isTotpAuthenticationEnabled() ?? false;
     }
 }
