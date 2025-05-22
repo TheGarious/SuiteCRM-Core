@@ -31,7 +31,7 @@ use App\Data\LegacyHandler\PreparedStatementHandler;
 use Doctrine\DBAL\Exception;
 use Psr\Log\LoggerInterface;
 
-class DeleteTestEntriesService {
+class DeleteTestMailMarketingEntriesService {
 
     public function __construct(
         protected PreparedStatementHandler $preparedStatementHandler,
