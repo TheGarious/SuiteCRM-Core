@@ -27,7 +27,9 @@
 
 namespace App\Module\Campaigns\Service\Email\Targets;
 
+use App\Data\Entity\Record;
 use App\Data\LegacyHandler\PreparedStatementHandler;
+use App\Data\Service\RecordProviderInterface;
 use Doctrine\DBAL\Exception;
 use Psr\Log\LoggerInterface;
 
@@ -35,7 +37,8 @@ class DefaultEmailSuppressionListManager implements EmailSuppressionListManagerI
 {
     public function __construct(
         protected PreparedStatementHandler $preparedStatementHandler,
-        protected LoggerInterface $logger
+        protected LoggerInterface $logger,
+        protected RecordProviderInterface $recordProvider
     ) {
     }
 
@@ -198,4 +201,29 @@ class DefaultEmailSuppressionListManager implements EmailSuppressionListManagerI
         return $count > 0;
     }
 
+    public function createCampaignUnsubscriptionList(Record $campaign): Record
+    {
+        $campaignName = $campaign->getAttributes()['name'] ?? '';
+
+        $record = new Record();
+        $record->setModule('prospect-lists');
+        $attributes = [
+            'name' => $campaignName . ' - unsubscription list',
+            'list_type' => 'exempt'
+        ];
+
+        $record->setAttributes(
+            $attributes
+        );
+
+        $savedRecord = $this->recordProvider->saveRecord($record);
+        $this->logger->debug(
+            'Campaigns:DefaultEmailSuppressionListManager::createCampaignUnsubscriptionList - Save new unsubscription list - id: ' . $savedRecord->getId(), [
+                'targetListId' => $savedRecord->getId(),
+                'campaignId' => $campaign->getId(),
+            ]
+        );
+
+        return $savedRecord;
+    }
 }
