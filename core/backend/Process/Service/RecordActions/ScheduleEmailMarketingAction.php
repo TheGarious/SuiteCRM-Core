@@ -31,7 +31,7 @@ namespace App\Process\Service\RecordActions;
 use ApiPlatform\Exception\InvalidArgumentException;
 use App\Engine\LegacyHandler\LegacyHandler;
 use App\Engine\LegacyHandler\LegacyScopeState;
-use App\Module\EmailMarketing\Service\Actions\DeleteTestEntriesService;
+use App\Module\EmailMarketing\Service\Actions\DeleteTestMailMarketingEntriesService;
 use App\Process\Entity\Process;
 use App\Module\Service\ModuleNameMapperInterface;
 use App\Process\Service\ProcessHandlerInterface;
@@ -53,6 +53,7 @@ class ScheduleEmailMarketingAction extends LegacyHandler implements ProcessHandl
      * @param LegacyScopeState $legacyScopeState
      * @param RequestStack $requestStack
      * @param ModuleNameMapperInterface $moduleNameMapper
+     * @param DeleteTestMailMarketingEntriesService $deleteTestEntriesService
      */
     public function __construct(
         string $projectDir,
@@ -62,7 +63,7 @@ class ScheduleEmailMarketingAction extends LegacyHandler implements ProcessHandl
         LegacyScopeState $legacyScopeState,
         RequestStack $requestStack,
         ModuleNameMapperInterface $moduleNameMapper,
-        protected DeleteTestEntriesService $deleteTestEntriesService,
+        protected DeleteTestMailMarketingEntriesService $deleteTestEntriesService,
     ) {
         parent::__construct(
             $projectDir,

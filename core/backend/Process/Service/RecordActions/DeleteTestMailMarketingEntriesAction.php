@@ -31,24 +31,24 @@ namespace App\Process\Service\RecordActions;
 use ApiPlatform\Exception\InvalidArgumentException;
 use App\Engine\LegacyHandler\LegacyHandler;
 use App\Engine\LegacyHandler\LegacyScopeState;
-use App\Module\EmailMarketing\Service\Actions\DeleteTestEntriesService;
+use App\Module\EmailMarketing\Service\Actions\DeleteTestMailMarketingEntriesService;
 use App\Process\Entity\Process;
 use App\Process\Service\ProcessHandlerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-class DeleteTestEntriesAction extends LegacyHandler implements ProcessHandlerInterface
+class DeleteTestMailMarketingEntriesAction extends LegacyHandler implements ProcessHandlerInterface
 {
     protected const MSG_OPTIONS_NOT_FOUND = 'Process options is not defined';
-    protected const PROCESS_TYPE = 'record-delete-test-entries';
+    protected const PROCESS_TYPE = 'record-delete-test-mail-marketing-entries';
 
     public function __construct(
-        string $projectDir,
-        string $legacyDir,
-        string $legacySessionName,
-        string $defaultSessionName,
-        LegacyScopeState $legacyScopeState,
-        RequestStack $requestStack,
-        protected DeleteTestEntriesService $deleteTestEntriesService,
+        string                                          $projectDir,
+        string                                          $legacyDir,
+        string                                          $legacySessionName,
+        string                                          $defaultSessionName,
+        LegacyScopeState                                $legacyScopeState,
+        RequestStack                                    $requestStack,
+        protected DeleteTestMailMarketingEntriesService $deleteTestEntriesService,
     ) {
         parent::__construct(
             $projectDir,
