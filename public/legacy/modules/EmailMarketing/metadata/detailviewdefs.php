@@ -158,8 +158,8 @@ $viewdefs ['EmailMarketing'] = [
                         ],
                     ],
                 ],
-                'delete-test-entries' => [
-                    'key' => 'delete-test-entries',
+                'delete-test-mail-marketing-entries' => [
+                    'key' => 'delete-test-mail-marketing-entries',
                     'labelKey' => 'LBL_DELETE_TEST_ENTRIES',
                     'asyncProcess' => true,
                     'modes' => ['detail'],
