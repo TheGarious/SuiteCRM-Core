@@ -27,6 +27,8 @@
 
 namespace App\Module\Campaigns\Service\Email\Targets;
 
+use App\Data\Entity\Record;
+
 interface EmailSuppressionListManagerInterface
 {
     public function isOnIdSuppressionList(string $emailMarketingId, string $targetId, string $targetType): bool;
@@ -34,4 +36,6 @@ interface EmailSuppressionListManagerInterface
     public function isOnEmailAddressSuppressionList(string $emailMarketingId, string $targetId, string $targetType): bool;
 
     public function isOnDomainSuppressionList(string $emailMarketingId, string $targetId, string $targetType, string $email): bool;
+
+    public function createCampaignUnsubscriptionList(Record $campaign): Record;
 }
