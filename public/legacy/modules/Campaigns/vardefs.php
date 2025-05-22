@@ -198,6 +198,7 @@ $dictionary['Campaign'] = [
             'vname' => 'LBL_CAMPAIGN_TYPE',
             'type' => 'enum',
             'options' => 'campaign_type_dom',
+            'default' => 'NewsLetter',
             'len' => 100,
             'massupdate' => false,
             'audited' => true,
