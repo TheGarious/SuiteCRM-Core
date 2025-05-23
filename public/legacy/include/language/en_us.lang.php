@@ -838,7 +838,6 @@ $app_list_strings = array(
     'dom_editor_type' => array(
         'none' => 'Direct HTML',
         'tinymce' => 'TinyMCE',
-        'mozaik' => 'Mozaik',
     ),
 
     'dom_email_editor_option' => array(

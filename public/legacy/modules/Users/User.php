@@ -2483,7 +2483,7 @@ EOQ;
     {
         $editorType = $this->getPreference('editor_type');
         if (!$editorType) {
-            $editorType = 'mozaik';
+            $editorType = 'tinymce';
             $this->setPreference('editor_type', $editorType);
         }
 
