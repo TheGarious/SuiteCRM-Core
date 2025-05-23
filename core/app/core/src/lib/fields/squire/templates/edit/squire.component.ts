@@ -93,6 +93,8 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
         if (this.baseButtonLayout().length) {
             this.calculateActiveButtons();
         }
+
+        this.calculateDynamicMaxHeight();
     }
 
     constructor(
@@ -140,6 +142,11 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
             this.initEditor();
             this.calculateActiveButtons();
         }, 50);
+
+        setTimeout(() => {
+            this.calculateDynamicMaxHeight();
+        }, 400);
+
     }
 
     protected setFieldValue(newValue): void {
@@ -840,6 +847,59 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
         }
 
         return fittingWithDropdown;
+    }
+
+    protected calculateDynamicMaxHeight(): void {
+        if (!this?.settings?.dynamicHeight) {
+            return;
+        }
+
+        const ancestorSelector = this?.settings?.dynamicHeightAncestor ?? 'scrm-squire-edit'
+        const dynamicHeightAdjustment = parseInt(this?.settings?.dynamicHeightAdjustment ?? 0);
+        let containerHeight = '';
+
+        const ancestor = this.findAncestor(this?.toolbar?.nativeElement, ancestorSelector);
+        if (ancestor) {
+            let offSetHeight = ancestor?.offsetHeight ?? 0;
+
+            if (offSetHeight && dynamicHeightAdjustment) {
+                offSetHeight = offSetHeight + dynamicHeightAdjustment;
+            }
+            containerHeight = (offSetHeight).toString();
+        }
+
+        if (containerHeight) {
+            containerHeight = containerHeight + 'px';
+        } else {
+            containerHeight = this?.settings?.height;
+        }
+
+        this.maxHeight.set(containerHeight)
+        this.height.set(containerHeight)
+    }
+
+    protected findAncestor(el: HTMLElement, selector: string) {
+        let found = false;
+        let iterations = 0;
+
+        while (!found || iterations > 50) {
+            el = el?.parentElement ?? null;
+            if (!el) {
+                found = true;
+                break;
+            }
+
+            if (el.matches(selector)) {
+                found = true;
+            }
+            iterations++;
+        }
+
+        if (!found) {
+            el = null;
+        }
+
+        return el;
     }
 
 
