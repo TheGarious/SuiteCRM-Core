@@ -171,7 +171,7 @@ export class BaseRelateComponent extends BaseFieldComponent implements OnInit, O
     }
 
     getRelatedModule(): string {
-        const legacyName = (this.field && this.field.definition && this.field.definition.module) || '';
+        const legacyName = this?.field?.definition?.module ?? this.record.fields[this.field.definition.type_name].value ?? '';
         if (!legacyName) {
             return '';
         }
