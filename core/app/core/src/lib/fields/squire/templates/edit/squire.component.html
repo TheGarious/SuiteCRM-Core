@@ -107,7 +107,8 @@
         </ng-container>
     </div>
 
-    <div #editorEl
+    <div *ngIf="editorMode() === 'html'"
+         #editorEl
          role="textbox"
          aria-multiline="true"
          aria-label="Body"
@@ -115,5 +116,11 @@
          contenteditable="true"
          [ngStyle]="{'min-height': minHeight() ? minHeight() : 'auto', 'height': height() ? height() : 'auto', 'max-height': maxHeight() ? maxHeight() : 'auto'}"
     ></div>
+
+    <div *ngIf="editorMode() === 'code'"
+         [ngStyle]="{'display': 'block', 'min-height': minHeight() ? minHeight() : 'auto', 'height': height() ? height() : 'auto', 'max-height': maxHeight() ? maxHeight() : 'auto'}"
+    >
+        <scrm-monaco-editor #monacoEditor style="height: 100%" [content]="field.value"></scrm-monaco-editor>
+    </div>
 </div>
 

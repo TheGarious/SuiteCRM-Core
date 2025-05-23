@@ -37,6 +37,7 @@ import {ColorSelectorComponent} from "../../../../components/popups/components/c
 import {
     InsertLinkPopupButtonComponent
 } from "../../../../components/popups/components/insert-link-popup-button/insert-link-popup-button.component";
+import {MonacoEditorComponent} from "../../../../components/monaco-editor/monaco-editor.component";
 
 @NgModule({
     declarations: [SquireEditFieldComponent],
@@ -51,7 +52,8 @@ import {
         LabelModule,
         PopupButtonModule,
         ColorSelectorComponent,
-        InsertLinkPopupButtonComponent
+        InsertLinkPopupButtonComponent,
+        MonacoEditorComponent,
     ],
     providers: []
 })
