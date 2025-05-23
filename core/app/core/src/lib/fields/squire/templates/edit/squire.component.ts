@@ -153,7 +153,14 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
     }
 
     protected setFieldValue(newValue): void {
+        this.value = newValue;
         this.field.value = newValue;
+
+        if (this.editor.getHTML() === newValue) {
+            return;
+        }
+
+        this.editor.setHTML(newValue);
     }
 
     initSettings(): void {
@@ -946,10 +953,9 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
         const editorContainer = this.editorEl.nativeElement;
 
         this.editor = new Squire(editorContainer, this.settings);
-        this.editor.setHTML(this?.field?.value ?? '');
+        this.editor.setHTML(this?.value ?? '');
         this.editor.addEventListener('input', (e: Event) => {
-            this.value = this.editor.getHTML();
-            this.field.formControl.setValue(this.value);
+            this.field.formControl.setValue(this.editor.getHTML());
         });
         this.editor.addEventListener('pathChange', (e: Event) => {
             e.stopPropagation();
