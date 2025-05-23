@@ -423,6 +423,9 @@ $dictionary['EmailMarketing'] = [
                 'purifyHtml' => false,
                 'squire' => [
                     'edit' => [
+                        'dynamicHeight' => true,
+                        'dynamicHeightAncestor' => '.field-layout',
+                        'dynamicHeightAdjustment' => -140,
                         'buttonLayout' => [
                             [
                                 'bold',
