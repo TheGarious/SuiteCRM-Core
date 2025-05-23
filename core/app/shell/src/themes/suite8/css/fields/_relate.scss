@@ -134,6 +134,10 @@
     .p-dropdown-items {
       padding-inline-start: 0;
       margin-bottom: 0;
+
+      .p-dropdown-empty-message {
+        font-size: .875rem;
+      }
     }
 
     .p-dropdown-label {
