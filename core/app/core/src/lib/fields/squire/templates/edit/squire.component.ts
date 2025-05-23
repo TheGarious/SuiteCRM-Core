@@ -55,6 +55,7 @@ import {
     ScreenSize,
     ScreenSizeObserverService
 } from "../../../../services/ui/screen-size-observer/screen-size-observer.service";
+import {MonacoEditorComponent} from "../../../../components/monaco-editor/monaco-editor.component";
 
 
 @Component({
@@ -68,6 +69,7 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
     @ViewChild('editorEl') editorEl: ElementRef;
     @ViewChild('editorWrapper') editorWrapper: ElementRef;
     @ViewChild('toolbar') toolbar: ElementRef;
+    @ViewChild('monacoEditor') monacoEditor: MonacoEditorComponent;
 
     settings: any = {};
     availableButtons = {} as ButtonInterfaceMap;
@@ -84,6 +86,7 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
     maxHeight: WritableSignal<string> = signal('45vh');
     maxWidth: WritableSignal<string> = signal('100vh');
     styleSignal: WritableSignal<string> = signal('');
+    editorMode: WritableSignal<string> = signal('html');
 
     protected currentEditorPath: WritableSignal<string> = signal('');
     protected editor: Squire;
@@ -225,6 +228,30 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
     }
 
     initAvailableButtons(): void {
+
+        this.availableButtons.html = {
+            key: 'html',
+            type: 'button',
+            icon: 'code-slash',
+            titleKey: 'LBL_HTML',
+            klass: 'squire-editor-button btn btn-sm ',
+            onClick: () => {
+                if (this.editorMode() === 'html') {
+                    this.setFieldValue(this.editor.getHTML());
+                    this.editorMode.set('code')
+                    return;
+                }
+                this.setFieldValue(this.monacoEditor.editor.getValue());
+                this.editorMode.set('html');
+                setTimeout(() => {
+                    this.initEditor();
+                }, 50);
+            },
+            dynamicClass: computed((): string => {
+                const editorMode = this.editorMode();
+                return editorMode === 'code' ? 'active squire-editor-button-active' : '';
+            })
+        } as ButtonInterface;
 
         this.availableButtons.bold = {
             key: 'bold',
@@ -768,6 +795,9 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
             [
                 'clearFormatting',
             ],
+            [
+                'html'
+            ]
         ] as string[][];
     }
 
