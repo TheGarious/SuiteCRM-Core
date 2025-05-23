@@ -67,7 +67,7 @@ export class RecordSaveScheduleAction extends RecordActionHandler {
                     const moduleName = data.store.getModuleName();
                     const id = record.id;
 
-                    this.navigateBackToDetail(this.navigation, this.router, this.recordPaginationService, id, moduleName);
+                    this.navigateBackToDetail(this.navigation, this.router, this.recordPaginationService, id, moduleName, {});
                 });
                 return;
             }
