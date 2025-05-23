@@ -1924,7 +1924,7 @@ $app_strings = array(
     'NTC_TEMPLATES_IS_USED' => 'The following templates are used in email marketing records. Are you sure you want to delete them?' . PHP_EOL,
     'NTC_DELETE_CONFIRMATION' => 'Are you sure you want to delete this record?',
     'NTC_ABORT_CONFIRMATION' => 'Are you sure you want to abort?',
-    'NTC_SCHEDULE_CONFIRMATION' => "When Scheduled, The Sending Process will being once the Scheduled Run Date has been reached.",
+    'NTC_SCHEDULE_CONFIRMATION' => "When Scheduled, The Sending Process will begin once the Scheduled Run Date has been reached.",
     'NTC_DELETE_TEST_ENTRIES' => 'Scheduling will Delete Test Entries.',
     'NTC_DELETE_TEST_ENTRIES_CONFIRMATION' => 'Are you sure you want to delete test entries?',
     'NTC_PROCEED' => 'Would you like to proceed?',
@@ -4208,7 +4208,7 @@ $app_strings['LBL_JUSTIFY'] = 'Justify';
 $app_strings['LBL_TEXT_LEFT_TO_RIGHT'] = 'Text Direction: Left to Right';
 $app_strings['LBL_TEXT_RIGHT_TO_LEFT'] = 'Text Direction: Right to Left';
 $app_strings['LBL_CLEAR_FORMATTING'] = 'Clear Formatting';
-$app_strings['LBL_INJECT_UNSUBSCRIBE'] = 'Inject Unsubscribe Link';
+$app_strings['LBL_INJECT_UNSUBSCRIBE'] = 'Unsubscribe Link';
 $app_strings['LBL_TEXT_INDENT_LEFT'] = 'Indent Text Left';
 $app_strings['LBL_TEXT_INDENT_RIGHT'] = 'Indent Text Right';
 
