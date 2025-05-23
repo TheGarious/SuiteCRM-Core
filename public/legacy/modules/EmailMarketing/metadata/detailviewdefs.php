@@ -369,6 +369,9 @@ $viewdefs ['EmailMarketing'] = [
                 'duplicate'
             ]
         ],
+        'metadata' => [
+            'validateOnlyOnSubmit' => true,
+        ],
         'panels' => [
             'LBL_OVERVIEW' => [
                 [
