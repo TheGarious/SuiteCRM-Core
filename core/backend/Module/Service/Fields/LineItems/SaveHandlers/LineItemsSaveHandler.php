@@ -93,12 +93,11 @@ class LineItemsSaveHandler implements RecordFieldTypeSaveHandlerInterface
 
         $attributes = $inputRecord->getAttributes();
 
-        $relatedRecordsData = $attributes[$field] ?? null;
+        $relatedRecordsData = $attributes[$field] ?? [];
 
-        if (empty($relatedRecordsData) || !is_array($relatedRecordsData)) {
+        if (!is_array($relatedRecordsData)) {
             return;
         }
-
         $relatedRecords = [];
         foreach ($relatedRecordsData as $recordData) {
             $record = new Record();
