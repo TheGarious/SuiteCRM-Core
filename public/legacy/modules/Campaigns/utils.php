@@ -215,6 +215,7 @@ function log_campaign_activity($identifier, $activity, $update = true, $clicked_
             $data['target_tracker_key'] = $db->quoted($identifier);
             $data['activity_type'] = $db->quoted($activity);
             $data['activity_date'] = "'" . TimeDate::getInstance()->nowDb() . "'";
+            $data['more_information'] = $db->quoted($row['more_information']);
             $data['hits'] = 1;
             $data['deleted'] = 0;
             if (!empty($clicked_url_key)) {
@@ -296,6 +297,7 @@ function log_campaign_activity($identifier, $activity, $update = true, $clicked_
             $data['activity_date'] = "'" . TimeDate::getInstance()->nowDb() . "'";
             $data['list_id'] = $db->quoted($row['list_id']);
             $data['marketing_id'] = $db->quoted($row['marketing_id']);
+            $data['more_information'] = $db->quoted($row['more_information']);
             $data['hits'] = 1;
             $data['deleted'] = 0;
             if (!empty($clicked_url_key)) {
