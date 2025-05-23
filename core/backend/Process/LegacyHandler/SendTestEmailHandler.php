@@ -207,7 +207,7 @@ class SendTestEmailHandler extends LegacyHandler implements ProcessHandlerInterf
 
         $outboundId = $emAttributes['outbound_email_id'] ?? '';
         $survey = $emAttributes['survey_id'] ?? '';
-        $subject = $emAttributes['name'] ?? '';
+        $subject = $emAttributes['subject'] ?? '';
         $body = $emAttributes['body'] ?? '';
 
         if (is_string($record)){
