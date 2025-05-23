@@ -47,7 +47,8 @@ import {
     RecordSectionTabActionDisplayTypeLogic
 } from "../actions/section-tab-actions/action-logic/display-type/display-type.logic";
 import {RecordSectionTabActionManager} from "../actions/section-tab-actions/section-tab-action-manager.service";
-import {toObservable} from "@angular/core/rxjs-interop";
+import {RecordMapperRegistry} from "../../../common/record/record-mappers/record-mapper.registry";
+import {FieldModalService} from "../../../services/modals/field-modal.service";
 
 @Injectable()
 export class RecordSectionTabActionsAdapter extends BaseRecordActionsAdapter<RecordSectionTabActionData> {
@@ -66,8 +67,10 @@ export class RecordSectionTabActionsAdapter extends BaseRecordActionsAdapter<Rec
         protected message: MessageService,
         protected confirmation: ConfirmationModalService,
         protected selectModalService: SelectModalService,
+        protected fieldModalService: FieldModalService,
         protected displayTypeLogic: RecordSectionTabActionDisplayTypeLogic,
-        protected appMetadataStore: AppMetadataStore
+        protected appMetadataStore: AppMetadataStore,
+        protected recordMappers: RecordMapperRegistry
     ) {
         super(
             actionManager,
@@ -76,8 +79,10 @@ export class RecordSectionTabActionsAdapter extends BaseRecordActionsAdapter<Rec
             confirmation,
             language,
             selectModalService,
+            fieldModalService,
             metadata,
-            appMetadataStore
+            appMetadataStore,
+            recordMappers
         );
     }
 
