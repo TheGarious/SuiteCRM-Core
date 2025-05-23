@@ -112,24 +112,61 @@ class LinkedRecordsProvider extends LegacyHandler implements LinkedRecordsProvid
      */
     public function syncRelatedRecords(Record $parent, array $records, string $linkField): void
     {
-        if (empty($records)) {
-            return;
+        $records = $records ?? [];
+        $vardefs = $this->getDefinition($parent, $linkField);
+
+        $onSyncUnlinkUnsubmitted = $vardefs['metadata']['onSyncUnlinkUnsubmitted'] ?? false;
+        $onSyncUpdateExisting = $vardefs['metadata']['onSyncUpdateExisting'] ?? true;
+        $relatedRecordIds = [];
+        if ($onSyncUnlinkUnsubmitted) {
+            $relatedRecords = $this->getRelatedRecords($parent, $linkField) ?? [];
+
+            foreach ($relatedRecords as $record) {
+                $id = $record->getId();
+                if (!empty($id)) {
+                    $relatedRecordIds[$id] = true;
+                }
+            }
         }
 
+        $submittedRecordIds = [];
         foreach ($records as $record) {
             $attributes = $record->getAttributes();
             $isDeleted = !empty($attributes['deleted'] ?? false);
             if ($isDeleted) {
                 $this->deleteRecord($record);
                 $this->unlinkRecord($parent, $record, $linkField);
+                $submittedRecordIds[$record->getId()] = true;
                 continue;
             }
 
-            $isNew = empty($record->getId());
-            $savedRecord = $this->saveRecord($record);
+            $id = $record->getId();
+            $isNew = empty($id);
+
+            if ($isNew || $onSyncUpdateExisting) {
+                $savedRecord = $this->saveRecord($record);
+            }
+
 
             if ($isNew) {
                 $this->linkRecord($parent, $savedRecord, $linkField);
+                $submittedRecordIds[$savedRecord->getId()] = true;
+                continue;
+            }
+
+            $submittedRecordIds[$record->getId()] = true;
+
+            if (empty($relatedRecordIds[$id])) {
+                $this->linkRecord($parent, $record, $linkField);
+            }
+        }
+
+        if ($onSyncUnlinkUnsubmitted) {
+            foreach ($relatedRecords as $record) {
+                $id = $record->getId();
+                if (empty($submittedRecordIds[$id])) {
+                    $this->unlinkRecord($parent, $record, $linkField);
+                }
             }
         }
     }
@@ -200,7 +237,7 @@ class LinkedRecordsProvider extends LegacyHandler implements LinkedRecordsProvid
     protected function getItemBeans(Record $record, array $definition): array
     {
         $bean = \BeanFactory::getBean($this->moduleNameMapper->toLegacy($record->getModule()), $record->getId());
-        $relationship = $definition['relationship'] ?? $definition['link'] ?? false;
+        $relationship = $definition['link'] ?? $definition['relationship'] ?? false;
         $linkName = $definition['link'] ?? $definition['name'] ?? false;
 
         if (!$bean->load_relationship($relationship)) {
