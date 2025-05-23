@@ -665,7 +665,7 @@ HTML;
         return $row['c'];
     }
 
-    protected function setUsersDefaultOutboundAccount(SugarBean|bool|null $current_user, $id)
+    public function setUsersDefaultOutboundAccount(SugarBean|bool|null $current_user, $id): void
     {
         $current_user->setPreference($this->keyForUsersDefaultOEAccount, $id, '', 'Emails');
     }

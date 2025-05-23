@@ -95,4 +95,29 @@ class OutboundEmailAccountsController extends SugarController
 
         parent::action_save();
     }
+
+    public function action_SetDefault()
+    {
+        global $current_user;
+        $outbound_id = empty($_REQUEST['record']) ? "" : $_REQUEST['record'];
+        $oe = BeanFactory::newBean('OutboundEmailAccounts');
+
+        $ownerId = $this->bean->created_by ?? '';
+        if (empty($ownerId)) {
+            $ownerId = $current_user->id;
+        }
+
+        $owner = BeanFactory::getBean('Users', $ownerId);
+
+        if($ownerId === $current_user->id || is_admin($current_user)){
+            $oe->setUsersDefaultOutboundAccount($owner, $outbound_id);
+        }
+
+        $module = (!empty($this->return_module) ? $this->return_module : $this->module);
+        $action = (!empty($this->return_action) ? $this->return_action : 'DetailView');
+        $id = (!empty($this->return_id) ? $this->return_id : $outbound_id);
+
+        $url = "index.php?module=" . $module . "&action=" . $action . "&record=" . $id;
+        $this->set_redirect($url);
+    }
 }
