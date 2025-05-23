@@ -263,6 +263,9 @@ $viewdefs ['Campaigns'] = [
                 ],
             ],
         ],
+        'metadata' => [
+            'validateOnlyOnSubmit' => true,
+        ],
         'panels' => [
             'lbl_campaign_information' => [
                 [
