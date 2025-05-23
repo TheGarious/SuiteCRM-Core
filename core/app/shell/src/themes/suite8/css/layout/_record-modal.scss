@@ -63,6 +63,7 @@
 
     .minimise-button {
       font-size: .65em;
+      outline: 0;
 
       svg {
         vertical-align: middle;
@@ -169,6 +170,7 @@ body.modal-open.detached-modal-open {
 
       .minimise-button {
         border: 0;
+        outline: 0;
         color: $white;
         fill: $white;
         background-color: transparent;
