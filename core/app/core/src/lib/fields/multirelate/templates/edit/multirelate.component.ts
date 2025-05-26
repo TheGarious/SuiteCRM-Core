@@ -243,10 +243,9 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
     }
 
     protected updateFieldValues(): void {
-        this.field.valueObjectArray = deepClone(this.selectedValues ?? []);
-        this.field.value = deepClone(this.selectedValues ?? []);
-        this.field.valueList = deepClone(this.selectedValues ?? []);
-        this.field.formControl.setValue(this.field.value);
+        this.field.valueObjectArray = this.selectedValues ?? [];
+        this.field.valueList = this.field.valueObjectArray.map(valueElement => valueElement.id);
+        this.field.formControl.setValue(this.selectedValues);
     }
 
     /**
@@ -282,8 +281,8 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
             });
 
             this.onAdd();
-            this.currentOptions.set(deepClone(this.selectedValues ?? []));
-            this.tag.updateModel(this.currentOptions());
+            this.currentOptions.set(this.selectedValues ?? []);
+            this.tag.writeValue(this.currentOptions());
         });
     }
 
@@ -299,8 +298,8 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
         const subHeader = this.subHeaderFields[moduleName] ?? '';
         const newItem = {
             id: record.id,
-            label: record[headerField],
-            subLabel: record[subHeader],
+            label: record[headerField] ?? record.attributes[headerField] ?? '',
+            subLabel: record[subHeader] ?? record.attributes[subHeader] ?? '',
             attributes: record,
             module_name: this.moduleNameMapper.toLegacy(moduleName),
             [relateName]: record?.attributes[relateName]
