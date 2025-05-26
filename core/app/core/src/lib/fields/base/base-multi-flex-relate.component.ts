@@ -120,7 +120,7 @@ export class BaseMultiFlexRelateComponent extends BaseFieldComponent implements 
         this.status = 'searching';
 
         const metadata = this?.field?.metadata || this?.field?.definition?.metadata || {};
-        const relatedModules = (metadata?.relatedModules ?? []).map((module) => module?.module ?? '');
+        const relatedModules = (metadata?.relatedModules ?? []).filter((module) => !module?.excludeSearch).map((module) => module?.module ?? '');
 
         return this.relateService.search(text, this.getRelateFieldName(), criteria, relatedModules).pipe(
             tap(() => this.status = 'found'),
