@@ -126,6 +126,7 @@ $viewdefs['Emails']['ComposeView'] = [
                             ['module' => 'Accounts', 'headerField' => 'name', 'subHeaderField' => 'email1'],
                             [
                                 'module' => 'Emails',
+                                'excludeSearch' => true,
                                 'headerField' => 'name',
                                 'subHeaderField' => 'email',
                                 'appendable' => true,
@@ -191,6 +192,7 @@ $viewdefs['Emails']['ComposeView'] = [
                             ['module' => 'Accounts', 'headerField' => 'name', 'subHeaderField' => 'email1'],
                             [
                                 'module' => 'Emails',
+                                'excludeSearch' => true,
                                 'headerField' => 'name',
                                 'subHeaderField' => 'email',
                                 'appendable' => true,
@@ -229,6 +231,7 @@ $viewdefs['Emails']['ComposeView'] = [
                             ['module' => 'Accounts', 'headerField' => 'name', 'subHeaderField' => 'email1'],
                             [
                                 'module' => 'Emails',
+                                'excludeSearch' => true,
                                 'headerField' => 'name',
                                 'subHeaderField' => 'email',
                                 'appendable' => true,
