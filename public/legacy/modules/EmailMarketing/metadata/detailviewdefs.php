@@ -332,6 +332,7 @@ $viewdefs ['EmailMarketing'] = [
                                     'label' => 'LBL_PROSPECT_LIST_NAME',
                                     'type' => 'multirelate',
                                     'fieldDefinition' => [
+                                        'showFilter' => false,
                                         'link' => 'prospectlists',
                                         'source' => 'non-db',
                                         'filterOnEmpty' => true,
