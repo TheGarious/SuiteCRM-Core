@@ -462,6 +462,10 @@ export class AuthService {
         window.location.href = this.getSessionExpiredRoute();
     }
 
+    public clearBackendCacheable(): void {
+        this.stateManager.clearBackendCacheable();
+    }
+
     /**
      * Is to re-direct on session expiry
      * @return boolean
