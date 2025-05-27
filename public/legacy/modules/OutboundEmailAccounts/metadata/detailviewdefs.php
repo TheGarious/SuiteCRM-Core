@@ -13,7 +13,7 @@ $viewdefs ['OutboundEmailAccounts'] = [
                                    type="button"
                                    class="button"
                                    id="set-as-default-outbound"
-                                   onClick="document.location.href=\'index.php?module=OutboundEmailAccounts&action=SetDefault&record={$fields.id.value}&return_module=OutboundEmailAccounts&return_action=DetailView&return_id={$fields.id.value}\';window.parent.postMessage(\'cache-reload\');window.event.preventDefault();window.event.stopImmediatePropagation();"
+                                   onClick="document.location.href=\'index.php?module=OutboundEmailAccounts&action=SetDefault&record={$fields.id.value}&return_module=OutboundEmailAccounts&return_action=DetailView&return_id={$fields.id.value}\';window.parent.postMessage(\'cache-reload\');"
                                    name="button" value="{$MOD.LBL_SET_AS_DEFAULT_BUTTON}" />
                            {/if}
                         '
