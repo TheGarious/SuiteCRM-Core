@@ -35,6 +35,7 @@ import {RouteConverter, RouteInfo} from '../../../../services/navigation/route-c
 import {IframePageChangeObserver} from '../../services/iframe-page-change-observer.service';
 import {take} from "rxjs/operators";
 import {RecordModalOptions} from "../../../../services/modals/record-modal.model";
+import {isString} from "lodash-es";
 
 interface RoutingExclusions {
     [key: string]: string[];
@@ -51,7 +52,15 @@ export class ClassicViewUiComponent implements OnInit, OnDestroy, AfterViewInit 
 
     @HostListener('window:message', ['$event'])
     onMessage(event) {
+
+        if (isString(event.data) && event.data === 'cache-reload') {
+            this.auth.clearBackendCacheable();
+            this.router.navigateByUrl(this.router.url).then();
+            return;
+        }
+
         const options = JSON.parse(event.data);
+
         if (options.type === 'record-modal'){
             const modalOptions = options.params as RecordModalOptions;
             this.loadModal(modalOptions);
