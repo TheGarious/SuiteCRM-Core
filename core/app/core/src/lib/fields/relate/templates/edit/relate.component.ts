@@ -48,6 +48,8 @@ import {Dropdown, DropdownFilterOptions} from "primeng/dropdown";
 import {ConfirmationModalService} from "../../../../services/modals/confirmation-modal.service";
 import {Observable, Subject} from "rxjs";
 import {SystemConfigStore} from "../../../../store/system-config/system-config.store";
+import {SearchCriteria} from "../../../../common/views/list/search-criteria.model";
+import {AppStateStore} from "../../../../store/app-state/app-state.store";
 
 @Component({
     selector: 'scrm-relate-edit',
@@ -78,6 +80,7 @@ export class RelateEditFieldComponent extends BaseRelateComponent implements Aft
      * @param {object} relateService service
      * @param {object} moduleNameMapper service
      * @param {object} modalService service
+     * @param appStateStore
      * @param {object} logic
      * @param config
      * @param {object} logicDisplay
@@ -89,6 +92,7 @@ export class RelateEditFieldComponent extends BaseRelateComponent implements Aft
         protected relateService: RelateService,
         protected moduleNameMapper: ModuleNameMapper,
         protected modalService: NgbModal,
+        protected appStateStore: AppStateStore,
         protected logic: FieldLogicManager,
         protected config: SystemConfigStore,
         protected logicDisplay: FieldLogicDisplayManager,
@@ -258,12 +262,13 @@ export class RelateEditFieldComponent extends BaseRelateComponent implements Aft
     filterResults(filterValue: string): void {
         this.loading.set(true);
         const relateName = this.getRelateFieldName();
+        const criteria = this.buildCriteria();
         const matches = filterValue.match(/^\s*$/g);
         if (matches && matches.length) {
             filterValue = '';
         }
         let term = filterValue;
-        this.search(term).pipe(
+        this.search(term, criteria).pipe(
             take(1),
             map(data => data.filter(item => item[relateName] !== '')),
             map(filteredData => filteredData.map(item => ({
@@ -347,7 +352,12 @@ export class RelateEditFieldComponent extends BaseRelateComponent implements Aft
     protected showSelectModal(): void {
         const modal = this.modalService.open(RecordListModalComponent, {size: 'xl', scrollable: true});
 
+        const criteria = this.buildCriteria();
+        const filter = this.buildFilter(criteria);
+
         modal.componentInstance.module = this.getRelatedModule();
+        modal.componentInstance.presetFilter = filter;
+        modal.componentInstance.showFilter = this.field?.definition?.showFilter ?? true;
 
         modal.result.then((data: RecordListModalResult) => {
 
@@ -417,6 +427,74 @@ export class RelateEditFieldComponent extends BaseRelateComponent implements Aft
 
             return this.languages.getAppString('LBL_LOADING') || '';
         });
+    }
+
+    protected buildCriteria(): SearchCriteria {
+
+        if (!this.field?.definition?.filter) {
+            return {} as SearchCriteria;
+        }
+
+        const filter = this.field?.definition?.filter;
+
+        const criteria = {
+            name: 'default',
+            filters: {}
+        } as SearchCriteria;
+
+        if (filter?.preset ?? false) {
+            criteria.preset = filter.preset;
+            criteria.preset.params.module = filter.preset.params?.module ?? this.module;
+        }
+
+        if (filter?.attributes ?? false){
+            if (criteria?.preset ?? false){
+                Object.keys(filter.attributes).forEach((key) => {
+                    criteria.preset.params[key] = this.record.attributes[filter.attributes[key]];
+                });
+                return;
+            }
+
+            Object.keys(filter.attributes).forEach((key) => {
+                let values = this.record.attributes[filter.attributes[key]] ?? '';
+
+                if (filter.attributes[key] === 'currentUser') {
+                    values = this.appStateStore.getCurrentUser().id;
+                }
+
+                criteria.filters[key] = {
+                    field: key,
+                    operator: '=',
+                    values: [values],
+                    rangeSearch: false
+                };
+            })
+        }
+
+
+        const fields = filter.static ?? [];
+
+        Object.keys(fields).forEach((field) => {
+            criteria.filters[field] = {
+                field: field,
+                operator: '=',
+                values: [fields[field]],
+                rangeSearch: false
+            };
+        })
+
+        return criteria;
+    }
+
+    protected buildFilter(criteria) {
+        return {
+            key: 'default',
+            module: 'saved-search',
+            attributes: {
+                contents: ''
+            },
+            criteria
+        };
     }
 
     /**
