@@ -639,6 +639,15 @@ $dictionary['Email'] = array(
             'vname' => 'LBL_FROM',
             'join_name' => 'outbound_email',
             'type' => 'relate',
+            'showFilter' => false,
+            'filter' => [
+                'preset' => [
+                    'type' => 'outbound-email',
+                    'params' => [
+                        'module' => 'OutboundEmailAccounts'
+                    ]
+                ]
+            ],
             'filterOnEmpty' => true,
             'link' => 'outbound_email',
             'table' => 'outbound_email',

@@ -341,6 +341,15 @@ $dictionary['EmailMarketing'] = [
             'defaultValueModes' => [
                 'create'
             ],
+            'showFilter' => false,
+            'filter' => [
+                'preset' => [
+                    'type' => 'outbound-email',
+                    'params' => [
+                        'module' => 'OutboundEmailAccounts'
+                    ]
+                ]
+            ],
             'id_name' => 'outbound_email_id',
             'vname' => 'LBL_FROM',
             'join_name' => 'outbound_email',
