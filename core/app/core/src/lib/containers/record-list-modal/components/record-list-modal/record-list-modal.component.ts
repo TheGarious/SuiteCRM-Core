@@ -24,7 +24,7 @@
  * the words "Supercharged by SuiteCRM".
  */
 
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, WritableSignal, signal} from '@angular/core';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {animate, transition, trigger} from '@angular/animations';
 import {ButtonInterface} from '../../../../common/components/button/button.model';
@@ -68,6 +68,7 @@ export class RecordListModalComponent implements OnInit, OnDestroy {
     @Input() adapter: RecordListModalTableAdapterInterface = null;
     @Input() filterAdapter: ModalRecordFilterAdapter = null;
     @Input() presetFilter: SavedFilter = {} as SavedFilter;
+    @Input() showFilter: boolean = true;
 
     loading$: Observable<boolean>;
 
@@ -76,6 +77,8 @@ export class RecordListModalComponent implements OnInit, OnDestroy {
     filterConfig: FilterConfig;
     store: RecordListModalStore;
     maxHeight:number;
+
+    showFilterSignal: WritableSignal<boolean> = signal(true);
 
     protected subs: Subscription[] = [];
 
@@ -112,6 +115,9 @@ export class RecordListModalComponent implements OnInit, OnDestroy {
         if (!this.module) {
             return;
         }
+
+        this.showFilterSignal.set(this.showFilter);
+
         this.initStore();
         this.initTableAdapter();
         this.initFilterAdapters();

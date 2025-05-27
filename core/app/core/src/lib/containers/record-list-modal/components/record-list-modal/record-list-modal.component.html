@@ -43,7 +43,7 @@
             <div>
                 <div class="container-fluid">
                     <div class="row pb-3">
-                        <div class="col">
+                        <div *ngIf="showFilterSignal()" class="col">
                             <scrm-list-filter *ngIf="filterConfig" [config]="filterConfig"></scrm-list-filter>
                         </div>
                     </div>
