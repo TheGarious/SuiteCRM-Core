@@ -39,6 +39,7 @@ export interface StatisticsState {
 export interface SingleValueStatisticsState extends StatisticsState {
     statistic: SingleValueStatistic;
     field?: Field;
+    fields?: Field[]
 }
 
 export interface SingleValueStatisticsStoreInterface {

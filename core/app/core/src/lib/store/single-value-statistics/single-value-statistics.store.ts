@@ -31,8 +31,16 @@ import {StatisticsFetchGQL} from '../statistics/graphql/api.statistics.get';
 import {StatisticsStore} from '../statistics/statistics.store';
 import {distinctUntilChanged, map} from 'rxjs/operators';
 import {FieldManager} from '../../services/record/field/field.manager';
-import {SingleValueStatistic, SingleValueStatisticsData, Statistic, StatisticsQuery} from '../../common/statistics/statistics.model';
-import {SingleValueStatisticsState, SingleValueStatisticsStoreInterface} from '../../common/statistics/statistics-store.model';
+import {
+    SingleValueStatistic,
+    SingleValueStatisticsData,
+    Statistic,
+    StatisticsQuery
+} from '../../common/statistics/statistics.model';
+import {
+    SingleValueStatisticsState,
+    SingleValueStatisticsStoreInterface
+} from '../../common/statistics/statistics-store.model';
 
 const initialState = {
     module: '',
@@ -70,16 +78,39 @@ export class SingleValueStatisticsStore extends StatisticsStore implements Singl
             return;
         }
 
-        const field = this.fieldManager.buildShallowField(statistic.metadata.dataType, statistic.data.value);
+        if (Object.keys((statistic?.data?.fields ?? [])).length === 0){
+            const field = this.fieldManager.buildShallowField(statistic.metadata.dataType, statistic.data.value);
 
-        field.metadata = {
-            digits: 0
-        };
+            field.metadata = {
+                digits: 0
+            };
+
+            this.updateState({
+                ...this.internalState,
+                statistic,
+                field,
+                loading: false
+            });
+            return;
+        }
+
+        const fields = [];
+
+        Object.keys(statistic.data.fields).forEach((key) => {
+            const value = statistic.data.fields[key].value;
+            const builtField = this.fieldManager.buildShallowField(statistic.metadata.dataType, value);
+
+            builtField.metadata = {
+                digits: 0
+            }
+
+            fields[key] = builtField;
+        })
 
         this.updateState({
             ...this.internalState,
             statistic,
-            field,
+            fields,
             loading: false
         });
     }
