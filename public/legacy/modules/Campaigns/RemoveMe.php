@@ -61,16 +61,19 @@ if (!empty($_REQUEST['identifier'])) {
         $current_user = BeanFactory::newBean('Users');
         $current_user->retrieve('1');
     }
-    
+
     $keys=log_campaign_activity($_REQUEST['identifier'], 'removed');
     global $current_language;
     $mod_strings = return_module_language($current_language, 'Campaigns');
 
-    
+
     if (!empty($keys) && $keys['target_type'] == 'Users') {
         //Users cannot opt out of receiving emails, print out warning message.
         echo $mod_strings['LBL_USERS_CANNOT_OPTOUT'];
-    } elseif (!empty($keys) && isset($keys['campaign_id']) && !empty($keys['campaign_id'])) {
+        return;
+    }
+
+    if (!empty($keys) && isset($keys['campaign_id']) && !empty($keys['campaign_id'])) {
         //we need to unsubscribe the user from this particular campaign
         $beantype = $beanList[$keys['target_type']];
         require_once($beanFiles[$beantype]);
