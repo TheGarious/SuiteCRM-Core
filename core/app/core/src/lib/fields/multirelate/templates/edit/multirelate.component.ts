@@ -245,6 +245,7 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
     protected updateFieldValues(): void {
         this.field.valueObjectArray = this.selectedValues ?? [];
         this.field.valueList = this.field.valueObjectArray.map(valueElement => valueElement.id);
+        this.field.value = (this?.selectedValues ?? []).map(item => item.id).join(',') ?? '';
         this.field.formControl.setValue(this.selectedValues);
     }
 
