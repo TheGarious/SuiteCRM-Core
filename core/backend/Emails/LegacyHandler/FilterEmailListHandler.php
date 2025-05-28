@@ -78,9 +78,9 @@ class FilterEmailListHandler extends LegacyHandler
 
     protected function getTargets(&$beans, $value, $module): void
     {
-        foreach ($value as $key => $item) {
-            $id = $item['id'];
-            $bean = BeanFactory::getBean($module, $id);
+        $values = explode(',', $value);
+        foreach ($values as $key => $item) {
+            $bean = BeanFactory::getBean($module, $item);
 
             $linkedFields = $bean->get_linked_fields();
 
@@ -99,9 +99,9 @@ class FilterEmailListHandler extends LegacyHandler
 
     protected function getUsers(array &$beans, mixed $value, string $module): void
     {
-        foreach ($value as $key => $item) {
-            $id = $item['id'];
-            $bean = BeanFactory::getBean($module, $id);
+        $values = explode(',', $value);
+        foreach ($values as $key => $item) {
+            $bean = BeanFactory::getBean($module, $item);
             $beans[$module][] = $bean;
         }
     }
