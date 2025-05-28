@@ -133,4 +133,12 @@ $mod_strings = array(
     'LBL_STATUS_DRAFT_NOT_SEND_HELP' => 'Marketing process will only start when scheduled.',
     'LBL_TYPE_MARKETING_HELP' => 'Recipients are subject to opt-out validation.',
     'LBL_TYPE_TRANSACTIONAL_HELP' => 'Recipients are NOT subject to opt-out validation.',
+
+    'LBL_SCHEDULER_WIDGET' => 'Status Check',
+    'LBL_OOTB_SEND_EMAIL_TO_QUEUE' => 'Queue Campaign Emails',
+    'LBL_OOTB_BOUNCE' => 'Run Nightly Process Bounced Campaign Emails',
+    'LBL_OOTB_SEND_EMAIL_FROM_QUEUE' => 'Send Campaign Emails',
+    'LBL_SCHEDULERS' => 'Schedulers',
+    'LBL_INBOUND_EMAIL' => 'Inbound Email',
+
 );

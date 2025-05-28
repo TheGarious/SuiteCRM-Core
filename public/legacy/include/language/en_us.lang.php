@@ -4241,3 +4241,17 @@ $app_strings['LBL_TEST_ENTRIES_DELETED'] = 'Test Entries Deleted.';
 $app_strings['LBL_UNABLE_TO_GET_ID'] = 'Unable to retrieve Email Marketing ID';
 $app_strings['LBL_UNABLE_TO_DELETE_TEST_ENTRIES'] = 'Error Deleting Test Entries. See logs for more info';
 $app_strings['LBL_SECTION_KEY_NOT_DEFINED'] = 'Section key not defined';
+$app_strings['LBL_DOES_BOUNCE_EXIST'] = 'Does a Bounce Email exist?';
+$app_strings['LBL_CAMPAIGN_SETTINGS'] = 'Settings';
+
+$app_strings['LBL_SEND_FROM_QUEUE_DYNAMIC_LABEL'] = '{{ fields.send-from-queue.value }}';
+$app_strings['LBL_EMAIL_TO_QUEUE_DYNAMIC_LABEL'] = '{{ fields.email-to-queue.value }}';
+$app_strings['LBL_POLL_BOUNCED_CAMPAIGN_DYNAMIC_LABEL'] = '{{ fields.pollMonitoredInboxesForBouncedCampaignEmails.value }}';
+
+$app_strings['LBL_MARKETING_ITEMS_PER_RUN'] = 'Campaign Marketing Items Per Run';
+$app_strings['LBL_EMAILS_PER_RUN'] = 'Campaign Emails Per Run';
+$app_strings['LBL_TRACKERS_ENABLED'] = 'Trackers Enabled';
+
+$app_strings['LBL_MARKETING_ITEMS_PER_RUN_DYNAMIC_LABEL'] = '{{ fields.campaign_marketing_items_per_run.value }}';
+$app_strings['LBL_EMAILS_PER_RUN_DYNAMIC_LABEL'] = '{{ fields.campaign_emails_per_run.value }}';
+$app_strings['LBL_TRACKERS_ENABLED_DYNAMIC_LABEL'] = '{{ fields.trackers_enabled.value }}';

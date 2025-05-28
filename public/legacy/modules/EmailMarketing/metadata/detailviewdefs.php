@@ -50,6 +50,214 @@ $viewdefs ['EmailMarketing'] = [
             ]
         ],
         'sidebarWidgets' => [
+            'scheduler-widget' => [
+                'type' => 'statistics',
+                'modes' => ['detail'],
+                'allowCollapse' => true,
+                'labelKey' => 'LBL_SCHEDULER_WIDGET',
+                'options' => [
+                    'sidebarStatistic' => [
+                        'rows' => [
+                            [
+                                'display' => 'none',
+                                'cols' => [
+                                    [
+                                        'statistic' => 'scheduler-interval',
+                                        'params' => [
+                                            'jobs' => [
+                                                'scheduler::send-from-queue',
+                                                'scheduler::email-to-queue',
+                                                'function::pollMonitoredInboxesForBouncedCampaignEmails',
+                                            ]
+                                        ]
+                                    ]
+                                ]
+                            ],
+                            [
+                                'justify' => 'start',
+                                'cols' => [
+                                    [
+                                        'icon' => 'Schedulers',
+                                        'class' => 'campaign-sidebar-header-icon'
+                                    ],
+                                    [
+                                        'labelKey' => 'LBL_SCHEDULERS',
+                                        'class' => 'campaign-sidebar-header',
+                                    ],
+                                ]
+                            ],
+                            [
+                                'justify' => 'start',
+                                'class' => 'campaign-status-check-row',
+                                'cols' => [
+                                    [
+                                        'labelKey' => 'LBL_OOTB_SEND_EMAIL_FROM_QUEUE',
+                                        'class' => 'campaign-status-check-row-label text-uppercase',
+                                        'bold' => true,
+                                    ],
+                                    [
+                                        'dynamicLabel' => 'LBL_SEND_FROM_QUEUE_DYNAMIC_LABEL',
+                                        'class' => 'campaign-status-check-row-value',
+                                    ]
+                                ]
+                            ],
+                            [
+                                'justify' => 'start',
+                                'class' => 'campaign-status-check-row',
+                                'cols' => [
+                                    [
+                                        'labelKey' => 'LBL_OOTB_SEND_EMAIL_TO_QUEUE',
+                                        'class' => 'campaign-status-check-row-label text-uppercase',
+                                        'bold' => true
+                                    ],
+                                    [
+                                        'dynamicLabel' => 'LBL_EMAIL_TO_QUEUE_DYNAMIC_LABEL',
+                                        'class' => 'campaign-status-check-row-value',
+                                    ]
+                                ]
+                            ],
+                            [
+                                'justify' => 'start',
+                                'class' => 'campaign-status-check-row',
+                                'cols' => [
+                                    [
+                                        'labelKey' => 'LBL_OOTB_BOUNCE',
+                                        'titleKey' => 'LBL_OOTB_BOUNCE',
+                                        'class' => 'campaign-status-check-row-label text-uppercase',
+                                        'bold' => true
+                                    ],
+                                    [
+                                        'dynamicLabel' => 'LBL_POLL_BOUNCED_CAMPAIGN_DYNAMIC_LABEL',
+                                        'class' => 'campaign-status-check-row-value',
+                                    ]
+                                ]
+                            ],
+                            [
+                                'justify' => 'start',
+                                'cols' => [
+                                    [
+                                        'icon' => 'Emails',
+                                        'class' => 'campaign-sidebar-header-icon'
+                                    ],
+                                    [
+                                        'labelKey' => 'LBL_INBOUND_EMAIL',
+                                        'class' => 'campaign-sidebar-header',
+                                    ],
+                                ]
+                            ],
+                            [
+                                'justify' => 'start',
+                                'class' => 'campaign-status-check-row',
+                                'cols' => [
+                                    [
+                                        'labelKey' => 'LBL_DOES_BOUNCE_EXIST',
+                                        'class' => 'campaign-status-check-row-label text-uppercase',
+                                        'bold' => true
+                                    ],
+                                    [
+                                        'statistic' => 'record-exists',
+                                        'params' => [
+                                            'module' => 'InboundEmail',
+                                            'criteria' => [
+                                                'field' => 'type',
+                                                'value' => 'bounce',
+                                            ]
+                                        ],
+                                        'class' => 'campaign-status-check-row-value',
+                                    ]
+                                ]
+                            ],
+                            [
+                                'display' => 'none',
+                                'cols' => [
+                                    [
+                                        'statistic' => 'campaign-settings',
+                                        'params' => [
+                                            'settings' => [
+                                                [
+                                                    'key' => 'campaign_marketing_items_per_run',
+                                                    'default' => 3
+                                                ],
+                                                [
+                                                    'key' => 'campaign_emails_per_run',
+                                                    'default' => 50
+                                                ],
+                                                [
+                                                    'key' => 'trackers_enabled',
+                                                    'default' => false,
+                                                    'hasConfig' => false
+                                                ],
+                                            ]
+                                        ]
+                                    ]
+                                ]
+                            ],
+                            [
+                                'justify' => 'start',
+                                'cols' => [
+                                    [
+                                        'icon' => 'Campaigns',
+                                        'class' => 'campaign-sidebar-header-icon',
+                                    ],
+                                    [
+                                        'labelKey' => 'LBL_CAMPAIGN_SETTINGS',
+                                        'class' => 'campaign-sidebar-header',
+                                    ],
+                                ]
+                            ],
+                            [
+                                'justify' => 'start',
+                                'class' => 'campaign-status-check-row',
+                                'cols' => [
+                                    [
+                                        'labelKey' => 'LBL_MARKETING_ITEMS_PER_RUN',
+                                        'class' => 'campaign-status-check-row-label text-uppercase',
+                                        'bold' => true
+                                    ],
+                                    [
+                                        'dynamicLabel' => 'LBL_MARKETING_ITEMS_PER_RUN_DYNAMIC_LABEL',
+                                        'class' => 'campaign-status-check-row-value',
+                                    ]
+                                ]
+                            ],
+                            [
+                                'justify' => 'start',
+                                'class' => 'campaign-status-check-row',
+                                'cols' => [
+                                    [
+                                        'labelKey' => 'LBL_EMAILS_PER_RUN',
+                                        'class' => 'campaign-status-check-row-label text-uppercase',
+                                        'bold' => true
+                                    ],
+                                    [
+                                        'dynamicLabel' => 'LBL_EMAILS_PER_RUN_DYNAMIC_LABEL',
+                                        'class' => 'campaign-status-check-row-value',
+                                    ]
+                                ]
+                            ],
+                            [
+                                'justify' => 'start',
+                                'class' => 'campaign-status-check-row',
+                                'cols' => [
+                                    [
+                                        'labelKey' => 'LBL_TRACKERS_ENABLED',
+                                        'class' => 'campaign-status-check-row-label text-uppercase',
+                                        'bold' => true
+                                    ],
+                                    [
+                                        'dynamicLabel' => 'LBL_TRACKERS_ENABLED_DYNAMIC_LABEL',
+                                        'class' => 'campaign-status-check-row-value',
+                                    ]
+                                ]
+                            ],
+                        ]
+                    ]
+                ],
+                'acls' => [
+                    'Schedulers' => ['view', 'detail', 'edit', 'create'],
+                    'InboundEmail' => ['view', 'detail', 'edit', 'create'],
+                ]
+            ],
             'email-marketing-charts' => [
                 'type' => 'chart',
                 'modes' => ['detail'],
