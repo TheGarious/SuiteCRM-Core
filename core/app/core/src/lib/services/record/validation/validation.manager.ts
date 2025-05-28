@@ -114,7 +114,6 @@ export class ValidationManager implements ValidationManagerInterface {
         this.saveValidators.addEntry('default', this.getKey('float', 'all'), floatValidator);
         this.saveValidators.addEntry('default', this.getKey('int', 'all'), intValidator);
         this.saveValidators.addEntry('email-marketing', this.getKey('html', 'body'), unsubscribeValidator);
-        this.saveValidators.addEntry('email-marketing', this.getKey('html', 'body'), removeUnsubscribeValidator);
         this.saveValidators.addEntry('default', this.getKey('phone', 'all'), phoneValidator);
         this.itemFormArraySaveValidators.addEntry('default', this.getKey('primary-email', 'all'), primaryEmailValidator);
         this.itemFormArraySaveValidators.addEntry('default', this.getKey('duplicate-email', 'all'), duplicateEmailValidator);
