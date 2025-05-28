@@ -73,7 +73,7 @@ class CampaignsCreateUnsubscribeList implements RecordSaveHandlerInterface
         $targetLists = $attributes['propects_lists'] ?? [];
         $suppressionList = null;
         foreach ($targetLists as $targetList) {
-            $type = $targetList['type'] ?? null;
+            $type = $targetList['attributes']['list_type'] ?? null;
             if ($type !== 'exempt') {
                 continue;
             }
