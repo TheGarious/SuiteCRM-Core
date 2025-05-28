@@ -546,31 +546,31 @@ class Scheduler extends SugarBean
 
     public function handleIntervalType($type, $value, $mins, $hours)
     {
-        global $mod_strings;
+        global $app_strings;
         /* [0]:min [1]:hour [2]:day of month [3]:month [4]:day of week */
         $days = array(
-            1 => $mod_strings['LBL_MON'],
-            2 => $mod_strings['LBL_TUE'],
-            3 => $mod_strings['LBL_WED'],
-            4 => $mod_strings['LBL_THU'],
-            5 => $mod_strings['LBL_FRI'],
-            6 => $mod_strings['LBL_SAT'],
-            0 => $mod_strings['LBL_SUN'],
-            '*' => $mod_strings['LBL_ALL']
+            1 => $app_strings['LBL_MON'],
+            2 => $app_strings['LBL_TUE'],
+            3 => $app_strings['LBL_WED'],
+            4 => $app_strings['LBL_THU'],
+            5 => $app_strings['LBL_FRI'],
+            6 => $app_strings['LBL_SAT'],
+            0 => $app_strings['LBL_SUN'],
+            '*' => $app_strings['LBL_ALL']
         );
         switch ($type) {
             case 0: // minutes
                 if ($value == '0') {
                     //return;
-                    return trim($mod_strings['LBL_ON_THE']) . $mod_strings['LBL_HOUR_SING'];
+                    return trim($app_strings['LBL_ON_THE']) . ' ' . $app_strings['LBL_HOUR_SING'];
                 } elseif (!preg_match('/[^0-9]/', (string) $hours) && !preg_match('/[^0-9]/', (string) $value)) {
                     return;
                 } elseif (preg_match('/\*\//', (string) $value)) {
                     $value = str_replace('*/', '', (string) $value);
 
-                    return $value . $mod_strings['LBL_MINUTES'];
+                    return $value . ' ' . $app_strings['LBL_MINUTES'];
                 } elseif (!preg_match('[^0-9]', (string) $value)) {
-                    return $mod_strings['LBL_ON_THE'] . $value . $mod_strings['LBL_MIN_MARK'];
+                    return $app_strings['LBL_ON_THE'] . $value . $app_strings['LBL_MIN_MARK'];
                 }
 
                 return $value;
@@ -580,7 +580,7 @@ class Scheduler extends SugarBean
                 if (preg_match('/\*\//', (string) $value)) { // every [SOME INTERVAL] hours
                     $value = str_replace('*/', '', (string) $value);
 
-                    return $value . $mod_strings['LBL_HOUR'];
+                    return $value . $app_strings['LBL_HOUR'];
                 } elseif (preg_match(
                     '/[^0-9]/',
                     (string) $mins
@@ -610,13 +610,16 @@ class Scheduler extends SugarBean
 
     public function setIntervalHumanReadable()
     {
-        global $mod_strings;
+        global $app_strings;
 
         /* [0]:min [1]:hour [2]:day of month [3]:month [4]:day of week */
+        if ($this->intervalParsed === null){
+            $this->parseInterval();
+        }
         $ints = $this->intervalParsed;
         $intVal = array('-', ',');
-        $intSub = array($mod_strings['LBL_RANGE'], $mod_strings['LBL_AND']);
-        $intInt = array(0 => $mod_strings['LBL_MINS'], 1 => $mod_strings['LBL_HOUR']);
+        $intSub = array($app_strings['LBL_RANGE'], $app_strings['LBL_AND']);
+        $intInt = array(0 => $app_strings['LBL_MINS'], 1 => $app_strings['LBL_HOUR']);
         $tempInt = '';
         $iteration = '';
 
@@ -634,30 +637,30 @@ class Scheduler extends SugarBean
                             $exRange = explode('-', $val);
                             foreach ($exRange as $valRange) {
                                 if ($tempInt != '') {
-                                    $tempInt .= $mod_strings['LBL_AND'];
+                                    $tempInt .= $app_strings['LBL_AND'];
                                 }
                                 $tempInt .= $this->handleIntervalType($key, $valRange, $ints['raw'][0], $ints['raw'][1]);
                             }
                         } elseif ($tempInt !== $iteration) {
-                            $tempInt .= $mod_strings['LBL_AND'];
+                            $tempInt .= $app_strings['LBL_AND'];
                         }
                         $tempInt .= $this->handleIntervalType($key, $val, $ints['raw'][0], $ints['raw'][1]);
                     }
                 } elseif (false !== strpos((string) $interval, '-')) {
                     $exRange = explode('-', $interval);
-                    $tempInt .= $mod_strings['LBL_FROM'];
+                    $tempInt .= $app_strings['LBL_FROM'] . ' ';
                     $check = $tempInt;
 
                     foreach ($exRange as $val) {
                         if ($tempInt === $check) {
                             $tempInt .= $this->handleIntervalType($key, $val, $ints['raw'][0], $ints['raw'][1]);
-                            $tempInt .= $mod_strings['LBL_RANGE'];
+                            $tempInt .= ' ' . $app_strings['LBL_RANGE'] . ' ';
                         } else {
                             $tempInt .= $this->handleIntervalType($key, $val, $ints['raw'][0], $ints['raw'][1]);
                         }
                     }
                 } elseif (false !== strpos((string) $interval, '*/')) {
-                    $tempInt .= $mod_strings['LBL_EVERY'];
+                    $tempInt .= $app_strings['LBL_EVERY'] . ' ';
                     $tempInt .= $this->handleIntervalType($key, $interval, $ints['raw'][0], $ints['raw'][1]);
                 } else {
                     $tempInt .= $this->handleIntervalType($key, $interval, $ints['raw'][0], $ints['raw'][1]);
@@ -666,7 +669,7 @@ class Scheduler extends SugarBean
         } // end foreach()
 
         if ($tempInt == '') {
-            $this->intervalHumanReadable = $mod_strings['LBL_OFTEN'];
+            $this->intervalHumanReadable = $app_strings['LBL_OFTEN'];
         } else {
             $tempInt = trim($tempInt);
             if (';' == substr($tempInt, (strlen($tempInt) - 1), strlen($tempInt))) {
