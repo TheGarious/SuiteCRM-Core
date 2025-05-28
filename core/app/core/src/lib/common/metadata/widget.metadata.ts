@@ -58,6 +58,7 @@ export interface StatisticWidgetLayoutRow {
     align?: ContentAlign;
     cols: StatisticWidgetLayoutCol[];
     class?: string;
+    display?: string;
 }
 
 export interface StatisticWidgetLayoutCol {
@@ -73,4 +74,5 @@ export interface StatisticWidgetLayoutCol {
     color?: TextColor;
     bold?: boolean | string;
     class?: string;
+    params?: { [key: string]: string };
 }
