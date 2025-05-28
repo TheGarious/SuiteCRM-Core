@@ -76,6 +76,7 @@ $viewdefs ['Campaigns'] = [
             [
                 'type' => 'record-table',
                 'allowCollapse' => true,
+                'modes' => ['detail', 'edit'],
                 'options' => [
                     'recordTable' => [
                         'name' => 'campaign_interactions',
