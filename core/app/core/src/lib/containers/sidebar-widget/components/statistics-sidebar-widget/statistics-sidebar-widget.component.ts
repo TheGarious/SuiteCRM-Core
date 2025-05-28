@@ -31,6 +31,7 @@ import {Subscription} from 'rxjs';
 import {LanguageStore} from '../../../../store/language/language.store';
 import {BaseWidgetComponent} from '../../../widgets/base-widget.model';
 import {GridWidgetConfig, StatisticsQueryArgs} from '../../../../components/grid-widget/grid-widget.component';
+import {PanelCollapseMode} from "../../../../components/panel/panel.component";
 
 @Component({
     selector: 'scrm-statistics-sidebar-widget',
@@ -39,7 +40,7 @@ import {GridWidgetConfig, StatisticsQueryArgs} from '../../../../components/grid
 })
 export class StatisticsSidebarWidgetComponent extends BaseWidgetComponent implements OnInit, OnDestroy {
 
-
+    mode: PanelCollapseMode;
     options: StatisticWidgetOptions;
 
     protected subs: Subscription[] = [];
@@ -50,6 +51,12 @@ export class StatisticsSidebarWidgetComponent extends BaseWidgetComponent implem
     }
 
     ngOnInit(): void {
+
+        this.mode = 'none';
+
+        if (this?.config?.allowCollapse){
+            this.mode = 'collapsible';
+        }
 
         const options = this.config.options || {};
         this.options = options.sidebarStatistic || null;
