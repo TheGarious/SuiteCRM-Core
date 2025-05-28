@@ -179,6 +179,58 @@ class DefaultEmailTrackerManager implements EmailTrackerManagerInterface
         return $emailBody;
     }
 
+    public function addSurveyLink(string $surveyId, string $trackerId, string $contactId, string $emailBody, array $context = []): string
+    {
+        $trackingUrlTemplate = $this->getTrackingUrl() . "index.php?entryPoint=survey&id=%s&contact=%s&tracker=" . ($trackerId ?? '');
+
+        /** @var Record $campaign */
+        $campaign = $context['campaignRecord'] ?? null;
+        $campaignId = $campaign?->getId() ?? '';
+
+        if (empty($campaignId) || empty($trackerId) || empty($contactId)) {
+            $this->logger->debug(
+                'Campaigns:DefaultEmailTrackerManager::addSurveyLink - Missing required inputs ', [
+                    'surveyId' => $surveyId,
+                    'campaignId' => $campaignId,
+                    'trackerId' => $trackerId,
+                    'contactId' => $contactId,
+                    'emailBody' => $emailBody,
+                    'campaignAttributes' => $campaign?->getAttributes(),
+                ]
+            );
+            return $emailBody;
+        }
+
+        $uniqueTrackerUrl = sprintf($trackingUrlTemplate, $surveyId ?? '', $contactId ?? '');
+        $replaced = str_replace(['$survey_url_display', 'survey_url_display'], [$uniqueTrackerUrl, $uniqueTrackerUrl], $emailBody);
+
+        $replaced = preg_replace(
+            '/{{\s*survey_link\s*}}/',
+            $uniqueTrackerUrl,
+            $replaced
+        );
+
+        $replaced = preg_replace(
+            '/%7B%7B\s*survey_link\s*%7D%7D/',
+            $uniqueTrackerUrl,
+            $replaced
+        );
+
+        $this->logger->debug(
+            'Campaigns:DefaultEmailTrackerManager::addSurveyLink - Added survey link: ', [
+                'surveyId' => $surveyId,
+                'campaignId' => $campaignId,
+                'trackerId' => $trackerId,
+                'contactId' => $contactId,
+                'emailBody' => $emailBody,
+                'replaced' => $replaced,
+                'campaignAttributes' => $campaign?->getAttributes(),
+            ]
+        );
+
+        return $replaced;
+    }
+
     public function getTracker(string $campaignId, string $url): ?array
     {
         $trackerLink = [];
