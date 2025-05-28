@@ -448,7 +448,6 @@ $dictionary['EmailMarketing'] = [
                             ],
                             [
                                 'insertLink',
-                                'injectUnsubscribe'
                             ],
                             [
                                 'unorderedList',
@@ -469,6 +468,12 @@ $dictionary['EmailMarketing'] = [
                             [
                                 'clearFormatting',
                             ],
+                            [
+                                'injectUnsubscribe'
+                            ],
+                            [
+                                'html'
+                            ]
                         ]
                     ]
                 ]
