@@ -29,6 +29,7 @@ import {Record} from "../../../../common/record/record.model";
 import {ViewFieldDefinition} from "../../../../common/metadata/metadata.model";
 import {StandardValidationErrors, StandardValidatorFn} from "../../../../common/services/validators/validators.model";
 import {AbstractControl} from "@angular/forms";
+import {removeUnsubscribeValidator} from "./remove-unsubscribe.validator";
 
 export const unsubscribeValidator = (viewField: ViewFieldDefinition, record: Record): StandardValidatorFn => (
     (control: AbstractControl): StandardValidationErrors | null => {
@@ -76,16 +77,16 @@ export class UnsubscribeValidator implements ValidatorInterface {
             return false;
         }
 
-        if (record.attributes['type'] === 'transactional'){
-            return false;
-        }
-
         return viewField.type === 'html';
     }
 
     getValidator(viewField: ViewFieldDefinition, record: Record): StandardValidatorFn[] {
         if (!viewField || !viewField.fieldDefinition) {
             return [];
+        }
+
+        if (record.attributes['type'] === 'transactional'){
+            return [removeUnsubscribeValidator(viewField, record)];
         }
 
         return [unsubscribeValidator(viewField, record)];
