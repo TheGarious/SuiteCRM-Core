@@ -4211,6 +4211,29 @@ $app_strings['LBL_INJECT_UNSUBSCRIBE'] = 'Unsubscribe Link';
 $app_strings['LBL_TEXT_INDENT_LEFT'] = 'Indent Text Left';
 $app_strings['LBL_TEXT_INDENT_RIGHT'] = 'Indent Text Right';
 
+// Day and Time labels
+$app_strings['LBL_SUN'] = 'Sunday';
+$app_strings['LBL_MON'] = 'Monday';
+$app_strings['LBL_TUE'] = 'Tuesday';
+$app_strings['LBL_WED'] = 'Wednesday';
+$app_strings['LBL_THU'] = 'Thursday';
+$app_strings['LBL_FRI'] = 'Friday';
+$app_strings['LBL_SAT'] = 'Saturday';
+$app_strings['LBL_ALL'] = 'Every Day';
+$app_strings['LBL_EVERY'] = 'Every';
+$app_strings['LBL_ON_THE'] = 'On the';
+$app_strings['LBL_RANGE'] = 'to';
+$app_strings['LBL_FROM'] = 'From';
+$app_strings['LBL_AND'] = 'and';
+$app_strings['LBL_MINS'] = 'Min';
+$app_strings['LBL_MINUTES'] = 'minutes';
+$app_strings['LBL_HOUR'] = 'hours';
+$app_strings['LBL_HOUR_SING'] = 'hour';
+$app_strings['LBL_OFTEN'] = 'As often as possible.';
+$app_strings['LBL_MIN_MARK'] = 'minute mark';
+$app_strings['LBL_INBOUND_EMAIL'] = 'Inbound Email';
+
+
 $app_strings['LBL_EMAIL_MARKETING_NOT_UNSCHEDULED'] = 'Email Marketing is not Un Scheduled cannot schedule';
 $app_strings['LBL_INCORRECT_RECORD_ID'] = 'Incorrect record id';
 
