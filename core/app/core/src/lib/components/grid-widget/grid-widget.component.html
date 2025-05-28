@@ -96,7 +96,7 @@
                         <!-- DYNAMIC LABEL -->
                         <ng-container *ngIf="col.dynamicLabel">
 
-                            <div *ngIf="!loading" class="widget-entry-dynamic-label">
+                            <div *ngIf="!loading" class="widget-entry-dynamic-label text-truncate">
 
                                 <scrm-dynamic-label [context]="getMessageContext()"
                                                     [fields]="getMessageFields(vm.statistics)"

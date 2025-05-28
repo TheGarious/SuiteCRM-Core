@@ -50,6 +50,7 @@ interface StatisticsEntry {
     labelKey?: string;
     type: string;
     store: SingleValueStatisticsStoreInterface;
+    params?: { [key: string]: string };
 }
 
 interface StatisticsEntryMap {
@@ -180,7 +181,16 @@ export class GridWidgetComponent implements OnInit, OnDestroy {
 
         Object.keys(statistics).forEach(key => {
             const statistic = statistics[key];
-            fields[key] = statistic.field;
+            if (statistic.field) {
+                fields[key] = statistic.field;
+                return;
+            }
+
+            if (statistic?.fields) {
+                Object.entries(statistic.fields).forEach(([key, value]) => {
+                    fields[key] = value;
+                });
+            }
         });
 
         return fields;
@@ -292,7 +302,17 @@ export class GridWidgetComponent implements OnInit, OnDestroy {
     }
 
     getLayout(): StatisticWidgetLayoutRow[] {
-        return this.gridWidgetInput.layout.rows;
+        const displayedRows = [];
+
+        const rows = this.gridWidgetInput?.layout?.rows ?? [];
+
+        rows.forEach(row => {
+            if (row.display !== 'none'){
+                displayedRows.push(row);
+            }
+        })
+
+        return displayedRows;
     }
 
     protected buildStatistics(): void {
@@ -312,14 +332,16 @@ export class GridWidgetComponent implements OnInit, OnDestroy {
                 if (col.store) {
                     this.statistics[col.statistic] = {
                         type: col.statistic,
-                        store: col.store
+                        store: col.store,
+                        params: col.params
                     };
                     return;
                 }
 
                 this.statistics[col.statistic] = {
                     type: col.statistic,
-                    store: this.factory.create()
+                    store: this.factory.create(),
+                    params: col.params
                 };
 
                 this.statistics[col.statistic].store.init(
@@ -327,7 +349,10 @@ export class GridWidgetComponent implements OnInit, OnDestroy {
                     {
                         key: col.statistic,
                         context: {...this.gridWidgetInput.queryArgs.context},
-                        params: {...this.gridWidgetInput.queryArgs.params}
+                        params: {
+                            ...this.gridWidgetInput.queryArgs.params,
+                            ...this.statistics[col.statistic].params,
+                        }
                     } as StatisticsQuery,
                 ).pipe(take(1)).subscribe();
             });
