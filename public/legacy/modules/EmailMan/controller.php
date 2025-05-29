@@ -155,6 +155,9 @@ class EmailManController extends SugarController
             $configurator->handleOverride();
         }
 
+        require_once "include/portability/Services/Cache/CacheManager.php";
+        (new CacheManager())->markAsNeedsUpdate('rebuild_all');
+
         SugarThemeRegistry::clearAllCaches();
     }
 }
