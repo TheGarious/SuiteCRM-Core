@@ -235,7 +235,7 @@ class EmailTemplateParser
     {
         $value = '';
 
-        if ($attribute === 'survey_url_display' && $this->module instanceof Person) {
+        if ($attribute === 'survey_url_display' && $this->module instanceof Person && !empty($this->campaign->survey_id)) {
             /** @var Contact $contact */
             $contact = $this->module;
             $value = sprintf(
