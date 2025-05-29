@@ -523,6 +523,11 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
                     if (isEmail(linkValue)) {
                         linkValue = 'mailto:' + linkValue;
                     }
+
+                    if(!linkValue.includes('https://') && !linkValue.includes('http://') && linkValue.includes('.')) {
+                        linkValue = 'http://' + linkValue;
+                    }
+
                     this?.editor?.makeLink(linkValue, {title: linkValue});
 
                     insertLink.metadata.openStatusEventEmitter.emit(false);
