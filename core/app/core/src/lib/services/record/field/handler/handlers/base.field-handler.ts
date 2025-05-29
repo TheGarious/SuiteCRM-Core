@@ -31,6 +31,7 @@ import {AsyncActionInput} from "../../../../process/processes/async-action/async
 import {take} from "rxjs/operators";
 import {ProcessService} from "../../../../process/process.service";
 import {MessageService} from "../../../../message/message.service";
+import {isVoid} from "../../../../../common/utils/value-utils";
 
 @Injectable({
     providedIn: 'root'
@@ -52,12 +53,12 @@ export class BaseFieldHandler<T extends BaseField> implements FieldHandler<T> {
         const defaultValue = field?.default ?? field?.definition?.default ?? null;
         const initDefaultProcess = field?.initDefaultProcess ?? field?.definition?.initDefaultProcess ?? null;
 
-        if (!field.value && initDefaultProcess) {
+        if ((field.value === '' || isVoid(field.value)) && initDefaultProcess) {
             this.callInitDefaultBackedProcess(initDefaultProcess, field, record);
             return;
         }
 
-        if (!field.value && defaultValue) {
+        if ((field.value === '' || isVoid(field.value)) && defaultValue) {
             field.value = defaultValue;
             field?.formControl?.setValue(defaultValue);
             field.defaultValueInitialized = true;
