@@ -40,7 +40,7 @@ export class DateFieldHandler extends BaseFieldHandler<BaseField> {
         protected processService: ProcessService,
         protected messages: MessageService,
     ) {
-        super();
+        super(processService, messages);
     }
 
     initDefaultValue(field: BaseField, record: Record): void {

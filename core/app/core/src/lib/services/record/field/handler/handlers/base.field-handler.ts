@@ -24,14 +24,24 @@
  * the words "Supercharged by SuiteCRM".
  */
 import {Injectable} from "@angular/core";
-import {BaseField} from '../../../../../common/record/field.model';
+import {BaseField, Field} from '../../../../../common/record/field.model';
 import {Record} from '../../../../../common/record/record.model';
 import {FieldHandler} from "../field-handler.model";
+import {AsyncActionInput} from "../../../../process/processes/async-action/async-action";
+import {take} from "rxjs/operators";
+import {ProcessService} from "../../../../process/process.service";
+import {MessageService} from "../../../../message/message.service";
 
 @Injectable({
     providedIn: 'root'
 })
 export class BaseFieldHandler<T extends BaseField> implements FieldHandler<T> {
+
+    constructor(
+        protected processService: ProcessService,
+        protected messages: MessageService,
+    ) {
+    }
 
     initDefaultValue(field: T, record: Record): void {
 
@@ -40,6 +50,13 @@ export class BaseFieldHandler<T extends BaseField> implements FieldHandler<T> {
         }
 
         const defaultValue = field?.default ?? field?.definition?.default ?? null;
+        const initDefaultProcess = field?.initDefaultProcess ?? field?.definition?.initDefaultProcess ?? null;
+
+        if (!field.value && initDefaultProcess) {
+            this.callInitDefaultBackedProcess(initDefaultProcess, field, record);
+            return;
+        }
+
         if (!field.value && defaultValue) {
             field.value = defaultValue;
             field?.formControl?.setValue(defaultValue);
@@ -64,4 +81,38 @@ export class BaseFieldHandler<T extends BaseField> implements FieldHandler<T> {
             field.valueObject = {};
         }
     }
+
+    protected callInitDefaultBackedProcess(processType: string, field: T, record: Record): void {
+
+        const options = {
+            action: processType,
+            module: record.module ?? '',
+            field: field.name,
+        } as AsyncActionInput;
+
+        field.loading.set(true)
+
+        this.processService.submit(processType, options).pipe(take(1)).subscribe((result) => {
+
+            const value = result?.data?.value ?? null;
+            field.loading.set(false)
+
+            if (value === null) {
+                this.messages.addDangerMessageByKey("ERR_FIELD_LOGIC_BACKEND_CALCULATION");
+                return;
+            }
+            this.updateValue(field, value.toString(), record);
+            field.defaultValueInitialized = true;
+
+        });
+
+    }
+
+    protected updateValue(field: Field, value: string, record: Record): void {
+        field.value = value.toString();
+        field.formControl.setValue(value);
+        // re-validate the parent form-control after value update
+        record.formGroup.updateValueAndValidity({onlySelf: true, emitEvent: true});
+    }
+
 }
