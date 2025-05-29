@@ -37,9 +37,9 @@
 }
 
 .campaign-status-check-row {
-  padding-bottom: .25rem;
-  padding-top: .25rem;
-  border-bottom: 1px solid lightgrey;
+  margin-bottom: .35rem;
+  padding-top: 0;
+
   padding-right: .6rem;
   vertical-align: bottom;
   overflow: hidden;
@@ -56,7 +56,7 @@
     white-space: nowrap;
     font-weight: 600 !important;
     text-overflow: ellipsis;
-    padding-bottom: .25rem!important;
+    padding-bottom: 0!important;
   }
 
   .campaign-status-check-row-value {
