@@ -258,7 +258,7 @@ class EmailProcessProcessor extends LegacyHandler
 
         $this->init();
 
-        if (isset($attributes['survey_id'])) {
+        if (!empty($attributes['survey_id'])) {
             $survey = \BeanFactory::getBean('Surveys', $attributes['survey_id']);
             $attributes = $this->parseBean($attributes, $survey);
         }
