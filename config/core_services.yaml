@@ -302,6 +302,7 @@ services:
 
   App\FieldDefinitions\Service\VardefConfigMapperRegistry:
     # inject all services tagged with field.definition.mapper as first argument
+    lazy: true
     arguments:
       - !tagged { tag: 'vardef.mapper' }
 
