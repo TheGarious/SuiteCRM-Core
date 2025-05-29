@@ -131,6 +131,7 @@ class RecordExists extends LegacyHandler implements StatisticsProviderInterface
         $queryBuilder->select('id')
             ->from($table, 'module')
             ->where('module.' . $field['field'] . ' = :value')
+            ->andWhere('deleted = 0')
             ->setParameter('value', $field['value']);
 
         $result = $queryBuilder->fetchAssociative();
