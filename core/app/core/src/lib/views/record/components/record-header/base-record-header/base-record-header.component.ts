@@ -37,6 +37,7 @@ import {ViewMode} from '../../../../../common/views/view.model';
 import {AppStateStore} from "../../../../../store/app-state/app-state.store";
 import {Router} from "@angular/router";
 import {RecordSectionTabActionsAdapter} from "../../../adapters/section-tab-actions.adapter";
+import {ModuleNameMapper} from "../../../../../services/navigation/module-name-mapper/module-name-mapper.service";
 
 @Component({
     selector: 'scrm-base-record-header',
@@ -72,6 +73,7 @@ export class BaseRecordHeaderComponent implements OnInit, OnDestroy {
         public sectionTabActionsAdapter: RecordSectionTabActionsAdapter,
         protected recordViewStore: RecordViewStore,
         protected moduleNavigation: ModuleNavigation,
+        protected moduleNameMapper: ModuleNameMapper,
         protected appState: AppStateStore,
         protected router: Router
     ) {
@@ -79,13 +81,16 @@ export class BaseRecordHeaderComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.mode = this.recordViewStore.getMode();
-        this.setBackButtonConfig();
 
         this.subs.push(this.recordViewStore.mode$.subscribe(mode => {
             this.mode = mode;
         }));
         this.subs.push(this.recordViewStore.record$.subscribe(record => {
             this.record = record;
+
+            if (Object.entries(this.record.attributes).length !== 0) {
+                this.setBackButtonConfig();
+            }
         }));
 
         this.subs.push(this.recordViewStore.loading$.subscribe(loading => {
@@ -128,16 +133,48 @@ export class BaseRecordHeaderComponent implements OnInit, OnDestroy {
     }
 
     setBackButtonConfig(): void {
-        const moduleRoute = this.moduleNavigation.getModuleRoute(this.recordViewStore.vm.appData.module);
+        const navigation = this.recordViewStore.backButtonNavigation();
+
+        if (navigation === null) {
+            const moduleRoute = this.moduleNavigation.getModuleRoute(this.recordViewStore.vm.appData.module);
+
+            this.backButtonConfig = {
+                icon: 'paginate_previous',
+                klass: 'back-button',
+                onClick: () => {
+                    this.router.navigate([moduleRoute.route], {queryParams: {keepPagination: true}}).then();
+                }
+            }
+
+            return;
+        }
+
+        const parentIdField = navigation?.parentIdParam ?? navigation.parentId ?? '';
+
+        if (parentIdField === '') {
+            return;
+        }
+
+        const parentModule = navigation?.parentModuleParam ?? navigation.parentModule;
+
+        const parentId = this.record.attributes[parentIdField];
+
+        const parentRecord = {
+            id: parentId,
+        } as Record
+
+        const module = this.moduleNameMapper.toFrontend(parentModule);
 
         this.backButtonConfig = {
             icon: 'paginate_previous',
             klass: 'back-button',
             onClick: () => {
-                this.router.navigate([moduleRoute.route], {queryParams: {keepPagination: true}}).then();
+                this.moduleNavigation.navigateBack(parentRecord, module, {});
             }
         }
     }
 
-
+    showBackButton(): boolean {
+        return this.recordViewStore.showBackButton();
+    }
 }
