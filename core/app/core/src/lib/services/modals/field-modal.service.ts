@@ -99,7 +99,14 @@ export class FieldModalService {
         modal.componentInstance.validation = options?.validation ?? null;
 
         if ((options?.limit ?? false) && (options?.limit?.showLimit ?? false)) {
-            modal.componentInstance.limit = this.systemConfigs.getConfigValue(options.limit.limit_key) ?? 50;
+
+            let limit = this.systemConfigs.getConfigValue(options.limit.limit_key);
+
+            if (limit === null || limit.length === 0){
+                limit = 50;
+            }
+
+            modal.componentInstance.limit = limit;
             modal.componentInstance.limitEndLabel = options.limit.limitEndLabel;
         }
 
