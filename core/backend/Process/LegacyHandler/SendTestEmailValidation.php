@@ -128,7 +128,7 @@ class SendTestEmailValidation extends LegacyHandler implements ProcessHandlerInt
         $this->init();
         $this->startLegacyApp();
 
-        $max = $this->systemConfigHandler->getSystemConfig('test_email_limit')?->getValue();
+        $max = $this->systemConfigHandler->getSystemConfig('test_email_limit')?->getValue() ?? 50;
 
         $beans = $this->filterEmailListHandler->getBeans($fields);
 
