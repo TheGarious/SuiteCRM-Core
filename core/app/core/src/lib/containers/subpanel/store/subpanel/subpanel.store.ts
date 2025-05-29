@@ -249,7 +249,7 @@ export class SubpanelStore implements StateStore {
      *
      * @param {string} parentModule name
      * @param {string} parentId id
-     * @param {string} subpanel name
+     * @param meta
      */
     initSearchCriteria(parentModule: string, parentId: string, meta: SubPanelDefinition) {
         const sortOrder = meta?.sort_order ?? 'desc';

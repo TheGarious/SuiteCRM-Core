@@ -61,6 +61,7 @@ export interface ColumnDefinition extends ViewFieldDefinition {
     module: string;
     id: string;
     sortable: boolean;
+    sortReadOnly: boolean;
 }
 
 export interface SearchMetaField {

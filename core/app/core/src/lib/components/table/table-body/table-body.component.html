@@ -69,7 +69,9 @@
 
                     <scrm-label [labelKey]="column.label" [module]="config.module || ''"></scrm-label>
                     <scrm-sort-button *ngIf="config.sort$ && column.sortable"
-                                      [state]="getFieldSort(column)">
+                                      [state]="getFieldSort(column)"
+                                      [readonly]="column?.sortReadOnly ?? false"
+                    >
                     </scrm-sort-button>
 
                 </th>

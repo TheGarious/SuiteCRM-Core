@@ -36,6 +36,7 @@ import {SortDirectionDataSource} from './sort-button.model';
 })
 export class SortButtonComponent {
     @Input() state: SortDirectionDataSource;
+    @Input() readonly: boolean = false;
     direction$: Observable<SortDirection>;
 
     protected statusIcons = {
@@ -62,6 +63,11 @@ export class SortButtonComponent {
     }
 
     changeSorting(direction: SortDirection): void {
+
+        if (this.readonly) {
+            return;
+        }
+
         const newDirection = this.nextDirection[direction];
         this.state.changeSortDirection(newDirection);
     }
