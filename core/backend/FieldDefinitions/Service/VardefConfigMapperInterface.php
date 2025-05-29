@@ -28,8 +28,6 @@
 
 namespace App\FieldDefinitions\Service;
 
-use App\FieldDefinitions\Entity\FieldDefinition;
-
 interface VardefConfigMapperInterface
 {
     /**
