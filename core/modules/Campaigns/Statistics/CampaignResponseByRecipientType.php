@@ -102,8 +102,6 @@ class CampaignResponseByRecipientType extends LegacyHandler implements Statistic
             'targeted' => 'LBL_LOG_ENTRIES_TARGETED_TITLE',
             'viewed' => 'LBL_LOG_ENTRIES_VIEWED_TITLE',
             'link' => 'LBL_LOG_ENTRIES_LINK_TITLE',
-            'lead' => 'LBL_LOG_ENTRIES_LEAD_TITLE',
-            'contact' => 'LBL_LOG_ENTRIES_CONTACT_TITLE',
             'removed' => 'LBL_LOG_ENTRIES_REMOVED_TITLE',
         ];
 
