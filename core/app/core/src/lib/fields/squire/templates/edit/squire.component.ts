@@ -740,7 +740,7 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
                 }
 
                 const selectedText = this.editor.getSelectedText();
-                this.editor.makeLink('{{ unsubscribe_link }}', {title: selectedText});
+                this.editor.makeLink('{{ unsubscribe_link }}', {title: '{{ unsubscribe_link }}'});
             },
         } as ButtonInterface;
     }
