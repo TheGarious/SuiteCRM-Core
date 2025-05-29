@@ -75,6 +75,7 @@ $viewdefs ['EmailMarketing'] = [
                             ],
                             [
                                 'justify' => 'start',
+                                'class' => 'campaign-status-header-row',
                                 'cols' => [
                                     [
                                         'icon' => 'Schedulers',
@@ -118,7 +119,7 @@ $viewdefs ['EmailMarketing'] = [
                             ],
                             [
                                 'justify' => 'start',
-                                'class' => 'campaign-status-check-row',
+                                'class' => 'campaign-status-check-row border-bottom pb-2 mb-1',
                                 'cols' => [
                                     [
                                         'labelKey' => 'LBL_OOTB_BOUNCE',
@@ -134,6 +135,7 @@ $viewdefs ['EmailMarketing'] = [
                             ],
                             [
                                 'justify' => 'start',
+                                'class' => 'campaign-status-header-row',
                                 'cols' => [
                                     [
                                         'icon' => 'Emails',
@@ -147,7 +149,7 @@ $viewdefs ['EmailMarketing'] = [
                             ],
                             [
                                 'justify' => 'start',
-                                'class' => 'campaign-status-check-row',
+                                'class' => 'campaign-status-check-row border-bottom pb-2 mb-1',
                                 'cols' => [
                                     [
                                         'labelKey' => 'LBL_DOES_BOUNCE_EXIST',
@@ -176,16 +178,19 @@ $viewdefs ['EmailMarketing'] = [
                                             'settings' => [
                                                 [
                                                     'key' => 'campaign_marketing_items_per_run',
-                                                    'default' => 3
+                                                    'default' => 3,
+                                                    'type' => 'int'
                                                 ],
                                                 [
                                                     'key' => 'campaign_emails_per_run',
-                                                    'default' => 50
+                                                    'default' => 50,
+                                                    'type' => 'int'
                                                 ],
                                                 [
                                                     'key' => 'trackers_enabled',
                                                     'default' => false,
-                                                    'hasConfig' => false
+                                                    'hasConfig' => false,
+                                                    'type' => 'bool'
                                                 ],
                                             ]
                                         ]
@@ -194,6 +199,7 @@ $viewdefs ['EmailMarketing'] = [
                             ],
                             [
                                 'justify' => 'start',
+                                'class' => 'campaign-status-header-row',
                                 'cols' => [
                                     [
                                         'icon' => 'Campaigns',
@@ -323,60 +329,6 @@ $viewdefs ['EmailMarketing'] = [
                         'expanded' => true,
                     ],
                     'acl' => ['edit'],
-                    'displayLogic' => [
-                        'hide-on-scheduled' => [
-                            'modes' => ['detail'],
-                            'params' => [
-                                'activeOnFields' => [
-                                    'status' => [
-                                        [
-                                            'operator' => 'not-equal',
-                                            'values' => ['draft']
-                                        ],
-                                    ],
-                                ]
-                            ]
-                        ],
-                    ],
-                ],
-                'delete' => [
-                    'key' => 'delete',
-                    'labelKey' => 'LBL_DELETE',
-                    'modes' => ['detail'],
-                    'asyncProcess' => true,
-                    'params' => [
-                        'displayConfirmation' => true,
-                        'redirectModule' => 'campaigns',
-                        'confirmationLabel' => 'NTC_DELETE_CONFIRMATION',
-                    ],
-                    'acl' => ['delete'],
-                    'displayLogic' => [
-                        'hide-on-send' => [
-                            'modes' => ['detail'],
-                            'params' => [
-                                'activeOnFields' => [
-                                    'status' => [
-                                        [
-                                            'operator' => 'not-equal',
-                                            'values' => ['draft']
-                                        ],
-                                    ],
-                                ]
-                            ]
-                        ],
-                    ],
-                ],
-                'delete-test-mail-marketing-entries' => [
-                    'key' => 'delete-test-mail-marketing-entries',
-                    'labelKey' => 'LBL_DELETE_TEST_ENTRIES',
-                    'asyncProcess' => true,
-                    'modes' => ['detail'],
-                    'params' => [
-                        'expanded' => true,
-                        'displayConfirmation' => true,
-                        'confirmationLabel' => 'NTC_DELETE_TEST_ENTRIES_CONFIRMATION',
-                    ],
-                    'acl' => ['view'],
                     'displayLogic' => [
                         'hide-on-scheduled' => [
                             'modes' => ['detail'],
