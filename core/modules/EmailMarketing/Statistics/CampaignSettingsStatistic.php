@@ -119,7 +119,7 @@ class CampaignSettingsStatistic extends LegacyHandler implements StatisticsProvi
             $key = $setting['key'] ?? '';
             $default = $setting['default'] ?? '';
             $hasConfig = $setting['hasConfig'] ?? true;
-            $value = $this->getSetting($key, $default, $hasConfig);
+            $value = $this->getSetting($key, $setting, $default, $hasConfig);
 
             $result['fields'][$key] = [
                 'value' => $value,
@@ -133,7 +133,7 @@ class CampaignSettingsStatistic extends LegacyHandler implements StatisticsProvi
         return $statistic;
     }
 
-    protected function getSetting(string $setting, mixed $default, bool $hasConfigValue): string
+    protected function getSetting(string $setting, array $params, mixed $default, bool $hasConfigValue): string
     {
         $value = $this->settingsProvider->get('massemailer', $setting);
 
@@ -146,10 +146,14 @@ class CampaignSettingsStatistic extends LegacyHandler implements StatisticsProvi
             $value = $default;
         }
 
-        return $this->isBool($value);
+        if (($params['type'] ?? '') === 'bool') {
+            return $this->mapBoolValue($value);
+        }
+
+        return $value;
     }
 
-    protected function isBool(mixed $default): string
+    protected function mapBoolValue(mixed $default): string
     {
         if (is_bool($default)) {
             $default = $default ? 'Yes' : 'No';
