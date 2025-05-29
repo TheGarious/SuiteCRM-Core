@@ -184,16 +184,6 @@ $viewdefs ['Campaigns'] = [
                                 'labelKey' => 'LBL_NEW_EM_TRANSACTIONAL',
                                 'widget_class' => 'SubPanelTopButtonQuickCreate',
                             ],
-                            [
-                                'modes' => ['list'],
-                                'acl' => ['edit'],
-                                'action' => 'create',
-                                'key' => 'create',
-                                'module' => 'campaigns',
-                                'moduleAction' => 'web-to-lead',
-                                'labelKey' => 'LBL_WEB_TO_LEAD',
-                                'widget_class' => 'SubPanelTopCreateWebToLead',
-                            ],
                         ],
                         'columns' => [
                             [
