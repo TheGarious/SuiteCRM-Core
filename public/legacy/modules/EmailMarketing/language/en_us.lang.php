@@ -141,4 +141,8 @@ $mod_strings = array(
     'LBL_SCHEDULERS' => 'Schedulers',
     'LBL_INBOUND_EMAIL' => 'Inbound Email',
 
+    'LBL_TRACKERS_ENABLED' => 'Trackers Enabled',
+    'LBL_TRACKERS_ENABLED_FOOTNOTE' => 'When enabled, the email will contain trackers to monitor views and clicks',
+    'LBL_TRACKERS_DISABLED_FOOTNOTE' => 'When disabled, email views and clicks will not be tracked.',
+    'LBL_TRACKERS_DISABLED_GLOBALLY_FOOTNOTE' => 'Trackers disabled globally. Email views and clicks will not be tracked.'
 );

@@ -238,6 +238,41 @@ $dictionary['EmailMarketing'] = [
                 ],
             ]
         ],
+        'trackers_enabled' => [
+            'name' => 'trackers_enabled',
+            'vname' => 'LBL_TRACKERS_ENABLED',
+            'type' => 'bool',
+            'displayType' => 'dropdown',
+            'options' => 'dom_int_bool',
+            'defaultValueModes' => [
+                'create', 'edit', 'detail'
+            ],
+            'initDefaultProcess' => 'email-marketing-trackers-enabled-default',
+            'required' => false,
+            'reportable' => false,
+            'footnotes' => [
+                [
+                    'labelKey' => 'LBL_TRACKERS_ENABLED_FOOTNOTE',
+                    'displayModes' => ['edit', 'create', 'detail'],
+                    'activeOn' => [
+                        [
+                            'operator' => 'is-equal',
+                            'values' => ['1']
+                        ]
+                    ]
+                ],
+                [
+                    'labelKey' => 'LBL_TRACKERS_DISABLED_FOOTNOTE',
+                    'displayModes' => ['edit', 'create', 'detail'],
+                    'activeOn' => [
+                        [
+                            'operator' => 'is-equal',
+                            'values' => ['0']
+                        ]
+                    ]
+                ]
+            ]
+        ],
         'email_marketing_config' => [
             'name' => 'email_marketing_config',
             'vname' => 'LBL_CONFIGS',
@@ -253,6 +288,7 @@ $dictionary['EmailMarketing'] = [
                 'queueing_status',
                 'type',
                 'prospect_list_name',
+                'trackers_enabled',
                 'duplicate',
                 'survey_name',
                 'campaign_name',
@@ -266,6 +302,7 @@ $dictionary['EmailMarketing'] = [
                 'template_name',
                 'date_start',
                 'type',
+                'trackers_enabled',
                 'duplicate',
                 'survey_name',
                 'campaign_name',
