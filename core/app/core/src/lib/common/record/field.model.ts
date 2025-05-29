@@ -98,6 +98,7 @@ export interface FieldDefinition {
     lineItems?: LineItemsMetadata;
     metadata?: FieldMetadata;
     default?: string;
+    initDefaultProcess?: string;
     defaultValueModes?: ViewMode[];
     modes?: ViewMode[];
     relationship?: string;
@@ -233,6 +234,7 @@ export class BaseField implements Field {
     defaultDisplay?: string;
     displayType?: string;
     default?: string;
+    initDefaultProcess?: string;
     defaultValueModes?: ViewMode[];
     source?: FieldSource;
     valueSignal?: WritableSignal<string>;
