@@ -220,6 +220,8 @@ $viewdefs ['Campaigns'] = [
                             [
                                 'name' => 'date_start',
                                 'label' => 'LBL_SEND_DATE',
+                                'sortable' => true,
+                                'sortReadOnly' => true,
                                 'type' => 'datetime',
                             ],
                             [
