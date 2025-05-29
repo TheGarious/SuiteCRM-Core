@@ -52,7 +52,16 @@ class ViewedEmailTrackerParser implements CampaignEmailParserInterface
 
     public function applies(Record $record, array $context): bool
     {
-        return $this->trackerManager->isTrackingEnabled();
+        /** @var Record $emailMarketing */
+        $emailMarketing = $context['emailMarketingRecord'] ?? null;
+
+        if ($emailMarketing === null) {
+            return false;
+        }
+
+        $trackersEnabled = $emailMarketing->getAttributes()['trackers_enabled'] ?? null;
+
+        return isTrue($trackersEnabled) && $this->trackerManager->isTrackingEnabled();
     }
 
     public function parse(Record $record, array $context): void
