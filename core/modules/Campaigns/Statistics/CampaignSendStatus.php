@@ -101,10 +101,9 @@ class CampaignSendStatus extends LegacyHandler implements StatisticsProviderInte
         $activities = [
             'track_queue' => 'LBL_MESSAGE_QUEUE_TITLE',
             'targeted' => 'LBL_LOG_ENTRIES_TARGETED_TITLE',
+            'blocked' => 'LBL_LOG_ENTRIES_BLOCKED_TITLE',
             'sent error' => 'LBL_LOG_ENTRIES_SEND_ERROR_TITLE',
             'invalid email' => 'LBL_LOG_ENTRIES_INVALID_EMAIL_TITLE',
-            'blocked' => 'LBL_LOG_ENTRIES_BLOCKED_TITLE',
-            'viewed' => 'LBL_LOG_ENTRIES_VIEWED_TITLE',
         ];
 
         $emailMarketingId = null;
@@ -136,6 +135,13 @@ class CampaignSendStatus extends LegacyHandler implements StatisticsProviderInte
         $parsedResult = [];
 
         foreach ($activities as $activityKey => $activityLabel) {
+            if (empty($parsedResult[$activityKey])) {
+                $parsedResult[$activityKey] = [
+                    'activity_type' => $activityKey,
+                    'hits' => 0
+                ];
+            }
+
             foreach ($result as $key => $row) {
                 if ($activityKey === $row['activity_type'] || str_starts_with($row['activity_type'], $activityKey)) {
                     $parsedResult[$activityKey] = $parsedResult[$activityKey] ?? [
