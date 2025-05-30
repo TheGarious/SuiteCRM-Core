@@ -68,7 +68,7 @@ class RecordTemplateHandler extends LegacyHandler implements RecordTemplateManag
 
         $this->init();
 
-        $bean = \Beanfactory::newBean($legacyModuleName);
+        $bean = \BeanFactory::newBean($legacyModuleName);
 
         $isOfType = false;
         if (!empty($bean)) {
