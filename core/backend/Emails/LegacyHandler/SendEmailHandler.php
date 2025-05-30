@@ -80,7 +80,17 @@ class SendEmailHandler extends LegacyHandler
         $email = $this->recordToEmailService->map($emailRecord, $outboundRecord);
 
 
-        $sent = $this->legacyMailer->send($email, null, $outboundRecord);
+        $emailRecordAttributes = $emailRecord->getAttributes() ?? [];
+        $headers = $emailRecordAttributes['headers'] ?? [];
+
+        $sent = $this->legacyMailer->send(
+            $email,
+            null,
+            $outboundRecord,
+            [
+                'headers' => $headers
+            ]
+        );
 
         if ($isTest && $sent) {
             return true;
