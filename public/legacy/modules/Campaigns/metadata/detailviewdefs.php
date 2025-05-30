@@ -55,6 +55,14 @@ $viewdefs ['Campaigns'] = [
                             'statisticsType' => 'campaign-response-by-recipient-activity',
                             'labelKey' => 'LBL_CAMPAIGN_RESPONSE_BY_RECIPIENT_ACTIVITY',
                             'chartOptions' => [
+                                'noBarWhenZero' => false,
+                                'showDataLabel' => true,
+                                'showYAxisLabel' => false,
+                                'showXAxisLabel' => false,
+                                'yAxis' => false,
+                                'xAxis' => true,
+                                'rotateXAxisTicks' => false,
+                                'trimXAxisTicks' => false,
                             ],
                         ],
                         [
@@ -63,6 +71,15 @@ $viewdefs ['Campaigns'] = [
                             'statisticsType' => 'campaign-send-status',
                             'labelKey' => 'LBL_CAMPAIGN_SEND_STATUS',
                             'chartOptions' => [
+                                'noBarWhenZero' => false,
+                                'showDataLabel' => true,
+                                'showYAxisLabel' => false,
+                                'showXAxisLabel' => false,
+                                'yAxis' => false,
+                                'xAxis' => true,
+                                'rotateXAxisTicks' => false,
+                                'trimXAxisTicks' => true,
+                                'maxXAxisTickLength' => 8,
                             ],
                         ],
                     ],
@@ -293,7 +310,6 @@ $viewdefs ['Campaigns'] = [
                         'name' => 'assigned_user_name',
                         'label' => 'LBL_ASSIGNED_TO',
                     ],
-                    ''
                 ],
             ],
             'LBL_NAVIGATION_MENU_GEN2' => [
