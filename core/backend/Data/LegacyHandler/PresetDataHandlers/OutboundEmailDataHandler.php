@@ -104,14 +104,12 @@ class OutboundEmailDataHandler extends BaseListDataHandler implements ListDataHa
 
     protected function getWhere(?\SugarBean $currentUser): string
     {
-        if (!$currentUser){
+        if (!is_admin($currentUser)){
             return '';
         }
-        $where = "(outbound_email.user_id like '" . $currentUser?->db->quote($currentUser?->id) . "%') ";
-        if (is_admin($currentUser)){
-            $where .= 'OR (outbound_email.type = "group")';
-        }
 
-        return $where;
+        $showGroupRecords = "(type IS NULL) OR (type != 'user' ) OR ";
+
+        return " $showGroupRecords (type = 'user' AND user_id = '".$currentUser?->db->quote($currentUser?->id)."') ";
     }
 }
