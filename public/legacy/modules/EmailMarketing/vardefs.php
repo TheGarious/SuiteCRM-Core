@@ -620,6 +620,7 @@ $dictionary['EmailMarketing'] = [
             'source' => 'non-db',
             'vname' => 'LBL_SURVEY',
             'save' => true,
+            'required' => true,
             'id_name' => 'survey_id',
             'link' => 'survey',
             'table' => 'surveys',
