@@ -48,8 +48,7 @@ class LegacyMailer extends LegacyHandler
         LegacyScopeState $legacyScopeState,
         RequestStack $requestStack,
         protected LoggerInterface $logger
-    )
-    {
+    ) {
         parent::__construct(
             $projectDir,
             $legacyDir,
@@ -65,7 +64,7 @@ class LegacyMailer extends LegacyHandler
         return 'legacy-mailer';
     }
 
-    public function send(Email $message, ?Envelope $envelope = null, Record $outbound = null): bool
+    public function send(Email $message, ?Envelope $envelope = null, Record $outbound = null, array $options = []): bool
     {
         $this->init();
         $this->startLegacyApp();
@@ -81,7 +80,7 @@ class LegacyMailer extends LegacyHandler
             return false;
         }
 
-        $sugarMailer = $this->setupSugarMailer($message, $outboundBean);
+        $sugarMailer = $this->setupSugarMailer($message, $outboundBean, [], $options);
         if (empty($sugarMailer)) {
             return false;
         }
@@ -124,7 +123,8 @@ class LegacyMailer extends LegacyHandler
     public function setupSugarMailer(
         Email $message,
         \OutboundEmailAccounts $outboundEmail = null,
-        array $attachments = []
+        array $attachments = [],
+        array $options = []
     ): ?\SugarPHPMailer {
         require_once('include/SugarPHPMailer.php');
 
@@ -168,8 +168,8 @@ class LegacyMailer extends LegacyHandler
         $mail->handleAttachments($attachments);
         //$mail->prepForOutbound();
 
-        $headers = $message->getHeaders()->all() ?? [];
 
+        $headers = $options['headers'] ?? [];
         foreach ($headers as $headerName => $headerValue) {
             if (is_string($headerValue)) {
                 $mail->addCustomHeader($headerName, $headerValue);
@@ -249,19 +249,19 @@ class LegacyMailer extends LegacyHandler
     {
         $recipients = [];
 
-        if (is_array($message->getTo())){
+        if (is_array($message->getTo())) {
             foreach ($message->getTo() as $key => $address) {
                 $recipients[$address->getAddress()] = 1;
             }
         }
 
-        if (is_array($message->getBcc())){
+        if (is_array($message->getBcc())) {
             foreach ($message->getBcc() as $key => $address) {
                 $recipients[$address->getAddress()] = 1;
             }
         }
 
-        if (is_array($message->getCc())){
+        if (is_array($message->getCc())) {
             foreach ($message->getCc() as $key => $address) {
                 $recipients[$address->getAddress()] = 1;
             }
