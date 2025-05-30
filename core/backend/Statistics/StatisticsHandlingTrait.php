@@ -155,7 +155,7 @@ trait StatisticsHandlingTrait
         ];
 
         if ($options !== null) {
-            $metadata['chartOptions'] = (array)$options;
+            $metadata['chartOptions'] = $options->toArray();
         }
 
         $statistic->setMetadata($metadata);
