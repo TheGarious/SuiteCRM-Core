@@ -43,6 +43,13 @@
                              [showYAxisLabel]="showYAxisLabel"
                              [xAxisLabel]="xAxisLabel"
                              [yAxisLabel]="yAxisLabel"
+                             [noBarWhenZero]="noBarWhenZero"
+                             [showDataLabel]="showDataLabel"
+                             [rotateXAxisTicks]="rotateXAxisTicks"
+                             [trimXAxisTicks]="trimXAxisTicks"
+                             [maxYAxisTickLength]="maxYAxisTickLength"
+                             [trimYAxisTicks]="trimYAxisTicks"
+                             [maxXAxisTickLength]="maxXAxisTickLength"
                              [yAxisTickFormatting]="yAxisTickFormatting">
         <ng-template #tooltipTemplate let-model="model">
             <div>{{model.name}}</div>

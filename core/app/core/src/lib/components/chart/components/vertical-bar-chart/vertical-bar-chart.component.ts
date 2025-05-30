@@ -26,7 +26,7 @@
 
 import {Component, ElementRef, OnDestroy, OnInit} from '@angular/core';
 import {SingleSeries} from '../../../../common/containers/chart/chart.model';
-import {isFalse} from '../../../../common/utils/value-utils';
+import {isFalse, isTrue} from '../../../../common/utils/value-utils';
 import {BaseChartComponent} from '../base-chart/base-chart.component';
 import {ScreenSizeObserverService} from "../../../../services/ui/screen-size-observer/screen-size-observer.service";
 import {debounceTime} from "rxjs/operators";
@@ -77,7 +77,7 @@ export class VerticalBarChartComponent extends BaseChartComponent implements OnI
     }
 
     get xAxis(): boolean {
-        return this.dataSource.options.xAxis || false;
+        return isTrue(this.dataSource.options.xAxis ?? false);
     }
 
     get yAxis(): boolean {
@@ -89,11 +89,11 @@ export class VerticalBarChartComponent extends BaseChartComponent implements OnI
     }
 
     get showXAxisLabel(): boolean {
-        return this.dataSource.options.showXAxisLabel || false;
+        return isTrue(this.dataSource.options.showXAxisLabel ?? false);
     }
 
     get showYAxisLabel(): boolean {
-        return this.dataSource.options.showYAxisLabel || false;
+        return isTrue(this.dataSource.options.showYAxisLabel ?? false);
     }
 
     get xAxisLabel(): string {
@@ -109,6 +109,29 @@ export class VerticalBarChartComponent extends BaseChartComponent implements OnI
             return this.dataSource.tickFormatting;
         }
         return null;
+    }
+
+    get noBarWhenZero(): boolean {
+        return !isFalse(this.dataSource.options.noBarWhenZero ?? false);
+    }
+
+    get showDataLabel(): boolean {
+        return !isFalse(this.dataSource.options.showDataLabel ?? false);
+    }
+    get rotateXAxisTicks(): boolean {
+        return !isFalse(this.dataSource.options.rotateXAxisTicks ?? false);
+    }
+    get trimXAxisTicks(): boolean {
+        return !isFalse(this.dataSource.options.trimXAxisTicks ?? false);
+    }
+    get trimYAxisTicks(): boolean {
+        return !isFalse(this.dataSource.options.trimYAxisTicks ?? false);
+    }
+    get maxXAxisTickLength(): number {
+        return parseInt(this.dataSource.options.maxXAxisTickLength) || 16;
+    }
+    get maxYAxisTickLength(): number {
+        return parseInt(this.dataSource.options.maxYAxisTickLength) || 16;
     }
 
     formatTooltipValue(value: any): any {
