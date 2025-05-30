@@ -77,4 +77,16 @@ class ChartOptions
 
     /**@var bool|null $tooltipDisabled */
     public $tooltipDisabled;
+
+    public function toArray(): array
+    {
+        $keys = array_keys(get_object_vars($this));
+        $values = [];
+        foreach ($keys as $key) {
+            if (!is_null($this->{$key})) {
+                $values[$key] = $this->{$key};
+            }
+        }
+        return $values;
+    }
 }
