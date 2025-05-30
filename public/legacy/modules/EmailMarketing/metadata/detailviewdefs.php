@@ -243,7 +243,7 @@ $viewdefs ['EmailMarketing'] = [
                             ],
                             [
                                 'justify' => 'start',
-                                'class' => 'campaign-status-check-row',
+                                'class' => 'campaign-status-check-row  mb-0',
                                 'cols' => [
                                     [
                                         'labelKey' => 'LBL_TRACKERS_ENABLED',
@@ -525,6 +525,68 @@ $viewdefs ['EmailMarketing'] = [
                         ],
                     ],
                 ],
+                'delete-test-mail-marketing-entries' => [
+                    'key' => 'delete-test-mail-marketing-entries',
+                    'labelKey' => 'LBL_DELETE_TEST_ENTRIES',
+                    'asyncProcess' => true,
+                    'modes' => ['detail'],
+                    'params' => [
+                        'expanded' => true,
+                        'displayConfirmation' => true,
+                        'confirmationLabel' => 'NTC_DELETE_TEST_ENTRIES_CONFIRMATION',
+                    ],
+                    'acl' => ['view'],
+                    'displayLogic' => [
+                        'hide-on-scheduled' => [
+                            'modes' => ['detail'],
+                            'params' => [
+                                'activeOnFields' => [
+                                    'status' => [
+                                        [
+                                            'operator' => 'not-equal',
+                                            'values' => ['draft']
+                                        ],
+                                    ],
+                                ]
+                            ]
+                        ],
+                    ],
+                ],
+                'toggle-widgets' => [
+                    'key' => 'toggle-widgets',
+                    'labelKey' => 'LBL_INSIGHTS',
+                    'modes' => ['detail', 'edit'],
+                    'params' => [
+                        'expanded' => true,
+                    ],
+                ],
+                'delete' => [
+                    'key' => 'delete',
+                    'labelKey' => 'LBL_DELETE',
+                    'modes' => ['detail'],
+                    'asyncProcess' => true,
+                    'params' => [
+                        'displayConfirmation' => true,
+                        'redirectModule' => 'campaigns',
+                        'confirmationLabel' => 'NTC_DELETE_CONFIRMATION',
+                    ],
+                    'acl' => ['delete'],
+                    'displayLogic' => [
+                        'hide-on-send' => [
+                            'modes' => ['detail'],
+                            'params' => [
+                                'activeOnFields' => [
+                                    'status' => [
+                                        [
+                                            'operator' => 'not-equal',
+                                            'values' => ['draft']
+                                        ],
+                                    ],
+                                ]
+                            ]
+                        ],
+                    ],
+                ]
             ],
             'exclude' => [
                 'duplicate'
