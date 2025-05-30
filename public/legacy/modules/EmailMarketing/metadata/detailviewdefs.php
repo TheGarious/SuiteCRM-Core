@@ -157,14 +157,7 @@ $viewdefs ['EmailMarketing'] = [
                                         'bold' => true
                                     ],
                                     [
-                                        'statistic' => 'record-exists',
-                                        'params' => [
-                                            'module' => 'InboundEmail',
-                                            'criteria' => [
-                                                'field' => 'type',
-                                                'value' => 'bounce',
-                                            ]
-                                        ],
+                                        'statistic' => 'bounce-exists',
                                         'class' => 'campaign-status-check-row-value',
                                     ]
                                 ]
