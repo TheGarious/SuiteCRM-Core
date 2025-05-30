@@ -25,7 +25,7 @@
  * the words "Supercharged by SuiteCRM".
  */
 
-namespace App\Statistics\LegacyHandler;
+namespace App\Module\EmailMarketing\Statistics;
 
 use App\Data\LegacyHandler\PreparedStatementHandler;
 use App\Data\Service\RecordProviderInterface;
@@ -42,12 +42,12 @@ use Symfony\Component\HttpFoundation\RequestStack;
  * Class CampaignSettingsStatistic
  * @package App\Legacy\Statistics
  */
-class RecordExists extends LegacyHandler implements StatisticsProviderInterface
+class BounceExists extends LegacyHandler implements StatisticsProviderInterface
 {
 
     use StatisticsHandlingTrait;
 
-    public const KEY = 'record-exists';
+    public const KEY = 'bounce-exists';
 
 
     public function __construct(
@@ -93,20 +93,12 @@ class RecordExists extends LegacyHandler implements StatisticsProviderInterface
             return $this->getEmptyResponse(self::KEY);
         }
 
-        $params = $query['params'] ?? [];
-
         $this->init();
         $this->startLegacyApp();
 
-        $recordModule = $params['module'] ?? null;
+        $recordModule = 'InboundEmail';
 
-        if ($recordModule === null) {
-            return $this->getEmptyResponse(self::KEY);
-        }
-
-        $fields = $params['criteria'] ?? [];
-
-        $value = $this->getRecord($recordModule, $fields);
+        $value = $this->getRecord($recordModule);
 
         $result = [
             'value' => $value,
@@ -122,7 +114,7 @@ class RecordExists extends LegacyHandler implements StatisticsProviderInterface
     /**
      * @throws Exception
      */
-    protected function getRecord(string $recordModule, array $field): string
+    protected function getRecord(string $recordModule): string
     {
         $queryBuilder = $this->preparedStatementHandler->createQueryBuilder();
 
@@ -130,9 +122,9 @@ class RecordExists extends LegacyHandler implements StatisticsProviderInterface
 
         $queryBuilder->select('id')
             ->from($table, 'module')
-            ->where('module.' . $field['field'] . ' = :value')
+            ->where('module.type = :value')
             ->andWhere('deleted = 0')
-            ->setParameter('value', $field['value']);
+            ->setParameter('value', 'bounce');
 
         $result = $queryBuilder->fetchAssociative();
 
