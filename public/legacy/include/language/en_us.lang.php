@@ -4255,3 +4255,4 @@ $app_strings['LBL_TRACKERS_ENABLED'] = 'Trackers Enabled';
 $app_strings['LBL_MARKETING_ITEMS_PER_RUN_DYNAMIC_LABEL'] = '{{ fields.campaign_marketing_items_per_run.value }}';
 $app_strings['LBL_EMAILS_PER_RUN_DYNAMIC_LABEL'] = '{{ fields.campaign_emails_per_run.value }}';
 $app_strings['LBL_TRACKERS_ENABLED_DYNAMIC_LABEL'] = '{{ fields.trackers_enabled.value }}';
+$app_strings['LBL_UNSUBSCRIBE'] = 'Unsubscribe';
