@@ -56,6 +56,7 @@ import {
     ScreenSizeObserverService
 } from "../../../../services/ui/screen-size-observer/screen-size-observer.service";
 import {MonacoEditorComponent} from "../../../../components/monaco-editor/monaco-editor.component";
+import {LanguageStore} from "../../../../store/language/language.store";
 
 
 @Component({
@@ -106,7 +107,8 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
         protected logicDisplay: FieldLogicDisplayManager,
         protected config: SystemConfigStore,
         protected sanitizer: DomSanitizer,
-        protected screenSize: ScreenSizeObserverService
+        protected screenSize: ScreenSizeObserverService,
+        protected language: LanguageStore
     ) {
         super(typeFormatter, logic, logicDisplay);
     }
@@ -524,7 +526,7 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
                         linkValue = 'mailto:' + linkValue;
                     }
 
-                    if(!linkValue.includes('https://') && !linkValue.includes('http://') && linkValue.includes('.')) {
+                    if (!linkValue.includes('https://') && !linkValue.includes('http://') && linkValue.includes('.')) {
                         linkValue = 'http://' + linkValue;
                     }
 
@@ -734,8 +736,9 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
             titleKey: 'LBL_INJECT_UNSUBSCRIBE',
             klass: 'squire-editor-button btn btn-sm',
             onClick: () => {
-                if (this.editor.getSelectedText() === ''){
-                    this.editor.insertHTML('<a href="{{ unsubscribe_link }}">{{ unsubscribe_link }}</a>');
+                if (this.editor.getSelectedText() === '') {
+                    const unsubscribeLabel = this.language.getFieldLabel('LBL_UNSUBSCRIBE') || 'Unsubscribe';
+                    this.editor.insertHTML('<a href="{{ unsubscribe_link }}">' + unsubscribeLabel + '</a>');
                     return;
                 }
 
