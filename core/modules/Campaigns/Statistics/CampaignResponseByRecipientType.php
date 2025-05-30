@@ -134,6 +134,13 @@ class CampaignResponseByRecipientType extends LegacyHandler implements Statistic
 
         $parsedResult = [];
         foreach ($activities as $activityKey => $activityLabel) {
+            if (empty($parsedResult[$activityKey])) {
+                $parsedResult[$activityKey] = [
+                    'activity_type' => $activityKey,
+                    'hits' => 0
+                ];
+            }
+
             foreach ($result as $key => $row) {
                 if ($activityKey === $row['activity_type'] || str_starts_with($row['activity_type'], $activityKey)) {
                     $parsedResult[$activityKey] = $parsedResult[$activityKey] ?? [
@@ -149,7 +156,7 @@ class CampaignResponseByRecipientType extends LegacyHandler implements Statistic
         $nameField = 'activity_type';
         $valueField = 'hits';
 
-        $series = $this->buildSingleSeries($result, $nameField, $valueField, $activities, [], true);
+        $series = $this->buildSingleSeries($parsedResult, $nameField, $valueField, $activities, [], true);
 
         $chartOptions = new ChartOptions();
 
