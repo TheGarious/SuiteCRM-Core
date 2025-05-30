@@ -24,7 +24,7 @@
  * the words "Supercharged by SuiteCRM".
  */
 
-import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, Input, ViewChild} from '@angular/core';
 import {interval, Observable, ReplaySubject} from "rxjs";
 import {filter, take} from "rxjs/operators";
 import {FormsModule} from "@angular/forms";
@@ -38,7 +38,7 @@ import {FormsModule} from "@angular/forms";
     ],
     templateUrl: './monaco-editor.component.html',
 })
-export class MonacoEditorComponent implements OnInit {
+export class MonacoEditorComponent {
 
     @Input() content: string = '';
     editor?: any;
@@ -60,9 +60,6 @@ export class MonacoEditorComponent implements OnInit {
             this.initEditor(monaco, container);
         });
 
-    }
-
-    ngOnInit(): void {
     }
 
     protected initEditor(monaco, container: ElementRef<any>) {
