@@ -738,7 +738,7 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
             onClick: () => {
                 if (this.editor.getSelectedText() === '') {
                     const unsubscribeLabel = this.language.getFieldLabel('LBL_UNSUBSCRIBE') || 'Unsubscribe';
-                    this.editor.insertHTML('<a href="{{ unsubscribe_link }}">' + unsubscribeLabel + '</a>');
+                    this.editor.insertHTML('<a title="' + '{{ unsubscribe_link }}'  +'" href="{{ unsubscribe_link }}">' + unsubscribeLabel + '</a>');
                     return;
                 }
 
