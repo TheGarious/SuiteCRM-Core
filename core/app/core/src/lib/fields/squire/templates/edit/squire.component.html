@@ -85,7 +85,8 @@
                 </ng-container>
 
                 <ng-container *ngIf="item?.value?.type === 'color-selector'">
-                    <scrm-color-selector class="squire-editor-toolbar-item" [config]="item?.value"></scrm-color-selector>
+                    <scrm-color-selector class="squire-editor-toolbar-item"
+                                         [config]="item?.value"></scrm-color-selector>
                 </ng-container>
 
             </ng-container>
@@ -114,11 +115,20 @@
          aria-label="Body"
          class="editor-container squire-editor-content scrollbar-thin"
          contenteditable="true"
-         [ngStyle]="{'min-height': minHeight() ? minHeight() : 'auto', 'height': height() ? height() : 'auto', 'max-height': maxHeight() ? maxHeight() : 'auto'}"
+         [ngStyle]="{
+            'min-height': minHeight() ? minHeight() : 'auto',
+            'height': height() ? height() : 'auto',
+            'max-height': maxHeight() ? maxHeight() : 'auto'
+            }"
     ></div>
 
     <div *ngIf="editorMode() === 'code'"
-         [ngStyle]="{'display': 'block', 'min-height': minHeight() ? minHeight() : 'auto', 'height': height() ? height() : 'auto', 'max-height': maxHeight() ? maxHeight() : 'auto'}"
+         [ngStyle]="{
+         'display': 'block',
+         'min-height': minHeight() ? minHeight() : 'auto',
+         'height': height() ? height() : 'auto',
+         'max-height': maxHeight() ? maxHeight() : 'auto'
+         }"
     >
         <scrm-monaco-editor #monacoEditor style="height: 100%" [content]="field.value"></scrm-monaco-editor>
     </div>
