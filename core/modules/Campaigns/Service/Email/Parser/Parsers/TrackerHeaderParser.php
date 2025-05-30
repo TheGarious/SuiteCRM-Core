@@ -69,6 +69,11 @@ class TrackerHeaderParser implements CampaignEmailParserInterface
     {
         $trackerId = $context['trackerId'] ?? null;
         if ($trackerId === null) {
+            $this->logger->debug(
+                'Campaigns:TrackerHeaderParser::parse - missing trackerId - id: ' . $trackerId, [
+                    'trackerId' => $trackerId,
+                ]
+            );
             return;
         }
 
