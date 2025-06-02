@@ -444,7 +444,7 @@ $dictionary['EmailMarketing'] = [
                         'process' => 'update-email-template-subject',
                         'activeOnFields' => [
                             'template_name' => [
-                                ['operator' => 'not-empty' ]
+                                ['operator' => 'not-empty']
                             ],
                         ],
                     ]
@@ -527,7 +527,7 @@ $dictionary['EmailMarketing'] = [
                         'process' => 'update-email-template-body',
                         'activeOnFields' => [
                             'template_name' => [
-                                ['operator' => 'not-empty' ]
+                                ['operator' => 'not-empty']
                             ],
                         ],
                     ]
@@ -591,8 +591,11 @@ $dictionary['EmailMarketing'] = [
                     'params' => [
                         'parent_field' => 'propects_lists',
                         'parent_module' => 'Campaigns',
-                    ]
+                    ],
                 ],
+                'static' => [
+                    'list_type' => ['seed', 'default']
+                ]
             ],
         ],
         //related fields.
