@@ -252,10 +252,6 @@ $viewdefs ['EmailMarketing'] = [
                         ]
                     ]
                 ],
-                'acls' => [
-                    'Schedulers' => ['view', 'detail', 'edit', 'create'],
-                    'InboundEmail' => ['view', 'detail', 'edit', 'create'],
-                ]
             ],
             'email-marketing-charts' => [
                 'type' => 'chart',
@@ -301,7 +297,7 @@ $viewdefs ['EmailMarketing'] = [
                     ],
                 ],
                 'acls' => [
-                    'EmailMarketing' => ['view', 'detail', 'edit', 'create']
+                    'EmailMarketing' => ['view']
                 ]
             ],
         ],
