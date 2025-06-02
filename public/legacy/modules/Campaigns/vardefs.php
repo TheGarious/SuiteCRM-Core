@@ -246,6 +246,45 @@ $dictionary['Campaign'] = [
             'module' => 'ProspectLists',
             'filterOnEmpty' => true,
             'rname' => 'name',
+            'showFilter' => false,
+            'filter' => [
+                'static' => [
+                    'list_type' => ['seed', 'default']
+                ],
+            ],
+        ],
+        'suppression_lists' => [
+            'name' => 'suppression_lists',
+            'type' => 'multirelate',
+            'vname' => 'LBL_SUPPRESSION_LISTS',
+            'footnotes' => [
+                [
+                    'labelKey' => 'LBL_SUPPRESSION_LISTS_HELP',
+                    'displayModes' => ['edit', 'create']
+                ]
+            ],
+            'source' => 'non-db',
+            'metadata' => [
+                'headerField' => [
+                    'name' => 'name',
+                ],
+                'subHeaderField' => [
+                    'name' => 'list_type',
+                    'type' => 'enum',
+                    'definition' => [
+                        'options' => 'prospect_list_type_dom',
+                    ]
+                ],
+            ],
+            'module' => 'ProspectLists',
+            'filterOnEmpty' => true,
+            'rname' => 'name',
+            'showFilter' => false,
+            'filter' => [
+                'static' => [
+                    'list_type' => ['exempt', 'exempt_domain', 'exempt_address']
+                ]
+            ],
         ],
         'prospectlists' => [
             'name' => 'prospectlists',
