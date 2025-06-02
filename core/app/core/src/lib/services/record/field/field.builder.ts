@@ -296,6 +296,10 @@ export class FieldBuilder {
                         const types = fieldDependency['types'] ?? [];
                         types.push(type);
 
+                        if (fieldDependencies[dependency]) {
+                            types.push(...fieldDependencies[dependency]['type']);
+                        }
+
                         fieldDependencies[dependency] = {
                             field: dependency,
                             type: types
