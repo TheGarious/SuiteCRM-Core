@@ -243,13 +243,16 @@ $dictionary['EmailMarketing'] = [
             'vname' => 'LBL_TRACKERS_ENABLED',
             'type' => 'bool',
             'displayType' => 'dropdown',
-            'options' => 'dom_int_bool',
+            'options' => 'dom_int_bool_string',
             'defaultValueModes' => [
                 'create', 'edit', 'detail'
             ],
             'initDefaultProcess' => 'email-marketing-trackers-enabled-default',
             'required' => false,
             'reportable' => false,
+            'metadata' => [
+                'boolInternalType' => 'int'
+            ],
             'footnotes' => [
                 [
                     'labelKey' => 'LBL_TRACKERS_ENABLED_FOOTNOTE',
@@ -257,7 +260,7 @@ $dictionary['EmailMarketing'] = [
                     'activeOn' => [
                         [
                             'operator' => 'is-equal',
-                            'values' => ['1']
+                            'values' => ['1', 'true', true, 1]
                         ]
                     ]
                 ],
@@ -267,7 +270,7 @@ $dictionary['EmailMarketing'] = [
                     'activeOn' => [
                         [
                             'operator' => 'is-equal',
-                            'values' => ['0']
+                            'values' => ['0', 'false', false, 0]
                         ]
                     ]
                 ]

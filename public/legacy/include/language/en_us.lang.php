@@ -824,6 +824,10 @@ $app_list_strings = array(
         1 => 'Yes',
         0 => 'No',
     ),
+    'dom_int_bool_string' => array(
+        '1' => 'Yes',
+        '0' => 'No',
+    ),
     'dom_switch_bool' => array(
         'on' => 'Yes',
         'off' => 'No',
