@@ -46,6 +46,7 @@ import {deepClone} from "../../../../common/utils/object-utils";
 import {ObjectMap} from "../../../../common/types/object-map";
 import {AttributeMap, Record} from "../../../../common/record/record.model";
 import {SearchCriteria} from "../../../../common/views/list/search-criteria.model";
+import {isArray} from "lodash-es";
 
 @Component({
     selector: 'scrm-multirelate-edit',
@@ -395,10 +396,19 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
         const fields = filter.static ?? [];
 
         Object.keys(fields).forEach((field) => {
+            const fieldValue =  fields[field];
+
+            let value = []
+            if (isArray(fieldValue)) {
+                value = fieldValue;
+            } else {
+                fieldValue.push(fieldValue);
+            }
+
             criteria.filters[field] = {
                 field: field,
                 operator: '=',
-                values: [fields[field]],
+                values: value,
                 rangeSearch: false
             };
         })
