@@ -623,13 +623,28 @@ $dictionary['EmailMarketing'] = [
             'source' => 'non-db',
             'vname' => 'LBL_SURVEY',
             'save' => true,
-            'required' => true,
             'id_name' => 'survey_id',
             'link' => 'survey',
             'table' => 'surveys',
             'filterOnEmpty' => true,
             'module' => 'Surveys',
             'rname' => 'name',
+            'logic' => [
+                'required' => [
+                    'key' => 'required',
+                    'modes' => ['edit', 'create'],
+                    'params' => [
+                        'fieldDependencies' => [
+                            'type'
+                        ],
+                        'activeOnFields' => [
+                            'type' => [
+                                'survey'
+                            ],
+                        ],
+                    ],
+                ]
+            ],
             'displayLogic' => [
                 'show_for_survey_emails' => [
                     'key' => 'displayType',
