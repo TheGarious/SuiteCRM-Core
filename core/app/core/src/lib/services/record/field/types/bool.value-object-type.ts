@@ -1,6 +1,6 @@
 /**
  * SuiteCRM is a customer relationship management program developed by SalesAgility Ltd.
- * Copyright (C) 2024 SalesAgility Ltd.
+ * Copyright (C) 2025 SalesAgility Ltd.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by the
@@ -24,14 +24,35 @@
  * the words "Supercharged by SuiteCRM".
  */
 
-import {FieldObjectTypeMap} from "./field-object.model";
-import {BaseField} from '../../../common/record/field.model';
-import {MultiEnumField} from "./types/multi-enum.value-object-type";
-import {BoolField} from "./types/bool.value-object-type";
+import {BaseField} from '../../../../common/record/field.model';
+import {isTrue} from "../../../../common/utils/value-utils";
 
+export class BoolField extends BaseField {
 
-export const baseObjectFieldsTypeMap: FieldObjectTypeMap = {
-    'default': BaseField,
-    'multienum': MultiEnumField,
-    'bool': BoolField
-};
+    get value(): string {
+        const internalType = this.metadata?.boolInternalType ?? 'bool';
+
+        if (internalType === 'int' && this.valueState !== '') {
+            return isTrue(this.valueState) ? '1' : '0';
+        }
+
+        return this.valueState;
+    }
+
+    set value(value: string) {
+        const internalType = this.metadata?.boolInternalType ?? 'bool';
+        if (internalType === 'int' && value !== '') {
+            value = isTrue(value) ? '1' : '0';
+        }
+
+        const changed = value !== this.valueState;
+
+        this.valueState = value;
+        if (typeof value === 'string') {
+            this.valueSignal.set(value)
+        }
+        if (changed) {
+            this.emitValueChanges();
+        }
+    }
+}
