@@ -52,6 +52,11 @@ export class DropdownEnumEditFieldComponent extends BaseEnumComponent {
 
         this.checkAndInitAsDynamicEnum();
 
+        if (this?.field?.initValueSignal) {
+            this?.field?.initValueSignal();
+            this.field.formControl.setValue(this.field.valueSignal(), {emitEvent: false});
+        }
+
         super.ngOnInit();
 
         this.subscribeValueChanges();
