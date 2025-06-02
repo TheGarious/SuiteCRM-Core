@@ -31,11 +31,11 @@ use App\Data\Entity\Record;
 
 interface EmailSuppressionListManagerInterface
 {
-    public function isOnIdSuppressionList(string $emailMarketingId, string $targetId, string $targetType): bool;
+    public function isOnIdSuppressionList(string $campaignId, string $emailMarketingId, string $targetId, string $targetType): bool;
 
-    public function isOnEmailAddressSuppressionList(string $emailMarketingId, string $targetId, string $targetType): bool;
+    public function isOnEmailAddressSuppressionList(string $campaignId, string $emailMarketingId, string $targetId, string $targetType): bool;
 
-    public function isOnDomainSuppressionList(string $emailMarketingId, string $targetId, string $targetType, string $email): bool;
+    public function isOnDomainSuppressionList(string $campaignId, string $emailMarketingId, string $targetId, string $targetType, string $email): bool;
 
     public function createCampaignUnsubscriptionList(Record $campaign): Record;
 }
