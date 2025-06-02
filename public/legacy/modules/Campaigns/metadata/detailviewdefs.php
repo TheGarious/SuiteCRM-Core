@@ -85,7 +85,7 @@ $viewdefs ['Campaigns'] = [
                     ],
                 ],
                 'acls' => [
-                    'Campaigns' => ['view', 'detail', 'edit', 'create']
+                    'Campaigns' => ['view']
                 ]
             ],
         ],
