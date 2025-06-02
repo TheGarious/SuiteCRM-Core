@@ -607,6 +607,7 @@ export * from './services/record/field/handler/handlers/base.field-handler';
 export * from './services/record/field/handler/handlers/date.field-handler';
 export * from './services/record/field/handler/handlers/default.field-handler';
 export * from './services/record/field/handler/handlers/multienum.field-handler';
+export * from './services/record/field/types/bool.value-object-type';
 export * from './services/record/field/types/multi-enum.value-object-type';
 export * from './services/record/relate/multi-flex-relate.service';
 export * from './services/record/relate/relate.service';
