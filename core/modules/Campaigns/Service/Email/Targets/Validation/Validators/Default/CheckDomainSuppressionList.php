@@ -69,6 +69,7 @@ class CheckDomainSuppressionList extends BaseEmailTargetValidator
     ): ValidationFeedback {
 
         $onSuppressionList = $this->suppressionListManager->isOnDomainSuppressionList(
+            $campaignId,
             $marketingRecord->getId(),
             $targetRecord->getId(),
             $this->moduleNameMapper->toLegacy($targetRecord->getModule()),

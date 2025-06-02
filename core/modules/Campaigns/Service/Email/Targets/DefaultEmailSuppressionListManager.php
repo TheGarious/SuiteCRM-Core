@@ -42,7 +42,7 @@ class DefaultEmailSuppressionListManager implements EmailSuppressionListManagerI
     ) {
     }
 
-    public function isOnIdSuppressionList(string $emailMarketingId, string $targetId, string $targetType): bool
+    public function isOnIdSuppressionList(string $campaignId, string $emailMarketingId, string $targetId, string $targetType): bool
     {
         $records = [];
 
@@ -55,24 +55,24 @@ class DefaultEmailSuppressionListManager implements EmailSuppressionListManagerI
             ->from('prospect_lists_prospects', 'plp')
             ->innerJoin(
                 'plp',
-                'email_marketing_prospect_lists',
-                'empl',
-                "empl.deleted = 0
-                AND empl.prospect_list_id = plp.prospect_list_id
-                AND empl.email_marketing_id = :marketingId"
+                'prospect_list_campaigns',
+                'plcp',
+                "plcp.deleted = 0
+                AND plcp.prospect_list_id = plp.prospect_list_id
+                AND plcp.campaign_id = :campaignId"
             )
             ->innerJoin(
-                'empl',
+                'plcp',
                 'prospect_lists',
                 'pl',
-                "pl.deleted = 0 AND pl.id = empl.prospect_list_id AND pl.list_type = 'exempt'"
+                "pl.deleted = 0 AND pl.id = plcp.prospect_list_id AND pl.list_type = 'exempt'"
             )
             ->where('plp.deleted = 0')
             ->andWhere('plp.related_id = :targetId')
             ->andWhere('plp.related_type = :targetType')
             ->setParameter('targetId', $targetId)
             ->setParameter('targetType', $targetType)
-            ->setParameter('marketingId', $emailMarketingId);
+            ->setParameter('campaignId', $campaignId);
 
         try {
             $records = $queryBuilder->fetchAssociative();
@@ -87,7 +87,7 @@ class DefaultEmailSuppressionListManager implements EmailSuppressionListManagerI
         return $count > 0;
     }
 
-    public function isOnEmailAddressSuppressionList(string $emailMarketingId, string $targetId, string $targetType): bool
+    public function isOnEmailAddressSuppressionList(string $campaignId, string $emailMarketingId, string $targetId, string $targetType): bool
     {
 
         $queryBuilder = $this->preparedStatementHandler->createQueryBuilder();
@@ -99,17 +99,17 @@ class DefaultEmailSuppressionListManager implements EmailSuppressionListManagerI
             ->from('prospect_lists_prospects', 'plp')
             ->innerJoin(
                 'plp',
-                'email_marketing_prospect_lists',
-                'empl',
-                "empl.deleted = 0
-                AND empl.prospect_list_id = plp.prospect_list_id
-                AND empl.email_marketing_id = :marketingId"
+                'prospect_list_campaigns',
+                'plcp',
+                "plcp.deleted = 0
+                AND plcp.prospect_list_id = plp.prospect_list_id
+                AND plcp.campaign_id = :campaignId"
             )
             ->innerJoin(
-                'empl',
+                'plcp',
                 'prospect_lists',
                 'pl',
-                "pl.deleted = 0 AND pl.id = empl.prospect_list_id AND pl.list_type = 'exempt_address'"
+                "pl.deleted = 0 AND pl.id = plcp.prospect_list_id AND pl.list_type = 'exempt_address'"
             )
             ->innerJoin(
                 'pl',
@@ -133,7 +133,7 @@ class DefaultEmailSuppressionListManager implements EmailSuppressionListManagerI
             ->where('plp.deleted = 0')
             ->setParameter('targetId', $targetId)
             ->setParameter('targetType', $targetType)
-            ->setParameter('marketingId', $emailMarketingId);
+            ->setParameter('campaignId', $campaignId);
 
         try {
             $records = $queryBuilder->fetchAssociative();
@@ -148,7 +148,7 @@ class DefaultEmailSuppressionListManager implements EmailSuppressionListManagerI
         return $count > 0;
     }
 
-    public function isOnDomainSuppressionList(string $emailMarketingId, string $targetId, string $targetType, string $email): bool
+    public function isOnDomainSuppressionList(string $campaignId, string $emailMarketingId, string $targetId, string $targetType, string $email): bool
     {
         $records = [];
 
@@ -173,11 +173,11 @@ class DefaultEmailSuppressionListManager implements EmailSuppressionListManagerI
             ->from('prospect_lists', 'pl')
             ->innerJoin(
                 'pl',
-                'email_marketing_prospect_lists',
-                'empl',
-                "empl.deleted = 0
-                AND empl.prospect_list_id = pl.id
-                AND empl.email_marketing_id = :marketingId"
+                'prospect_list_campaigns',
+                'plcp',
+                "plcp.deleted = 0
+                AND plcp.prospect_list_id = pl.id
+                AND plcp.campaign_id = :campaignId"
             )
             ->where('pl.deleted = 0')
             ->andWhere("pl.list_type = 'exempt_domain'")
@@ -186,7 +186,7 @@ class DefaultEmailSuppressionListManager implements EmailSuppressionListManagerI
                 $queryBuilder->expr()->like('LOWER(pl.domain_name)', ':emailDomain')
             )
             ->setParameter('emailDomain', '%' . strtolower($emailDomain) . '%')
-            ->setParameter('marketingId', $emailMarketingId);
+            ->setParameter('campaignId', $campaignId);
 
         try {
             $records = $queryBuilder->fetchAssociative();
