@@ -169,6 +169,7 @@ export interface AttributeDependency {
 export type FieldSource = 'field' | 'attribute' | 'item' | 'groupField';
 
 export declare type DefaultValueInitCallback = () => void;
+export declare type InitValueSignalFunction = () => void;
 
 export interface Field {
     type: string;
@@ -217,6 +218,7 @@ export interface Field {
 
     initDefaultValue?: DefaultValueInitCallback;
     initDefaultValueObject?: DefaultValueInitCallback;
+    initValueSignal?: InitValueSignalFunction;
 }
 
 export class BaseField implements Field {
@@ -344,6 +346,9 @@ export class BaseField implements Field {
         }
     }
 
+    initValueSignal(): void {
+        this.valueSignal.set(this.value)
+    }
 
     initDefaultValueObject(): void {
 

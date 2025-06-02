@@ -111,7 +111,8 @@ export class BaseFieldHandler<T extends BaseField> implements FieldHandler<T> {
 
     protected updateValue(field: Field, value: string, record: Record): void {
         field.value = value.toString();
-        field.formControl.setValue(value);
+        field.initValueSignal();
+        field.formControl.setValue(field.value);
         // re-validate the parent form-control after value update
         record.formGroup.updateValueAndValidity({onlySelf: true, emitEvent: true});
     }

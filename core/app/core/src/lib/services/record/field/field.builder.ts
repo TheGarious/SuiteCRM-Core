@@ -196,9 +196,9 @@ export class FieldBuilder {
         if (field.defaultDisplay === 'default') {
             field.defaultDisplay = 'show';
         }
-        field.value = value;
         field.metadata = metadata;
         field.definition = definition;
+        field.value = value;
         if (viewField?.lineItems) {
             field.definition.lineItems = viewField.lineItems;
         }
