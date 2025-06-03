@@ -198,12 +198,16 @@ class InsertEmailTemplateAction extends LegacyHandler implements ProcessHandlerI
 
         $this->close();
 
+        $params = $options['params'];
+        $setFieldSubject = $params['setFieldSubject'] ?? '';
+        $setFieldBody = $params['setFieldBody'] ?? '';
+
         $responseData = [
             'handler' => 'update-fields',
             'params' => [
                 'values' => [
-                    'name' => ['value' => $bean->subject ?? ''],
-                    'description_html' => ['value' => html_entity_decode($bean->body_html) ?? ''],
+                    $setFieldSubject => ['value' => $bean->subject ?? ''],
+                    $setFieldBody => ['value' => html_entity_decode($bean->body_html) ?? ''],
                 ]
             ]
         ];
