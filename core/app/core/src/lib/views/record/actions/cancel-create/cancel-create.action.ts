@@ -83,6 +83,9 @@ export class CancelCreateAction extends RecordActionHandler {
 
         if (store.params.isConvert) {
             returnModule = this.moduleNameMapper.toFrontend(store.params.convertModule);
+        }
+
+        if (store.params.originalId){
             returnId = store.params.originalId;
         }
 
