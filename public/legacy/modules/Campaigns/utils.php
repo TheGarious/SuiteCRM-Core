@@ -286,6 +286,7 @@ function log_campaign_activity($identifier, $activity, $update = true, $clicked_
         if ($row && (strtolower($row['target_type']) == 'users' && $activity == 'removed')) {
             $return_array['target_id'] = $row['target_id'];
             $return_array['target_type'] = $row['target_type'];
+            $return_array['is_test_entry'] = $row['is_test_entry'];
             return $return_array;
         } elseif ($row) {
             $data['id'] = "'" . create_guid() . "'";
@@ -298,6 +299,7 @@ function log_campaign_activity($identifier, $activity, $update = true, $clicked_
             $data['list_id'] = $db->quoted($row['list_id']);
             $data['marketing_id'] = $db->quoted($row['marketing_id']);
             $data['more_information'] = $db->quoted($row['more_information']);
+            $data['is_test_entry'] = $db->quoted($row['is_test_entry']);
             $data['hits'] = 1;
             $data['deleted'] = 0;
             if (!empty($clicked_url_key)) {
@@ -307,6 +309,7 @@ function log_campaign_activity($identifier, $activity, $update = true, $clicked_
             //values for return array..
             $return_array['target_id'] = $row['target_id'];
             $return_array['target_type'] = $row['target_type'];
+            $return_array['is_test_entry'] = $row['is_test_entry'];
 
             // quote variable first
             $dataArrayKeys = array_keys($data);
@@ -327,6 +330,7 @@ function log_campaign_activity($identifier, $activity, $update = true, $clicked_
     } else {
         $return_array['target_id'] = $row['target_id'];
         $return_array['target_type'] = $row['target_type'];
+        $return_array['is_test_entry'] = $row['is_test_entry'];
 
         // quote variable first
         $rowIdQuoted = $db->quote($row['id']);
