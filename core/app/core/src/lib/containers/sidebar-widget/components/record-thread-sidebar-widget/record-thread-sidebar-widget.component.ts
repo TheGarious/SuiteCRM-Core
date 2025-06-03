@@ -108,6 +108,8 @@ export class RecordThreadSidebarWidgetComponent extends BaseWidgetComponent impl
             return;
         }
 
+        super.ngOnInit();
+
         this.initPanelMode();
         this.initFilters$();
         this.initPresetFields$();

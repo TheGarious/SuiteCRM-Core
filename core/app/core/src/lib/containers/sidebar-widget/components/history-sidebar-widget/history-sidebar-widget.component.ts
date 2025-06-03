@@ -56,6 +56,8 @@ export class HistorySidebarWidgetComponent extends BaseWidgetComponent implement
     ngOnInit(): void {
         this.adapter = this.historyTimelineAdapterFactory.create();
         this.adapter.init(this.context);
+
+        super.ngOnInit();
     }
 
     ngAfterViewInit(): void {

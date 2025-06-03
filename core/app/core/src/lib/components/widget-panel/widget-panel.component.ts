@@ -62,6 +62,8 @@ export class WidgetPanelComponent implements OnInit {
     @Input() titleKey = '';
     @Input() showHeader = true;
     @Input() mode: PanelCollapseMode;
+    @Input() key: string;
+    @Input() context: string;
 
     displayContent = true;
 

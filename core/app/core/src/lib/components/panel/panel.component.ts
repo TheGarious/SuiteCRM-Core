@@ -28,6 +28,7 @@ import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {Button, ButtonInterface} from '../../common/components/button/button.model';
 import {Observable, Subscription} from 'rxjs';
 import {MinimiseButtonStatus} from '../minimise-button/minimise-button.component';
+import {UserPreferenceStore} from "../../store/user-preference/user-preference.store";
 
 export type PanelCollapseMode = 'collapsible' | 'closable' | 'none';
 
@@ -42,6 +43,8 @@ export class PanelComponent implements OnInit, OnDestroy {
     @Input() bodyPadding = 2;
     @Input() title: string;
     @Input() titleKey: string;
+    @Input() key: string;
+    @Input() context: string;
     @Input() mode: PanelCollapseMode = 'closable';
     @Input() isCollapsed$: Observable<boolean>;
     @Input() close: ButtonInterface = {
@@ -56,10 +59,17 @@ export class PanelComponent implements OnInit, OnDestroy {
     protected buttonClasses = ['btn', 'btn-outline-light', 'btn-sm'];
     protected subs: Subscription[] = [];
 
-    constructor() {
+    constructor(
+        protected preferences: UserPreferenceStore
+    ) {
     }
 
     ngOnInit(): void {
+
+        if (this.context && this.key) {
+            this.isCollapsed = this.preferences.getUi(this.context, 'panel-' + this.key + '-is-collapsed') ?? false;
+        }
+
         if (this.isCollapsed$) {
             this.subs.push(this.isCollapsed$.subscribe(collapse => {
                 this.isCollapsed = collapse;
@@ -99,6 +109,9 @@ export class PanelComponent implements OnInit, OnDestroy {
             klass: ['btn', 'btn-outline-light', 'btn-sm'],
             onClick: () => {
                 this.isCollapsed = !this.isCollapsed;
+                if (this.context && this.key) {
+                    this.preferences.setUi(this.context, 'panel-' + this.key + '-is-collapsed', !!this.isCollapsed);
+                }
                 this.initMinimiseStatus();
             },
         } as ButtonInterface;

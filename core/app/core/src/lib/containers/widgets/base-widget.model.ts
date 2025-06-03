@@ -28,10 +28,25 @@ import {Component, Input} from '@angular/core';
 import {ViewContext} from '../../common/views/view.model';
 import {WidgetMetadata} from '../../common/metadata/widget.metadata';
 import {Observable} from 'rxjs';
+import {PanelCollapseMode} from "../../components/panel/panel.component";
 
 @Component({template: ''})
 export class BaseWidgetComponent {
+    @Input('key') key: string;
     @Input('config') config: WidgetMetadata;
     @Input('context') context: ViewContext;
     @Input('context$') context$: Observable<ViewContext>;
+    mode: PanelCollapseMode;
+
+    ngOnInit(): void {
+        this.mode = 'none';
+
+        if (this?.config?.allowCollapse){
+            this.mode = 'collapsible';
+        }
+
+        if (!this.key && this?.config?.key) {
+            this.key = this?.config?.key;
+        }
+    }
 }

@@ -25,7 +25,7 @@
 * the words "Supercharged by SuiteCRM".
 */
 -->
-<scrm-widget-panel [title]="this.title" *ngIf="(vm$ | async) as vm">
+<scrm-widget-panel [key]="key" [mode]="mode" [context]="context?.module ?? ''" [title]="this.title" *ngIf="(vm$ | async) as vm">
     <div widget-body>
         <div class="widget-background chart-sidebar-widget">
             <div class="mb-2 ml-1 mr-1">
