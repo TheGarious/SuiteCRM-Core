@@ -1,6 +1,6 @@
 /**
  * SuiteCRM is a customer relationship management program developed by SalesAgility Ltd.
- * Copyright (C) 2021 SalesAgility Ltd.
+ * Copyright (C) 2025 SalesAgility Ltd.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by the
@@ -23,34 +23,46 @@
  * feasible for technical reasons, the Appropriate Legal Notices must display
  * the words "Supercharged by SuiteCRM".
  */
+import {Record} from "../../common/record/record.model";
+import {StringMap} from "../../common/types/string-map";
+import {Component, Input} from "@angular/core";
+import {Field} from "../../common/record/field.model";
 
-import {NgModule} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {RouterModule} from '@angular/router';
-import {DynamicAttributesDirective, DynamicModule} from 'ng-dynamic-component';
-import {DynamicFieldComponent} from './dynamic-field.component';
-import {DynamicLabelModule} from '../../components/dynamic-label/dynamic-label.module';
-import {ActionGroupMenuModule} from "../../components/action-group-menu/action-group-menu.module";
-import {ImageModule} from "../../components/image/image.module";
-import {LabelModule} from "../../components/label/label.module";
-import {FieldFormValidationModule} from "../field-form-validation/field-form-validation.module";
-
-@NgModule({
-    declarations: [DynamicFieldComponent],
-    exports: [
-        DynamicFieldComponent
-    ],
-    imports: [
-        CommonModule,
-        RouterModule,
-        DynamicLabelModule,
-        DynamicModule,
-        ActionGroupMenuModule,
-        DynamicAttributesDirective,
-        ImageModule,
-        LabelModule,
-        FieldFormValidationModule
-    ]
+@Component({
+    selector: 'scrm-field-validation',
+    templateUrl: './field-form-validation.component.html',
+    styleUrls: []
 })
-export class DynamicFieldModule {
+
+export class FieldFormValidationComponent {
+
+    @Input('field') field: Field;
+    @Input('record') record: Record;
+
+    hasLabels(item: any): boolean {
+        return item?.message?.labels?.startLabelKey || item?.message?.labels?.endLabelKey;
+    }
+
+    getMessageStartLabelKey(item: any): string {
+        return item?.message?.labels?.startLabelKey ?? '';
+    }
+
+    getValidationIcon(item: any): string {
+        return item?.message?.labels?.icon ?? '';
+    }
+
+    getMessageEndLabelKey(item: any): string {
+        return item?.message?.labels?.endLabelKey ?? '';
+    }
+
+    getMessageContext(item: any, record: Record): StringMap {
+        const context = item && item.message && item.message.context || {};
+        context.module = (record && record.module) || '';
+
+        return context;
+    }
+
+    getMessageLabelKey(item: any): string {
+        return (item && item.message && item.message.labelKey) || '';
+    }
 }

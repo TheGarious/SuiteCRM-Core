@@ -26,6 +26,11 @@
 */
 -->
 <ng-container *ngIf="!field?.loading()">
+    <ng-container *ngIf="getErrorPosition() === 'top' && isEdit() && field.formControl && field.formControl.errors && touched()">
+        <ng-container *ngIf="validateOnlyOnSubmit ? isInvalid() : (field.formControl.invalid && field.formControl.touched)">
+            <scrm-field-validation [field]="field" [record]="record"></scrm-field-validation>
+        </ng-container>
+    </ng-container>
     <div class="d-flex w-100 flex-grow-1"
          [class.flex-column]="field?.fieldActions && ((field?.fieldActions?.position ?? 'inline' ) === 'vertical')"
          [class.align-items-center]="(field?.fieldActions && field?.fieldActions?.position === 'inline')"
@@ -107,20 +112,8 @@
         </div>
     </ng-container>
 </ng-container>
-<ng-container *ngIf="isEdit() && field.formControl && field.formControl.errors && touched()">
+<ng-container *ngIf="getErrorPosition() !== 'top' && isEdit() && field.formControl && field.formControl.errors && touched()">
     <ng-container *ngIf="validateOnlyOnSubmit ? isInvalid() : (field.formControl.invalid && field.formControl.touched)">
-        <div *ngFor="let item of field.formControl.errors | keyvalue" class="invalid-feedback d-block">
-            <ng-container *ngIf="hasLabels(item.value)">
-                <scrm-label [labelKey]="getMessageStartLabelKey(item.value)"> </scrm-label>
-                <scrm-image *ngIf="getValidationIcon(item.value)" [image]="getValidationIcon(item.value)"></scrm-image>
-                <scrm-label [labelKey]="getMessageEndLabelKey(item.value)"> </scrm-label>
-            </ng-container>
-            <ng-container *ngIf="!hasLabels(item.value)">
-                <scrm-dynamic-label [context]="getMessageContext(item.value, record)"
-                                    [fields]="{field: field}"
-                                    [labelKey]="getMessageLabelKey(item.value)">
-                </scrm-dynamic-label>
-            </ng-container>
-        </div>
+        <scrm-field-validation [field]="field" [record]="record"></scrm-field-validation>
     </ng-container>
 </ng-container>
