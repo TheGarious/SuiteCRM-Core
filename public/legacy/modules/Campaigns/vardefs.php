@@ -261,6 +261,18 @@ $dictionary['Campaign'] = [
                 [
                     'labelKey' => 'LBL_SUPPRESSION_LISTS_HELP',
                     'displayModes' => ['edit', 'create']
+                ],
+                [
+                    'labelKey' => 'LBL_SUPPRESSION_LISTS_UNSUBSCRIBED_AUTO_CREATE_HELP',
+                    'displayModes' => ['create']
+                ],
+                [
+                    'labelKey' => 'LBL_SUPPRESSION_LISTS_UNSUBSCRIBED_HELP',
+                    'displayModes' => ['edit', 'create']
+                ],
+                [
+                    'labelKey' => 'LBL_SUPPRESSION_LISTS_UNSUBSCRIBED_NONE_SELECTED_HELP',
+                    'displayModes' => ['edit']
                 ]
             ],
             'source' => 'non-db',
