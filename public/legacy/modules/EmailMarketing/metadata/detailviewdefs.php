@@ -592,11 +592,21 @@ $viewdefs ['EmailMarketing'] = [
                             ]
                         ],
                     ],
-                ]
+                ],
+                'duplicate' => [
+                    'key' => 'duplicate',
+                    'labelKey' => 'LBL_DUPLICATE_BUTTON',
+                    'modes' => ['detail'],
+                    'asyncProcess' => true,
+                    'params' => [
+                        'queryParams' => [
+                            'status' => 'draft',
+                            'return_action' => 'record'
+                        ]
+                    ],
+                    'acl' => ['delete'],
+                ],
             ],
-            'exclude' => [
-                'duplicate'
-            ]
         ],
         'metadata' => [
             'validateOnlyOnSubmit' => true,
