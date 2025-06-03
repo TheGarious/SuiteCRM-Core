@@ -145,6 +145,12 @@ class WidgetDefinitionProvider extends LegacyHandler implements WidgetDefinition
 
         $widgets = $this->filterDefinitionEntries($module, 'widgets', $config, $this->actionChecker);
 
+        foreach ($widgets as $index => $widget) {
+            if (!is_numeric($index)) {
+                $widgets[$index]['key'] = $widget['key'] ?? $index;
+            }
+        }
+
         $displayedWidgets = $this->filterAccessibleWidgets($widgets);
 
         return array_values($displayedWidgets);
