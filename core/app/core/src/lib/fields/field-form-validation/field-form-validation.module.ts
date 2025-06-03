@@ -1,6 +1,6 @@
 /**
  * SuiteCRM is a customer relationship management program developed by SalesAgility Ltd.
- * Copyright (C) 2021 SalesAgility Ltd.
+ * Copyright (C) 2025 SalesAgility Ltd.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by the
@@ -25,32 +25,25 @@
  */
 
 import {NgModule} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {RouterModule} from '@angular/router';
-import {DynamicAttributesDirective, DynamicModule} from 'ng-dynamic-component';
-import {DynamicFieldComponent} from './dynamic-field.component';
-import {DynamicLabelModule} from '../../components/dynamic-label/dynamic-label.module';
-import {ActionGroupMenuModule} from "../../components/action-group-menu/action-group-menu.module";
-import {ImageModule} from "../../components/image/image.module";
+import {FieldFormValidationComponent} from "./field-form-validation.component";
 import {LabelModule} from "../../components/label/label.module";
-import {FieldFormValidationModule} from "../field-form-validation/field-form-validation.module";
+import {ImageModule} from "../../components/image/image.module";
+import {DynamicLabelModule} from "../../components/dynamic-label/dynamic-label.module";
+import {KeyValuePipe, NgForOf, NgIf} from "@angular/common";
 
 @NgModule({
-    declarations: [DynamicFieldComponent],
+    declarations: [FieldFormValidationComponent],
     exports: [
-        DynamicFieldComponent
+        FieldFormValidationComponent
     ],
     imports: [
-        CommonModule,
-        RouterModule,
-        DynamicLabelModule,
-        DynamicModule,
-        ActionGroupMenuModule,
-        DynamicAttributesDirective,
-        ImageModule,
         LabelModule,
-        FieldFormValidationModule
+        ImageModule,
+        DynamicLabelModule,
+        NgIf,
+        NgForOf,
+        KeyValuePipe
     ]
 })
-export class DynamicFieldModule {
+export class FieldFormValidationModule {
 }

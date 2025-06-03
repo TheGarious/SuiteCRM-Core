@@ -39,7 +39,6 @@ import {
 import {Record} from '../../common/record/record.model';
 import {Field} from '../../common/record/field.model';
 import {EDITABLE_VIEW_MODES, ViewMode} from '../../common/views/view.model';
-import {StringMap} from '../../common/types/string-map';
 import {Router} from '@angular/router';
 import {ModuleNameMapper} from '../../services/navigation/module-name-mapper/module-name-mapper.service';
 import {ModuleNavigation} from '../../services/navigation/module-navigation/module-navigation.service';
@@ -199,16 +198,8 @@ export class DynamicFieldComponent implements OnInit, OnDestroy {
         return this.navigation.getRecordRouterLink(this.record.module, this.record.id);
     }
 
-    getMessageContext(item: any, record: Record): StringMap {
-        const context = item && item.message && item.message.context || {};
-        context.module = (record && record.module) || '';
 
-        return context;
-    }
 
-    getMessageLabelKey(item: any): string {
-        return (item && item.message && item.message.labelKey) || '';
-    }
 
     onClick(): boolean {
 
@@ -315,19 +306,8 @@ export class DynamicFieldComponent implements OnInit, OnDestroy {
         return footnoteEntry;
     }
 
-    hasLabels(item: any): boolean {
-        return item?.message?.labels?.startLabelKey || item?.message?.labels?.endLabelKey;
+    getErrorPosition(): string {
+        return this?.field?.metadata?.errorPosition ?? 'bottom';
     }
 
-    getValidationIcon(item: any): string {
-        return item?.message?.labels?.icon ?? '';
-    }
-
-    getMessageStartLabelKey(item: any): string {
-        return item?.message?.labels?.startLabelKey ?? '';
-    }
-
-    getMessageEndLabelKey(item: any): string {
-        return item?.message?.labels?.endLabelKey ?? '';
-    }
 }
