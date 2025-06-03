@@ -40,7 +40,6 @@ import {PanelCollapseMode} from "../../../../components/panel/panel.component";
 })
 export class StatisticsSidebarWidgetComponent extends BaseWidgetComponent implements OnInit, OnDestroy {
 
-    mode: PanelCollapseMode;
     options: StatisticWidgetOptions;
 
     protected subs: Subscription[] = [];
@@ -52,11 +51,7 @@ export class StatisticsSidebarWidgetComponent extends BaseWidgetComponent implem
 
     ngOnInit(): void {
 
-        this.mode = 'none';
-
-        if (this?.config?.allowCollapse){
-            this.mode = 'collapsible';
-        }
+        super.ngOnInit();
 
         const options = this.config.options || {};
         this.options = options.sidebarStatistic || null;

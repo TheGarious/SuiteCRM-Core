@@ -30,6 +30,7 @@ import {BooleanMap} from '../types/boolean-map';
 import {ViewMode} from "../views/view.model";
 
 export interface WidgetMetadata {
+    key: string;
     type: string;
     labelKey?: string;
     options: WidgetOptionMap;

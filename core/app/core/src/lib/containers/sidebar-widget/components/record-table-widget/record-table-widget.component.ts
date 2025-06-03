@@ -60,6 +60,8 @@ export class RecordTableWidgetComponent extends BaseWidgetComponent implements O
 
         const recordTableConfig = this?.config?.options?.recordTable ?? null;
 
+        super.ngOnInit();
+
         this.store = this.subpanelFactory.create();
         const parentModule = this.context.module;
         const parentRecordId = this.context.id;

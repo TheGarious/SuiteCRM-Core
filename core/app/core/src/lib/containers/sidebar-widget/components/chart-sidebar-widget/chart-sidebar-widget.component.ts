@@ -85,6 +85,8 @@ export class ChartSidebarWidgetComponent extends BaseWidgetComponent implements 
     ngOnInit(): void {
         this.appStrings$ = this.language.appStrings$;
 
+        super.ngOnInit();
+
         if (this.validateConfig() === false) {
             return;
         }
