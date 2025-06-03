@@ -466,6 +466,7 @@ $dictionary['EmailMarketing'] = [
             'metadata' => [
                 'trustHTML' => true,
                 'purifyHtml' => false,
+                'errorPosition' => 'top',
                 'squire' => [
                     'edit' => [
                         'dynamicHeight' => true,
