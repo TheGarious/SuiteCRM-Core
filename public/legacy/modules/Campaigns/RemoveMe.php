@@ -79,6 +79,10 @@ if (!empty($_REQUEST['identifier'])) {
         require_once($beanFiles[$beantype]);
         $focus = new $beantype();
         $focus->retrieve($keys['target_id']);
+        if (isTrue($keys['is_test_entry'] ?? false)) {
+            echo $mod_strings['LBL_ELECTED_TO_OPTOUT'];
+            return;
+        }
         unsubscribe($keys['campaign_id'], $focus);
     } elseif (!empty($keys)) {
         $id = $keys['target_id'];
