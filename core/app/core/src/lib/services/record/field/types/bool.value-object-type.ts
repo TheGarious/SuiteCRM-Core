@@ -26,6 +26,7 @@
 
 import {BaseField} from '../../../../common/record/field.model';
 import {isTrue} from "../../../../common/utils/value-utils";
+import {asapScheduler} from "rxjs";
 
 export class BoolField extends BaseField {
 
@@ -49,7 +50,9 @@ export class BoolField extends BaseField {
 
         this.valueState = value;
         if (typeof value === 'string') {
-            this.valueSignal.set(value)
+            asapScheduler.schedule(() => {
+                this.valueSignal.set(value)
+            })
         }
         if (changed) {
             this.emitValueChanges();
