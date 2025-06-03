@@ -396,13 +396,13 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
         const fields = filter.static ?? [];
 
         Object.keys(fields).forEach((field) => {
-            const fieldValue =  fields[field];
+            const fieldValue = fields[field];
 
             let value = []
             if (isArray(fieldValue)) {
                 value = fieldValue;
             } else {
-                fieldValue.push(fieldValue);
+                value.push(fieldValue);
             }
 
             criteria.filters[field] = {
