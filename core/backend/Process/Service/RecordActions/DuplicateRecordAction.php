@@ -124,6 +124,7 @@ class DuplicateRecordAction implements ProcessHandlerInterface
     public function run(Process $process)
     {
         $options = $process->getOptions();
+        $queryParams = $options['params']['queryParams'] ?? [];
 
         $responseData = [
             'handler' => 'redirect',
@@ -131,6 +132,7 @@ class DuplicateRecordAction implements ProcessHandlerInterface
                 'route' => $options['module'] . '/duplicate/' . $options['id'],
                 'queryParams' => [
                     'isDuplicate' => true,
+                    ...$queryParams
                 ]
             ]
         ];
