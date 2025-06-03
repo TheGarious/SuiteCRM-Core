@@ -585,6 +585,7 @@ $dictionary['EmailMarketing'] = [
             'module' => 'ProspectLists',
             'filterOnEmpty' => true,
             'rname' => 'name',
+            'showFilter' => false,
             'filter' => [
                 'attributes' => [
                     'id' => 'campaign_id'
