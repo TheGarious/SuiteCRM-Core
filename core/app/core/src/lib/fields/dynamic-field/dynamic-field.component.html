@@ -101,7 +101,7 @@
 </ng-container>
 <ng-container *ngIf="activeFootnotes().length">
     <ng-container *ngFor="let footnote of activeFootnotes()">
-        <div class="form-text small text-muted {{footnote?.klass ?? ''}}">
+        <div class="form-text small text-lighter {{footnote?.klass ?? ''}}">
             <scrm-image *ngIf="footnote?.icon" [image]="footnote?.icon" [klass]="footnote?.iconKlass ?? ''"></scrm-image>
             <scrm-dynamic-label [context]="footnote.context"
                                 [fields]="{field: field}"
