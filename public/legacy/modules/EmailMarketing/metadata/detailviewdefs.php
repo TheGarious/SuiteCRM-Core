@@ -351,6 +351,21 @@ $viewdefs ['EmailMarketing'] = [
                         ],
                     ],
                 ],
+                'insert-email-template' => [
+                    'key' => 'insert-email-template',
+                    'labelKey' => 'LBL_INSERT_TEMPLATE',
+                    'modes' => ['edit', 'create'],
+                    'asyncProcess' => true,
+                    'aclModule' => 'EmailTemplates',
+                    'params' => [
+                        'expanded' => true,
+                        'selectModal' => [
+                            'module' => 'EmailTemplates'
+                        ],
+                        'setFieldSubject' => 'subject',
+                        'setFieldBody' => 'body',
+                    ],
+                ],
                 'schedule-email-marketing' => [
                     'key' => 'schedule-email-marketing',
                     'labelKey' => 'LBL_SCHEDULE',

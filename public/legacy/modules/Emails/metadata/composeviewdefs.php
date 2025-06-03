@@ -68,6 +68,8 @@ $viewdefs['Emails']['ComposeView'] = [
                     'selectModal' => [
                         'module' => 'EmailTemplates'
                     ],
+                    'setFieldSubject' => 'name',
+                    'setFieldBody' => 'description_html',
                 ],
                 'modes' => ['detail', 'edit', 'create'],
             ],

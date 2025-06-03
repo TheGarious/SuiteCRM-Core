@@ -285,7 +285,6 @@ $dictionary['EmailMarketing'] = [
             'groupFields' => [
                 'name',
                 'outbound_email_name',
-                'template_name',
                 'date_start',
                 'status',
                 'queueing_status',
@@ -302,7 +301,6 @@ $dictionary['EmailMarketing'] = [
                 'queueing_status',
                 'outbound_email_name',
                 'prospect_list_name',
-                'template_name',
                 'date_start',
                 'type',
                 'trackers_enabled',
@@ -435,24 +433,6 @@ $dictionary['EmailMarketing'] = [
             'vname' => 'LBL_SUBJECT',
             'type' => 'varchar',
             'len' => '255',
-            'logic' => [
-                'update-email-template-subject' => [
-                    'key' => 'updateValueBackend',
-                    'modes' => ['edit', 'create'],
-                    'triggeringStatus' => ['onValueChange'],
-                    'params' => [
-                        'fieldDependencies' => [
-                            'template_name',
-                        ],
-                        'process' => 'update-email-template-subject',
-                        'activeOnFields' => [
-                            'template_name' => [
-                                ['operator' => 'not-empty']
-                            ],
-                        ],
-                    ]
-                ],
-            ]
         ],
         'body' => [
             'name' => 'body',
@@ -519,24 +499,6 @@ $dictionary['EmailMarketing'] = [
                     ]
                 ]
             ],
-            'logic' => [
-                'update-email-template-body' => [
-                    'key' => 'updateValueBackend',
-                    'modes' => ['edit', 'create'],
-                    'triggeringStatus' => ['onValueChange'],
-                    'params' => [
-                        'fieldDependencies' => [
-                            'template_name',
-                        ],
-                        'process' => 'update-email-template-body',
-                        'activeOnFields' => [
-                            'template_name' => [
-                                ['operator' => 'not-empty']
-                            ],
-                        ],
-                    ]
-                ],
-            ]
         ],
         //non-db-fields.
         'template_name' => [
