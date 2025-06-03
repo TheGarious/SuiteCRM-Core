@@ -134,7 +134,7 @@ $mod_strings = array(
     'LBL_TYPE_MARKETING_HELP' => 'Recipients are subject to opt-out validation.',
     'LBL_TYPE_TRANSACTIONAL_HELP' => 'Recipients are NOT subject to opt-out validation.',
 
-    'LBL_SCHEDULER_WIDGET' => 'Status Check',
+    'LBL_SCHEDULER_WIDGET' => 'Current Settings Overview',
     'LBL_OOTB_SEND_EMAIL_TO_QUEUE' => 'Queue Campaign Emails',
     'LBL_OOTB_BOUNCE' => 'Run Nightly Process Bounced Campaign Emails',
     'LBL_OOTB_SEND_EMAIL_FROM_QUEUE' => 'Send Campaign Emails',
@@ -143,6 +143,6 @@ $mod_strings = array(
 
     'LBL_TRACKERS_ENABLED' => 'Trackers Enabled',
     'LBL_TRACKERS_ENABLED_FOOTNOTE' => 'When enabled, the email will contain trackers to monitor views and clicks',
-    'LBL_TRACKERS_DISABLED_FOOTNOTE' => 'When disabled, email views and clicks will not be tracked.',
+    'LBL_TRACKERS_DISABLED_FOOTNOTE' => 'When disabled, the email will NOT have trackers to monitor views and clicks.',
     'LBL_TRACKERS_DISABLED_GLOBALLY_FOOTNOTE' => 'Trackers disabled globally. Email views and clicks will not be tracked.'
 );
