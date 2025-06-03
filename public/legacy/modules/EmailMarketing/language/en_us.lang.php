@@ -134,7 +134,7 @@ $mod_strings = array(
     'LBL_TYPE_MARKETING_HELP' => 'Recipients are subject to opt-out validation.',
     'LBL_TYPE_TRANSACTIONAL_HELP' => 'Recipients are NOT subject to opt-out validation.',
 
-    'LBL_SCHEDULER_WIDGET' => 'Current Settings Overview',
+    'LBL_SCHEDULER_WIDGET' => 'Email Marketing Diagnostics',
     'LBL_OOTB_SEND_EMAIL_TO_QUEUE' => 'Queue Campaign Emails',
     'LBL_OOTB_BOUNCE' => 'Run Nightly Process Bounced Campaign Emails',
     'LBL_OOTB_SEND_EMAIL_FROM_QUEUE' => 'Send Campaign Emails',
