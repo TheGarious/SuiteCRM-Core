@@ -187,6 +187,10 @@ class CampaignResponseByRecipientType extends LegacyHandler implements Statistic
             $query['where'] .= " AND (" . implode(" OR ", $typeClauses) . ") ";
         }
 
+        if ($emailMarketingId === null){
+            $query['where'] .= " AND is_test_entry = 0";
+        }
+
         $query['group_by'] = " GROUP BY  activity_type";
         $query['order_by'] = " ORDER BY  activity_type";
 
