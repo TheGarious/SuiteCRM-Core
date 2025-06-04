@@ -28,7 +28,9 @@ import {Component, Input, OnDestroy, OnInit, signal, WritableSignal} from '@angu
 
 import {combineLatestWith, Observable, of, Subscription} from 'rxjs';
 import {map, shareReplay, take, tap} from 'rxjs/operators';
-import {SingleValueStatisticsStoreFactory} from '../../store/single-value-statistics/single-value-statistics.store.factory';
+import {
+    SingleValueStatisticsStoreFactory
+} from '../../store/single-value-statistics/single-value-statistics.store.factory';
 import {LanguageStore} from '../../store/language/language.store';
 import {
     ContentAlign,
@@ -41,11 +43,18 @@ import {
     WidgetMetadata
 } from '../../common/metadata/widget.metadata';
 import {FieldMap} from '../../common/record/field.model';
-import {SingleValueStatisticsState, SingleValueStatisticsStoreInterface} from '../../common/statistics/statistics-store.model';
+import {
+    SingleValueStatisticsState,
+    SingleValueStatisticsStoreInterface
+} from '../../common/statistics/statistics-store.model';
 import {StatisticMetadata, StatisticsQuery} from '../../common/statistics/statistics.model';
 import {StringMap} from '../../common/types/string-map';
 import {ViewContext} from '../../common/views/view.model';
 import {isTrue} from '../../common/utils/value-utils';
+import {ActiveFieldsChecker} from "../../services/condition-operators/active-fields-checker.service";
+import {Record} from "../../common/record/record.model";
+import {ObjectMap} from "../../common/types/object-map";
+
 interface StatisticsEntry {
     labelKey?: string;
     type: string;
@@ -94,6 +103,11 @@ export class GridWidgetComponent implements OnInit, OnDestroy {
     loading = true;
     messageLabelKey: string;
     initializing: WritableSignal<boolean> = signal(true);
+    layout: WritableSignal<StatisticWidgetLayoutRow[]> = signal([]);
+    statisticsMap: WritableSignal<StatisticsMap> = signal(null);
+    tooltipTitleText: WritableSignal<string> = signal('');
+    description: WritableSignal<string> = signal('');
+
     private subs: Subscription[] = [];
     private statistics: StatisticsEntryMap = {};
     private loading$: Observable<boolean>;
@@ -101,7 +115,8 @@ export class GridWidgetComponent implements OnInit, OnDestroy {
 
     constructor(
         protected language: LanguageStore,
-        protected factory: SingleValueStatisticsStoreFactory
+        protected factory: SingleValueStatisticsStoreFactory,
+        protected activeFieldsChecker: ActiveFieldsChecker
     ) {
     }
 
@@ -120,6 +135,7 @@ export class GridWidgetComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
         this.subs.forEach(sub => sub.unsubscribe());
+        this.subs = [];
     }
 
     public validateConfig(): boolean {
@@ -307,7 +323,7 @@ export class GridWidgetComponent implements OnInit, OnDestroy {
         const rows = this.gridWidgetInput?.layout?.rows ?? [];
 
         rows.forEach(row => {
-            if (row.display !== 'none'){
+            if (row.display !== 'none') {
                 displayedRows.push(row);
             }
         })
@@ -367,9 +383,9 @@ export class GridWidgetComponent implements OnInit, OnDestroy {
 
         let statisticObs: Observable<boolean[]> = of([]);
 
-        if(loadings$.length < 1) {
+        if (loadings$.length < 1) {
             statisticObs = of([]);
-        } else if(loadings$.length === 1){
+        } else if (loadings$.length === 1) {
             statisticObs = loadings$[0].pipe(
                 map(value => [value])
             );
@@ -431,9 +447,9 @@ export class GridWidgetComponent implements OnInit, OnDestroy {
             const statistics$: Observable<SingleValueStatisticsState>[] = [];
             Object.keys(this.statistics).forEach(type => statistics$.push(this.statistics[type].store.state$));
 
-            if(statistics$.length < 1) {
+            if (statistics$.length < 1) {
                 allStatistics$ = of([]);
-            } else if(statistics$.length === 1){
+            } else if (statistics$.length === 1) {
                 allStatistics$ = statistics$[0].pipe(
                     map(value => [value])
                 );
@@ -448,14 +464,14 @@ export class GridWidgetComponent implements OnInit, OnDestroy {
         }
 
         allStatistics$ = allStatistics$.pipe(tap(() => {
-            if(this.initializing()) {
+            if (this.initializing()) {
                 this.initializing.set(false);
             }
         }));
 
-        this.vm$ = allStatistics$.pipe(
+        this.subs.push(allStatistics$.pipe(
             combineLatestWith(layout$),
-            map(([statistics, layout]: [SingleValueStatisticsState[], StatisticWidgetLayoutRow[]]) => {
+            tap(([statistics, layout]: [SingleValueStatisticsState[], StatisticWidgetLayoutRow[]]) => {
 
                 const statsMap: { [key: string]: SingleValueStatisticsState } = {};
                 const tooltipTitles = [];
@@ -474,17 +490,80 @@ export class GridWidgetComponent implements OnInit, OnDestroy {
                     if (description) {
                         descriptions.push(description);
                     }
+                });
 
+                layout.forEach(row => {
+                    if (row?.activeOnFields) {
+
+                        if (!statsMap || !Object.keys(statsMap).length) {
+                            row.active = false;
+                            return;
+                        }
+
+                        const isActive = this.isActive(statsMap, row?.activeOnFields);
+
+                        if (isActive) {
+                            row.active = true;
+                            return;
+                        }
+                        row.active = false;
+                    }
+
+                    row.cols.forEach(col => {
+                        if (col?.activeOnFields) {
+
+                            if (!statsMap || !Object.keys(statsMap).length) {
+                                col.active = false;
+                                return;
+                            }
+
+                            const isActive = this.isActive(statsMap, col?.activeOnFields);
+
+                            if (isActive) {
+                                col.active = true;
+                                return;
+                            }
+                            col.active = false;
+                        }
+                    });
 
                 });
 
-                return {
-                    layout,
-                    statistics: statsMap,
-                    tooltipTitleText: tooltipTitles.join(' | '),
-                    description: descriptions.join(' | '),
-                } as GridWidgetState;
-            }));
+                this.statisticsMap.set(statsMap);
+                this.tooltipTitleText.set(tooltipTitles.join(' | '));
+                this.description.set(descriptions.join(' | '));
+                this.layout.set(layout);
+            })).subscribe());
     }
+
+    protected isActive(statsMap: StatisticsMap, activeOnFields: ObjectMap): boolean {
+
+        const fields = this.getMessageFields(statsMap);
+        const record = {
+            fields: fields
+        } as Record;
+
+        const fieldKeys = Object.keys(activeOnFields);
+
+        if (!activeOnFields || !fieldKeys.length) {
+            return true;
+        }
+
+        return fieldKeys.every(fieldKey => {
+
+            const field = fields[fieldKey];
+
+            if (!field) {
+                return true; // If field is not present, consider it active
+            }
+
+            const activeOn = activeOnFields[fieldKey] || null;
+
+
+            return this.activeFieldsChecker.isValueActive(record, field, activeOn);
+
+        });
+    }
+
 
 }

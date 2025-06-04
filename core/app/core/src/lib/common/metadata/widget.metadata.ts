@@ -60,6 +60,8 @@ export interface StatisticWidgetLayoutRow {
     cols: StatisticWidgetLayoutCol[];
     class?: string;
     display?: string;
+    activeOnFields?: any;
+    active?: boolean;
 }
 
 export interface StatisticWidgetLayoutCol {
@@ -75,5 +77,10 @@ export interface StatisticWidgetLayoutCol {
     color?: TextColor;
     bold?: boolean | string;
     class?: string;
+    valueClass?: string;
+    labelClass?: string;
+    dynamicLabelClass?: string;
     params?: { [key: string]: string };
+    activeOnFields?: any;
+    active?: boolean;
 }
