@@ -26,7 +26,10 @@
 */
 -->
 <div class="dropdownenum">
-    <select [formControl]="field.formControl" class="custom-select custom-select-sm">
+    <select [formControl]="field.formControl"
+            class="custom-select custom-select-sm"
+            [class.w-auto] ="field?.definition?.metadata?.widthAuto ?? false"
+    >
         <ng-container *ngIf="this.options && this.options.length">
             <option *ngFor="let item of this.options;"
                     class="{{getId(item)}}"

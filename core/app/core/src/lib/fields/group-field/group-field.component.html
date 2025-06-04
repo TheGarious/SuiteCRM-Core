@@ -34,7 +34,9 @@
         <ng-container *ngFor="let groupField of getFields()">
             <div *ngIf="isModeEnabled(mode, groupField)"
                  [class.flex-fill]="mode ==='edit' && direction() === 'flex-row'"
-                 class="field-group-item d-flex justify-content-end w-100"
+                 class="field-group-item d-flex justify-content-end"
+                 [class.w-100] ="groupField?.definition?.metadata?.widthFull ?? true"
+                 [class.w-auto] ="groupField?.definition?.metadata?.widthAuto ?? false"
                  [class.flex-column] ="groupField?.definition?.metadata?.labelDisplay !== 'inline'"
                  [class.pt-2] ="groupField?.definition?.metadata?.labelDisplay === 'inline'"
                  [class.pb-2] ="groupField?.definition?.metadata?.labelDisplay === 'inline'"

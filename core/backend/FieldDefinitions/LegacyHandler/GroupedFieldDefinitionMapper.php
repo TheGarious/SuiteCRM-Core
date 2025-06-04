@@ -280,8 +280,11 @@ class GroupedFieldDefinitionMapper implements FieldDefinitionMapperInterface, Gr
         if (empty($definitionOverrides)) {
             return $definition;
         }
+        $metadata = array_merge($definition['metadata'] ?? [], $definitionOverrides['metadata'] ?? []);
+        $merged = array_merge($definition, $definitionOverrides);
+        $merged['metadata'] = $metadata;
 
-        return array_merge($definition, $definitionOverrides);
+        return $merged;
     }
 
     /**
