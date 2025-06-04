@@ -58,7 +58,8 @@ class CheckIdSuppressionList extends BaseEmailTargetValidator
         string $campaignId,
         string $prospectListId
     ): bool {
-        return true;
+        $marketingType = $marketingRecord->getAttributes()['type'] ?? '';
+        return $marketingType !== 'transactional';
     }
 
     public function validate(
