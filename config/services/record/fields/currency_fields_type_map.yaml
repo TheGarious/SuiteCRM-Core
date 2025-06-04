@@ -4,8 +4,6 @@ parameters:
       currency:
         display: 'inline'
         showLabel:
-          edit: ['{currency}','{currency_id}']
-          filter: ['*']
         definition:
           '{currency}':
             logic:
@@ -17,6 +15,9 @@ parameters:
                 triggeringStatus: ['onAnyLogic']
           '{currency_id}':
             modes: ['edit', 'create', 'massupdate', 'filter']
+            metadata:
+              widthAuto: true
+              widthFull: false
             type: 'enum'
             options: '__no_options__'
           '{base_currency}':

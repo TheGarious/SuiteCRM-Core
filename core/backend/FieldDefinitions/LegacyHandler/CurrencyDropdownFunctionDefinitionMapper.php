@@ -103,7 +103,7 @@ class CurrencyDropdownFunctionDefinitionMapper implements FieldDefinitionMapperI
 
                 $metadata['extraOptions'][] = [
                     'value' => $currency['id'],
-                    'label' => $currency['iso4217']
+                    'label' => $currency['symbol'] . ' (' .  $currency['iso4217'] . ')'
                 ];
             }
 
