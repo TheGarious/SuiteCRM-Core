@@ -107,10 +107,15 @@ class ViewCampaignconfig extends SugarView
             $this->ss->assign("EMAILS_PER_RUN", $sugar_config['emails_per_run'] ?? 50);
         }
 
-        if (isset($focus->settings['massemailer_trackers_enabled']) && isTrue($focus->settings['massemailer_trackers_enabled'])) {
+        if (isset($focus->settings['massemailer_trackers_enabled'])) {
+            if (isTrue($focus->settings['massemailer_trackers_enabled'])) {
+                $this->ss->assign("TRACKERS_ENABLED", 'true');
+            } else {
+                $this->ss->assign("TRACKERS_ENABLED", 'false');
+            }
             $this->ss->assign("TRACKERS_ENABLED", 'true');
         } else {
-            $this->ss->assign("TRACKERS_ENABLED", 'false');
+            $this->ss->assign("TRACKERS_ENABLED", $sugar_config['trackers_enabled'] ?? 'true');
         }
 
         if (isset($focus->settings['massemailer_campaign_marketing_items_per_run']) && is_numeric($focus->settings['massemailer_campaign_marketing_items_per_run'])) {
