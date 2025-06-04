@@ -71,6 +71,10 @@ ul li::marker {
   color: $btn-danger !important;
 }
 
+.text-bigger-0 {
+  font-size: 100%;
+}
+
 .text-bigger-1 {
   font-size: 110%;
 }
@@ -87,6 +91,25 @@ ul li::marker {
   font-size: 140%;
 }
 
+.text-smaller-90 {
+  font-size: 85%
+}
+
+.text-smaller-85 {
+  font-size: 85%
+}
+
+.text-smaller-80 {
+  font-size: 80%
+}
+
+.text-smaller-75 {
+  font-size: 75%
+}
+
+.text-smaller-70 {
+  font-size: 70%
+}
 
 .fill-white {
   fill: $white;
@@ -262,6 +285,10 @@ ul li::marker {
 
 .w-max-content {
   width: max-content !important;
+}
+
+.w-fit-content {
+    width: fit-content !important;
 }
 
 
