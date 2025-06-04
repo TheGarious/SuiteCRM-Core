@@ -292,6 +292,7 @@ function make_sugar_config(&$sugar_config)
         ),
         'emails_per_run' => 50,
         'campaign_marketing_items_per_run' => 3,
+        'trackers_enabled' => true,
         'strict_id_validation' => false,
         'legacy_email_behaviour' => false,
         'snooze_alert_timer' => 600,
@@ -600,6 +601,7 @@ function get_sugar_config_defaults(): array
         ],
         'emails_per_run' => 50,
         'campaign_marketing_items_per_run' => 3,
+        'trackers_enabled' => true,
         'strict_id_validation' => false,
         'id_validation_pattern' => '/^[a-zA-Z0-9_-]*$/i',
         'session_gc' => [
