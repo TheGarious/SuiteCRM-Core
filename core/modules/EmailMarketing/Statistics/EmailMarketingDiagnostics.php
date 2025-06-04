@@ -27,6 +27,8 @@
 
 namespace App\Module\EmailMarketing\Statistics;
 
+use App\Data\LegacyHandler\PreparedStatementHandler;
+use App\Data\Service\RecordProviderInterface;
 use App\Engine\LegacyHandler\LegacyHandler;
 use App\Engine\LegacyHandler\LegacyScopeState;
 use App\Statistics\Entity\Statistic;
@@ -41,12 +43,11 @@ use Symfony\Component\HttpFoundation\RequestStack;
  * Class CampaignSettingsStatistic
  * @package App\Legacy\Statistics
  */
-class CampaignSettingsStatistic extends LegacyHandler implements StatisticsProviderInterface
+class EmailMarketingDiagnostics extends LegacyHandler implements StatisticsProviderInterface
 {
-
     use StatisticsHandlingTrait;
 
-    public const KEY = 'campaign-settings';
+    public const KEY = 'email-marketing-diagnostics';
 
     /**
      * @param string $projectDir
@@ -57,6 +58,8 @@ class CampaignSettingsStatistic extends LegacyHandler implements StatisticsProvi
      * @param RequestStack $session
      * @param SettingsProviderInterface $settingsProvider
      * @param SystemConfigHandler $configHandler
+     * @param PreparedStatementHandler $preparedStatementHandler
+     * @param RecordProviderInterface $recordProvider
      */
     public function __construct(
         string $projectDir,
@@ -66,9 +69,10 @@ class CampaignSettingsStatistic extends LegacyHandler implements StatisticsProvi
         LegacyScopeState $legacyScopeState,
         RequestStack $session,
         protected SettingsProviderInterface $settingsProvider,
-        protected SystemConfigHandler $configHandler
-    )
-    {
+        protected SystemConfigHandler $configHandler,
+        protected PreparedStatementHandler $preparedStatementHandler,
+        protected RecordProviderInterface $recordProvider
+    ) {
         parent::__construct($projectDir, $legacyDir, $legacySessionName, $defaultSessionName, $legacyScopeState, $session);
     }
 
@@ -105,26 +109,15 @@ class CampaignSettingsStatistic extends LegacyHandler implements StatisticsProvi
         $this->init();
         $this->startLegacyApp();
 
-        $settings = $params['settings'] ?? null;
-
-        if ($settings === null) {
-            return $this->getEmptyResponse(self::KEY);
-        }
-
         $result = [
             'fields' => []
         ];
 
-        foreach ($settings as $setting) {
-            $key = $setting['key'] ?? '';
-            $default = $setting['default'] ?? '';
-            $hasConfig = $setting['hasConfig'] ?? true;
-            $value = $this->getSetting($key, $setting, $default, $hasConfig);
+        $result = $this->addSettingValues($params['settings'], $result);
 
-            $result['fields'][$key] = [
-                'value' => $value,
-            ];
-        }
+        $result = $this->addJobIntervalValues($params['jobs'], $result);
+
+        $result = $this->addBounceExists($result);
 
         $statistic = $this->buildSingleValueResponse(self::KEY, 'string', $result);
 
@@ -159,14 +152,141 @@ class CampaignSettingsStatistic extends LegacyHandler implements StatisticsProvi
             $default = $default ? 'Yes' : 'No';
         }
 
-        if (isTrue($default)){
+        if (isTrue($default)) {
             $default = 'Yes';
         }
 
-        if (isFalse($default)){
+        if (isFalse($default)) {
             $default = 'No';
         }
 
         return $default;
+    }
+
+    /**
+     * @throws \Doctrine\DBAL\Exception
+     * @throws Exception
+     */
+    protected function getSchedulerBean(string $job): \SugarBean
+    {
+        $queryBuilder = $this->preparedStatementHandler->createQueryBuilder();
+
+        $queryBuilder->select('id')
+                     ->from('schedulers')
+                     ->where('job = :job')
+                     ->setParameter('job', $job);
+
+        $result = $queryBuilder->fetchAssociative();
+
+        return \BeanFactory::getBean('Schedulers', $result['id']);
+    }
+
+    /**
+     * @param $settings
+     * @param array $result
+     * @return array
+     */
+    protected function addSettingValues($settings, array $result): array
+    {
+        $settings = $settings ?? null;
+
+        if ($settings === null) {
+            return $result;
+        }
+
+        foreach ($settings as $setting) {
+            $key = $setting['key'] ?? '';
+            $default = $setting['default'] ?? '';
+            $hasConfig = $setting['hasConfig'] ?? true;
+            $value = $this->getSetting($key, $setting, $default, $hasConfig);
+
+            $result['fields'][$key] = [
+                'value' => $value,
+            ];
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param $jobs1
+     * @param array $result
+     * @return array
+     * @throws \Doctrine\DBAL\Exception
+     */
+    protected function addJobIntervalValues($jobs1, array $result): array
+    {
+        $jobs = $jobs1 ?? null;
+
+        if ($jobs === null) {
+            return $result;
+        }
+
+        foreach ($jobs as $job) {
+            $bean = $this->getSchedulerBean($job);
+
+            $key = explode('::', $job);
+            $key = $key[1];
+
+            if ($bean->status === 'Inactive') {
+                $this->close();
+                $result['fields'][$key] = [
+                    'value' => '',
+                ];
+                continue;
+            }
+
+            $bean->setIntervalHumanReadable();
+
+            $result['fields'][$key] = [
+                'value' => $bean->intervalHumanReadable
+            ];
+
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param array $result
+     * @return array
+     * @throws \Doctrine\DBAL\Exception
+     */
+    protected function addBounceExists(array $result): array
+    {
+        $recordModule = 'InboundEmail';
+
+        $value = $this->getRecord($recordModule);
+
+        $result['fields']['bounce_exists'] = [
+            'value' => $value,
+        ];
+
+        return $result;
+    }
+
+
+    /**
+     * @throws \Doctrine\DBAL\Exception
+     */
+    protected function getRecord(string $recordModule): string
+    {
+        $queryBuilder = $this->preparedStatementHandler->createQueryBuilder();
+
+        $table = $this->recordProvider->getTable($recordModule);
+
+        $queryBuilder->select('id')
+                     ->from($table, 'module')
+                     ->where('module.type = :value')
+                     ->andWhere('deleted = 0')
+                     ->setParameter('value', 'bounce');
+
+        $result = $queryBuilder->fetchAssociative();
+
+        if ($result) {
+            return 'true';
+        }
+
+        return 'false';
     }
 }
