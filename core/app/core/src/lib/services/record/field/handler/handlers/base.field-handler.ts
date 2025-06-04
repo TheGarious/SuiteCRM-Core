@@ -50,7 +50,7 @@ export class BaseFieldHandler<T extends BaseField> implements FieldHandler<T> {
             return;
         }
 
-        const defaultValue = field?.default ?? field?.definition?.default ?? null;
+        const defaultValue = field?.default ?? field?.definition?.default ?? field?.definition?.defaultValue ?? null;
         const initDefaultProcess = field?.initDefaultProcess ?? field?.definition?.initDefaultProcess ?? null;
 
         if ((field.value === '' || isVoid(field.value)) && initDefaultProcess) {

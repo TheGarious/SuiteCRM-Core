@@ -198,7 +198,7 @@ export class FieldBuilder {
         }
         field.metadata = metadata;
         field.definition = definition;
-        field.value = value;
+
         if (viewField?.lineItems) {
             field.definition.lineItems = viewField.lineItems;
         }
@@ -216,6 +216,8 @@ export class FieldBuilder {
         }
 
         field.defaultValueModes = viewField?.defaultValueModes ?? definition?.defaultValueModes ?? [];
+
+        field.value = value;
 
         field.validators = validators;
         field.asyncValidators = asyncValidators;
