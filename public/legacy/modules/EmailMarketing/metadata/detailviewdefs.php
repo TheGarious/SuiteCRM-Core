@@ -62,12 +62,30 @@ $viewdefs ['EmailMarketing'] = [
                                 'display' => 'none',
                                 'cols' => [
                                     [
-                                        'statistic' => 'scheduler-interval',
+                                        'statistic' => 'email-marketing-diagnostics',
                                         'params' => [
                                             'jobs' => [
                                                 'scheduler::send-from-queue',
                                                 'scheduler::email-to-queue',
                                                 'function::pollMonitoredInboxesForBouncedCampaignEmails',
+                                            ],
+                                            'settings' => [
+                                                [
+                                                    'key' => 'campaign_marketing_items_per_run',
+                                                    'default' => 3,
+                                                    'type' => 'int'
+                                                ],
+                                                [
+                                                    'key' => 'campaign_emails_per_run',
+                                                    'default' => 50,
+                                                    'type' => 'int'
+                                                ],
+                                                [
+                                                    'key' => 'trackers_enabled',
+                                                    'default' => false,
+                                                    'hasConfig' => false,
+                                                    'type' => 'bool'
+                                                ],
                                             ]
                                         ]
                                     ]
@@ -99,6 +117,26 @@ $viewdefs ['EmailMarketing'] = [
                                     [
                                         'dynamicLabel' => 'LBL_SEND_FROM_QUEUE_DYNAMIC_LABEL',
                                         'class' => 'campaign-status-check-row-value',
+                                        'activeOnFields' => [
+                                            'send-from-queue' => [
+                                                [
+                                                    'operator' => 'not-empty',
+                                                ],
+                                            ],
+                                        ]
+                                    ],
+                                    [
+                                        'labelKey' => 'LBL_INACTIVE',
+                                        'class' => 'campaign-status-check-row-value w-fit-content alert alert-danger d-flex align-items-center m-0 pb-1 pl-2 pr-2 pt-1',
+                                        'icon' => 'exclamation-circle',
+                                        'labelClass' => 'd-inline-block ml-1',
+                                        'activeOnFields' => [
+                                            'send-from-queue' => [
+                                                [
+                                                    'operator' => 'is-empty',
+                                                ],
+                                            ],
+                                        ]
                                     ]
                                 ]
                             ],
@@ -114,6 +152,26 @@ $viewdefs ['EmailMarketing'] = [
                                     [
                                         'dynamicLabel' => 'LBL_EMAIL_TO_QUEUE_DYNAMIC_LABEL',
                                         'class' => 'campaign-status-check-row-value',
+                                        'activeOnFields' => [
+                                            'email-to-queue' => [
+                                                [
+                                                    'operator' => 'not-empty',
+                                                ],
+                                            ],
+                                        ]
+                                    ],
+                                    [
+                                        'labelKey' => 'LBL_INACTIVE',
+                                        'class' => 'campaign-status-check-row-value w-fit-content alert alert-danger d-flex align-items-center m-0 pb-1 pl-2 pr-2 pt-1',
+                                        'icon' => 'exclamation-circle',
+                                        'labelClass' => 'd-inline-block ml-1',
+                                        'activeOnFields' => [
+                                            'email-to-queue' => [
+                                                [
+                                                    'operator' => 'is-empty',
+                                                ],
+                                            ],
+                                        ]
                                     ]
                                 ]
                             ],
@@ -130,6 +188,26 @@ $viewdefs ['EmailMarketing'] = [
                                     [
                                         'dynamicLabel' => 'LBL_POLL_BOUNCED_CAMPAIGN_DYNAMIC_LABEL',
                                         'class' => 'campaign-status-check-row-value',
+                                        'activeOnFields' => [
+                                            'pollMonitoredInboxesForBouncedCampaignEmails' => [
+                                                [
+                                                    'operator' => 'not-empty',
+                                                ],
+                                            ],
+                                        ]
+                                    ],
+                                    [
+                                        'labelKey' => 'LBL_INACTIVE',
+                                        'class' => 'campaign-status-check-row-value w-fit-content alert alert-danger d-flex align-items-center m-0 pb-1 pl-2 pr-2 pt-1',
+                                        'icon' => 'exclamation-circle',
+                                        'labelClass' => 'd-inline-block ml-1',
+                                        'activeOnFields' => [
+                                            'pollMonitoredInboxesForBouncedCampaignEmails' => [
+                                                [
+                                                    'operator' => 'is-empty',
+                                                ],
+                                            ],
+                                        ]
                                     ]
                                 ]
                             ],
@@ -157,37 +235,42 @@ $viewdefs ['EmailMarketing'] = [
                                         'bold' => true
                                     ],
                                     [
-                                        'statistic' => 'bounce-exists',
+                                        'labelKey' => 'LBL_YES',
                                         'class' => 'campaign-status-check-row-value',
                                     ]
+                                ],
+                                'activeOnFields' => [
+                                    'bounce_exists' => [
+                                        [
+                                            'operator' => 'is-equal',
+                                            'values' => [true]
+                                        ],
+                                    ],
                                 ]
                             ],
                             [
-                                'display' => 'none',
+                                'justify' => 'start',
+                                'class' => 'campaign-status-check-row border-bottom pb-2 mb-1',
                                 'cols' => [
                                     [
-                                        'statistic' => 'campaign-settings',
-                                        'params' => [
-                                            'settings' => [
-                                                [
-                                                    'key' => 'campaign_marketing_items_per_run',
-                                                    'default' => 3,
-                                                    'type' => 'int'
-                                                ],
-                                                [
-                                                    'key' => 'campaign_emails_per_run',
-                                                    'default' => 50,
-                                                    'type' => 'int'
-                                                ],
-                                                [
-                                                    'key' => 'trackers_enabled',
-                                                    'default' => false,
-                                                    'hasConfig' => false,
-                                                    'type' => 'bool'
-                                                ],
-                                            ]
-                                        ]
+                                        'labelKey' => 'LBL_DOES_BOUNCE_EXIST',
+                                        'class' => 'campaign-status-check-row-label text-uppercase',
+                                        'bold' => true
+                                    ],
+                                    [
+                                        'labelKey' => 'LBL_NO',
+                                        'class' => 'campaign-status-check-row-value w-fit-content alert alert-warning d-flex align-items-center m-0 pb-1 pl-2 pr-2 pt-1',
+                                        'icon' => 'exclamation-triangle',
+                                        'labelClass' => 'd-inline-block ml-1',
                                     ]
+                                ],
+                                'activeOnFields' => [
+                                    'bounce_exists' => [
+                                        [
+                                            'operator' => 'is-equal',
+                                            'values' => [false, 'false', 0, '0']
+                                        ],
+                                    ],
                                 ]
                             ],
                             [
