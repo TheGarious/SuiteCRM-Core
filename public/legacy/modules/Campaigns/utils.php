@@ -728,13 +728,29 @@ function process_subscriptions($subscription_string_to_parse)
         $relationship = strtolower($focus->getObjectName()).'s';
         //--grab all the list for this campaign id
         $pl_qry ="select id, list_type from prospect_lists where id in (select prospect_list_id from prospect_list_campaigns ";
-        $pl_qry .= "where campaign_id = " . $focus->db->quoted($campaign) . ") and deleted = 0 ";
+        $pl_qry .= "where campaign_id = " . $focus->db->quoted($campaign) . " and deleted = 0) and deleted = 0 ";
         $pl_qry_result = $focus->db->query($pl_qry);
         //build the array with list information
         $pl_arr = array();
         $GLOBALS['log']->debug("In Campaigns Util, about to run query: ".$pl_qry);
+        $idSuppressionLists = [];
         while ($row = $focus->db->fetchByAssoc($pl_qry_result)) {
             $pl_arr[] = $row;
+
+            if (($row['list_type'] ?? '') === 'exempt') {
+                $idSuppressionLists[] = $row['id'];
+            }
+        }
+
+
+        if (empty($idSuppressionLists)) {
+            global $db;
+            //if there are no lists, then exit
+            $GLOBALS['log']->debug("In Campaigns Util, unsubscribe function, no lists found for campaign: ".$campaign .". Going unsubscribe at a global level.");
+            $id = $focus->id;
+            $query = "UPDATE email_addresses SET email_addresses.opt_out = 1 WHERE EXISTS(SELECT 1 FROM email_addr_bean_rel ear WHERE ear.bean_id = '$id' AND ear.deleted=0 AND email_addresses.id = ear.email_address_id)";
+            $status=$db->query($query);
+            return;
         }
 
         //retrieve lists that this user belongs to
