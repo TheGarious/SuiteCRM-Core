@@ -56,6 +56,16 @@ if (!empty($_REQUEST['from'])) {
 if (!empty($_REQUEST['identifier'])) {
     global $beanFiles, $beanList, $current_user;
 
+    $db = DBManagerFactory::getInstance();
+    $identifierQuoted = $db->quote($_REQUEST['identifier']);
+    $query = "select * from campaign_log where target_tracker_key='$identifierQuoted' and activity_type='viewed'";
+    $viewedQuery = $db->query($query);
+    $row = $db->fetchByAssoc($viewedQuery);
+
+    if (empty($row)) {
+        log_campaign_activity($_REQUEST['identifier'], 'viewed');
+    }
+
     //user is most likely not defined, retrieve admin user so that team queries are bypassed
     if (empty($current_user) || empty($current_user->id)) {
         $current_user = BeanFactory::newBean('Users');
