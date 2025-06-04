@@ -43,6 +43,8 @@ class LegacySettingsProvider extends LegacyHandler implements SettingsProviderIn
         $this->init();
         $this->startLegacyApp();
 
+        global $sugar_config;
+
         /** @var \Administration $administration */
         $administration = \BeanFactory::newBean('Administration');
         $administration->retrieveSettings();
@@ -51,6 +53,11 @@ class LegacySettingsProvider extends LegacyHandler implements SettingsProviderIn
             $value = $administration->settings[$key] ?? null;
         } else {
             $value = $administration->settings[$category . '_' . $key] ?? null;
+        }
+
+        if ($value === null && isset($sugar_config[$key])) {
+            // Fallback to sugar_config if the setting is not found in Settings
+            $value = $sugar_config[$key];
         }
 
         $this->close();
