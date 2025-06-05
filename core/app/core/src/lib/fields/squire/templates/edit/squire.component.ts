@@ -144,11 +144,6 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
     ngAfterViewInit(): void {
 
         setTimeout(() => {
-            this.initEditor();
-            this.calculateActiveButtons();
-        }, 50);
-
-        setTimeout(() => {
             this.calculateDynamicMaxHeight();
         }, 400);
 
@@ -253,7 +248,7 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
                 this.setFieldValue(this.monacoEditor.editor.getValue());
                 this.editorMode.set('html');
                 setTimeout(() => {
-                    this.initEditor();
+                    this.editor.setHTML(this?.value ?? '');
                 }, 50);
             },
             dynamicClass: computed((): string => {
@@ -958,9 +953,6 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
 
     initEditor() {
 
-        const editorContainer = this.editorEl.nativeElement;
-
-        this.editor = new Squire(editorContainer, this.settings);
         this.editor.setHTML(this?.value ?? '');
         this.editor.addEventListener('input', (e: Event) => {
             this.field.formControl.setValue(this.editor.getHTML());
@@ -1040,5 +1032,20 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
         );
 
         return direction;
+    }
+
+    initIframeEditor(iframe) {
+        this.setEditor(iframe.contentWindow.editor);
+        this.initEditor();
+        this.initHtml()
+        this.calculateActiveButtons();
+    }
+
+    setEditor(editor: any) {
+        this.editor = editor;
+    }
+
+    initHtml() {
+        this.editor.setHTML(this?.value ?? '');
     }
 }
