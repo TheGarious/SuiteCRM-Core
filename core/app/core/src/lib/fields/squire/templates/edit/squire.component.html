@@ -108,19 +108,18 @@
         </ng-container>
     </div>
 
-    <div *ngIf="editorMode() === 'html'"
-         #editorEl
-         role="textbox"
-         aria-multiline="true"
-         aria-label="Body"
-         class="editor-container squire-editor-content scrollbar-thin"
-         contenteditable="true"
-         [ngStyle]="{
+    <iframe [class.d-none]="editorMode() !== 'html'" #editorEl #frame
+            src="dist/squire-document.html"
+            (load)="initIframeEditor(frame)"
+            class="editor-container squire-editor-content scrollbar-thin"
+            [ngStyle]="{
             'min-height': minHeight() ? minHeight() : 'auto',
             'height': height() ? height() : 'auto',
-            'max-height': maxHeight() ? maxHeight() : 'auto'
+            'max-height': maxHeight() ? maxHeight() : 'auto',
+            'width': '100%',
+            'border': 'none',
             }"
-    ></div>
+    ></iframe>
 
     <div *ngIf="editorMode() === 'code'"
          [ngStyle]="{
