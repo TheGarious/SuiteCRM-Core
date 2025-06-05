@@ -25,6 +25,8 @@
  */
 
 
+
+
 .squire-editor {
   border: 1px solid $very-light-grey;
   border-radius: .2rem;
@@ -161,6 +163,12 @@
     }
   }
 
+  &.squire-editor-detail {
+    .squire-editor-content {
+      margin-top: 0px;
+      padding: 15px 15px 15px;
+    }
+  }
 
   .squire-editor-content {
     min-height: 200px;
