@@ -70,6 +70,8 @@ $viewdefs['Emails']['ComposeView'] = [
                     ],
                     'setFieldSubject' => 'name',
                     'setFieldBody' => 'description_html',
+                    'displayConfirmation' => true,
+                    'confirmationMessages' => ['LBL_TEMPLATE_CONFIRMATION'],
                 ],
                 'modes' => ['detail', 'edit', 'create'],
             ],
