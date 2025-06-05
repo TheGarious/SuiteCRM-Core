@@ -496,6 +496,55 @@ $dictionary['EmailMarketing'] = [
                                 'html'
                             ]
                         ]
+                    ],
+                    'detail' => [
+                        'dynamicHeight' => true,
+                        'dynamicHeightAncestor' => '.field-layout',
+                        'dynamicHeightAdjustment' => -140,
+                        'buttonLayout' => [
+                            [
+                                'bold',
+                                'italic',
+                                'underline',
+                                'strikethrough',
+                            ],
+                            [
+                                'font',
+                                'size',
+                            ],
+                            [
+                                'textColour',
+                                'highlight',
+                            ],
+                            [
+                                'insertLink',
+                            ],
+                            [
+                                'unorderedList',
+                                'orderedList',
+                                'indentMore',
+                                'indentLess',
+                            ],
+                            [
+                                'alignLeft',
+                                'alignCenter',
+                                'alignRight',
+                                'justify',
+                            ],
+                            [
+                                'quote',
+                                'unquote',
+                            ],
+                            [
+                                'clearFormatting',
+                            ],
+                            [
+                                'injectUnsubscribe'
+                            ],
+                            [
+                                'html'
+                            ]
+                        ]
                     ]
                 ]
             ],
