@@ -68,6 +68,7 @@ export interface StatisticWidgetLayoutCol {
     iconClass?: string;
     icon?: string;
     labelKey?: string;
+    hideIfLoading?: boolean;
     descriptionKey?: string;
     dynamicLabel?: string;
     statistic?: string;
