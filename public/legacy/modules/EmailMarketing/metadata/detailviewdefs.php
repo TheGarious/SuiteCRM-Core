@@ -706,7 +706,6 @@ $viewdefs ['EmailMarketing'] = [
                     'params' => [
                         'queryParams' => [
                             'status' => 'draft',
-                            'return_action' => 'record'
                         ]
                     ],
                     'acl' => ['delete'],
