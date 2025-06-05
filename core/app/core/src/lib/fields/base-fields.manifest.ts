@@ -118,6 +118,8 @@ import {CurrencyEditFieldModule} from "./currency/templates/edit/currency.module
 import {MultiFlexRelateEditFieldModule} from "./multiflexrelate/templates/edit/multiflexrelate.module";
 import {MultiFlexRelateEditFieldComponent} from "./multiflexrelate/templates/edit/multiflexrelate.component";
 import {EmailDetailFieldsComponent} from "./email/templates/detail/email.component";
+import {SquireDetailFieldModule} from "./squire/templates/detail/squire.module";
+import {SquireDetailFieldComponent} from "./squire/templates/detail/squire.component";
 
 export const baseFieldModules = [
     VarcharDetailFieldModule,
@@ -166,6 +168,7 @@ export const baseFieldModules = [
     TinymceDetailFieldModule,
     TinymceEditFieldModule,
     SquireEditFieldModule,
+    SquireDetailFieldModule
 ];
 export const baseFieldComponents = [
     VarcharDetailFieldComponent,
@@ -214,7 +217,8 @@ export const baseFieldComponents = [
     HtmlDetailFieldComponent,
     TinymceDetailFieldComponent,
     TinymceEditFieldComponent,
-    SquireEditFieldComponent
+    SquireEditFieldComponent,
+    SquireDetailFieldComponent
 ];
 
 export const baseViewFieldsMap: FieldComponentMap = {
@@ -306,5 +310,6 @@ export const baseViewFieldsMap: FieldComponentMap = {
     'html-native.detail': HtmlDetailFieldComponent,
     'html.detail': TinymceDetailFieldComponent,
     'html.edit': TinymceEditFieldComponent,
-    'html-squire.edit': SquireEditFieldComponent
+    'html-squire.edit': SquireEditFieldComponent,
+    'html-squire.detail': SquireDetailFieldComponent
 };
