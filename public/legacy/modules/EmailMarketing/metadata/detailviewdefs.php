@@ -450,6 +450,8 @@ $viewdefs ['EmailMarketing'] = [
                         'selectModal' => [
                             'module' => 'EmailTemplates'
                         ],
+                        'displayConfirmation' => true,
+                        'confirmationMessages' => ['LBL_TEMPLATE_CONFIRMATION'],
                         'setFieldSubject' => 'subject',
                         'setFieldBody' => 'body',
                     ],
