@@ -100,7 +100,7 @@ export interface StatisticsQueryArgs {
 export class GridWidgetComponent implements OnInit, OnDestroy {
     @Input() config: GridWidgetConfig;
     vm$: Observable<GridWidgetState>;
-    loading = true;
+    loading:WritableSignal<boolean> = signal(true);
     messageLabelKey: string;
     initializing: WritableSignal<boolean> = signal(true);
     layout: WritableSignal<StatisticWidgetLayoutRow[]> = signal([]);
@@ -402,7 +402,7 @@ export class GridWidgetComponent implements OnInit, OnDestroy {
             map((loadings) => {
 
                 if (!loadings || loadings.length < 1) {
-                    this.loading = false;
+                    this.loading.set(false);
                     return false;
                 }
                 let loading = true;
@@ -410,7 +410,7 @@ export class GridWidgetComponent implements OnInit, OnDestroy {
                 loadings.forEach(value => {
                     loading = loading && value;
                 });
-                this.loading = loading;
+                this.loading.set(loading);
 
                 return loading;
             }));
@@ -421,9 +421,9 @@ export class GridWidgetComponent implements OnInit, OnDestroy {
 
         if (this.gridWidgetInput.widgetConfig.reload$) {
             this.subs.push(this.gridWidgetInput.widgetConfig.reload$.subscribe(() => {
-                if (this.loading === false) {
+                if (this.loading() === false) {
 
-                    this.loading = true;
+                    this.loading.set(true);
                     Object.keys(this.statistics).forEach(statisticKey => {
                         const statistic = this.statistics[statisticKey];
 
