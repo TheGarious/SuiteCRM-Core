@@ -241,15 +241,12 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
             klass: 'squire-editor-button btn btn-sm ',
             onClick: () => {
                 if (this.editorMode() === 'html') {
-                    this.setFieldValue(this.editor.getHTML());
+                    this.field.formControl.setValue(this.editor.getHTML());
                     this.editorMode.set('code')
                     return;
                 }
-                this.setFieldValue(this.monacoEditor.editor.getValue());
+                this.field.formControl.setValue(this.monacoEditor.editor.getValue());
                 this.editorMode.set('html');
-                setTimeout(() => {
-                    this.editor.setHTML(this?.value ?? '');
-                }, 50);
             },
             dynamicClass: computed((): string => {
                 const editorMode = this.editorMode();
