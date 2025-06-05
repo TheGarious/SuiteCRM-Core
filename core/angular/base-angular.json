@@ -55,7 +55,18 @@
                 "glob": "**/*",
                 "input": "node_modules/monaco-editor/",
                 "output": "/mona/"
-              }
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/squire-rte/dist/",
+                "output": "/squire/"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/dompurify/dist/",
+                "output": "/dompurify/"
+              },
+              "core/app/shell/src/squire-document.html"
             ],
             "allowedCommonJsDependencies": [
               "graphql-tag",
