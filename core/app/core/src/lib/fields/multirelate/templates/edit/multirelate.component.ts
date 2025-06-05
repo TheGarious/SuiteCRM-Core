@@ -143,6 +143,7 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
         this.getTranslatedLabels();
 
         this.addCurrentlySelectedToOptions(this.options ?? []);
+        this.updateFieldValues();
     }
 
     /**
