@@ -127,6 +127,7 @@ $viewdefs ['EmailMarketing'] = [
                                     ],
                                     [
                                         'labelKey' => 'LBL_INACTIVE',
+                                        'hideIfLoading' => true,
                                         'class' => 'campaign-status-check-row-value w-fit-content alert alert-danger d-flex align-items-center m-0 pb-1 pl-2 pr-2 pt-1',
                                         'icon' => 'exclamation-circle',
                                         'labelClass' => 'd-inline-block ml-1',
@@ -162,6 +163,7 @@ $viewdefs ['EmailMarketing'] = [
                                     ],
                                     [
                                         'labelKey' => 'LBL_INACTIVE',
+                                        'hideIfLoading' => true,
                                         'class' => 'campaign-status-check-row-value w-fit-content alert alert-danger d-flex align-items-center m-0 pb-1 pl-2 pr-2 pt-1',
                                         'icon' => 'exclamation-circle',
                                         'labelClass' => 'd-inline-block ml-1',
@@ -198,6 +200,7 @@ $viewdefs ['EmailMarketing'] = [
                                     ],
                                     [
                                         'labelKey' => 'LBL_INACTIVE',
+                                        'hideIfLoading' => true,
                                         'class' => 'campaign-status-check-row-value w-fit-content alert alert-danger d-flex align-items-center m-0 pb-1 pl-2 pr-2 pt-1',
                                         'icon' => 'exclamation-circle',
                                         'labelClass' => 'd-inline-block ml-1',
@@ -236,6 +239,7 @@ $viewdefs ['EmailMarketing'] = [
                                     ],
                                     [
                                         'labelKey' => 'LBL_YES',
+                                        'hideIfLoading' => true,
                                         'class' => 'campaign-status-check-row-value',
                                     ]
                                 ],
@@ -259,6 +263,7 @@ $viewdefs ['EmailMarketing'] = [
                                     ],
                                     [
                                         'labelKey' => 'LBL_NO',
+                                        'hideIfLoading' => true,
                                         'class' => 'campaign-status-check-row-value w-fit-content alert alert-warning d-flex align-items-center m-0 pb-1 pl-2 pr-2 pt-1',
                                         'icon' => 'exclamation-triangle',
                                         'labelClass' => 'd-inline-block ml-1',
