@@ -62,7 +62,8 @@ export class SidebarWidgetAdapter {
 
             return {
                 widgets: filteredWidgets,
-                show: show && filteredWidgets.length > 0
+                show: show && filteredWidgets.length > 0,
+                showSidebarWidgets: show
             };
         })
     );

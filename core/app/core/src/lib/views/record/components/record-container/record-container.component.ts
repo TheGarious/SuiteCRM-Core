@@ -155,7 +155,7 @@ export class RecordContainerComponent implements OnInit, OnDestroy {
         this.subs.push(this.sidebarWidgetAdapter.config$.subscribe(sidebarWidgetConfig => {
             this.sidebarWidgetConfig.set({...sidebarWidgetConfig});
             this.showSidebarWidgets.set(sidebarWidgetConfig?.show ?? false);
-            this.displaySidebar.set(this.showSidebarWidgets() || this.showTopWidget());
+            this.displaySidebar.set(sidebarWidgetConfig?.showSidebarWidgets && (this.showSidebarWidgets() || this.showTopWidget()));
         }));
 
         this.subs.push(this.bottomWidgetAdapter.config$.subscribe(bottomWidgetConfig => {
