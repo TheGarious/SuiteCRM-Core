@@ -193,6 +193,11 @@ class SendTestEmailHandler extends LegacyHandler implements ProcessHandlerInterf
             return;
         }
 
+        $attributes =  $emRecord->getAttributes() ?? [];
+        $attributes['has_test_data'] = 1;
+        $emRecord->setAttributes($attributes);
+        $this->recordProvider->saveRecord($emRecord);
+
         $process->setStatus('success');
         $process->setMessages(['LBL_ALL_EMAILS_SENT']);
         $process->setData(['reload' => true]);

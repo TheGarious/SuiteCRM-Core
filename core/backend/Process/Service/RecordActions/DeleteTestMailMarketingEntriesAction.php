@@ -29,9 +29,11 @@
 namespace App\Process\Service\RecordActions;
 
 use ApiPlatform\Exception\InvalidArgumentException;
+use App\Data\Service\RecordProviderInterface;
 use App\Engine\LegacyHandler\LegacyHandler;
 use App\Engine\LegacyHandler\LegacyScopeState;
 use App\Module\EmailMarketing\Service\Actions\DeleteTestMailMarketingEntriesService;
+use App\Module\Service\ModuleNameMapperInterface;
 use App\Process\Entity\Process;
 use App\Process\Service\ProcessHandlerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -42,13 +44,15 @@ class DeleteTestMailMarketingEntriesAction extends LegacyHandler implements Proc
     protected const PROCESS_TYPE = 'record-delete-test-mail-marketing-entries';
 
     public function __construct(
-        string                                          $projectDir,
-        string                                          $legacyDir,
-        string                                          $legacySessionName,
-        string                                          $defaultSessionName,
-        LegacyScopeState                                $legacyScopeState,
-        RequestStack                                    $requestStack,
+        string $projectDir,
+        string $legacyDir,
+        string $legacySessionName,
+        string $defaultSessionName,
+        LegacyScopeState $legacyScopeState,
+        RequestStack $requestStack,
         protected DeleteTestMailMarketingEntriesService $deleteTestEntriesService,
+        protected RecordProviderInterface $recordProvider,
+        protected ModuleNameMapperInterface $moduleNameMapper,
     ) {
         parent::__construct(
             $projectDir,
@@ -146,6 +150,13 @@ class DeleteTestMailMarketingEntriesAction extends LegacyHandler implements Proc
             $process->setMessages(['LBL_UNABLE_TO_DELETE_TEST_ENTRIES']);
             return;
         }
+
+        $module = $this->moduleNameMapper->toLegacy($options['module']);
+        $emRecord = $this->recordProvider->getRecord($module, $id);
+        $attributes = $emRecord->getAttributes() ?? [];
+        $attributes['has_test_data'] = 0;
+        $emRecord->setAttributes($attributes);
+        $this->recordProvider->saveRecord($emRecord);
 
         $process->setStatus('success');
         $process->setMessages(['LBL_TEST_ENTRIES_DELETED']);
