@@ -78,6 +78,7 @@ const initialState: RecordViewState = {
     widgets: false,
     showSidebarWidgets: false,
     showBottomWidgets: false,
+    showHeaderWidgets: false,
     showTopWidget: false,
     showSubpanels: false,
     mode: 'detail',
@@ -101,6 +102,7 @@ export class RecordViewStore extends ViewStore implements StateStore, BaseRecord
     widgets$: Observable<boolean>;
     showSidebarWidgets$: Observable<boolean>;
     showBottomWidgets$: Observable<boolean>;
+    showHeaderWidgets$: Observable<boolean>;
     showTopWidget$: Observable<boolean>;
     showSubpanels$: Observable<boolean>;
     mode$: Observable<ViewMode>;
@@ -163,6 +165,7 @@ export class RecordViewStore extends ViewStore implements StateStore, BaseRecord
         this.widgets$ = this.state$.pipe(map(state => state.widgets));
         this.showSidebarWidgets$ = this.state$.pipe(map(state => state.showSidebarWidgets));
         this.showBottomWidgets$ = this.state$.pipe(map(state => state.showBottomWidgets));
+        this.showHeaderWidgets$ = this.state$.pipe(map(state => state.showHeaderWidgets));
         this.showTopWidget$ = this.state$.pipe(map(state => state.showTopWidget));
         this.showSubpanels$ = this.state$.pipe(map(state => state.showSubpanels));
         this.mode$ = this.state$.pipe(map(state => state.mode));
@@ -223,6 +226,17 @@ export class RecordViewStore extends ViewStore implements StateStore, BaseRecord
         this.updateState({
             ...this.internalState,
             showBottomWidgets: show
+        });
+    }
+
+    get showHeaderWidgets(): boolean {
+        return this.internalState.showHeaderWidgets;
+    }
+
+    set showHeaderWidgets(show: boolean) {
+        this.updateState({
+            ...this.internalState,
+            showHeaderWidgets: show
         });
     }
 
@@ -292,6 +306,7 @@ export class RecordViewStore extends ViewStore implements StateStore, BaseRecord
                 topWidget: recordViewMetadata?.topWidget,
                 sidebarWidgets: recordViewMetadata?.sidebarWidgets,
                 bottomWidgets: recordViewMetadata?.bottomWidgets,
+                headerWidgets: recordViewMetadata?.headerWidgets,
                 templateMeta: recordViewMetadata?.templateMeta,
                 panels: recordViewMetadata?.panels,
                 metadata: recordViewMetadata?.metadata,
@@ -648,6 +663,7 @@ export class RecordViewStore extends ViewStore implements StateStore, BaseRecord
         }
 
         this.showBottomWidgets = true;
+        this.showHeaderWidgets = true;
 
         this.widgets = true;
     }

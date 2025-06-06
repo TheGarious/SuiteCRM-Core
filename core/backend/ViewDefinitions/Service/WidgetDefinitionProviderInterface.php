@@ -54,6 +54,15 @@ interface WidgetDefinitionProviderInterface
     public function getBottomWidgets(array $config, string $module, array $moduleDefaults = []): array;
 
     /**
+     * Get list of header widgets for module.
+     * @param array $config
+     * @param string $module
+     * @param array $moduleDefaults
+     * @return array
+     */
+    public function getHeaderWidgets(array $config, string $module, array $moduleDefaults = []): array;
+
+    /**
      * Get list of top widgets for module
      * @param array $config
      * @param string $module

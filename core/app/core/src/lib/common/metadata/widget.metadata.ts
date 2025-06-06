@@ -39,6 +39,8 @@ export interface WidgetMetadata {
     refreshOn?: string;
     allowCollapse?: boolean;
     modes?: ViewMode[];
+    placement?: string;
+    activeOnFields?: any;
 }
 
 export interface WidgetOptionMap {
