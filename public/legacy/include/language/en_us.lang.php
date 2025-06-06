@@ -4261,3 +4261,5 @@ $app_strings['LBL_EMAILS_PER_RUN_DYNAMIC_LABEL'] = '{{ fields.campaign_emails_pe
 $app_strings['LBL_TRACKERS_ENABLED_DYNAMIC_LABEL'] = '{{ fields.trackers_enabled.value }}';
 $app_strings['LBL_UNSUBSCRIBE'] = 'Unsubscribe';
 $app_strings['LBL_INACTIVE'] = 'Inactive';
+$app_strings['LBL_DISPLAYING_TEST_EMAIL_MARKETING_DATA'] = 'Charts and Subpanels currently displaying data generated from Test Emails.';
+$app_strings['LBL_DASH_SYMBOL'] = '-';
