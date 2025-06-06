@@ -187,6 +187,8 @@ class ScheduleEmailMarketingAction extends LegacyHandler implements ProcessHandl
             $bean->status = 'pending_send';
         }
 
+        $bean->has_test_data = 0;
+
         $bean->save();
 
         $this->deleteTestEntriesService->deleteTestEntries($id);
