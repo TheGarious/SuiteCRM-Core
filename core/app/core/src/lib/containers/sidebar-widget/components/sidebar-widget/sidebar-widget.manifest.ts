@@ -35,12 +35,15 @@ import {
 } from '../record-thread-sidebar-widget/record-thread-sidebar-widget.component';
 import {RecordTableWidgetComponent} from "../record-table-widget/record-table-widget.component";
 import {RecordTableWidgetModule} from "../record-table-widget/record-table-widget.module";
+import {BannerGridSidebarWidgetModule} from "../banner-grid-sidebar-widget/banner-grid-sidebar-widget.module";
+import {BannerGridSidebarWidgetComponent} from "../banner-grid-sidebar-widget/banner-grid-sidebar-widget.component";
 
 export const sidebarWidgetModules = [
     HistorySidebarWidgetModule,
     ChartSidebarWidgetModule,
     StatisticsSidebarWidgetModule,
-    RecordTableWidgetModule
+    RecordTableWidgetModule,
+    BannerGridSidebarWidgetModule
 ];
 
 export const componentTypeMap = {
@@ -48,5 +51,6 @@ export const componentTypeMap = {
     chart: ChartSidebarWidgetComponent,
     statistics: StatisticsSidebarWidgetComponent,
     'record-thread': RecordThreadSidebarWidgetComponent,
-    'record-table': RecordTableWidgetComponent
+    'record-table': RecordTableWidgetComponent,
+    'banner-grid': BannerGridSidebarWidgetComponent
 };
