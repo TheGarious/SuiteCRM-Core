@@ -1,6 +1,6 @@
 {
   "name": "suitecrm",
-  "version": "8.8.0",
+  "version": "8.9.0-beta",
   "scripts": {
     "ng": "ng",
     "build-dev": "ng build core && ng build shell",
