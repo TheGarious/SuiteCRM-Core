@@ -49,6 +49,51 @@ $viewdefs ['EmailMarketing'] = [
                 ],
             ]
         ],
+        'headerWidgets' => [
+            'test-data-banner' => [
+                'type' => 'banner-grid',
+                'modes' => ['detail'],
+                'options' => [
+                    'mainRowClass' => 'd-flex h-100 row justify-content-center align-items-center w-100 mb-0 mr-0 ml-0 alert alert-warning',
+                    'bannerGrid' => [
+                        'rows' => [
+                            [
+                                'justify' => 'center',
+                                'cols' => [
+                                    [
+                                        'bold' => true,
+                                        'class' => 'd-flex align-items-center',
+                                        'icon' => 'exclamation-triangle',
+                                        'labelKey' => 'LBL_WARNING',
+                                        'labelClass' => 'd-inline-block ml-1',
+                                    ],
+                                    [
+                                        'class' => 'd-flex align-items-center',
+                                        'labelKey' => 'LBL_DASH_SYMBOL',
+                                        'labelClass' => 'd-inline-block ml-1',
+                                    ],
+                                    [
+                                        'class' => 'd-flex align-items-center',
+                                        'labelKey' => 'LBL_DISPLAYING_TEST_EMAIL_MARKETING_DATA',
+                                        'labelClass' => 'd-inline-block ml-1',
+                                    ],
+                                ]
+                            ],
+                        ]
+                    ]
+                ],
+                'acls' => [
+                ],
+                'activeOnFields' => [
+                    'has_test_data' => [
+                        [
+                            'operator' => 'is-equal',
+                            'values' => [true, 'true', 1, '1']
+                        ],
+                    ],
+                ]
+            ],
+        ],
         'sidebarWidgets' => [
             'scheduler-widget' => [
                 'type' => 'statistics',
@@ -706,6 +751,7 @@ $viewdefs ['EmailMarketing'] = [
                     'params' => [
                         'queryParams' => [
                             'status' => 'draft',
+                            'has_test_data' => '0'
                         ]
                     ],
                     'acl' => ['delete'],
