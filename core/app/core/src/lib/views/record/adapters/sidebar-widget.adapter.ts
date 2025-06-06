@@ -29,19 +29,29 @@ import {combineLatestWith} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {MetadataStore, RecordViewSectionMetadata} from '../../../store/metadata/metadata.store.service';
 import {RecordViewStore} from '../store/record-view/record-view.store';
+import {Record} from "../../../common/record/record.model";
+import {ObjectMap} from "../../../common/types/object-map";
+import {ActiveFieldsChecker} from "../../../services/condition-operators/active-fields-checker.service";
 
 @Injectable()
 export class SidebarWidgetAdapter {
 
     config$ = this.store.sectionMetadata$.pipe(
-        combineLatestWith(this.store.showSidebarWidgets$),
-        map(([metadata, show]: [RecordViewSectionMetadata, boolean]) => {
+        combineLatestWith(this.store.showSidebarWidgets$, this.store.stagingRecord$),
+        map(([metadata, show, record]: [RecordViewSectionMetadata, boolean, Record]) => {
 
             let filteredWidgets = [];
 
             if (metadata.sidebarWidgets && metadata.sidebarWidgets.length) {
 
                 filteredWidgets = this.store.filterWidgetsByMode(metadata.sidebarWidgets);
+
+                filteredWidgets = filteredWidgets.filter(widget => {
+                    if (widget.activeOnFields && Object.keys(widget.activeOnFields).length) {
+                        return this.isActive(widget.activeOnFields, record);
+                    }
+                    return true; // If no activeOnFields, consider it active
+                });
 
                 filteredWidgets.forEach(widget => {
                     if (widget && widget.refreshOn === 'data-update') {
@@ -70,8 +80,37 @@ export class SidebarWidgetAdapter {
 
     constructor(
         protected store: RecordViewStore,
-        protected metadata: MetadataStore
+        protected metadata: MetadataStore,
+        protected activeFieldsChecker: ActiveFieldsChecker
     ) {
+    }
+
+    protected isActive(activeOnFields: ObjectMap, record: Record): boolean {
+
+        const fieldKeys = Object.keys(activeOnFields);
+
+        if (!activeOnFields || !fieldKeys.length) {
+            return true;
+        }
+
+        if (!record || !record?.fields || !Object.keys(record?.fields ?? {}).length) {
+            return false;
+        }
+
+        return fieldKeys.every(fieldKey => {
+
+            const field = record.fields[fieldKey];
+
+            if (!field) {
+                return true; // If field is not present, consider it active
+            }
+
+            const activeOn = activeOnFields[fieldKey] || null;
+
+
+            return this.activeFieldsChecker.isValueActive(record, field, activeOn);
+
+        });
     }
 
 }
