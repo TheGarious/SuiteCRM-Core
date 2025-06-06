@@ -28,6 +28,7 @@
 namespace App\Module\Campaigns\Statistics;
 
 use App\Data\LegacyHandler\ListDataQueryHandler;
+use App\Data\LegacyHandler\PreparedStatementHandler;
 use App\Engine\LegacyHandler\LegacyHandler;
 use App\Engine\LegacyHandler\LegacyScopeState;
 use App\Module\Service\ModuleNameMapperInterface;
@@ -36,6 +37,7 @@ use App\Statistics\Model\ChartOptions;
 use App\Statistics\Service\StatisticsProviderInterface;
 use App\Statistics\StatisticsHandlingTrait;
 use BeanFactory;
+use Psr\Log\LoggerInterface;
 use SugarBean;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -59,6 +61,7 @@ class CampaignSendStatus extends LegacyHandler implements StatisticsProviderInte
      * @param ListDataQueryHandler $queryHandler
      * @param ModuleNameMapperInterface $moduleNameMapper
      * @param RequestStack $session
+     * @param PreparedStatementHandler $preparedStatementHandler
      */
     public function __construct(
         string $projectDir,
@@ -69,6 +72,8 @@ class CampaignSendStatus extends LegacyHandler implements StatisticsProviderInte
         ListDataQueryHandler $queryHandler,
         ModuleNameMapperInterface $moduleNameMapper,
         RequestStack $session,
+        protected PreparedStatementHandler $preparedStatementHandler,
+        protected LoggerInterface $logger
     ) {
         parent::__construct($projectDir, $legacyDir, $legacySessionName, $defaultSessionName, $legacyScopeState, $session);
         $this->queryHandler = $queryHandler;
@@ -129,6 +134,13 @@ class CampaignSendStatus extends LegacyHandler implements StatisticsProviderInte
 
         $result = $this->runQuery($query, $bean);
 
+        $queueCount = $this->getMessageQueueCount($emailMarketingId, $id);
+
+        $result[] = [
+            'activity_type' => 'track_queue',
+            'hits' => $queueCount
+        ];
+
         $nameField = 'activity_type';
         $valueField = 'hits';
 
@@ -185,7 +197,7 @@ class CampaignSendStatus extends LegacyHandler implements StatisticsProviderInte
             $query['where'] .= " AND (" . implode(" OR ", $typeClauses) . ") ";
         }
 
-        if ($emailMarketingId === null){
+        if ($emailMarketingId === null) {
             $query['where'] .= " AND is_test_entry = 0";
         }
 
@@ -230,6 +242,35 @@ class CampaignSendStatus extends LegacyHandler implements StatisticsProviderInte
         }
 
         return $campaignId;
+    }
+
+    /**
+     * @param string |null $emailMarketingId
+     * @param string $id
+     * @return int|mixed
+     */
+    protected function getMessageQueueCount(?string $emailMarketingId, string $id): mixed
+    {
+        $queryBuilder = $this->preparedStatementHandler->createQueryBuilder();
+        $queryBuilder->select('COUNT(*) as count')
+                     ->from('emailman', 'e')
+                     ->where('e.deleted = 0')
+                     ->andWhere('e.campaign_id = :campaignId');
+
+        if ($emailMarketingId !== null) {
+            $queryBuilder->andWhere('e.marketing_id = :emailMarketingId');
+            $queryBuilder->setParameter('emailMarketingId', $emailMarketingId);
+        }
+        $queryBuilder->setParameter('campaignId', $id);
+
+        $queueResult = [];
+        try {
+            $queueResult = $queryBuilder->fetchOne();
+        } catch (\Doctrine\DBAL\Exception  $e) {
+            $this->logger->error('CampaignSendStatus::getQueueCount query failed | ' . $e->getMessage());
+        }
+
+        return $queueResult ?? 0;
     }
 
 }
