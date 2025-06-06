@@ -50,6 +50,7 @@ export interface RecordViewState {
     widgets: boolean;
     showSidebarWidgets: boolean;
     showBottomWidgets: boolean;
+    showHeaderWidgets: boolean;
     showTopWidget: boolean;
     showSubpanels: boolean;
     mode: ViewMode;

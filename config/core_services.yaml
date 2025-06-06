@@ -47,6 +47,7 @@ services:
       $recordModalActions: '%module.recordmodal.actions%'
       $recordViewSidebarWidgets: '%module.recordview.sidebar_widgets%'
       $recordViewBottomWidgets: '%module.recordview.bottom_widgets%'
+      $recordViewHeaderWidgets: '%module.recordview.header_widgets%'
       $recordViewTopWidgets: '%module.recordview.top_widgets%'
       $recordViewConvertIgnore: '%module.recordview.convert_ignore%'
       $recordViewSubpanelButtonLimits: '%module.recordview.subpanel_button_limits%'

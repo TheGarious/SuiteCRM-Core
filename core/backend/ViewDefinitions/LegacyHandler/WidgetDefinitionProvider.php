@@ -123,6 +123,14 @@ class WidgetDefinitionProvider extends LegacyHandler implements WidgetDefinition
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function getHeaderWidgets(array $config, string $module, array $moduleDefaults = []): array
+    {
+        return $this->parseEntries($config, $module, $moduleDefaults);
+    }
+
+    /**
      * @param array $config
      * @param string $module
      * @param array $moduleDefaults

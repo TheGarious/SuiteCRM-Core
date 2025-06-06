@@ -81,6 +81,11 @@ class RecordViewDefinitionHandler extends LegacyHandler
     /**
      * @var array
      */
+    protected $recordViewHeaderWidgets;
+
+    /**
+     * @var array
+     */
     protected $recordViewTopWidgets;
 
     /**
@@ -102,6 +107,7 @@ class RecordViewDefinitionHandler extends LegacyHandler
      * @param FieldAliasMapper $fieldAliasMapper
      * @param array $recordViewSidebarWidgets
      * @param array $recordViewBottomWidgets
+     * @param array $recordViewHeaderWidgets
      * @param array $recordViewTopWidgets
      * @param RequestStack $session
      * @param ViewConfigMappers $viewDefsConfigMappers
@@ -118,6 +124,7 @@ class RecordViewDefinitionHandler extends LegacyHandler
         FieldAliasMapper $fieldAliasMapper,
         array $recordViewSidebarWidgets,
         array $recordViewBottomWidgets,
+        array $recordViewHeaderWidgets,
         array $recordViewTopWidgets,
         RequestStack $session,
         ViewConfigMappers $viewDefsConfigMappers
@@ -135,6 +142,7 @@ class RecordViewDefinitionHandler extends LegacyHandler
         $this->widgetDefinitionProvider = $widgetDefinitionProvider;
         $this->recordViewSidebarWidgets = $recordViewSidebarWidgets;
         $this->recordViewBottomWidgets = $recordViewBottomWidgets;
+        $this->recordViewHeaderWidgets = $recordViewHeaderWidgets;
         $this->recordViewTopWidgets = $recordViewTopWidgets;
         $this->fieldAliasMapper = $fieldAliasMapper;
         $this->viewConfigMappers = $viewDefsConfigMappers;
@@ -199,6 +207,7 @@ class RecordViewDefinitionHandler extends LegacyHandler
             'topWidget' => [],
             'sidebarWidgets' => [],
             'bottomWidgets' => [],
+            'headerWidgets' => [],
             'actions' => [],
             'panels' => [],
             'summaryTemplates' => [],
@@ -212,6 +221,7 @@ class RecordViewDefinitionHandler extends LegacyHandler
         $this->addTopWidgetConfig($module, $recordViewDefs, $metadata);
         $this->addSidebarWidgetConfig($module, $recordViewDefs, $metadata);
         $this->addBottomWidgetConfig($module, $recordViewDefs, $metadata);
+        $this->addHeaderWidgetConfig($module, $recordViewDefs, $metadata);
         $this->addPanelDefinitions($recordViewDefs, $editViewDefs, $vardefs, $metadata);
         $this->addActionConfig($module, $recordViewDefs, $metadata);
         $this->addSummaryTemplates($recordViewDefs, $metadata);
@@ -224,6 +234,7 @@ class RecordViewDefinitionHandler extends LegacyHandler
                     'metadata' => [],
                     'sidebarWidgets' => [],
                     'bottomWidgets' => [],
+                    'headerWidgets' => [],
                     'topWidget' => [],
                     'panels' => [],
                     'subpanels' => $section['subpanels'] ?? [],
@@ -235,6 +246,7 @@ class RecordViewDefinitionHandler extends LegacyHandler
                 $this->addTopWidgetConfig($module, $section,  $metadata['sections'][$index]);
                 $this->addSidebarWidgetConfig($module, $section,  $metadata['sections'][$index]);
                 $this->addBottomWidgetConfig($module, $section,  $metadata['sections'][$index]);
+                $this->addHeaderWidgetConfig($module, $section,  $metadata['sections'][$index]);
                 $this->addPanelDefinitions($section, [], $vardefs,  $metadata['sections'][$index]);
             }
 
@@ -493,6 +505,20 @@ class RecordViewDefinitionHandler extends LegacyHandler
             $this->recordViewBottomWidgets,
             $module,
             ['widgets' => $viewDefs['bottomWidgets'] ?? []]
+        );
+    }
+
+    /**
+     * @param string $module
+     * @param array $viewDefs
+     * @param array $metadata
+     */
+    protected function addHeaderWidgetConfig(string $module, array $viewDefs, array &$metadata): void
+    {
+        $metadata['headerWidgets'] = $this->widgetDefinitionProvider->getHeaderWidgets(
+            $this->recordViewBottomWidgets,
+            $module,
+            ['widgets' => $viewDefs['headerWidgets'] ?? []]
         );
     }
 

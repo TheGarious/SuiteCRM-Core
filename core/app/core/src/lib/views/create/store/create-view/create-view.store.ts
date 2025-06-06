@@ -106,6 +106,7 @@ export class CreateViewStore extends RecordViewStore {
         this.parseParams(params);
         this.showTopWidget = false;
         this.showBottomWidgets = false;
+        this.showHeaderWidgets = false;
         this.showSubpanels = false;
         this.calculateCurrentSection(params);
         this.calculateShowWidgets();
@@ -258,6 +259,7 @@ export class CreateViewStore extends RecordViewStore {
         }
 
         this.showBottomWidgets = true;
+        this.showHeaderWidgets = true;
 
         this.widgets = show;
     }

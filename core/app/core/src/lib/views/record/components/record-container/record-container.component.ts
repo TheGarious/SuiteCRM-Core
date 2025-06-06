@@ -50,11 +50,12 @@ import {FieldActionsAdapterFactory} from "../../../../components/field-layout/ad
 import {PanelLogicManager} from "../../../../components/panel-logic/panel-logic.manager";
 import {RecordContentAdapterFactory} from "../../adapters/record-content.adapter.factory";
 import {SubpanelStoreMap} from "../../../../containers/subpanel/store/subpanel/subpanel.store";
+import {HeaderWidgetAdapter} from "../../adapters/header-widget.adapter";
 
 @Component({
     selector: 'scrm-record-container',
     templateUrl: 'record-container.component.html',
-    providers: [TopWidgetAdapter, SidebarWidgetAdapter, BottomWidgetAdapter]
+    providers: [TopWidgetAdapter, SidebarWidgetAdapter, BottomWidgetAdapter, HeaderWidgetAdapter]
 })
 export class RecordContainerComponent implements OnInit, OnDestroy {
 
@@ -70,11 +71,13 @@ export class RecordContainerComponent implements OnInit, OnDestroy {
     showTopWidget: WritableSignal<boolean> = signal(true);
     showSidebarWidgets: WritableSignal<boolean> = signal(true);
     showBottomWidgets: WritableSignal<boolean> = signal(true);
+    showHeaderWidgets: WritableSignal<boolean> = signal(true);
     showSubpanels: WritableSignal<boolean> = signal(true);
     swapWidgets: WritableSignal<boolean> = signal(false);
     topWidgetConfig: WritableSignal<any> = signal(null);
     sidebarWidgetConfig: WritableSignal<any> = signal(null);
     bottomWidgetConfig: WritableSignal<any> = signal(null);
+    headerWidgetConfig: WritableSignal<any> = signal(null);
 
     panels: WritableSignal<Panel[]> = signal([]);
     panels$: Observable<Panel[]>;
@@ -114,6 +117,7 @@ export class RecordContainerComponent implements OnInit, OnDestroy {
         protected topWidgetAdapter: TopWidgetAdapter,
         protected sidebarWidgetAdapter: SidebarWidgetAdapter,
         protected bottomWidgetAdapter: BottomWidgetAdapter,
+        protected headerWidgetAdapter: HeaderWidgetAdapter,
         protected actionsAdapter: RecordActionsAdapter,
         protected sidebarWidgetHandler: RecordViewSidebarWidgetService,
         protected languageStore: LanguageStore,
@@ -161,6 +165,11 @@ export class RecordContainerComponent implements OnInit, OnDestroy {
         this.subs.push(this.bottomWidgetAdapter.config$.subscribe(bottomWidgetConfig => {
             this.bottomWidgetConfig.set({...bottomWidgetConfig});
             this.showBottomWidgets.set(bottomWidgetConfig?.show ?? false);
+        }));
+
+        this.subs.push(this.headerWidgetAdapter.config$.subscribe(headerWidgetConfig => {
+            this.headerWidgetConfig.set({...headerWidgetConfig});
+            this.showHeaderWidgets.set(headerWidgetConfig?.show ?? false);
         }));
 
         this.subs.push(this.sidebarWidgetHandler.widgetSwap$.subscribe(swap => {

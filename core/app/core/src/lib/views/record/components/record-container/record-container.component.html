@@ -34,6 +34,19 @@
 
                 <div class="container-fluid pl-0 pr-0">
 
+                    <div *ngIf="showHeaderWidgets()"
+                         class="row no-gutters mt-2">
+                        <div class="col">
+                            <div *ngFor="let widget of headerWidgetConfig().widgets" class="mb-2">
+                                <scrm-sidebar-widget [config]="widget"
+                                                     [context$]="getViewContext$()"
+                                                     [context]="getViewContext()"
+                                                     [type]="widget.type">
+                                </scrm-sidebar-widget>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="row no-gutters mt-1" *ngIf="this.panels().length">
                         <div class="col">
                             <ng-container *ngIf="loading">

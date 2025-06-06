@@ -69,6 +69,7 @@ export interface RecordViewMetadata {
     topWidget?: WidgetMetadata;
     sidebarWidgets?: WidgetMetadata[];
     bottomWidgets?: WidgetMetadata[];
+    headerWidgets?: WidgetMetadata[];
     actions?: Action[];
     templateMeta?: RecordTemplateMetadata;
     panels?: Panel[];
@@ -89,6 +90,7 @@ export interface RecordViewSectionMetadata {
     topWidget?: WidgetMetadata;
     sidebarWidgets?: WidgetMetadata[];
     bottomWidgets?: WidgetMetadata[];
+    headerWidgets?: WidgetMetadata[];
     templateMeta?: RecordTemplateMetadata;
     panels?: Panel[];
     subpanels?: any[];
@@ -542,6 +544,7 @@ export class MetadataStore implements StateStore {
             topWidget: 'topWidget',
             sidebarWidgets: 'sidebarWidgets',
             bottomWidgets: 'bottomWidgets',
+            headerWidgets: 'headerWidgets',
             summaryTemplates: 'summaryTemplates',
             vardefs: 'vardefs',
             metadata: 'metadata',

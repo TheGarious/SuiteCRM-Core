@@ -88,6 +88,7 @@ class RecordThreadDefinitionMapper implements ViewDefinitionMapperInterface
 
         $this->mapWidgets($recordView, 'sidebarWidgets', $options, $vardefs);
         $this->mapWidgets($recordView, 'bottomWidgets', $options, $vardefs);
+        $this->mapWidgets($recordView, 'headerWidgets', $options, $vardefs);
 
         $definition->setRecordView($recordView);
     }
