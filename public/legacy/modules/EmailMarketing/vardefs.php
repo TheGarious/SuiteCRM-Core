@@ -238,6 +238,14 @@ $dictionary['EmailMarketing'] = [
                 ],
             ]
         ],
+        'has_test_data' => [
+            'name' => 'has_test_data',
+            'vname' => 'LBL_HAS_TEST_DATA',
+            'type' => 'bool',
+            'default' => '0',
+            'required' => false,
+            'reportable' => false,
+        ],
         'trackers_enabled' => [
             'name' => 'trackers_enabled',
             'vname' => 'LBL_TRACKERS_ENABLED',
