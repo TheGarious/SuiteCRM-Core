@@ -34,6 +34,16 @@
 
                 <div class="container-fluid pl-0 pr-0">
 
+                    <div *ngIf="(topWidgetConfig()?.widget?.placement ?? 'sidebar') === 'top' &&  showTopWidget() && hasTopWidgetMetadata(topWidgetConfig()?.widget)"
+                         class="row no-gutters mt-1 w-100">
+                        <div class="w-100">
+                            <scrm-top-widget [config]="topWidgetConfig().widget"
+                                             [context]="getViewContext()"
+                                             [type]="topWidgetConfig().widget.type">
+                            </scrm-top-widget>
+                        </div>
+                    </div>
+
                     <div *ngIf="showHeaderWidgets()"
                          class="row no-gutters mt-2">
                         <div class="col">
@@ -106,7 +116,7 @@
                     </div>
                 </div>
                 <ng-container *ngIf="!loading">
-                    <div *ngIf="showTopWidget() && hasTopWidgetMetadata(topWidgetConfig().widget)"
+                    <div *ngIf="(topWidgetConfig()?.widget?.placement ?? 'sidebar') === 'sidebar' &&  showTopWidget() && hasTopWidgetMetadata(topWidgetConfig()?.widget)"
                          class="mb-3">
                         <div class="">
                             <scrm-top-widget [config]="topWidgetConfig().widget"
