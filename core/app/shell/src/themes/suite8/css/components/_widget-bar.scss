@@ -29,12 +29,15 @@
   color: $dark-midnight-grey;
   box-shadow: 0 .125rem .25rem #00000013;
   border: 1px solid $extra-light-grey;
-  min-height: 60px;
 
-    .widget-bar-entry:not(:first-child):not(:last-child) {
-      margin-top: .5rem;
-      margin-bottom: .5rem;
-    }
+  &.placement-sidebar {
+    min-height: 60px;
+  }
+
+  .widget-bar-entry:not(:first-child):not(:last-child) {
+    margin-top: .5rem;
+    margin-bottom: .5rem;
+  }
 
 
 }
@@ -62,8 +65,6 @@
 .widget-bar .widget-bar-entry-label:first-child {
   padding-top: 0.2rem;
 }
-
-
 
 
 .widget-bar .inline-spinner > div {
