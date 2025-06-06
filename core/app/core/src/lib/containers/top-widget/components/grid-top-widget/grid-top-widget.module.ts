@@ -1,6 +1,6 @@
 /**
  * SuiteCRM is a customer relationship management program developed by SalesAgility Ltd.
- * Copyright (C) 2021 SalesAgility Ltd.
+ * Copyright (C) 2025 SalesAgility Ltd.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by the
@@ -24,17 +24,28 @@
  * the words "Supercharged by SuiteCRM".
  */
 
-import {StatisticsTopWidgetComponent} from '../statistics-top-widget/statistics-top-widget.component';
-import {StatisticsTopWidgetModule} from '../statistics-top-widget/statistics-top-widget.module';
-import {GridTopWidgetModule} from "../grid-top-widget/grid-top-widget.module";
-import {GridTopWidgetComponent} from "../grid-top-widget/grid-top-widget.component";
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {GridTopWidgetComponent} from './grid-top-widget.component';
+import {FieldModule} from '../../../../fields/field.module';
+import {InlineLoadingSpinnerModule} from '../../../../components/inline-loading-spinner/inline-loading-spinner.module';
+import {WidgetPanelModule} from '../../../../components/widget-panel/widget-panel.module';
+import {LabelModule} from '../../../../components/label/label.module';
+import {GridWidgetModule} from '../../../../components/grid-widget/grid-widget.module';
 
-export const topWidgetModules = [
-    StatisticsTopWidgetModule,
-    GridTopWidgetModule
-];
-
-export const topWidgetComponentTypeMap = {
-    statistics: StatisticsTopWidgetComponent,
-    grid: GridTopWidgetComponent,
-};
+@NgModule({
+    declarations: [GridTopWidgetComponent],
+    exports: [
+        GridTopWidgetComponent
+    ],
+    imports: [
+        CommonModule,
+        FieldModule,
+        InlineLoadingSpinnerModule,
+        WidgetPanelModule,
+        GridWidgetModule,
+        LabelModule
+    ]
+})
+export class GridTopWidgetModule {
+}
