@@ -213,7 +213,7 @@ export class RelateEditFieldComponent extends BaseRelateComponent implements Aft
     onModuleChange(): void {
 
         const currentModule = this.initModule();
-        const newModule = this?.field?.definition?.module ?? '';
+        const newModule = this?.field?.definition?.module ?? this.record.fields[this.field.definition.type_name].value ?? '';
 
         if (currentModule === newModule) {
             return;
