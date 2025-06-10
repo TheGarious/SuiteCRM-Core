@@ -42,7 +42,7 @@ import {SystemConfigStore} from "../../store/system-config/system-config.store";
 export interface FieldModalOptions {
     fields: Field[];
     titleKey: string;
-    topButtonsDropdownLabelKey: string;
+    topButtonsDropdownLabelKey?: string;
     descriptionKey?: string;
     module?: string;
     maxColumns?: number;
