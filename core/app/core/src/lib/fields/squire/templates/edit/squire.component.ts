@@ -153,6 +153,10 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
         this.value = newValue;
         this.field.value = newValue;
 
+        if (this.editorMode() === 'code' && (this?.monacoEditor?.initialised ?? false) === true){
+            this.monacoEditor.setEditorValue(newValue);
+        }
+
         if (this.editor.getHTML() === newValue) {
             return;
         }
@@ -242,7 +246,7 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
             onClick: () => {
                 if (this.editorMode() === 'html') {
                     this.field.formControl.setValue(this.editor.getHTML());
-                    this.editorMode.set('code')
+                    this.editorMode.set('code');
                     return;
                 }
                 this.field.formControl.setValue(this.monacoEditor.editor.getValue());

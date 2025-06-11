@@ -42,6 +42,7 @@ export class MonacoEditorComponent {
 
     @Input() content: string = '';
     editor?: any;
+    initialised: boolean = false;
 
     @ViewChild('editorContainer', {static: true}) set editorContainer(container: ElementRef) {
 
@@ -62,6 +63,10 @@ export class MonacoEditorComponent {
 
     }
 
+    setEditorValue(value: string): void {
+        this.editor.getModel().setValue(value)
+    }
+
     protected initEditor(monaco, container: ElementRef<any>) {
         this.editor = monaco.editor.create(container.nativeElement, {
             value: this.content ?? '',
@@ -76,6 +81,8 @@ export class MonacoEditorComponent {
         setTimeout(() => {
             this.editor.getAction('editor.action.formatDocument').run();
         }, 0)
+
+        this.initialised = true;
     }
 
     protected loadMonacoScripts(): Observable<any> {
