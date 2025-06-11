@@ -24,7 +24,7 @@
  * the words "Supercharged by SuiteCRM".
  */
 
-import {Component, ElementRef, Input, ViewChild} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, Output, ViewChild} from '@angular/core';
 import {interval, Observable, ReplaySubject} from "rxjs";
 import {filter, take} from "rxjs/operators";
 import {FormsModule} from "@angular/forms";
@@ -42,6 +42,7 @@ export class MonacoEditorComponent {
 
     @Input() content: string = '';
     editor?: any;
+    @Output('valueChange') valueEvent = new EventEmitter<string>();
     initialised: boolean = false;
 
     @ViewChild('editorContainer', {static: true}) set editorContainer(container: ElementRef) {
@@ -64,7 +65,7 @@ export class MonacoEditorComponent {
     }
 
     setEditorValue(value: string): void {
-        this.editor.getModel().setValue(value)
+        this.editor.getModel().setValue(value);
     }
 
     protected initEditor(monaco, container: ElementRef<any>) {
@@ -76,6 +77,10 @@ export class MonacoEditorComponent {
             "autoIndent": "full",
             "formatOnPaste": true,
             "formatOnType": true
+        });
+
+        this.editor.getModel().onDidChangeContent(() => {
+            this.valueEvent.emit(this.editor.getModel().getValue());
         });
 
         setTimeout(() => {

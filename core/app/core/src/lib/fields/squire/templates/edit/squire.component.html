@@ -129,7 +129,7 @@
          'max-height': maxHeight() ? maxHeight() : 'auto'
          }"
     >
-        <scrm-monaco-editor #monacoEditor style="height: 100%" [content]="field.value"></scrm-monaco-editor>
+        <scrm-monaco-editor #monacoEditor style="height: 100%" (valueChange)="updateFieldValue($event)" [content]="field.value"></scrm-monaco-editor>
     </div>
 </div>
 

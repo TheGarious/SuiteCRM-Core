@@ -153,8 +153,8 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
         this.value = newValue;
         this.field.value = newValue;
 
-        if (this.editorMode() === 'code' && (this?.monacoEditor?.initialised ?? false) === true){
-            this.monacoEditor.setEditorValue(newValue);
+        if (this.editorMode() === 'code'){
+            this.setMonacoEditor(newValue);
         }
 
         if (this.editor.getHTML() === newValue) {
@@ -164,9 +164,24 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
         this.editor.setHTML(newValue);
     }
 
+    updateFieldValue(value): void {
+        this.field.formControl.setValue(value);
+    }
+
+    setMonacoEditor(value: string): void {
+        if ((this.monacoEditor?.initialised ?? false) === false){
+            return;
+        }
+
+        if (this.monacoEditor.editor.getValue() === value){
+            return;
+        }
+
+        this.monacoEditor.setEditorValue(value);
+    }
+
     initSettings(): void {
 
-        let defaultStyle = '';
         let fixedWidthStyle =
             'border:1px solid #ccc;border-radius:3px;background:#f6f6f6;font-family:menlo,consolas,monospace;font-size:90%;';
 
