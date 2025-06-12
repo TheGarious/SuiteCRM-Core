@@ -165,7 +165,23 @@ export class RelateEditFieldComponent extends BaseRelateComponent implements Aft
             this.field.valueObject[this.field.metadata.relateSearchField] = this.field.valueObject[rname];
         }
 
-        this.setValue(this.field.valueObject.id, this.field.valueObject[rname], this.field.valueObject)
+        const relateValue = this.field.valueObject[rname];
+        const id = this.field.valueObject.id;
+
+        if (relateValue) {
+            const relateName = this.getRelateFieldName();
+            this.selectedValue = {...this.field.valueObject, id: id, [relateName]: relateValue};
+        }
+
+        if (this.idField) {
+            this.idField.value = id;
+            this.idField.formControl.setValue(id);
+        }
+
+        this.options = [this.selectedValue];
+        if (this.selectedValue !== null) {
+            this.currentOptions.set(this.options)
+        }
     }
 
     /**
