@@ -202,7 +202,7 @@ class DefaultEmailTrackerManager implements EmailTrackerManagerInterface
         }
 
         $uniqueTrackerUrl = sprintf($trackingUrlTemplate, $surveyId ?? '', $contactId ?? '');
-        $replaced = str_replace(['$survey_url_display', 'survey_url_display'], [$uniqueTrackerUrl, $uniqueTrackerUrl], $emailBody);
+        $replaced = str_replace(['$surveys_survey_url_display', '$survey_url_display', 'survey_url_display'], [$uniqueTrackerUrl, $uniqueTrackerUrl, $uniqueTrackerUrl], $emailBody);
 
         $replaced = preg_replace(
             '/{{\s*survey_link\s*}}/',
