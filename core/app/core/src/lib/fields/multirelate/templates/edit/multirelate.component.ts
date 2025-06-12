@@ -111,21 +111,19 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
             }
             this.selectedValues = this.field.valueObjectArray.map(valueElement => {
 
-                const relateValue = valueElement[relatedFieldName] ?? valueElement?.attributes[relatedFieldName] ?? '';
-                const moduleName = this.moduleNameMapper.toFrontend(valueElement['module_name'] ?? valueElement?.attributes['module_name'] ?? '');
+                const relateValue = valueElement?.attributes[relatedFieldName] ?? '';
+                const moduleName = this.moduleNameMapper.toFrontend(valueElement?.attributes['module_name'] ?? '');
 
-                const relateId = valueElement['id'] ?? '';
+                const relateId = valueElement.attributes['id'] ?? '';
 
-                const headerField = this.headerFields[moduleName] ?? 'name';
-                const subHeader = this.subHeaderFields[moduleName] ?? '';
-                const headerFieldValue = valueElement[headerField] ?? valueElement?.attributes[headerField] ?? '';
-                const subHeaderFieldValue = valueElement[subHeader] ?? valueElement?.attributes[subHeader] ?? '';
+                const headerField = this.headerFields[moduleName] ?? {name: 'name'};
+                const subHeader = this.subHeaderFields[moduleName] ?? {name: ''};
                 return {
                     attributes: valueElement.attributes ?? {},
                     id: relateId,
                     [relatedFieldName]: relateValue,
-                    [headerField]: headerFieldValue,
-                    [subHeader]: subHeaderFieldValue,
+                    label: this.getLabel(valueElement.attributes, headerField),
+                    subLabel: this.getSubLabel(valueElement.attributes, subHeader),
                     module_name: valueElement['module_name'] ?? valueElement?.attributes['module_name'] ?? ''
                 };
             });
@@ -304,8 +302,8 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
         const subHeader = this.subHeaderFields[moduleName] ?? '';
         const newItem = {
             id: record.id,
-            label: record[headerField] ?? record.attributes[headerField] ?? '',
-            subLabel: record[subHeader] ?? record.attributes[subHeader] ?? '',
+            label: this.getLabel(record.attributes, headerField),
+            subLabel: this.getSubLabel(record.attributes, subHeader),
             attributes: record,
             module_name: this.moduleNameMapper.toLegacy(moduleName),
             [relateName]: record?.attributes[relateName]
@@ -452,8 +450,8 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
         const relateField = this.getRelateFieldName();
         options.forEach((record) => {
             const moduleName = this.moduleNameMapper.toFrontend(record?.module_name ?? '');
-            const headerField = this.headerFields[moduleName] ?? 'name';
-            const subHeader = this.subHeaderFields[moduleName] ?? '';
+            const headerField = this.headerFields[moduleName] ?? {name: 'name'};
+            const subHeader = this.subHeaderFields[moduleName] ?? {name: ''};
             items.push({
                 id: record.id,
                 label: this.getLabel(record, headerField),
@@ -473,16 +471,13 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
 
     protected getSubLabel(record, field): string {
 
-        if (!field){
-            return '';
-        }
-
         const type = field.type ?? '';
         const key = field.name;
 
         if (type === 'enum') {
             const map = this.languages.getAppListString(field.definition.options);
-            return map[record[key]];
+            const index = record[key];
+            return map[index];
         }
 
         return record[key];
@@ -491,14 +486,14 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
 
     protected getLabel(record, field): string {
 
-        if (!field){
-            return '';
-        }
-
         if (field === 'name') {
             return record[field];
         }
 
-        return record[field.name] ?? '';
+        if (field.name){
+            return record[field.name];
+        }
+
+        return '';
     }
 }

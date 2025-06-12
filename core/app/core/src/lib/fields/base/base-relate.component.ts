@@ -37,6 +37,7 @@ import {FieldLogicManager} from '../field-logic/field-logic.manager';
 import {FieldLogicDisplayManager} from '../field-logic-display/field-logic-display.manager';
 import {SearchCriteria} from "../../common/views/list/search-criteria.model";
 import {StringMap} from "../../common/types/string-map";
+import {ObjectMap} from "../../common/types/object-map";
 
 @Component({template: ''})
 export class BaseRelateComponent extends BaseFieldComponent implements OnInit, OnDestroy {
@@ -44,8 +45,8 @@ export class BaseRelateComponent extends BaseFieldComponent implements OnInit, O
     options: AttributeMap[] = [];
     currentOptions: WritableSignal<AttributeMap[]> = signal([]);
     relateFieldName: string = '';
-    headerFields: StringMap = {};
-    subHeaderFields: StringMap = {};
+    headerFields: ObjectMap = {};
+    subHeaderFields: ObjectMap = {};
     dynamicOptionLabel: string = '';
     dynamicOptionSubLabel: string = '';
     dynamicOptionLabelContext: StringMap = {};
