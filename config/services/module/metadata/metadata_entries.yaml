@@ -16,6 +16,6 @@ parameters:
     modules:
       emails:
         entries:
-          composeView:
+          modalComposeView:
             type: record
-            legacyType: Compose
+            legacyType: ModalCompose

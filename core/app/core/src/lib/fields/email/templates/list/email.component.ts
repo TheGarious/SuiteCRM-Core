@@ -63,7 +63,7 @@ export class EmailListFieldsComponent extends BaseFieldComponent implements OnIn
             parentId: this.record.id,
             parentModule: this.record.module,
             module: 'emails',
-            metadataView: 'composeView',
+            metadataView: 'modalComposeView',
             closeConfirmationModal: true,
             closeConfirmationLabel: 'LBL_CLOSE_EMAIL_MODAL',
             detached: true,

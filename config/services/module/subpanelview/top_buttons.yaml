@@ -93,7 +93,7 @@ parameters:
       acl:
         - edit
       module: emails
-      metadataView: composeView
+      metadataView: modalComposeView
     SubPanelTopCreateNoteButton:
       key: create
       labelKey: LNK_NEW_NOTE
