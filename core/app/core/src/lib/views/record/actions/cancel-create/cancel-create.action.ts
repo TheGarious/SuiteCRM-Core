@@ -70,7 +70,7 @@ export class CancelCreateAction extends RecordActionHandler {
 
         let returnAction = store.params.return_action || '';
         let returnId = store.params.return_id || '';
-        let returnModule = store.getModuleName();
+        let returnModule = store.params.returnModule ?? store.getModuleName();
 
         if (store.params.return_module) {
             returnModule = this.moduleNameMapper.toFrontend(store.params.return_module);
@@ -83,9 +83,6 @@ export class CancelCreateAction extends RecordActionHandler {
 
         if (store.params.isConvert) {
             returnModule = this.moduleNameMapper.toFrontend(store.params.convertModule);
-        }
-
-        if (store.params.originalId){
             returnId = store.params.originalId;
         }
 
