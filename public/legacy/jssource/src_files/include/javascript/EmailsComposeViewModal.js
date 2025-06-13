@@ -142,7 +142,7 @@
         parentName: $(source).attr('data-module-name'),
         parentModule: $(source).attr('data-module'),
         module: 'emails',
-        metadataView: 'composeView',
+        metadataView: 'modalComposeView',
         closeConfirmationModal: true,
         closeConfirmationLabel: 'LBL_CLOSE_EMAIL_MODAL',
         detached: true,

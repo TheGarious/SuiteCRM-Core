@@ -57,7 +57,7 @@ if (ACLController::checkAccess('Emails', 'edit', true)) {
             'process' => 'record-modal',
             'params' => [
                 'module' => 'emails',
-                'metadataView' => 'composeView',
+                'metadataView' => 'modalComposeView',
                 'detached' => true,
                 'headerClass' => 'left-aligned-title',
                 'dynamicTitleKey' => 'LBL_EMAIL_MODAL_DYNAMIC_TITLE',
