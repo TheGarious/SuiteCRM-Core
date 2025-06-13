@@ -125,6 +125,19 @@ $dictionary['Email'] = array(
             'displayType' => 'html',
             'rows' => 5,
             'cols' => 150,
+            'logic' => [
+                'updateEmailSignature' => [
+                    'key' => 'updateEmailSignature',
+                    'modes' => ['edit', 'create'],
+                    'params' => [
+                        'fieldDependencies' => [
+                            'outbound_email_name'
+                        ],
+                        'fromField' => 'outbound_email_name',
+                        'signatureAttribute' => 'signature',
+                    ],
+                ]
+            ]
         ),
         'description' => array(
             'name' => 'description',
