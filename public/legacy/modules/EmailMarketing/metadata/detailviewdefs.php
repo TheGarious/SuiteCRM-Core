@@ -75,7 +75,7 @@ $viewdefs ['EmailMarketing'] = [
                                     [
                                         'class' => 'd-flex align-items-center',
                                         'labelKey' => 'LBL_DISPLAYING_TEST_EMAIL_MARKETING_DATA',
-                                        'labelClass' => 'd-inline-block ml-1',
+                                        'labelClass' => 'd-inline-block ml-1 text-wrap',
                                     ],
                                 ]
                             ],
