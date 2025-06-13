@@ -129,8 +129,14 @@ $layout_defs['EmailMarketing'] = [
             'get_subpanel_data' => "function:trackLogEntries",
             'function_parameters' => [
                 0 => 'link',
+                'params' => [
+                    'selectFields' => [
+                        'campaign_trkrs.tracker_url',
+                    ],
+                    'join' => 'INNER JOIN campaign_trkrs ON campaign_log.related_id = campaign_trkrs.id'
+                ]
             ],
-            'subpanel_name' => 'default',
+            'subpanel_name' => 'ForClickThru',
             'title_key' => 'LBL_LOG_ENTRIES_LINK_TITLE',
             'sort_order' => 'desc',
             'sort_by' => 'campaign_log.id'

@@ -135,6 +135,12 @@ $dictionary['CampaignLog'] = array('audited'=>false,
             'len' => '255',
             'source'=>'non-db',
         ),
+        'tracker_url' => array(
+            'name' => 'tracker_url',
+            'type' => 'varchar',
+            'len' => '255',
+            'source'=>'non-db',
+        ),
         'recipient_email' => array(
             'name' => 'recipient_email',
             'type' => 'varchar',

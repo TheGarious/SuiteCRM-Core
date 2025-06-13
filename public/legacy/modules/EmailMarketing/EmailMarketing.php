@@ -271,11 +271,14 @@ class EmailMarketing extends SugarBean
         $this->load_relationship('log_entries');
         $query_array = $this->log_entries->getQuery(true);
 
+
         foreach ($args as $arg) {
             if (isset($arg['group_by'])) {
                 $query_array['group_by'] = $arg['group_by'];
             }
         }
+
+        $params = $type['params'] ?? [];
 
         if (empty($type)) {
             $type[0] = 'targeted';
@@ -287,10 +290,24 @@ class EmailMarketing extends SugarBean
 
         $mkt_id = $this->db->quote($this->id);
         $query_array['select'] = "SELECT campaign_log.*, campaign_log.more_information as recipient_email";
+
+        if (!empty($params['selectFields'])){
+            foreach ($params['selectFields'] as $field) {
+                $query_array['select'] .= ', ' . $field;
+            }
+        }
+
+        if (!empty($params['join'])) {
+            $query_array['from'] .= ' ' . $params['join'];
+        }
+
         $query_array['where'] .= " AND campaign_log.archived=0 ";
 
         $typeClauses = [];
         foreach ($type as $item) {
+            if (is_array($item)){
+                continue;
+            }
             $typeClauses[] = " activity_type like '" . $db->quote($item) . "%'";
         }
 
@@ -308,7 +325,6 @@ class EmailMarketing extends SugarBean
 
         return (implode(" ", $query_array));
     }
-
 
     public function getQueueItems(...$args)
     {
