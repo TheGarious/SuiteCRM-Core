@@ -25,16 +25,20 @@
  * the words "Supercharged by SuiteCRM".
  */
 
-namespace App\FieldDefinitions\LegacyHandler\DefaultMapper;
+namespace App\Module\Service\Fields\OutboundEmail;
 
 use App\Engine\LegacyHandler\LegacyHandler;
 use App\Engine\LegacyHandler\LegacyScopeState;
-use App\FieldDefinitions\Service\VardefConfigMapperInterface;
+use App\Process\Entity\Process;
+use App\Process\Service\ProcessHandlerInterface;
 use App\UserPreferences\Service\UserPreferencesProviderInterface;
+use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-class OutboundEmailDefaultMapper extends LegacyHandler implements VardefConfigMapperInterface
+class InitOutboundEmailDefault extends LegacyHandler implements ProcessHandlerInterface
 {
+    protected const MSG_OPTIONS_NOT_FOUND = 'Process options are not defined';
+    public const PROCESS_TYPE = 'outbound-email-default';
 
     public function __construct(
         string $projectDir,
@@ -44,78 +48,101 @@ class OutboundEmailDefaultMapper extends LegacyHandler implements VardefConfigMa
         LegacyScopeState $legacyScopeState,
         RequestStack $requestStack,
         protected UserPreferencesProviderInterface $userPreferenceService,
-    )
-    {
+    ) {
         parent::__construct($projectDir, $legacyDir, $legacySessionName, $defaultSessionName, $legacyScopeState, $requestStack);
+    }
+
+
+    /**
+     * @inheritDoc
+     */
+    public function getProcessType(): string
+    {
+        return self::PROCESS_TYPE;
     }
 
     public function getHandlerKey(): string
     {
-        return 'outbound-email-vardef-mapper';
-    }
-
-        /**
-     * @inheritDoc
-     */
-    public function getKey(): string
-    {
-        return 'outbound-email-vardef-mapper';
+        return self::PROCESS_TYPE;
     }
 
     /**
      * @inheritDoc
      */
-    public function getModule(): string
+    public function requiredAuthRole(): string
     {
-        return 'default';
+        return 'ROLE_USER';
     }
 
     /**
      * @inheritDoc
-     * @throws \Exception
      */
-    public function map(array $vardefs): array
+    public function getRequiredACLs(Process $process): array
     {
+        return [];
+    }
 
-        foreach ($vardefs as $fieldName => $fieldDefinition) {
+    /**
+     * @inheritDoc
+     */
+    public function configure(Process $process): void
+    {
+        $process->setId(self::PROCESS_TYPE);
+        $process->setAsync(false);
+    }
 
-            $type = $fieldDefinition['type'] ?? '';
-            $module = $fieldDefinition['module'] ?? '';
+    /**
+     * @inheritDoc
+     */
+    public function validate(Process $process): void
+    {
+        $options = $process->getOptions();
 
-            if (empty($module)){
-                continue;
-            }
+        if (empty($options)) {
+            throw new InvalidArgumentException(self::MSG_OPTIONS_NOT_FOUND);
+        }
+    }
 
-            if ($type !== 'relate' || $module !== 'OutboundEmailAccounts') {
-                continue;
-            }
+    /**
+     * @inheritDoc
+     */
+    public function run(Process $process): void
+    {
+        $this->init();
 
-            $preferences = $this->userPreferenceService->getUserPreference('Emails')?->getItems() ?? [];
+        $preferences = $this->userPreferenceService->getUserPreference('Emails')?->getItems() ?? [];
 
-            if ($preferences === []) {
-                continue;
-            }
+        if ($preferences === []) {
+            $process->setStatus('success');
+            $process->setMessages([]);
+            $process->setData([]);
+        }
 
-            $id = $preferences['defaultOEAccount'] ?? '';
+        $id = $preferences['defaultOEAccount'] ?? '';
 
-            if ($id === '') {
-                continue;
-            }
+        if ($id === '') {
+            $process->setStatus('success');
+            $process->setMessages([]);
+            $process->setData([]);
+        }
 
-            $bean = $this->getBean('OutboundEmailAccounts', $id);
+        $bean = $this->getBean('OutboundEmailAccounts', $id);
 
-
-            $fieldDefinition['defaultValueObject'] = [
+        $responseData = [
+            'valueObject' => [
                 'id' => $id,
                 'smtp_from_name' => $bean->smtp_from_name,
                 'smtp_from_addr' => $bean->smtp_from_addr,
                 'from_addr' => $bean->smtp_from_name . ' ' . $bean->smtp_from_addr,
-            ];
+                'signature' => html_entity_decode($bean->signature ?? '')
+            ]
+        ];
 
-            $vardefs[$fieldName] = $fieldDefinition;
-        }
+        $process->setStatus('success');
+        $process->setMessages([]);
+        $process->setData($responseData);
 
-        return $vardefs;
+        $this->close();
     }
 
     protected function getBean(string $module, string $id): \SugarBean|bool
