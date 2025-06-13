@@ -133,6 +133,7 @@ class CampaignResponseByRecipientType extends LegacyHandler implements Statistic
         $result = $this->runQuery($query, $bean);
 
         $parsedResult = [];
+        $linkEmails = [];
         foreach ($activities as $activityKey => $activityLabel) {
             if (empty($parsedResult[$activityKey])) {
                 $parsedResult[$activityKey] = [
@@ -142,12 +143,30 @@ class CampaignResponseByRecipientType extends LegacyHandler implements Statistic
             }
 
             foreach ($result as $key => $row) {
+
+                $isLink = $row['activity_type'] === 'link';
+                $email = $row['more_information'];
+
+                if ($isLink && in_array($email, $linkEmails, true)) {
+                    continue;
+                }
+
                 if ($activityKey === $row['activity_type'] || str_starts_with($row['activity_type'], $activityKey)) {
                     $parsedResult[$activityKey] = $parsedResult[$activityKey] ?? [
                         'activity_type' => $activityKey,
                         'hits' => 0
                     ];
+
                     $hits = $parsedResult[$activityKey]['hits'] ?? 0;
+
+                    if ($isLink) {
+                        $linkEmails[] = $email;
+                    }
+
+                    if ($activityKey === 'targeted' && empty($row['hits'])){
+                        $row['hits'] = 1;
+                    }
+
                     $parsedResult[$activityKey]['hits'] = $hits + (int)($row['hits'] ?? 0);
                 }
             }
@@ -174,7 +193,7 @@ class CampaignResponseByRecipientType extends LegacyHandler implements Statistic
 
         $id = $db->quote($id);
 
-        $query['select'] = "SELECT activity_type, count(*) hits ";
+        $query['select'] = "SELECT *";
         $query['from'] = " FROM campaign_log ";
         $query['where'] = " WHERE campaign_id = '$id' AND archived=0 AND deleted=0 ";
 
@@ -191,8 +210,7 @@ class CampaignResponseByRecipientType extends LegacyHandler implements Statistic
             $query['where'] .= " AND is_test_entry = 0";
         }
 
-        $query['group_by'] = " GROUP BY  activity_type";
-        $query['order_by'] = " ORDER BY  activity_type";
+        $query['order_by'] = "";
 
         if ($emailMarketingId !== null) {
             $emailMarketingId = $db->quote($emailMarketingId);
