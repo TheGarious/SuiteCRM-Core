@@ -53,7 +53,8 @@ export class BaseFieldHandler<T extends BaseField> implements FieldHandler<T> {
         const defaultValue = field?.default ?? field?.definition?.default ?? field?.definition?.defaultValue ?? null;
         const initDefaultProcess = field?.initDefaultProcess ?? field?.definition?.initDefaultProcess ?? null;
 
-        if ((field.value === '' || isVoid(field.value)) && initDefaultProcess) {
+        if (!this.hasValue(field) && initDefaultProcess) {
+            field.defaultValueInitialized = true;
             this.callInitDefaultBackedProcess(initDefaultProcess, field, record);
             return;
         }
@@ -65,6 +66,17 @@ export class BaseFieldHandler<T extends BaseField> implements FieldHandler<T> {
         } else if (field.value === null) {
             field.value = '';
         }
+    }
+
+    hasValue(field: T): boolean {
+
+        let hasValue = false;
+        hasValue = hasValue || (field?.value !== '' && !isVoid(field.value));
+        hasValue = hasValue || !!(field?.valueList && field?.valueList?.length);
+        hasValue = hasValue || !!(field?.valueObject && Object.keys(field.valueObject).length);
+        hasValue = hasValue || !!(field?.valueObjectArray && field?.valueObjectArray?.length);
+
+        return hasValue;
     }
 
     initDefaultValueObject(field: T, record: Record): void {
@@ -83,6 +95,20 @@ export class BaseFieldHandler<T extends BaseField> implements FieldHandler<T> {
         }
     }
 
+    protected updateValueByType(field: Field, valueType: string, value: any, record: Record): void {
+        const validValueTypes = ['value', 'valueList', 'valueObject', 'valueObjectArray'];
+
+        if (!validValueTypes.includes(valueType)) {
+            return
+        }
+
+        field[valueType] = value;
+        field.initValueSignal();
+        field.formControl.setValue(value);
+        // re-validate the parent form-control after value update
+        record.formGroup.updateValueAndValidity({onlySelf: true, emitEvent: true});
+    }
+
     protected callInitDefaultBackedProcess(processType: string, field: T, record: Record): void {
 
         const options = {
@@ -94,27 +120,18 @@ export class BaseFieldHandler<T extends BaseField> implements FieldHandler<T> {
         field.loading.set(true)
 
         this.processService.submit(processType, options).pipe(take(1)).subscribe((result) => {
-
-            const value = result?.data?.value ?? null;
-            field.loading.set(false)
-
-            if (value === null) {
-                this.messages.addDangerMessageByKey("ERR_FIELD_LOGIC_BACKEND_CALCULATION");
-                return;
+            field.loading.set(false);
+            const data = result?.data ?? null;
+            if (data === null || !Object.keys(data).length) {
+                return
             }
-            this.updateValue(field, value.toString(), record);
-            field.defaultValueInitialized = true;
 
+            Object.keys(data).forEach(valueType => {
+                const value = data[valueType];
+                this.updateValueByType(field, valueType, value, record);
+                field.defaultValueInitialized = true;
+            });
         });
 
     }
-
-    protected updateValue(field: Field, value: string, record: Record): void {
-        field.value = value.toString();
-        field.initValueSignal();
-        field.formControl.setValue(field.value);
-        // re-validate the parent form-control after value update
-        record.formGroup.updateValueAndValidity({onlySelf: true, emitEvent: true});
-    }
-
 }

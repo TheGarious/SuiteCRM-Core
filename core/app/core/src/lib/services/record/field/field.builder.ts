@@ -198,6 +198,7 @@ export class FieldBuilder {
         }
         field.metadata = metadata;
         field.definition = definition;
+        field.initDefaultProcess = viewField?.initDefaultProcess ?? definition?.initDefaultProcess ?? '';
 
         if (viewField?.lineItems) {
             field.definition.lineItems = viewField.lineItems;
