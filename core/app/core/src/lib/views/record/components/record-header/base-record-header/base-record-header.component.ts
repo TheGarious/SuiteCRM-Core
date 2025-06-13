@@ -173,8 +173,4 @@ export class BaseRecordHeaderComponent implements OnInit, OnDestroy {
             }
         }
     }
-
-    showBackButton(): boolean {
-        return this.recordViewStore.showBackButton();
-    }
 }
