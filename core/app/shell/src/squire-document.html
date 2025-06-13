@@ -79,6 +79,17 @@
     };
 
     editor = new Squire(document.getElementById('editorContainer'), defaults);
+
+    var clickFocusListener = function ($event) {
+        if ($event.target === $event.currentTarget) {
+            editor.focus();
+        }
+    };
+    document.getElementsByTagName('html')[0].addEventListener('click', clickFocusListener);
+
+    var removeClickFocusEventListener = function() {
+        document.getElementsByTagName('html')[0].removeEventListener('click',clickFocusListener);
+    };
 </script>
 </body>
 </html>
