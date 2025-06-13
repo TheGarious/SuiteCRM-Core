@@ -340,8 +340,19 @@ export class RelateEditFieldComponent extends BaseRelateComponent implements Aft
             this.selectedValue = {...other, id: id, [relateName]: relateValue};
         }
 
-        this.options = [this.selectedValue];
-        if (this.selectedValue !== null) {
+
+        if (this.selectedValue === null) {
+            return;
+        }
+
+        const inOptions = (this.options ?? []).some((option) => {
+            return option['id'] === id;
+        });
+
+        if (!inOptions) {
+            const options = this.options ?? [];
+            options.push(this.selectedValue);
+            this.options = options;
             this.currentOptions.set(this.options)
         }
     }
@@ -447,8 +458,8 @@ export class RelateEditFieldComponent extends BaseRelateComponent implements Aft
             criteria.preset.params.module = filter.preset.params?.module ?? this.module;
         }
 
-        if (filter?.attributes ?? false){
-            if (criteria?.preset ?? false){
+        if (filter?.attributes ?? false) {
+            if (criteria?.preset ?? false) {
                 Object.keys(filter.attributes).forEach((key) => {
                     criteria.preset.params[key] = this.record.attributes[filter.attributes[key]];
                 });
