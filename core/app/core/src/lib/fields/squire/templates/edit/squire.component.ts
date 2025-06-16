@@ -153,7 +153,7 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
         this.value = newValue;
         this.field.value = newValue;
 
-        if (this.editorMode() === 'code'){
+        if (this.editorMode() === 'code') {
             this.setMonacoEditor(newValue);
         }
 
@@ -165,15 +165,15 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
     }
 
     updateFieldValue(value): void {
-        this.field.formControl.setValue(value);
+        this.setFormControlValue(value);
     }
 
     setMonacoEditor(value: string): void {
-        if ((this.monacoEditor?.initialised ?? false) === false){
+        if ((this.monacoEditor?.initialised ?? false) === false) {
             return;
         }
 
-        if (this.monacoEditor.editor.getValue() === value){
+        if (this.monacoEditor.editor.getValue() === value) {
             return;
         }
 
@@ -971,7 +971,7 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
 
         this.editor.setHTML(this?.value ?? '');
         this.editor.addEventListener('input', (e: Event) => {
-            this.field.formControl.setValue(this.editor.getHTML());
+            this.setFormControlValue(this.editor.getHTML())
         });
         this.editor.addEventListener('pathChange', (e: Event) => {
             e.stopPropagation();
