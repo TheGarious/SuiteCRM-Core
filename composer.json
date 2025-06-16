@@ -54,6 +54,7 @@
     "javanile/php-imap2": "^0.1.10",
     "jeroendesloovere/vcard": "^1.7",
     "justinrainbow/json-schema": "^5.2",
+    "league/flysystem-aws-s3-v3": "^3.29",
     "league/flysystem-bundle": "^3.4",
     "league/oauth2-client": "^2.6",
     "league/oauth2-server": "^8.4",
