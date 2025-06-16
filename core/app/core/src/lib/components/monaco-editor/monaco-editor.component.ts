@@ -95,7 +95,7 @@ export class MonacoEditorComponent {
     }
 
     protected loadMonacoScripts(): Observable<any> {
-        const monacoPath = window.location.origin + window.location.pathname + 'dist/mona/min/vs';
+        const monacoPath = window.location.origin + window.location.pathname + 'dist/mona/vs';
 
         const loader = new ReplaySubject<any>(1);
 

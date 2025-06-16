@@ -53,7 +53,7 @@
               },
               {
                 "glob": "**/*",
-                "input": "node_modules/monaco-editor/",
+                "input": "node_modules/monaco-editor/min/",
                 "output": "/mona/"
               },
               {
