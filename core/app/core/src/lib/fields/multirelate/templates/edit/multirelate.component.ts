@@ -192,7 +192,7 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
         this.placeholderLabel = this.languages.getAppString('LBL_SELECT_ITEM') || '';
         this.selectedItemsLabel = this.languages.getAppString('LBL_ITEMS_SELECTED') || '';
         this.emptyFilterLabel = computed(() => {
-            if (!this.loading()){
+            if (!this.loading()) {
                 return this.languages.getAppString('ERR_SEARCH_NO_RESULTS') || '';
             }
 
@@ -315,7 +315,7 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
             return;
         }
 
-        this.selectedValues.push(newItem)
+        this.selectedValues = [...this.selectedValues ?? [], newItem]
 
         this.addCurrentlySelectedToOptions(this.options);
     }
@@ -352,7 +352,7 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
         const visibleOptions = this?.tag?.visibleOptions() ?? [];
         const selected = this?.selectedValues ?? [];
         let selectedValuesKeys = [];
-        if (selected.length){
+        if (selected.length) {
             selectedValuesKeys = selected.map(item => item.id);
         }
 
@@ -387,7 +387,7 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
             criteria.preset.params.module = this.module;
         }
 
-        if (filter?.attributes ?? false){
+        if (filter?.attributes ?? false) {
             Object.keys(filter.attributes).forEach((key) => {
                 criteria.preset.params[key] = this.record.attributes[filter.attributes[key]];
             })
@@ -437,7 +437,7 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
         let records: Record[] = [];
 
         data.records.some(rec => {
-            if (ids[rec.id]){
+            if (ids[rec.id]) {
                 records.push(rec);
             }
         });
@@ -490,7 +490,7 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
             return record[field];
         }
 
-        if (field.name){
+        if (field.name) {
             return record[field.name];
         }
 
