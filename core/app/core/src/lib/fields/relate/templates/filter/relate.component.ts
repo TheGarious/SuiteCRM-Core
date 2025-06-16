@@ -377,7 +377,8 @@ export class RelateFilterFieldComponent extends BaseRelateComponent {
             return;
         }
 
-        this.selectedValues.push(newItem)
+        this.selectedValues = [...this.selectedValues ?? [], newItem];
+
         this.addCurrentlySelectedToOptions(this.options);
 
         this.onAdd();
