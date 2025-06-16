@@ -750,6 +750,7 @@ $viewdefs ['EmailMarketing'] = [
                     'asyncProcess' => true,
                     'params' => [
                         'queryParams' => [
+                            'returnModule' => 'campaigns',
                             'status' => 'draft',
                             'queueing_status' => 'not_started',
                             'has_test_data' => '0'
