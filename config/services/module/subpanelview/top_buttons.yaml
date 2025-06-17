@@ -2,7 +2,7 @@ parameters:
   module.subpanel.top_buttons:
     SubPanelTopSelectButton:
       key: select
-      labelKey: LBL_LINK
+      labelKey: LBL_LINK_UNLINK
       action: select
       modes:
         - list
