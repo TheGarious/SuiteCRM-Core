@@ -247,7 +247,7 @@ class UnlinkService
     protected function unlinkRecord($bean, $beanName, $linkField, $record, $linkedId): array
     {
         $ids = $bean->$linkField->get();
-        if (!in_array($linkedId, $ids, true)) {
+        if (!in_array($linkedId, $ids)) {
             return [
                 'success' => false,
                 'message' => 'LBL_NOT_LINKED'
