@@ -314,7 +314,12 @@ export class RelateFilterFieldComponent extends BaseRelateComponent {
     protected showSelectModal(): void {
         const modal = this.modalService.open(RecordListModalComponent, {size: 'xl', scrollable: true});
 
+        const selectedIds = this.idField.valueList.join(',');
+
         modal.componentInstance.module = this.getRelatedModule();
+        modal.componentInstance.multiSelect = true;
+        modal.componentInstance.multiSelectButtonLabel = 'LBL_SAVE';
+        modal.componentInstance.selectedValues = selectedIds;
 
         modal.result.then((data: RecordListModalResult) => {
 
@@ -322,15 +327,27 @@ export class RelateFilterFieldComponent extends BaseRelateComponent {
                 return;
             }
 
-            const record = this.getSelectedRecord(data);
+            const records = this.getSelectedRecords(data);
+            const allRecords = data.records ?? [];
+            const selected = [];
 
-            const found = this.field.valueObjectArray.find(element => element.id === record.id);
+            records.forEach((record) => {
+                selected.push(record.id);
+                const found = this.field.valueObjectArray.find(element => element.id === record.id);
 
-            if (found) {
-                return;
-            }
+                if (found) {
+                    return;
+                }
 
-            this.setItem(record);
+                this.setItem(record);
+            });
+
+            allRecords.forEach((record) => {
+                if (!selected.includes(record.id)) {
+                    this.selectedValues = this.selectedValues.filter((value) => value.id !== record.id);
+                }
+            });
+
             this.tag.updateModel(this.selectedValues);
         });
     }
@@ -339,25 +356,22 @@ export class RelateFilterFieldComponent extends BaseRelateComponent {
      * Get Selected Record
      *
      * @param {object} data RecordListModalResult
-     * @returns {object} Record
      */
-    protected getSelectedRecord(data: RecordListModalResult): Record {
-        let id = '';
+    protected getSelectedRecords(data: RecordListModalResult) {
+        let ids = [];
         Object.keys(data.selection.selected).some(selected => {
-            id = selected;
-            return true;
+            ids[selected] = selected;
         });
 
-        let record: Record = null;
+        let records: Record[] = [];
 
         data.records.some(rec => {
-            if (rec && rec.id === id) {
-                record = rec;
-                return true;
+            if (ids[rec.id]) {
+                records.push(rec);
             }
         });
 
-        return record;
+        return records;
     }
 
     /**
