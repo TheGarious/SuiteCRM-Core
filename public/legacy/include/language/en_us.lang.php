@@ -4081,11 +4081,15 @@ $app_list_strings['sort_order']['desc'] = 'Descending';
 
 // Labels used by subpanel unlink relationship process
 $app_strings['LBL_LINK'] = 'Link';
+$app_strings['LBL_LINK_UNLINK'] = 'Link / Unlink';
+$app_strings['LBL_SAVE'] = 'Save';
 $app_strings['LBL_UNLINK_RECORD'] = 'Unlink Record';
 $app_strings['LBL_EDIT_RECORD'] = 'Edit Record';
 $app_strings['LBL_UNLINK_RELATIONSHIP_CONFIRM'] = 'Are you sure you want to unlink this record? Only the relationship will be unlinked. The record will not be deleted.';
 $app_strings['LBL_UNLINK_RELATIONSHIP_SUCCESS'] = 'Record unlinked successfully.';
 $app_strings['LBL_UNLINK_RELATIONSHIP_FAILED'] = 'There was an error unlinking this record.';
+$app_strings['LBL_ALL_RECORDS_UNLINKED'] = 'All records unlinked successfully';
+$app_strings['LBL_SOME_RECORDS_UNLINKED_FAILED'] = 'There was an issue unlinking some records. See the logs for more.';
 $app_strings['LBL_LINK_RELATIONSHIP_SUCCESS'] = 'Relationship linked successfully.';
 $app_strings['LBL_LINK_RELATIONSHIP_FAILED'] = 'There was an error linking this Relationship.';
 $app_strings['LBL_MODULE_NOT_FOUND'] = 'Module not found.';
