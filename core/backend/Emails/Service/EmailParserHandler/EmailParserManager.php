@@ -36,7 +36,7 @@ class EmailParserManager
     ) {
     }
 
-    public function parse($string, $bean, $module): string {
+    public function parse($string, $bean, $module, $replaceEmpty = true): string {
 
         $parsers = $this->emailParserRegistry->getParsers($module) ?? [];
 
@@ -44,7 +44,7 @@ class EmailParserManager
             if (!$parser->applies()) {
                 continue;
             }
-            $string = $parser->parse($string, $bean);
+            $string = $parser->parse($string, $bean, $replaceEmpty);
         }
 
         return $string;

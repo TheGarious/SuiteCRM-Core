@@ -38,5 +38,5 @@ interface EmailParserInterface
 
     public function applies(): bool;
 
-    public function parse(string $string, \SugarBean $bean): string;
+    public function parse(string $string, \SugarBean $bean, bool $replaceEmpty = true): string;
 }

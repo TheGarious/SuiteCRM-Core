@@ -83,7 +83,7 @@ class LegacyEmailParser extends LegacyHandler implements EmailParserInterface
         return self::KEY;
     }
 
-    public function parse($string, $bean): string
+    public function parse($string, $bean, bool $replaceEmpty = true): string
     {
         $siteUrl = $this->getSiteUrl();
 
@@ -105,7 +105,7 @@ class LegacyEmailParser extends LegacyHandler implements EmailParserInterface
 
         require_once $this->legacyDir . '/modules/EmailTemplates/EmailTemplateParser.php';
 
-        return $this->useTemplateParser($bean, $siteUrl, $string);
+        return $this->useTemplateParser($bean, $siteUrl, $string, $replaceEmpty);
     }
 
     protected function getSiteUrl()
@@ -119,7 +119,7 @@ class LegacyEmailParser extends LegacyHandler implements EmailParserInterface
      * @param $description_html
      * @return string
      */
-    public function useTemplateParser(\SugarBean|bool $bean, string $siteUrl, $description_html): string
+    public function useTemplateParser(\SugarBean|bool $bean, string $siteUrl, $string, $replaceEmpty): string
     {
         return (new \EmailTemplateParser(
             null,
@@ -127,7 +127,7 @@ class LegacyEmailParser extends LegacyHandler implements EmailParserInterface
             $bean,
             $siteUrl,
             null
-        ))->getParsedValue($description_html);
+        ))->getParsedValue($string, $replaceEmpty);
     }
 
     protected function buildSurveyUrl($string, $bean): string {

@@ -258,16 +258,26 @@ class EmailProcessProcessor extends LegacyHandler
 
         $this->init();
 
-        if (!empty($attributes['survey_id'])) {
-            $survey = \BeanFactory::getBean('Surveys', $attributes['survey_id']);
-            $attributes = $this->parseBean($attributes, $survey);
+        $isSurvey = !empty($attributes['survey_id']);
+        $hasParent = isset($attributes['parent_type'], $attributes['parent_id']);
+
+        $replaceEmpty = true;
+
+        if ($isSurvey && $hasParent) {
+            $replaceEmpty = false;
         }
 
-        if (!isset($attributes['parent_type'], $attributes['parent_id'])) {
+        if ($isSurvey) {
+            $survey = \BeanFactory::getBean('Surveys', $attributes['survey_id']);
+            $attributes = $this->parseBean($attributes, $survey, $replaceEmpty);
+        }
+
+        if (!$hasParent) {
             $this->close();
             $emailRecord->setAttributes($attributes);
             return $emailRecord;
         }
+
 
         $bean = \BeanFactory::getBean($attributes['parent_type'], $attributes['parent_id']);
 
@@ -280,14 +290,29 @@ class EmailProcessProcessor extends LegacyHandler
         return $emailRecord;
     }
 
-    protected function parseBean(array $attributes, \SugarBean|bool $bean): array
+    protected function parseBean(array $attributes, \SugarBean|bool $bean, bool $replaceEmpty = true): array
     {
         if ($bean === false) {
             return $attributes;
         }
-        $attributes['name'] = $this->parserManager->parse($attributes['name'] ?? '', $bean, 'default');
-        $attributes['description_html'] = $this->parserManager->parse($attributes['description_html'] ?? '', $bean, 'default');
-        $attributes['description'] = $this->parserManager->parse($attributes['description'] ?? '', $bean, 'default');
+        $attributes['name'] = $this->parserManager->parse(
+            $attributes['name'] ?? '',
+            $bean,
+            'default',
+            $replaceEmpty
+        );
+        $attributes['description_html'] = $this->parserManager->parse(
+            $attributes['description_html'] ?? '',
+            $bean,
+            'default',
+            $replaceEmpty
+        );
+        $attributes['description'] = $this->parserManager->parse(
+            $attributes['description'] ?? '',
+            $bean,
+            'default',
+            $replaceEmpty
+        );
 
         return $attributes;
     }
