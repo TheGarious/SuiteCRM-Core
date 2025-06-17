@@ -69,6 +69,7 @@ export class RecordListModalComponent implements OnInit, OnDestroy {
     @Input() filterAdapter: ModalRecordFilterAdapter = null;
     @Input() presetFilter: SavedFilter = {} as SavedFilter;
     @Input() showFilter: boolean = true;
+    @Input() selectedValues: string = '';
 
     loading$: Observable<boolean>;
 
@@ -174,6 +175,14 @@ export class RecordListModalComponent implements OnInit, OnDestroy {
 
     protected initStore(): void {
         this.store.init(this.module, this.parentModule ?? '', this.presetFilter);
+
+        if (this.selectedValues) {
+            const selected = this.selectedValues.split(',');
+            Object.values(selected).forEach((record) => {
+                this.store.recordList.toggleSelection(record, false)
+            });
+        }
+
         this.loading$ = this.store.metadataLoading$;
 
         this.subs.push(this.store.linkClicked$.pipe(distinctUntilChanged(), skip(1)).subscribe(clicked => {

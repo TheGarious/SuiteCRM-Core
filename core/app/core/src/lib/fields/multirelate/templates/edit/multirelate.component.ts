@@ -248,7 +248,7 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
         this.field.valueObjectArray = this.selectedValues ?? [];
         this.field.valueList = this.field.valueObjectArray.map(valueElement => valueElement.id);
         this.field.value = (this?.selectedValues ?? []).map(item => item.id).join(',') ?? '';
-        this.field.formControl.setValue(this.selectedValues);
+        this.setFormControlValue(this.field.value);
     }
 
     /**
@@ -263,8 +263,9 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
         modal.componentInstance.module = this.getRelatedModule();
         modal.componentInstance.presetFilter = filter;
         modal.componentInstance.multiSelect = true;
-        modal.componentInstance.multiSelectButtonLabel = 'LBL_LINK';
+        modal.componentInstance.multiSelectButtonLabel = 'LBL_SAVE';
         modal.componentInstance.showFilter = this.field?.definition?.showFilter ?? true;
+        modal.componentInstance.selectedValues = this.field.value;
 
         modal.result.then((data: RecordListModalResult) => {
 
@@ -273,8 +274,11 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
             }
 
             const records = this.getSelectedRecords(data);
+            const allRecords = data?.records ?? [];
+            const selected = [];
 
             records.forEach((record) => {
+                selected.push(record.id);
                 const found = this.field.valueObjectArray.find(element => element.id === record.id);
 
                 if (found) {
@@ -282,6 +286,12 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
                 }
 
                 this.setItem(record);
+            });
+
+            allRecords.forEach((record) => {
+                if (!selected.includes(record.id)) {
+                    this.selectedValues = this.selectedValues.filter((value) => value.id !== record.id);
+                }
             });
 
             this.onAdd();
