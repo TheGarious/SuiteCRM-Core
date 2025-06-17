@@ -34,6 +34,7 @@ export enum SelectionStatus {
 export interface RecordSelection {
     all: boolean;
     status: SelectionStatus;
+    touched?: { [key: string]: string };
     selected: { [key: string]: string };
     count: number;
 }

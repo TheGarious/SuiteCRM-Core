@@ -87,6 +87,7 @@ const initialSelection: RecordSelection = {
     all: false,
     status: SelectionStatus.NONE,
     selected: {},
+    touched: {},
     count: 0
 };
 
@@ -691,8 +692,12 @@ export class RecordListStore implements StateStore, DataSource<Record>, Selectio
         });
     }
 
-    toggleSelection(id: string): void {
+    toggleSelection(id: string, touched = true): void {
         const selection = deepClone(this.internalState.selection);
+
+        if (touched) {
+            selection.touched[id] = id;
+        }
 
         if (selection.selected[id]) {
             delete selection.selected[id];

@@ -71,10 +71,19 @@ export class SubpanelSelectAction extends SubpanelActionHandler {
         const modal = this.modalService.open(RecordListModalComponent, {size: 'xl', scrollable: true});
 
         const module = data.module
+        const selectedIds = [];
+
+        Object.entries(data.store.recordList.records).forEach(([key, record]) => {
+            selectedIds.push(record.id);
+        });
+
+        const selectedValues = selectedIds.join(',');
+
         modal.componentInstance.module = module;
         modal.componentInstance.parentModule = data?.parentModule ?? '';
         modal.componentInstance.multiSelect = true;
-        modal.componentInstance.multiSelectButtonLabel = 'LBL_LINK';
+        modal.componentInstance.multiSelectButtonLabel = 'LBL_SAVE';
+        modal.componentInstance.selectedValues = selectedValues;
 
         modal.result.then((result: RecordListModalResult) => {
 
@@ -91,24 +100,30 @@ export class SubpanelSelectAction extends SubpanelActionHandler {
                 if (collectionList && collectionList?.[module]?.get_subpanel_data) {
                     linkField = collectionList[module].get_subpanel_data;
                 }
-                const input = {
-                    action: 'record-select',
-                    module: data.store.parentModule,
-                    id: data.store.parentId || '',
-                    payload: {
-                        baseModule: data.parentModule,
-                        baseRecordId: data.parentId,
-                        linkField,
-                        relateModule: module,
-                        relateRecordIds: recordIds
-                    },
-                } as AsyncActionInput
 
-                this.runAsyncAction(input, data);
+                if (selectedValues !== recordIds.join(',')) {
+                    this.runLinkRecords(data, module, linkField, recordIds);
+                }
+
+                const unlinkIds = this.getUnlinkedIds(result, selectedValues);
+
+                if (unlinkIds && unlinkIds.length > 0) {
+                    this.runUnlinkRecords(data, module, linkField, unlinkIds);
+                }
             },
-            () => {
-            }
         );
+    }
+
+
+    getUnlinkedIds(result: RecordListModalResult, selectedValues: string): string[] {
+        const ids = [];
+        Object.keys(result.selection.touched).forEach((id) => {
+            if (selectedValues.includes(id) && !result.selection.selected[id]) {
+                ids.push(id);
+            }
+        });
+
+        return ids;
     }
 
 
@@ -129,16 +144,53 @@ export class SubpanelSelectAction extends SubpanelActionHandler {
         return ids;
     }
 
-    protected runAsyncAction(asyncData: AsyncActionInput, data: SubpanelActionData): void {
-        const actionName = 'record-select';
-
+    protected runAsyncAction(actionName: string, asyncData: AsyncActionInput, data: SubpanelActionData): void {
         this.message.removeMessages();
-
 
         this.asyncActionService.run(actionName, asyncData).pipe(take(1)).subscribe(() => {
             data.store.load(false).pipe(take(1)).subscribe();
             data.store.loadAllStatistics(false).pipe(take(1)).subscribe();
         });
+    }
+
+    protected runLinkRecords(data: SubpanelActionData, module: string, linkField, records: Record[]) {
+
+        const actionName = 'record-select';
+
+        const input = {
+            action: actionName,
+            module: data.store.parentModule,
+            id: data.store.parentId || '',
+            payload: {
+                baseModule: data.parentModule,
+                baseRecordId: data.parentId,
+                linkField,
+                relateModule: module,
+                relateRecordIds: records,
+            },
+        } as AsyncActionInput
+
+        this.runAsyncAction(actionName, input, data);
+    }
+
+    protected runUnlinkRecords(data: SubpanelActionData, module: string, linkField, records: string[]) {
+
+        const actionName = 'record-unlink';
+
+        const input = {
+            action: actionName,
+            module: data.store.parentModule,
+            id: data.store.parentId || '',
+            payload: {
+                baseModule: data.parentModule,
+                baseRecordId: data.parentId,
+                linkField,
+                relateModule: module,
+                relateRecordIds: records,
+            },
+        } as AsyncActionInput
+
+        this.runAsyncAction(actionName, input, data);
     }
 
 }
