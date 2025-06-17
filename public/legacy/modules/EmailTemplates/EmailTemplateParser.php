@@ -135,13 +135,17 @@ class EmailTemplateParser
      *
      * @return string
      */
-    public function getParsedValue($attributeValue)
+    public function getParsedValue($attributeValue, $replaceEmpty = true)
     {
         $matches = preg_match_all(static::PATTERN, $attributeValue, $variables);
 
         if ($matches !== 0) {
             foreach ($variables[0] as $variable) {
-                $attributeValue = str_replace($variable, $this->getValueFromBean($variable), $attributeValue);
+                $beanValue = $this->getValueFromBean($variable);
+                if ($beanValue === '' && !$replaceEmpty){
+                    continue;
+                }
+                $attributeValue = str_replace($variable, $beanValue, $attributeValue);
             }
         }
 
