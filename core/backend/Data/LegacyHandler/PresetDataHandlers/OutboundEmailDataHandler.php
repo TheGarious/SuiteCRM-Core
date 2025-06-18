@@ -65,21 +65,21 @@ class OutboundEmailDataHandler extends BaseListDataHandler implements ListDataHa
         array  $criteria = [],
         int    $offset = -1,
         int    $limit = -1,
-        array  $sort = []
+        array  $sort = [],
+        string $type = 'advanced'
     ): ListData
     {
         $currentUser = $this->userHandler->getCurrentUser();
 
         $bean = $this->getBean($module);
 
-        $legacyListView = $this->getLegacyListView($bean);
-        $queryFields = $this->buildFilterFields($bean);
+        $legacyCriteria = $this->mapCriteria($criteria, $sort, $type);
 
-        $filter_fields = $legacyListView->lv->setupFilterFields($queryFields);
+        [$params, $where, $filter_fields] = $this->prepareQueryData($type, $bean, $legacyCriteria);
 
-        $where = $this->getWhere($currentUser);
+        $where = $this->getWhere($currentUser, $where);
 
-        $resultData = $this->getListDataPort()->get($bean, $where, $offset, $limit, $filter_fields, []);
+        $resultData = $this->getListDataPort()->get($bean, $where, $offset, $limit, $filter_fields, $params);
 
         return $this->buildListData($resultData);
     }
@@ -102,7 +102,7 @@ class OutboundEmailDataHandler extends BaseListDataHandler implements ListDataHa
         return $listData;
     }
 
-    protected function getWhere(?\SugarBean $currentUser): string
+    protected function getWhere(?\SugarBean $currentUser, string $where): string
     {
         if (!is_admin($currentUser)){
             return '';
@@ -110,6 +110,8 @@ class OutboundEmailDataHandler extends BaseListDataHandler implements ListDataHa
 
         $showGroupRecords = "(type IS NULL) OR (type != 'user' ) OR ";
 
-        return " $showGroupRecords (type = 'user' AND user_id = '".$currentUser?->db->quote($currentUser?->id)."') ";
+        $where .= " AND ($showGroupRecords (type = 'user' AND user_id = '".$currentUser?->db->quote($currentUser?->id)."')) ";
+
+        return $where;
     }
 }
