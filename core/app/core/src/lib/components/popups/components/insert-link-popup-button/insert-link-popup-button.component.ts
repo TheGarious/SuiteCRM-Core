@@ -51,6 +51,7 @@ export class InsertLinkPopupButtonComponent implements OnInit, OnDestroy {
 
     @Input('config') config: DropdownButtonInterface;
     @Input() openStatusEventEmitter: EventEmitter<boolean>;
+    @Input() linkEventEmitter: EventEmitter<string>;
     @Input() displayButton: WritableSignal<boolean> = signal(true);
     @Input() linkUrl: string = '';
     @Input() inputClass: string = 'form-control form-control-sm';
@@ -76,6 +77,10 @@ export class InsertLinkPopupButtonComponent implements OnInit, OnDestroy {
                 })
             });
         }
+
+        this.linkEventEmitter.subscribe((string) => {
+            this.linkUrl = string;
+        })
     }
 
     ngOnDestroy() {

@@ -576,7 +576,8 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
             metadata: {
                 openStatusEventEmitter: new EventEmitter(),
                 displayButton: signal(false),
-                linkURL: ''
+                linkURL: '',
+                linkEventEmitter: new EventEmitter()
             },
         } as DropdownButtonInterface;
 
@@ -600,6 +601,7 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
 
             this.styleSignal.set('link');
             insertLink.metadata.openStatusEventEmitter.emit(true);
+            insertLink.metadata.linkEventEmitter.emit(insertLink.metadata.linkURL);
         };
 
         insertLink.items = [
