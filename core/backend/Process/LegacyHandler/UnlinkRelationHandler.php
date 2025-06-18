@@ -115,7 +115,12 @@ class UnlinkRelationHandler extends LegacyHandler implements ProcessHandlerInter
         $payload = $options['payload'] ?? [];
         $baseModule = $payload['baseModule'] ?? '';
         $relateModule = $payload['recordModule'] ?? '';
-        $relateModuleIds = $payload['relateRecordIds'] ?? '';
+        $relateModuleIds = $payload['relateRecordIds'] ?? [];
+        $relateModuleId = $payload['relateRecordIds'] ?? '';
+
+        if (!empty($relateModuleId)){
+            $relateModuleIds = [...$relateModuleIds, $relateModuleId];
+        }
 
         $acls = [
             $baseModule => [
@@ -172,12 +177,16 @@ class UnlinkRelationHandler extends LegacyHandler implements ProcessHandlerInter
         }
 
         ['payload' => $payload] = $process->getOptions();
-        [
-            'baseModule' => $baseModule,
-            'baseRecordId' => $baseRecordId,
-            'linkField' => $linkField,
-            'relateRecordIds' => $relateRecordIds
-        ] = $payload;
+
+        $baseModule = $payload['baseModule'] ?? '';
+        $baseRecordId = $payload['baseRecordId'];
+        $linkField = $payload['linkField'] ?? '';
+        $relateRecordIds = $payload['relateRecordIds'] ?? [];
+        $relateRecordId = $payload['relateRecordId'] ?? '';
+
+        if (!empty($relateRecordId)){
+            $relateRecordIds = [...$relateRecordIds ?? [], $relateRecordId];
+        }
 
         if (empty($payload) || empty($baseModule) || empty($baseRecordId) || empty($linkField) || empty($relateRecordIds)) {
             throw new InvalidArgumentException(self::MSG_OPTIONS_NOT_FOUND);
@@ -195,17 +204,18 @@ class UnlinkRelationHandler extends LegacyHandler implements ProcessHandlerInter
         require_once 'include/portability/Services/Relationships/UnlinkService.php';
 
         ['payload' => $payload] = $process->getOptions();
-        [
-            'baseModule' => $baseModule,
-            'baseRecordId' => $baseRecordId,
-            'linkField' => $linkField,
-            'relateRecordIds' => $relateRecordIds
-        ] = $payload;
+
+        $baseModule = $payload['baseModule'] ?? '';
+        $baseRecordId = $payload['baseRecordId'];
+        $linkField = $payload['linkField'] ?? '';
+        $relateRecordIds = $payload['relateRecordIds'] ?? [];
+        $relateRecordId = $payload['relateRecordId'] ?? '';
+
         $baseModule = $this->moduleNameMapper->toLegacy($baseModule);
 
         $service = new UnlinkService();
 
-        $result = $service->run($baseModule, $baseRecordId, $linkField, $relateRecordIds);
+        $result = $service->run($baseModule, $baseRecordId, $linkField, $relateRecordId, $relateRecordIds);
 
         $process->setStatus('success');
         if ($result['success'] !== true) {

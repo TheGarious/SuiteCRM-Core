@@ -156,7 +156,7 @@ export class SubpanelLineActionsAdapter extends BaseActionsAdapter<SubpanelLineA
                 linkField,
                 recordModule: module,
                 relateModule: this.store.metadata.module,
-                relateRecordIds: [(context && context.record && context.record.id)] || [],
+                relateRecordId: (context && context.record && context.record.id) || '',
             }
         } as AsyncActionInput;
     }

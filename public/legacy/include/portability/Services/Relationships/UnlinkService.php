@@ -40,9 +40,13 @@ class UnlinkService
      * @param string $linkedId
      * @return array with feedback
      */
-    public function run(string $module, string $record, string $linkField, array $linkedIds): array
+    public function run(string $module, string $record, string $linkField, string $linkedId, array $linkedIds = []): array
     {
         global $beanList;
+
+        if (!empty($linkedId)) {
+            $linkedIds = [...$linkedIds ?? [], $linkedId];
+        }
 
         if (empty($record) || empty($linkField) || empty($linkedIds)) {
             return [
