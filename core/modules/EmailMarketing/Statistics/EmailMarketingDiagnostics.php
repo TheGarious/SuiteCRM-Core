@@ -126,14 +126,14 @@ class EmailMarketingDiagnostics extends LegacyHandler implements StatisticsProvi
         return $statistic;
     }
 
-    protected function getSetting(string $setting, array $params, mixed $default, bool $hasConfigValue): string
+    protected function getSetting(string $setting, array $params, string $defaultKey, mixed $default, bool $hasConfigValue): string
     {
         $value = $this->settingsProvider->get('massemailer', $setting);
 
         if ($value === null || $value === '') {
 
             if ($hasConfigValue) {
-                return $this->configHandler->getSystemConfig($setting)?->getValue() ?? $default;
+                return $this->configHandler->getSystemConfig($defaultKey)?->getValue() ?? $default;
             }
 
             $value = $default;
@@ -196,9 +196,10 @@ class EmailMarketingDiagnostics extends LegacyHandler implements StatisticsProvi
 
         foreach ($settings as $setting) {
             $key = $setting['key'] ?? '';
+            $defaultKey = $setting['defaultKey'] ?? '';
             $default = $setting['default'] ?? '';
             $hasConfig = $setting['hasConfig'] ?? true;
-            $value = $this->getSetting($key, $setting, $default, $hasConfig);
+            $value = $this->getSetting($key, $setting, $defaultKey, $default, $hasConfig);
 
             $result['fields'][$key] = [
                 'value' => $value,
