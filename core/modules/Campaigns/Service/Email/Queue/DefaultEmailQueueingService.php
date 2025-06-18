@@ -123,7 +123,7 @@ class DefaultEmailQueueingService implements EmailQueueingServiceInterface
         $batchSize = $this->settingsProvider->get('massemailer', 'campaign_emails_per_run');
 
         if ($batchSize === null || $batchSize === '') {
-            $batchSize = (int)($this->systemConfigHandler->getSystemConfig('emails_per_run')?->getValue() ?? 50);
+            $batchSize = (int)($this->systemConfigHandler->getSystemConfig('campaign_emails_per_run_default')?->getValue() ?? 50);
         }
 
         return (int)$batchSize;
@@ -134,7 +134,7 @@ class DefaultEmailQueueingService implements EmailQueueingServiceInterface
         $batchSize = $this->settingsProvider->get('massemailer', 'campaign_marketing_items_per_run');
 
         if ($batchSize === null || $batchSize === '') {
-            $batchSize = (int)($this->systemConfigHandler->getSystemConfig('campaign_marketing_items_per_run')?->getValue() ?? 3);
+            $batchSize = (int)($this->systemConfigHandler->getSystemConfig('campaign_marketing_items_per_run_default')?->getValue() ?? 3);
         }
 
         return (int)$batchSize;

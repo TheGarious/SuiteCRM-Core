@@ -59,4 +59,4 @@ parameters:
       max_cron_runtime: true
       min_cron_interval: true
     cron_class: true
-    emails_per_run: true
+    campaign_emails_per_run_default: true
