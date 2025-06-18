@@ -117,12 +117,12 @@ $viewdefs ['EmailMarketing'] = [
                                             'settings' => [
                                                 [
                                                     'key' => 'campaign_marketing_items_per_run',
-                                                    'default' => 3,
+                                                    'defaultKey' => 'campaign_marketing_items_per_run_default',
                                                     'type' => 'int'
                                                 ],
                                                 [
                                                     'key' => 'campaign_emails_per_run',
-                                                    'default' => 50,
+                                                    'defaultKey' => 'campaign_emails_per_run_default',
                                                     'type' => 'int'
                                                 ],
                                                 [
