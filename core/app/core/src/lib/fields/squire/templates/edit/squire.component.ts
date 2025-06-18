@@ -1200,6 +1200,9 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
     initIframeEditor(iframe) {
         this.setEditor(iframe.contentWindow.editor);
         this.initEditor();
+        iframe.contentDocument.addEventListener('click', () => {
+            this.editor.focus();
+        });
         this.initHtml()
         this.calculateActiveButtons();
     }
