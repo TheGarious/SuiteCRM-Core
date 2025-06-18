@@ -24,8 +24,17 @@
  * the words "Supercharged by SuiteCRM".
  */
 
-import {Component, EventEmitter, Input, OnDestroy, OnInit, signal, ViewChild, WritableSignal} from '@angular/core';
-import {ButtonInterface} from '../../../../common/components/button/button.model';
+import {
+    Component,
+    EventEmitter,
+    Input,
+    OnDestroy,
+    OnInit,
+    signal,
+    ViewChild,
+    WritableSignal
+} from '@angular/core';
+import {ButtonInterface, popoverValidation} from '../../../../common/components/button/button.model';
 import {Subscription} from "rxjs";
 import {NgbPopover} from "@ng-bootstrap/ng-bootstrap";
 
@@ -44,6 +53,8 @@ export class PopupButtonComponent implements OnInit, OnDestroy {
     @Input() popoverClass: string = 'popover-wrapper';
     @Input() openStatusEventEmitter: EventEmitter<boolean>;
     @Input() displayButton: WritableSignal<boolean> = signal(true);
+    @Input() dynamicClass: WritableSignal<string> = signal('');
+    @Input() showPopup: popoverValidation = () => {return true};
 
     @ViewChild('popover') popover: NgbPopover;
 
@@ -82,6 +93,7 @@ export class PopupButtonComponent implements OnInit, OnDestroy {
             icon: this.icon,
             klass: this.klass,
             titleKey: this.titleKey,
+            dynamicClass: this.dynamicClass,
         } as ButtonInterface;
     }
 

@@ -39,6 +39,8 @@
                 <ng-container *ngIf="item?.value?.type === 'popup-button-list' && item?.value.items?.length">
                     <scrm-popup-button [icon]="item?.value?.icon"
                                        [klass]="item?.value?.klass"
+                                       [dynamicClass]="item.value.dynamicClass"
+                                       [showPopup]="item.value.showPopup"
                                        [popoverClass]="''"
                                        [titleKey]="item.value.titleKey"
                                        placement="bottom"
@@ -54,7 +56,9 @@
 
                 <ng-container *ngIf="item?.value?.type === 'popup-button-grid' && item?.value?.sections">
                     <scrm-popup-button [icon]="item?.value?.icon"
+                                       [dynamicClass]="item.value.dynamicClass"
                                        [klass]="item?.value?.klass"
+                                       [showPopup]="item?.value?.showPopup"
                                        [popoverClass]="''"
                                        [titleKey]="item.value.titleKey"
                                        placement="bottom"
@@ -63,9 +67,9 @@
                         <div popup-content class="grid-popup-body container-popover scrollbar-thin">
                             <div *ngFor="let section of item?.value?.sections | keyvalue"
                                  [ngClass]="section?.value?.klass"
-                                 class="d-flex flex-wrap squire-editor-popup-row button-row"
-                            >
-                                <div *ngFor="let sectionItem of section?.value.items" class="squire-editor-popup-col">
+                                 class="d-flex flex-wrap squire-editor-popup-row button-row">
+                                <div *ngFor="let sectionItem of section?.value.items"
+                                     class="squire-editor-popup-col">
                                     <scrm-button [config]="sectionItem"></scrm-button>
                                 </div>
                             </div>
@@ -129,7 +133,8 @@
          'max-height': maxHeight() ? maxHeight() : 'auto'
          }"
     >
-        <scrm-monaco-editor #monacoEditor style="height: 100%" (valueChange)="updateFieldValue($event)" [content]="field.value"></scrm-monaco-editor>
+        <scrm-monaco-editor #monacoEditor style="height: 100%" (valueChange)="updateFieldValue($event)"
+                            [content]="field.value"></scrm-monaco-editor>
     </div>
 </div>
 

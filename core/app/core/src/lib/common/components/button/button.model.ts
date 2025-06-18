@@ -28,6 +28,7 @@ import {Signal} from "@angular/core";
 import {ObjectMap} from "../../types/object-map";
 
 export declare type ButtonCallback = (...args) => void;
+export declare type popoverValidation = (...args) => boolean;
 
 export interface ButtonInterface {
     id?: string;
@@ -44,6 +45,7 @@ export interface ButtonInterface {
     dynamicLabelFields?: FieldMap;
     title?: string;
     icon?: string;
+    showPopup?: popoverValidation;
     dynamicIcon?: Signal<string>;
     iconKlass?: string;
     labelModule?: string;

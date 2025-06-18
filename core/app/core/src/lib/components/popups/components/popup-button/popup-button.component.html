@@ -26,10 +26,14 @@
 */
 -->
 <ng-template #popContent>
-    <ng-content select="[popup-content]"></ng-content>
+    <ng-container *ngIf="showPopup() === true">
+        <ng-content select="[popup-content]"></ng-content>
+    </ng-container>
 </ng-template>
 <ng-template #popTitle>
-    <ng-content select="[popup-title]"></ng-content>
+    <ng-container *ngIf="showPopup() === true">
+        <ng-content select="[popup-title]"></ng-content>
+    </ng-container>
 </ng-template>
 <div #wrapper>
     <scrm-button [config]="buttonConfig()"
