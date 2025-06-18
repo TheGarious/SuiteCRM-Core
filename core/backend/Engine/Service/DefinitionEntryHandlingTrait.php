@@ -54,7 +54,7 @@ trait DefinitionEntryHandlingTrait
         $exclude = $moduleEntryConfig['exclude'] ?? [];
         $moduleEntries = $moduleEntryConfig[$entryName] ?? [];
 
-        $entries = array_merge($defaultEntries, $moduleEntries);
+        $entries = array_merge($moduleEntries, $defaultEntries);
         $filteredEntries = [];
         foreach ($entries as $entryKey => $entry) {
             if (in_array($entryKey, $exclude, true)) {
