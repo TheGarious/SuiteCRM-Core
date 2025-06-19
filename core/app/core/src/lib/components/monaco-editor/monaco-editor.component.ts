@@ -85,7 +85,7 @@ export class MonacoEditorComponent {
 
         setTimeout(() => {
             this.editor.getAction('editor.action.formatDocument').run();
-        }, 50);
+        }, 250);
 
         this.initialised = true;
     }
