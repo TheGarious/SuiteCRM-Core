@@ -81,10 +81,6 @@ export class MonacoEditorComponent {
 
         this.editor.getModel().onDidChangeContent(() => {
             this.valueEvent.emit(this.editor.getModel().getValue());
-
-            setTimeout(() => {
-                this.editor.getAction('editor.action.formatDocument').run();
-            }, 50);
         });
 
         setTimeout(() => {
