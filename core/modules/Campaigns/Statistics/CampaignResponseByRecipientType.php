@@ -163,11 +163,7 @@ class CampaignResponseByRecipientType extends LegacyHandler implements Statistic
                         $linkEmails[] = $email;
                     }
 
-                    if (($activityKey === 'targeted' && empty($row['hits'])) || $isLink){
-                        $row['hits'] = 1;
-                    }
-
-                    $parsedResult[$activityKey]['hits'] = $hits + (int)($row['hits'] ?? 0);
+                    $parsedResult[$activityKey]['hits'] = $hits + 1;
                 }
             }
         }
