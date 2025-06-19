@@ -34,7 +34,7 @@ import {
     ViewChild,
     WritableSignal
 } from '@angular/core';
-import {ButtonInterface, popoverValidation} from '../../../../common/components/button/button.model';
+import {ButtonInterface, PopoverValidation} from '../../../../common/components/button/button.model';
 import {Subscription} from "rxjs";
 import {NgbPopover} from "@ng-bootstrap/ng-bootstrap";
 
@@ -54,7 +54,7 @@ export class PopupButtonComponent implements OnInit, OnDestroy {
     @Input() openStatusEventEmitter: EventEmitter<boolean>;
     @Input() displayButton: WritableSignal<boolean> = signal(true);
     @Input() dynamicClass: WritableSignal<string> = signal('');
-    @Input() showPopup: popoverValidation = () => {return true};
+    @Input() showPopup: PopoverValidation = () => {return true};
 
     @ViewChild('popover') popover: NgbPopover;
 
