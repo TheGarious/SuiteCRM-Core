@@ -289,7 +289,7 @@ class UnlinkService
             'message' => 'LBL_ALL_RECORDS_UNLINKED'
         ];
         foreach ($linkedIds as $linkedId) {
-            if (!in_array($linkedId, $ids, true)) {
+            if (!in_array($linkedId, $ids)) {
                 $log->error($app_strings['LBL_NOT_LINKED'] . ' Record ID: ' . $record);
                 $return = [
                     'success' => false,
