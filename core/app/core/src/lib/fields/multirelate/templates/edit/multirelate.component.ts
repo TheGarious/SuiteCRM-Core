@@ -128,10 +128,12 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
                 };
             });
             this.currentOptions.set(this.selectedValues);
+            this.field.formControl.setValue(this.selectedValues);
         } else {
             this.selectedValues = [];
             this.field.valueObjectArray = [];
             this.field.valueList = [];
+            this.field.formControl.setValue([]);
             this.currentOptions.set([]);
         }
 
@@ -141,7 +143,6 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
         this.getTranslatedLabels();
 
         this.addCurrentlySelectedToOptions(this.options ?? []);
-        this.updateFieldValues();
     }
 
     /**
@@ -265,7 +266,7 @@ export class MultiRelateEditFieldComponent extends BaseRelateComponent {
         modal.componentInstance.multiSelect = true;
         modal.componentInstance.multiSelectButtonLabel = 'LBL_SAVE';
         modal.componentInstance.showFilter = this.field?.definition?.showFilter ?? true;
-        modal.componentInstance.selectedValues = this.field.value;
+        modal.componentInstance.selectedValues = (this?.selectedValues ?? []).map(item => item.id).join(',') ?? '';
 
         modal.result.then((data: RecordListModalResult) => {
 
