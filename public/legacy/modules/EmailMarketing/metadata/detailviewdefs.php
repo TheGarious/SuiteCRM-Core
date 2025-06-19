@@ -484,6 +484,40 @@ $viewdefs ['EmailMarketing'] = [
                         ],
                     ],
                 ],
+                'save' => [
+                    'key' => 'save',
+                    'labelKey' => 'LBL_SAVE_BUTTON_LABEL',
+                    'modes' => ['edit'],
+                    'acl' => ['edit'],
+                    'params' => [
+                        'expanded' => true,
+                    ],
+                ],
+                'saveNew' => [
+                    'key' => 'saveNew',
+                    'labelKey' => 'LBL_SAVE_BUTTON_LABEL',
+                    'modes' => ['create'],
+                    'acl' => ['edit'],
+                    'params' => [
+                        'expanded' => true,
+                    ],
+                ],
+                'cancel' => [
+                    'key' => 'cancel',
+                    'labelKey' => 'LBL_CANCEL',
+                    'modes' => ['edit'],
+                    'params' => [
+                        'expanded' => true,
+                    ],
+                ],
+                'cancelCreate' => [
+                    'key' => 'cancelCreate',
+                    'labelKey' => 'LBL_CANCEL',
+                    'modes' => ['create'],
+                    'params' => [
+                        'expanded' => true,
+                    ],
+                ],
                 'insert-email-template' => [
                     'key' => 'insert-email-template',
                     'labelKey' => 'LBL_INSERT_TEMPLATE',
