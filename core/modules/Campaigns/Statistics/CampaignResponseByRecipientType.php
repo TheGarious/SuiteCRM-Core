@@ -28,6 +28,7 @@
 namespace App\Module\Campaigns\Statistics;
 
 use App\Data\LegacyHandler\ListDataQueryHandler;
+use App\Data\Service\RecordProviderInterface;
 use App\Engine\LegacyHandler\LegacyHandler;
 use App\Engine\LegacyHandler\LegacyScopeState;
 use App\Module\Service\ModuleNameMapperInterface;
@@ -69,6 +70,7 @@ class CampaignResponseByRecipientType extends LegacyHandler implements Statistic
         ListDataQueryHandler $queryHandler,
         ModuleNameMapperInterface $moduleNameMapper,
         RequestStack $session,
+        protected RecordProviderInterface $recordProvider
     ) {
         parent::__construct($projectDir, $legacyDir, $legacySessionName, $defaultSessionName, $legacyScopeState, $session);
         $this->queryHandler = $queryHandler;
@@ -110,8 +112,11 @@ class CampaignResponseByRecipientType extends LegacyHandler implements Statistic
         $this->init();
         $this->startLegacyApp();
 
+        $allowsDuplicates = false;
+
         if ($module === 'email-marketing') {
             $emailMarketingId = $id;
+            $allowsDuplicates = $this->allowsDuplicates($emailMarketingId);
             $id = $this->getCampaignId($id);
         }
 
@@ -159,7 +164,7 @@ class CampaignResponseByRecipientType extends LegacyHandler implements Statistic
 
                     $hits = $parsedResult[$activityKey]['hits'] ?? 0;
 
-                    if ($isLink) {
+                    if ($isLink && !$allowsDuplicates) {
                         $linkEmails[] = $email;
                     }
 
@@ -246,5 +251,12 @@ class CampaignResponseByRecipientType extends LegacyHandler implements Statistic
         }
 
         return $campaignId;
+    }
+
+    protected function allowsDuplicates(string $emailMarketingId): bool
+    {
+        $record = $this->recordProvider->getRecord('EmailMarketing', $emailMarketingId);
+
+        return $record->getAttributes()['duplicate'] === 'record';
     }
 }
