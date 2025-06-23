@@ -460,6 +460,14 @@ services:
     $ldapUserProvider: '@security.user.provider.concrete.ldap_users'
     $entityUserProvider: '@security.user.provider.concrete.app_user_provider'
 
+  App\MediaObjects\Services\UuidMediaObjectFileNamer:
+    lazy: true
+    public: true
+
+  media_object_file_namer:
+    alias: App\MediaObjects\Services\UuidMediaObjectFileNamer
+    public: true
+
   saml_user_factory:
     alias: App\Security\Saml\AppSamlUserFactory
     public: true
