@@ -27,6 +27,7 @@
 
 namespace App\Security\TwoFactor\EventListener;
 
+use App\Module\Users\Entity\User;
 use App\Security\TwoFactor\LegacyHandler\BlowfishCodeHandler;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 
@@ -36,24 +37,42 @@ class TotpEncryptionListener
 
     public function __construct(
         BlowfishCodeHandler $blowfish
-    )
-    {
+    ) {
         $this->blowfish = $blowfish;
     }
 
     public function prePersist(LifecycleEventArgs $args): void
     {
+        $entity = $args->getObject();
+
+        // only act on some "Product" entity
+        if (!$entity instanceof User) {
+            return;
+        }
+
         $this->encodeTotpFields($args);
     }
 
     public function preUpdate(LifecycleEventArgs $args): void
     {
+        $entity = $args->getObject();
+
+        // only act on some "Product" entity
+        if (!$entity instanceof User) {
+            return;
+        }
         $this->encodeTotpFields($args);
     }
 
     public function postLoad(LifecycleEventArgs $args): void
     {
         $user = $args->getObject();
+
+        // only act on some "Product" entity
+        if (!$user instanceof User) {
+            return;
+        }
+
         $backupCodes = $user->getBackupCodes();
         $totpSecret = $user->getTotpSecret();
 
