@@ -21,3 +21,10 @@ entrypoint_controllers:
         path: ../core/backend/EntryPoint/Controller/
         namespace: App\EntryPoint\Controller
     type: attribute
+
+media_controllers:
+  resource:
+    path: ../core/backend/MediaObjects/Controller/
+    namespace: App\MediaObjects\Controller
+  type: attribute
+
