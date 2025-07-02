@@ -60,3 +60,4 @@ parameters:
       min_cron_interval: true
     cron_class: true
     campaign_emails_per_run_default: true
+    campaign_marketing_items_per_run_default: true
