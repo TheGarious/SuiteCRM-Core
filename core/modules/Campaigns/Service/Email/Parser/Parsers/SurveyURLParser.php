@@ -70,38 +70,8 @@ class SurveyURLParser implements CampaignEmailParserInterface
     public function parse(Record $record, array $context): void
     {
         $targetRecord = $context['targetRecord'] ?? null;
-        if ($targetRecord === null) {
-            $this->logger->debug(
-                'Campaigns:SurveyURLParser::parse - missing targetRecord', [
-                    'context' => $context,
-                ]
-            );
-            return;
-        }
 
-        if (!$this->recordTemplateManager->isType($targetRecord, 'person')) {
-            $this->logger->debug(
-                'Campaigns:SurveyURLParser::parse - targetRecord is not a person', [
-                    'targetRecord' => $targetRecord,
-                    'context' => $context,
-                    'record' => $record,
-                ]
-            );
-            return;
-        }
-
-        $targetId = $targetRecord->getId() ?? '';
-
-        if (empty($targetId)) {
-            $this->logger->debug(
-                'Campaigns:SurveyURLParser::parse - target id is empty', [
-                    'targetRecord' => $targetRecord,
-                    'context' => $context,
-                    'record' => $record,
-                ]
-            );
-            return;
-        }
+        $targetId = $targetRecord?->getId() ?? '';
 
         $trackerId = $context['trackerId'] ?? '';
         if (empty($trackerId)) {
@@ -137,8 +107,8 @@ class SurveyURLParser implements CampaignEmailParserInterface
 
         $attributes = $record->getAttributes() ?? [];
 
-        $attributes['description'] = $this->trackerManager->addSurveyLink($surveyId, $trackerId, $targetId, $attributes['description'] ?? '', $context);
-        $attributes['description_html'] = $this->trackerManager->addSurveyLink($surveyId, $trackerId, $targetId, $attributes['description_html'] ?? '', $context);
+        $attributes['description'] = $this->trackerManager->addSurveyLink($surveyId, $trackerId,$attributes['description'] ?? '', $targetId, $context);
+        $attributes['description_html'] = $this->trackerManager->addSurveyLink($surveyId, $trackerId, $attributes['description_html'] ?? '', $targetId, $context);
 
         $record->setAttributes($attributes);
 

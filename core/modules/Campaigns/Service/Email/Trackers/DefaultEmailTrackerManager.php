@@ -179,7 +179,10 @@ class DefaultEmailTrackerManager implements EmailTrackerManagerInterface
         return $emailBody;
     }
 
-    public function addSurveyLink(string $surveyId, string $trackerId, string $contactId, string $emailBody, array $context = []): string
+    /**
+     * @throws \Exception
+     */
+    public function addSurveyLink(string $surveyId, string $trackerId, string $emailBody, string $contactId = '', array $context = []): string
     {
         $trackingUrlTemplate = $this->getTrackingUrl() . "index.php?entryPoint=survey&id=%s&contact=%s&tracker=" . ($trackerId ?? '');
 
@@ -187,7 +190,7 @@ class DefaultEmailTrackerManager implements EmailTrackerManagerInterface
         $campaign = $context['campaignRecord'] ?? null;
         $campaignId = $campaign?->getId() ?? '';
 
-        if (empty($campaignId) || empty($trackerId) || empty($contactId)) {
+        if (empty($campaignId) || empty($trackerId)) {
             $this->logger->debug(
                 'Campaigns:DefaultEmailTrackerManager::addSurveyLink - Missing required inputs ', [
                     'surveyId' => $surveyId,
@@ -201,8 +204,16 @@ class DefaultEmailTrackerManager implements EmailTrackerManagerInterface
             return $emailBody;
         }
 
+        $survey = $this->recordProvider->getRecord('Surveys', $surveyId);
+        $status = $survey->getAttributes()['status'] ?? '';
+
+        if (!empty($status) && $status !== 'Public') {
+            return $emailBody;
+        }
+
         $uniqueTrackerUrl = sprintf($trackingUrlTemplate, $surveyId ?? '', $contactId ?? '');
-        $replaced = str_replace(['$surveys_survey_url_display', '$survey_url_display', 'survey_url_display'], [$uniqueTrackerUrl, $uniqueTrackerUrl, $uniqueTrackerUrl], $emailBody);
+
+        $replaced = $this->replaceVariables($uniqueTrackerUrl, $emailBody);
 
         $replaced = preg_replace(
             '/{{\s*survey_link\s*}}/',
@@ -309,5 +320,45 @@ class DefaultEmailTrackerManager implements EmailTrackerManagerInterface
     protected function containsUnsubscribeLinkVariable(string $value): bool
     {
         return (bool)(preg_match('/{{\s*unsubscribe_link\s*}}/', $value) || preg_match('/%7B%7B\s*unsubscribe_link\s*%7D%7D/', $value));
+    }
+
+    protected function replaceVariables(string $uniqueTrackerUrl, string $emailBody): string
+    {
+        $variables = ['$surveys_survey_url_display', '$survey_url_display', 'survey_url_display'];
+        $search = '/(<a\b[^>]*?\btitle=)(["\'])(.*?)\2/i';
+
+        $replaced = $this->replace($search, $variables, $uniqueTrackerUrl, $emailBody);
+
+        $search = '/(<a\b[^>]*?\bhref=)(["\'])(.*?)\2/i';
+
+        $text = $this->replace($search, $variables, $uniqueTrackerUrl, $replaced);
+
+        $linkUrl = "<a title=$uniqueTrackerUrl href=$uniqueTrackerUrl>$uniqueTrackerUrl</a>";
+
+        return str_replace(['$surveys_survey_url_display', '$survey_url_display', 'survey_url_display'],
+            [$linkUrl, $linkUrl, $linkUrl],
+            $text);
+    }
+
+    /**
+     * @param string $search
+     * @param array $variables
+     * @param string $uniqueTrackerUrl
+     * @param string $replaced
+     * @return string
+     */
+    protected function replace(string $search, array $variables, string $uniqueTrackerUrl, string $replaced): string
+    {
+        return preg_replace_callback($search, static function ($matches) use ($variables, $uniqueTrackerUrl) {
+            $title = $matches[3];
+
+            foreach ($variables as $variable) {
+                if (str_contains($title, $variable)) {
+                    $title = str_replace($variable, $uniqueTrackerUrl, $title);
+                }
+            }
+
+            return $matches[1] . $matches[2] . $title . $matches[2];
+        }, $replaced);
     }
 }

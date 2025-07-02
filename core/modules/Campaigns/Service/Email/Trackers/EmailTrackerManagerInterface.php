@@ -37,5 +37,5 @@ interface EmailTrackerManagerInterface
 
     public function addTrackerLinks(string $trackerId, string $emailBody, array $context = []): string;
 
-    public function addSurveyLink(string $surveyId, string $trackerId, string $contactId, string $emailBody, array $context  = []): string;
+    public function addSurveyLink(string $surveyId, string $trackerId, string $emailBody, string $contactId, array $context  = []): string;
 }
