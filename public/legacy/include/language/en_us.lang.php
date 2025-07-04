@@ -1000,6 +1000,7 @@ $app_list_strings = array(
         'finished' => 'Finished',
     ),
     'email_marketing_type_dom' => array(
+        'legacy' => 'Legacy',
         'marketing' => 'Marketing',
         'survey' => 'Survey',
         'transactional' => 'Transactional',
