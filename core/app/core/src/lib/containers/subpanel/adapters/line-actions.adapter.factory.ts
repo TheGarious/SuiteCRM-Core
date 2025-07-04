@@ -36,6 +36,7 @@ import {SelectModalService} from '../../../services/modals/select-modal.service'
 import {MetadataStore} from '../../../store/metadata/metadata.store.service';
 import {AppMetadataStore} from "../../../store/app-metadata/app-metadata.store.service";
 import {FieldModalService} from "../../../services/modals/field-modal.service";
+import {FieldLogicManager} from "../../../fields/field-logic/field-logic.manager";
 
 
 @Injectable({
@@ -52,7 +53,8 @@ export class SubpanelLineActionsAdapterFactory {
         protected selectModalService: SelectModalService,
         protected fieldModalService: FieldModalService,
         protected metadata: MetadataStore,
-        protected appMetadataStore: AppMetadataStore
+        protected appMetadataStore: AppMetadataStore,
+        protected logic: FieldLogicManager,
     ) {
     }
 
@@ -67,7 +69,8 @@ export class SubpanelLineActionsAdapterFactory {
             this.selectModalService,
             this.fieldModalService,
             this.metadata,
-            this.appMetadataStore
+            this.appMetadataStore,
+            this.logic
         );
     }
 }

@@ -40,6 +40,7 @@ import {FieldModalService} from "../../../services/modals/field-modal.service";
 import {RecordMapperRegistry} from "../../../common/record/record-mappers/record-mapper.registry";
 import {BaseSaveRecordMapper} from "../../../store/record/record-mappers/base-save.record-mapper";
 import {NgbActiveModal} from "@ng-bootstrap/ng-bootstrap";
+import {FieldLogicManager} from "../../../fields/field-logic/field-logic.manager";
 
 @Injectable({
     providedIn: 'root',
@@ -58,7 +59,8 @@ export class RecordModalActionsAdapterFactory {
         protected appMetadataStore: AppMetadataStore,
         protected fieldModalService: FieldModalService,
         protected recordMappers: RecordMapperRegistry,
-        protected baseMapper: BaseSaveRecordMapper
+        protected baseMapper: BaseSaveRecordMapper,
+        protected logic: FieldLogicManager,
     ) {
         recordMappers.register('default', baseMapper.getKey(), baseMapper);
     }
@@ -77,7 +79,8 @@ export class RecordModalActionsAdapterFactory {
             this.displayTypeLogic,
             this.appMetadataStore,
             this.fieldModalService,
-            this.recordMappers
+            this.recordMappers,
+            this.logic
         );
     }
 }

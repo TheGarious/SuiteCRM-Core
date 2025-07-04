@@ -42,6 +42,7 @@ import {AppMetadataStore} from "../../../store/app-metadata/app-metadata.store.s
 import {Action, ActionContext} from "../../../common/actions/action.model";
 import {ViewMode} from "../../../common/views/view.model";
 import {FieldModalService} from "../../../services/modals/field-modal.service";
+import {FieldLogicManager} from "../../../fields/field-logic/field-logic.manager";
 
 @Injectable()
 export class FieldActionsAdapter extends BaseFieldActionsAdapter<FieldActionData> {
@@ -57,6 +58,7 @@ export class FieldActionsAdapter extends BaseFieldActionsAdapter<FieldActionData
         protected confirmation: ConfirmationModalService,
         protected selectModalService: SelectModalService,
         protected fieldModalService: FieldModalService,
+        protected logic: FieldLogicManager,
         protected viewName: string,
         protected fieldName: string
     ) {
@@ -69,7 +71,8 @@ export class FieldActionsAdapter extends BaseFieldActionsAdapter<FieldActionData
             selectModalService,
             fieldModalService,
             metadata,
-            appMetadataStore
+            appMetadataStore,
+            logic
         );
     }
 

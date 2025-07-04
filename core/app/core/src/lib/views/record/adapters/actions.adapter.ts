@@ -50,6 +50,7 @@ import {RecordActionDisplayTypeLogic} from '../action-logic/display-type/display
 import {AppMetadataStore} from "../../../store/app-metadata/app-metadata.store.service";
 import {FieldModalService} from "../../../services/modals/field-modal.service";
 import {RecordMapperRegistry} from "../../../common/record/record-mappers/record-mapper.registry";
+import {FieldLogicManager} from "../../../fields/field-logic/field-logic.manager";
 
 @Injectable()
 export class RecordActionsAdapter extends BaseRecordActionsAdapter<RecordActionData> {
@@ -73,7 +74,8 @@ export class RecordActionsAdapter extends BaseRecordActionsAdapter<RecordActionD
         protected fieldModalService: FieldModalService,
         protected displayTypeLogic: RecordActionDisplayTypeLogic,
         protected appMetadataStore: AppMetadataStore,
-        protected recordMappers: RecordMapperRegistry
+        protected recordMappers: RecordMapperRegistry,
+        protected logic: FieldLogicManager,
     ) {
         super(
             actionManager,
@@ -85,7 +87,8 @@ export class RecordActionsAdapter extends BaseRecordActionsAdapter<RecordActionD
             fieldModalService,
             metadata,
             appMetadataStore,
-            recordMappers
+            recordMappers,
+            logic
         );
     }
 

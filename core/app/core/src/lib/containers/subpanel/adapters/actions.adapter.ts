@@ -45,6 +45,7 @@ import {SubpanelStore} from "../store/subpanel/subpanel.store";
 import {AppMetadataStore} from "../../../store/app-metadata/app-metadata.store.service";
 import {FieldModalService} from "../../../services/modals/field-modal.service";
 import {BaseActionsAdapter} from "../../../services/actions/base-action.adapter";
+import {FieldLogicManager} from "../../../fields/field-logic/field-logic.manager";
 
 @Injectable()
 export class SubpanelActionsAdapter extends BaseActionsAdapter<SubpanelActionData> {
@@ -59,7 +60,8 @@ export class SubpanelActionsAdapter extends BaseActionsAdapter<SubpanelActionDat
         protected selectModalService: SelectModalService,
         protected fieldModalService: FieldModalService,
         protected metadata: MetadataStore,
-        protected appMetadataStore: AppMetadataStore
+        protected appMetadataStore: AppMetadataStore,
+        protected logic: FieldLogicManager,
     ) {
         super(
             actionManager,
@@ -70,7 +72,8 @@ export class SubpanelActionsAdapter extends BaseActionsAdapter<SubpanelActionDat
             selectModalService,
             fieldModalService,
             metadata,
-            appMetadataStore
+            appMetadataStore,
+            logic
         )
     }
 

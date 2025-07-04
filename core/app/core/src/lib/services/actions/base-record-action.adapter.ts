@@ -41,6 +41,7 @@ import {deepClone} from "../../common/utils/object-utils";
 import {MapEntry} from "../../common/types/overridable-map";
 import {RecordMapper} from "../../common/record/record-mappers/record-mapper.model";
 import {RecordMapperRegistry} from "../../common/record/record-mappers/record-mapper.registry";
+import {FieldLogicManager} from "../../fields/field-logic/field-logic.manager";
 
 @Injectable()
 export abstract class BaseRecordActionsAdapter<D extends RecordBasedActionData> extends BaseActionsAdapter<D> {
@@ -56,7 +57,8 @@ export abstract class BaseRecordActionsAdapter<D extends RecordBasedActionData> 
         protected fieldModalService: FieldModalService,
         protected metadata: MetadataStore,
         protected appMetadataStore: AppMetadataStore,
-        protected recordMappers: RecordMapperRegistry
+        protected recordMappers: RecordMapperRegistry,
+        protected logic: FieldLogicManager,
     ) {
         super(
             actionManager,
@@ -67,7 +69,8 @@ export abstract class BaseRecordActionsAdapter<D extends RecordBasedActionData> 
             selectModalService,
             fieldModalService,
             metadata,
-            appMetadataStore
+            appMetadataStore,
+            logic
         )
     }
 

@@ -36,6 +36,7 @@ import {TableActionManager} from "../table-actions/table-action-manager.service"
 import {LanguageStore} from "../../../store/language/language.store";
 import {AppMetadataStore} from "../../../store/app-metadata/app-metadata.store.service";
 import {FieldModalService} from "../../../services/modals/field-modal.service";
+import {FieldLogicManager} from "../../../fields/field-logic/field-logic.manager";
 
 @Injectable({
     providedIn: 'root',
@@ -51,7 +52,8 @@ export class ListviewTableActionsAdapterFactory {
         protected selectModalService: SelectModalService,
         protected fieldModalService: FieldModalService,
         protected metadata: MetadataStore,
-        protected appMetadataStore: AppMetadataStore
+        protected appMetadataStore: AppMetadataStore,
+        protected logic: FieldLogicManager,
     ) {
     }
 
@@ -66,7 +68,8 @@ export class ListviewTableActionsAdapterFactory {
             this.selectModalService,
             this.fieldModalService,
             this.metadata,
-            this.appMetadataStore
+            this.appMetadataStore,
+            this.logic
         );
     }
 }

@@ -44,6 +44,7 @@ import {TableActionManager} from "../table-actions/table-action-manager.service"
 import {AppMetadataStore} from "../../../store/app-metadata/app-metadata.store.service";
 import {FieldModalService} from "../../../services/modals/field-modal.service";
 import {isFalse} from "../../../common/utils/value-utils";
+import {FieldLogicManager} from "../../../fields/field-logic/field-logic.manager";
 
 
 @Injectable()
@@ -59,7 +60,8 @@ export class ListViewTableActionsAdapter extends BaseActionsAdapter<TableActionD
         protected selectModalService: SelectModalService,
         protected fieldModalService: FieldModalService,
         protected metadata: MetadataStore,
-        protected appMetadataStore: AppMetadataStore
+        protected appMetadataStore: AppMetadataStore,
+        protected logic: FieldLogicManager,
     ) {
         super(
             actionManager,
@@ -70,7 +72,8 @@ export class ListViewTableActionsAdapter extends BaseActionsAdapter<TableActionD
             selectModalService,
             fieldModalService,
             metadata,
-            appMetadataStore
+            appMetadataStore,
+            logic
         );
     }
 

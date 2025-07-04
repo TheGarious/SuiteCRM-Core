@@ -49,6 +49,7 @@ import {
 import {RecordSectionTabActionManager} from "../actions/section-tab-actions/section-tab-action-manager.service";
 import {RecordMapperRegistry} from "../../../common/record/record-mappers/record-mapper.registry";
 import {FieldModalService} from "../../../services/modals/field-modal.service";
+import {FieldLogicManager} from "../../../fields/field-logic/field-logic.manager";
 
 @Injectable()
 export class RecordSectionTabActionsAdapter extends BaseRecordActionsAdapter<RecordSectionTabActionData> {
@@ -70,7 +71,8 @@ export class RecordSectionTabActionsAdapter extends BaseRecordActionsAdapter<Rec
         protected fieldModalService: FieldModalService,
         protected displayTypeLogic: RecordSectionTabActionDisplayTypeLogic,
         protected appMetadataStore: AppMetadataStore,
-        protected recordMappers: RecordMapperRegistry
+        protected recordMappers: RecordMapperRegistry,
+        protected logic: FieldLogicManager,
     ) {
         super(
             actionManager,
@@ -82,7 +84,8 @@ export class RecordSectionTabActionsAdapter extends BaseRecordActionsAdapter<Rec
             fieldModalService,
             metadata,
             appMetadataStore,
-            recordMappers
+            recordMappers,
+            logic
         );
     }
 

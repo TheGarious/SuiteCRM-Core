@@ -48,6 +48,7 @@ import {AppMetadataStore} from "../../store/app-metadata/app-metadata.store.serv
 import {FieldModalService} from "../modals/field-modal.service";
 import {Field, FieldMap} from "../../common/record/field.model";
 import {StringMap} from "../../common/types/string-map";
+import {FieldLogicManager} from "../../fields/field-logic/field-logic.manager";
 
 export abstract class BaseActionsAdapter<D extends ActionData> implements ActionDataSource {
 
@@ -68,7 +69,8 @@ export abstract class BaseActionsAdapter<D extends ActionData> implements Action
         protected selectModalService: SelectModalService,
         protected fieldModalService: FieldModalService,
         protected metadata: MetadataStore,
-        protected appMetadataStore: AppMetadataStore
+        protected appMetadataStore: AppMetadataStore,
+        protected logic: FieldLogicManager,
     ) {
     }
 

@@ -35,6 +35,7 @@ import {AppMetadataStore} from "../../../store/app-metadata/app-metadata.store.s
 import {FieldModalService} from "../../../services/modals/field-modal.service";
 import {FieldActionManager} from "../../../components/field-layout/actions/field-action-manager.service";
 import {RecordModalFieldActionsAdapter} from "./record-modal-field-actions.adapter";
+import {FieldLogicManager} from "../../../fields/field-logic/field-logic.manager";
 
 @Injectable({
     providedIn: 'root',
@@ -51,6 +52,7 @@ export class RecordModalFieldActionsAdapterFactory {
         protected confirmation: ConfirmationModalService,
         protected selectModalService: SelectModalService,
         protected fieldModalService: FieldModalService,
+        protected logic: FieldLogicManager,
     ) {
     }
 
@@ -66,6 +68,7 @@ export class RecordModalFieldActionsAdapterFactory {
             this.confirmation,
             this.selectModalService,
             this.fieldModalService,
+            this.logic,
             viewName,
             fieldName
         );

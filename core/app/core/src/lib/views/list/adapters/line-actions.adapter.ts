@@ -43,6 +43,7 @@ import {MetadataStore} from '../../../store/metadata/metadata.store.service';
 import {AppMetadataStore} from "../../../store/app-metadata/app-metadata.store.service";
 import {FieldModalService} from "../../../services/modals/field-modal.service";
 import {LineActionData} from "../../../components/table/line-actions/line.action";
+import {FieldLogicManager} from "../../../fields/field-logic/field-logic.manager";
 
 @Injectable()
 export class LineActionsAdapter extends BaseLineActionsAdapter<LineActionData> {
@@ -57,7 +58,8 @@ export class LineActionsAdapter extends BaseLineActionsAdapter<LineActionData> {
         protected selectModalService: SelectModalService,
         protected fieldModalService: FieldModalService,
         protected metadata: MetadataStore,
-        protected appMetadataStore: AppMetadataStore
+        protected appMetadataStore: AppMetadataStore,
+        protected logic: FieldLogicManager,
     ) {
         super(
             actionManager,
@@ -68,7 +70,8 @@ export class LineActionsAdapter extends BaseLineActionsAdapter<LineActionData> {
             selectModalService,
             fieldModalService,
             metadata,
-            appMetadataStore
+            appMetadataStore,
+            logic
         );
     }
 

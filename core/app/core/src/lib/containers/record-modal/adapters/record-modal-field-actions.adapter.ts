@@ -41,6 +41,7 @@ import {FieldModalService} from "../../../services/modals/field-modal.service";
 import {FieldActionData} from "../../../components/field-layout/actions/field.action";
 import {FieldActionManager} from "../../../components/field-layout/actions/field-action-manager.service";
 import {RecordModalStore} from "../store/record-modal/record-modal.store";
+import {FieldLogicManager} from "../../../fields/field-logic/field-logic.manager";
 
 export class RecordModalFieldActionsAdapter extends BaseFieldActionsAdapter<FieldActionData> {
 
@@ -55,6 +56,7 @@ export class RecordModalFieldActionsAdapter extends BaseFieldActionsAdapter<Fiel
         protected confirmation: ConfirmationModalService,
         protected selectModalService: SelectModalService,
         protected fieldModalService: FieldModalService,
+        protected logic: FieldLogicManager,
         protected viewName: string,
         protected fieldName: string
     ) {
@@ -67,7 +69,8 @@ export class RecordModalFieldActionsAdapter extends BaseFieldActionsAdapter<Fiel
             selectModalService,
             fieldModalService,
             metadata,
-            appMetadataStore
+            appMetadataStore,
+            logic
         );
     }
 

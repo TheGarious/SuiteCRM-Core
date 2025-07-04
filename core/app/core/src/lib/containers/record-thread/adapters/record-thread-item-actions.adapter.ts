@@ -45,6 +45,7 @@ import {MetadataStore} from '../../../store/metadata/metadata.store.service';
 import {AppMetadataStore} from "../../../store/app-metadata/app-metadata.store.service";
 import {FieldModalService} from "../../../services/modals/field-modal.service";
 import {RecordMapperRegistry} from "../../../common/record/record-mappers/record-mapper.registry";
+import {FieldLogicManager} from "../../../fields/field-logic/field-logic.manager";
 
 @Injectable()
 export class RecordThreadItemActionsAdapter extends BaseRecordActionsAdapter<RecordThreadItemActionData> {
@@ -68,7 +69,8 @@ export class RecordThreadItemActionsAdapter extends BaseRecordActionsAdapter<Rec
         protected fieldModalService: FieldModalService,
         protected metadata: MetadataStore,
         protected appMetadataStore: AppMetadataStore,
-        protected recordMappers: RecordMapperRegistry
+        protected recordMappers: RecordMapperRegistry,
+        protected logic: FieldLogicManager,
     ) {
         super(
             actionManager,
@@ -80,7 +82,8 @@ export class RecordThreadItemActionsAdapter extends BaseRecordActionsAdapter<Rec
             fieldModalService,
             metadata,
             appMetadataStore,
-            recordMappers
+            recordMappers,
+            logic
         );
     }
 

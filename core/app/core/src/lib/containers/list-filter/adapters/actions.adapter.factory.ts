@@ -38,6 +38,7 @@ import {MetadataStore} from '../../../store/metadata/metadata.store.service';
 import {AppMetadataStore} from "../../../store/app-metadata/app-metadata.store.service";
 import {FieldModalService} from "../../../services/modals/field-modal.service";
 import {RecordMapperRegistry} from "../../../common/record/record-mappers/record-mapper.registry";
+import {FieldLogicManager} from "../../../fields/field-logic/field-logic.manager";
 
 @Injectable({
     providedIn: 'root',
@@ -49,12 +50,13 @@ export class SavedFilterActionAdapterFactory {
         protected actionManager: SavedFilterActionManager,
         protected asyncActionService: AsyncActionService,
         protected message: MessageService,
-        protected confimation: ConfirmationModalService,
+        protected confirmation: ConfirmationModalService,
         protected selectModalService: SelectModalService,
         protected fieldModalService: FieldModalService,
         protected metadata: MetadataStore,
         protected appMetadataStore: AppMetadataStore,
         protected recordMappers: RecordMapperRegistry,
+        protected logic: FieldLogicManager,
     ) {
     }
 
@@ -66,12 +68,13 @@ export class SavedFilterActionAdapterFactory {
             this.actionManager,
             this.asyncActionService,
             this.message,
-            this.confimation,
+            this.confirmation,
             this.selectModalService,
             this.fieldModalService,
             this.metadata,
             this.appMetadataStore,
-            this.recordMappers
+            this.recordMappers,
+            this.logic
         );
     }
 }

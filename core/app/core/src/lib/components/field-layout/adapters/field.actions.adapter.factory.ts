@@ -35,6 +35,7 @@ import {FieldActionsAdapter} from './field.actions.adapter';
 import {FieldActionManager} from '../actions/field-action-manager.service';
 import {AppMetadataStore} from "../../../store/app-metadata/app-metadata.store.service";
 import {FieldModalService} from "../../../services/modals/field-modal.service";
+import {FieldLogicManager} from "../../../fields/field-logic/field-logic.manager";
 
 @Injectable({
     providedIn: 'root',
@@ -51,6 +52,7 @@ export class FieldActionsAdapterFactory {
         protected confirmation: ConfirmationModalService,
         protected selectModalService: SelectModalService,
         protected fieldModalService: FieldModalService,
+        protected logic: FieldLogicManager,
     ) {
     }
 
@@ -66,6 +68,7 @@ export class FieldActionsAdapterFactory {
             this.confirmation,
             this.selectModalService,
             this.fieldModalService,
+            this.logic,
             viewName,
             fieldName
         );
