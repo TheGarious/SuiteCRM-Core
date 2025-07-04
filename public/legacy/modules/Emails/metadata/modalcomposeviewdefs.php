@@ -60,6 +60,20 @@ $viewdefs['Emails']['ModalComposeView'] = [
                     'displayConfirmation' => true,
                     'confirmationMessages' => ['LBL_TEMPLATE_CONFIRMATION'],
                 ],
+                'afterActionLogic' => [
+                    'field' => 'description_html',
+                    'logic' => [
+                        'key' => 'updateEmailSignature',
+                        'modes' => ['edit', 'create'],
+                        'params' => [
+                            'fieldDependencies' => [
+                                'outbound_email_name'
+                            ],
+                            'fromField' => 'outbound_email_name',
+                            'signatureAttribute' => 'signature',
+                        ],
+                    ]
+                ],
                 'modes' => ['detail', 'edit', 'create'],
             ],
             'send-email' => [
