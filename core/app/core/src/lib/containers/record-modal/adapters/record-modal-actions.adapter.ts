@@ -42,7 +42,7 @@ import {RecordModalActionManager} from "../actions/record-modal-action-manager.s
 import {RecordModalActionData} from "../actions/record-modal.action";
 import {Action, ActionContext, ActionHandler} from "../../../common/actions/action.model";
 import {ViewMode} from "../../../common/views/view.model";
-import {LogicDefinitions, Panel} from "../../../common/metadata/metadata.model";
+import {LogicDefinitions, Panel, AfterActionLogicDefinition} from "../../../common/metadata/metadata.model";
 import {Record} from "../../../common/record/record.model";
 import {FieldModalService} from "../../../services/modals/field-modal.service";
 import {RecordMapperRegistry} from "../../../common/record/record-mappers/record-mapper.registry";
@@ -137,7 +137,9 @@ export class RecordModalActionsAdapter extends BaseRecordActionsAdapter<RecordMo
      * @param asyncData
      * @param process
      * @param action
+     * @param actionData
      * @param context
+     * @param afterActionLogic
      * @protected
      */
     protected afterAsyncAction(
@@ -146,7 +148,9 @@ export class RecordModalActionsAdapter extends BaseRecordActionsAdapter<RecordMo
         asyncData: AsyncActionInput,
         process: Process,
         action: Action,
-        context: ActionContext
+        actionData: RecordModalActionData,
+        context: ActionContext,
+        afterActionLogic: AfterActionLogicDefinition = null
     ) {
         super.afterAsyncAction(
             actionName,
@@ -154,7 +158,9 @@ export class RecordModalActionsAdapter extends BaseRecordActionsAdapter<RecordMo
             asyncData,
             process,
             action,
-            context
+            actionData,
+            context,
+            afterActionLogic
         );
         if (this.shouldCloseModal(process)) {
             this.activeModal.close();

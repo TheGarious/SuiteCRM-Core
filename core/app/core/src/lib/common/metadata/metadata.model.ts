@@ -105,6 +105,11 @@ export interface LogicDefinitions {
     [key: string]: LogicDefinition;
 }
 
+export interface AfterActionLogicDefinition {
+    field?: string;
+    logic?: LogicDefinition;
+}
+
 export interface LogicDefinition {
     key: string;
     modes: Array<string>;

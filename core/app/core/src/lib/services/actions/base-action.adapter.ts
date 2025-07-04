@@ -49,6 +49,7 @@ import {FieldModalService} from "../modals/field-modal.service";
 import {Field, FieldMap} from "../../common/record/field.model";
 import {StringMap} from "../../common/types/string-map";
 import {FieldLogicManager} from "../../fields/field-logic/field-logic.manager";
+import {LogicDefinition, AfterActionLogicDefinition} from "../../common/metadata/metadata.model";
 
 export abstract class BaseActionsAdapter<D extends ActionData> implements ActionDataSource {
 
@@ -104,7 +105,7 @@ export abstract class BaseActionsAdapter<D extends ActionData> implements Action
 
         const isValid = this.runValidations(action, context);
 
-        if (!isValid){
+        if (!isValid) {
             return;
         }
 
@@ -135,7 +136,7 @@ export abstract class BaseActionsAdapter<D extends ActionData> implements Action
             return;
         }
 
-        if (selectModal){
+        if (selectModal) {
             this.showSelectModal(selectModal.module, action, context);
         }
 
@@ -267,8 +268,11 @@ export abstract class BaseActionsAdapter<D extends ActionData> implements Action
      * @param context
      */
     protected callAction(action: Action, context: ActionContext = null) {
+
+        const afterActionLogic = action?.afterActionLogic ?? null as AfterActionLogicDefinition;
+
         if (action.asyncProcess) {
-            this.runAsyncAction(action, context);
+            this.runAsyncAction(action, context, afterActionLogic);
             return;
         }
         this.runFrontEndAction(action, context);
@@ -278,8 +282,9 @@ export abstract class BaseActionsAdapter<D extends ActionData> implements Action
      * Run async actions
      * @param action
      * @param context
+     * @param afterActionLogic
      */
-    protected runAsyncAction(action: Action, context: ActionContext = null): void {
+    protected runAsyncAction(action: Action, context: ActionContext = null, afterActionLogic: AfterActionLogicDefinition = null): void {
         const actionName = this.getActionName(action);
         const moduleName = this.getModuleName(context);
 
@@ -288,7 +293,7 @@ export abstract class BaseActionsAdapter<D extends ActionData> implements Action
         const asyncData = this.buildActionInput(action, actionName, moduleName, context, actionData);
 
         this.asyncActionService.run(actionName, asyncData, null, null, actionData).pipe(take(1)).subscribe((process: Process) => {
-            this.afterAsyncAction(actionName, moduleName, asyncData, process, action, context);
+            this.afterAsyncAction(actionName, moduleName, asyncData, process, action, actionData, context, afterActionLogic);
         });
     }
 
@@ -299,7 +304,9 @@ export abstract class BaseActionsAdapter<D extends ActionData> implements Action
      * @param asyncData
      * @param process
      * @param action
+     * @param actionData
      * @param context
+     * @param afterActionLogic
      * @protected
      */
     protected afterAsyncAction(
@@ -308,8 +315,28 @@ export abstract class BaseActionsAdapter<D extends ActionData> implements Action
         asyncData: AsyncActionInput,
         process: Process,
         action: Action,
-        context: ActionContext
+        actionData: D,
+        context: ActionContext,
+        afterActionLogic: AfterActionLogicDefinition
     ) {
+        if (afterActionLogic ?? false) {
+
+            const dependentFieldKey = this.getDependentFieldKeys(afterActionLogic.logic);
+            const dependentField = actionData.store?.recordStore?.getStaging()?.fields[dependentFieldKey];
+
+            if (!context?.record?.fields) {
+                context.record.fields = actionData.store?.recordStore?.getStaging()?.fields;
+            }
+
+            this.logic.runLogic(
+                actionData.store?.recordStore?.getStaging()?.fields[afterActionLogic.field],
+                this.getMode(),
+                context.record,
+                'onDependencyChange',
+                dependentField
+            )
+        }
+
         if (this.shouldReload(process)) {
             this.reload(action, process, context);
         }
@@ -338,7 +365,7 @@ export abstract class BaseActionsAdapter<D extends ActionData> implements Action
 
         if (typesToLoad && typesToLoad.length) {
             this.metadata.reloadModuleMetadata(moduleName, typesToLoad, false).pipe(take(1)).subscribe();
-            if(typesToLoad.includes(this.metadata.typeKeys.recentlyViewed)) {
+            if (typesToLoad.includes(this.metadata.typeKeys.recentlyViewed)) {
                 this.appMetadataStore.load(moduleName, ['globalRecentlyViewed'], false).pipe(take(1)).subscribe();
             }
         }
@@ -423,6 +450,10 @@ export abstract class BaseActionsAdapter<D extends ActionData> implements Action
 
     protected runValidations(action: Action, context: ActionContext = null) {
         return true;
+    }
+
+    protected getDependentFieldKeys(logic: LogicDefinition): string {
+        return logic.params?.fieldDependencies[0];
     }
 
     isActive(action: Action, context: ActionContext = null): boolean {

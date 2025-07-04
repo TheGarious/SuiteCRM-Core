@@ -29,7 +29,7 @@ import {ViewMode} from '../views/view.model';
 import {Record} from '../record/record.model';
 import {SearchCriteria} from '../views/list/search-criteria.model';
 import {StringMap} from '../types/string-map';
-import {LogicDefinitions} from '../metadata/metadata.model';
+import {LogicDefinitions, AfterActionLogicDefinition} from '../metadata/metadata.model';
 import {ObjectMap} from "../types/object-map";
 import {AsyncActionInput} from "../../services/process/processes/async-action/async-action";
 import {BaseRecordContainerStoreInterface} from "../containers/record/record-container.store.model";
@@ -100,6 +100,7 @@ export interface Action {
     params?: { [key: string]: any };
     extraParams?: { [key: string]: any };
     acl?: string[];
+    afterActionLogic?: AfterActionLogicDefinition;
     displayLogic?: LogicDefinitions;
 }
 
