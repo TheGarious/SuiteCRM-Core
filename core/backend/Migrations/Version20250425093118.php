@@ -42,12 +42,16 @@ final class Version20250425093118 extends BaseMigration implements ContainerAwar
 
     public function up(Schema $schema): void
     {
+
+        $this->log('Migration Version20250425093118: Adding more_information column to emailman table');
+
         /** @var EntityManagerInterface $entityManager */
         $entityManager = $this->container->get('entity_manager');
 
         try {
             $entityManager->getConnection()->executeQuery('ALTER TABLE emailman ADD COLUMN `more_information` varchar(255) NULL');
         } catch (\Exception $e) {
+            $this->log('Migration Version20250425093118: Unable to add more_information column to emailman table. Error:' . $e->getMessage());
         }
     }
 

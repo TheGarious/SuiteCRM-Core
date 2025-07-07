@@ -42,6 +42,9 @@ final class Version20250425093637 extends BaseMigration implements ContainerAwar
 
     public function up(Schema $schema): void
     {
+
+        $this->log('Migration Version20250425093637: Setting Legacy Campaign Schedulers to Inactive');
+
         $legacySchedulerKeys = [
             'function::runMassEmailCampaign'
         ];
@@ -54,6 +57,7 @@ final class Version20250425093637 extends BaseMigration implements ContainerAwar
         try {
             $entityManager->getConnection()->executeQuery("UPDATE schedulers SET status = 'Inactive' WHERE job IN ('$keys')");
         } catch (\Exception $e) {
+            $this->log('Migration Version20250425093637: Unable to Legacy Campaign Schedulers to Inactive. Error: ' . $e->getMessage());
         }
     }
 

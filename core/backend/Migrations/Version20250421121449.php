@@ -50,7 +50,7 @@ final class Version20250421121449 extends BaseMigration implements ContainerAwar
         try {
             $entityManager->getConnection()->executeQuery($query);
         } catch (\Exception $e) {
-            $this->log('Failed to update Email Marketing Table setting status to draft. Error: ' . $e->getMessage());
+            $this->log('Migration Version20250421121449: Failed to update Email Marketing Table setting status to draft. Error: ' . $e->getMessage());
         }
     }
 

@@ -45,9 +45,12 @@ final class Version20250519111227 extends BaseMigration implements ContainerAwar
         /** @var EntityManagerInterface $entityManager */
         $entityManager = $this->container->get('entity_manager');
 
+        $this->log('Migration Version20250519111227: Update Outbound Email "is_personal" column to 1 where type is user');
+
         try {
             $entityManager->getConnection()->executeQuery("UPDATE outbound_email SET is_personal = 1 WHERE type = 'user'");
         } catch (\Exception $e) {
+            $this->log('Migration Version20250519111227: Unable to update Outbound Email "is_personal" column to 1 where type is user Error:' . $e->getMessage());
         }
 
     }

@@ -45,32 +45,32 @@ final class Version20250704123538 extends BaseMigration implements ContainerAwar
         /** @var EntityManagerInterface $entityManager */
         $entityManager = $this->container->get('entity_manager');
 
-        $this->log('Adding new columns "status" and "queueing_status" to Email Marketing Table');
+        $this->log('Migration Version20250704123538: Adding new columns "status" and "queueing_status" to Email Marketing Table');
 
         try {
             $entityManager->getConnection()->executeQuery('ALTER TABLE email_marketing ADD COLUMN `status` varchar(100) NULL');
         } catch (\Exception $e) {
-            $this->log('Failed to add column status to Email Marketing Table. Error: ' . $e->getMessage());
+            $this->log('Migration Version20250704123538: Failed to add column status to Email Marketing Table. Error: ' . $e->getMessage());
         }
 
         try {
             $entityManager->getConnection()->executeQuery('ALTER TABLE email_marketing ADD COLUMN `queueing_status` varchar(100) NULL');
         } catch (\Exception $e) {
-            $this->log('Failed to add column queueing_status on Email Marketing Table. Error: ' . $e->getMessage());
+            $this->log('Migration Version20250704123538: Failed to add column queueing_status on Email Marketing Table. Error: ' . $e->getMessage());
         }
 
-        $this->log('Updating new columns "status" and "queueing_status" to value "sent" and "finished"');
+        $this->log('Migration Version20250704123538: Updating new columns "status" and "queueing_status" to value "sent" and "finished"');
 
         try {
             $entityManager->getConnection()->executeQuery("UPDATE email_marketing SET status = 'sent' WHERE type = 'legacy' AND deleted = '0'");
         } catch (\Exception $e) {
-            $this->log('Failed to update column status on Email Marketing Table. Error: ' . $e->getMessage());
+            $this->log('Migration Version20250704123538: Failed to update column status on Email Marketing Table. Error: ' . $e->getMessage());
         }
 
         try {
             $entityManager->getConnection()->executeQuery("UPDATE email_marketing SET queueing_status = 'finished' WHERE type = 'legacy' AND deleted = '0'");
         } catch (\Exception $e) {
-            $this->log('Failed to update column queueing_status on Email Marketing Table. Error: ' . $e->getMessage());
+            $this->log('Migration Version20250704123538: Failed to update column queueing_status on Email Marketing Table. Error: ' . $e->getMessage());
         }
 
     }

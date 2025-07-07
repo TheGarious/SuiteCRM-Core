@@ -45,20 +45,20 @@ final class Version20250618141100  extends BaseMigration implements ContainerAwa
         /** @var EntityManagerInterface $entityManager */
         $entityManager = $this->container->get('entity_manager');
 
-        $this->log('Adding new field "type" to Email Marketing Table');
+        $this->log('Migration Version20250618141100: Adding new field "type" to Email Marketing Table');
 
         try {
             $entityManager->getConnection()->executeQuery('ALTER TABLE email_marketing ADD COLUMN `type` varchar(100) NULL');
         } catch (\Exception $e) {
-            $this->log('Failed to add column type on Email Marketing Table. Error: ' . $e->getMessage());
+            $this->log('Migration Version20250618141100: Failed to add column type on Email Marketing Table. Error: ' . $e->getMessage());
         }
 
-        $this->log('Updating new field "type" to value "Legacy"');
+        $this->log('Migration Version20250618141100: Updating new field "type" to value "Legacy"');
 
         try {
             $entityManager->getConnection()->executeQuery("UPDATE email_marketing SET type = 'legacy' WHERE type is NULL AND deleted = '0'");
         } catch (\Exception $e) {
-            $this->log('Failed to update column type on Email Marketing Table. Error: ' . $e->getMessage());
+            $this->log('Migration Version20250618141100: Failed to update column type on Email Marketing Table. Error: ' . $e->getMessage());
         }
 
     }
