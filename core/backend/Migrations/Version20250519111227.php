@@ -1,13 +1,13 @@
 <?php
 /**
- * SuiteCRM is a customer relationship management program developed by SalesAgility Ltd.
- * Copyright (C) 2025 SalesAgility Ltd.
+ * SuiteCRM is a customer relationship management program developed by SuiteCRM Ltd.
+ * Copyright (C) 2025 SuiteCRM Ltd.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by the
  * Free Software Foundation with the addition of the following permission added
  * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
- * IN WHICH THE COPYRIGHT IS OWNED BY SALESAGILITY, SALESAGILITY DISCLAIMS THE
+ * IN WHICH THE COPYRIGHT IS OWNED BY SUITECRM, SUITECRM DISCLAIMS THE
  * WARRANTY OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT
@@ -48,7 +48,7 @@ final class Version20250519111227 extends BaseMigration implements ContainerAwar
         $this->log('Migration Version20250519111227: Update Outbound Email "is_personal" column to 1 where type is user');
 
         try {
-            $entityManager->getConnection()->executeQuery("UPDATE outbound_email SET is_personal = 1 WHERE type = 'user'");
+            $entityManager->getConnection()->executeQuery("UPDATE outbound_email SET is_personal = 1 WHERE type = 'user' AND deleted = '0'");
         } catch (\Exception $e) {
             $this->log('Migration Version20250519111227: Unable to update Outbound Email "is_personal" column to 1 where type is user Error:' . $e->getMessage());
         }
