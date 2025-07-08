@@ -133,7 +133,7 @@ class DefaultEmailTrackerManager implements EmailTrackerManagerInterface
         // Use preg_replace_callback to find and replace all href attributes in <a> tags
         $emailBody = preg_replace_callback(
             '/<a[^>]*href=["\']([^"\']+)["\'][^>]*>/i',
-            function ($matches) use ($trackingUrlTemplate, $campaignId) {
+            function ($matches) use ($trackingUrlTemplate, $campaignId, $trackerId) {
                 $originalUrl = $matches[1];
 
                 $this->logger->debug(
@@ -153,20 +153,26 @@ class DefaultEmailTrackerManager implements EmailTrackerManagerInterface
                 }
 
 
-                $trackerLink = $this->getTracker($campaignId, $trackerUrl);
+                $trackerLink = $this->getTracker($campaignId, $trackerUrl, $originalUrl, $trackerId);
                 if (empty($trackerLink)) {
                     $trackerLink = $this->addTracker($campaignId, $trackerUrl);
                 }
 
-                $uniqueTrackerUrl = sprintf($trackingUrlTemplate, $trackerLink['id']);
-                $replaced = str_replace($originalUrl, $uniqueTrackerUrl, $matches[0]);
+                $uniqueTrackerUrl = '';
+
+                if (isTrue($trackerLink['is_optout'])){
+                    $replaced = str_replace($originalUrl, $trackerLink['tracker_url'], $matches[0]);
+                } else {
+                    $uniqueTrackerUrl = sprintf($trackingUrlTemplate, $trackerLink['id']);
+                    $replaced = str_replace($originalUrl, $uniqueTrackerUrl, $matches[0]);
+                }
 
                 $this->logger->debug(
                     'Campaigns:DefaultEmailTrackerManager::addTrackerLinks - Add tracker link - id: ' . $trackerLink['id'], [
                         'trackerLinkId' => $trackerLink['id'],
                         'campaignId' => $campaignId,
                         'originalUrl' => $originalUrl,
-                        'trackerUrl' => $uniqueTrackerUrl,
+                        'trackerUrl' => !empty($uniqueTrackerUrl) ? $uniqueTrackerUrl : $trackerLink['tracker_url'],
                         'replaced' => $replaced,
                     ]
                 );
@@ -242,9 +248,11 @@ class DefaultEmailTrackerManager implements EmailTrackerManagerInterface
         return $replaced;
     }
 
-    public function getTracker(string $campaignId, string $url): ?array
+    public function getTracker(string $campaignId, string $url, string $originalUrl, string $trackerId): ?array
     {
         $trackerLink = [];
+
+        $decodedUrlKey = $this->decode($originalUrl);
 
         try {
             $queryBuilder = $this->preparedStatementHandler->createQueryBuilder();
@@ -254,8 +262,10 @@ class DefaultEmailTrackerManager implements EmailTrackerManagerInterface
                 ->where('trk.deleted = 0')
                 ->andWhere("trk.campaign_id = :campaignId")
                 ->andWhere("trk.tracker_url = :url")
+                ->orWhere("trk.tracker_name = :decoded")
                 ->setParameter('campaignId', $campaignId)
                 ->setParameter('url', $url)
+                ->setParameter('decoded', $decodedUrlKey)
                 ->fetchAssociative();
         } catch (Exception $e) {
             $this->logger->error(
@@ -274,6 +284,10 @@ class DefaultEmailTrackerManager implements EmailTrackerManagerInterface
 
         if (empty($trackerLink)) {
             return [];
+        }
+
+        if (isTrue($trackerLink['is_optout'])){
+            $trackerLink['tracker_url'] = $this->getTrackingUrl() . "index.php?entryPoint=removeme&identifier=$trackerId";
         }
 
         return $trackerLink;
@@ -360,5 +374,11 @@ class DefaultEmailTrackerManager implements EmailTrackerManagerInterface
 
             return $matches[1] . $matches[2] . $title . $matches[2];
         }, $replaced);
+    }
+
+    protected function decode(string $originalUrl): string
+    {
+        $decoded = urldecode($originalUrl);
+        return str_replace(['{', '}'], ['', ''], $decoded);
     }
 }

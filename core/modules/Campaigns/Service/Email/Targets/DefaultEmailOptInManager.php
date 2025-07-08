@@ -133,7 +133,7 @@ class DefaultEmailOptInManager implements EmailOptInManagerInterface
     {
         $url = $this->emailTrackerManager->getTrackingUrl() . "index.php?entryPoint=removeme&identifier=$trackerId";
 
-            $containsLinkVariable = $this->containsUnsubscribeLinkVariable($emailBody);
+        $containsLinkVariable = $this->containsUnsubscribeLinkVariable($emailBody);
 
         if ($containsLinkVariable) {
 
