@@ -224,6 +224,7 @@ class EmailMarketingDiagnostics extends LegacyHandler implements StatisticsProvi
         }
 
         foreach ($jobs as $job) {
+            $this->init();
             $bean = $this->getSchedulerBean($job);
 
             $key = explode('::', $job);
@@ -238,6 +239,8 @@ class EmailMarketingDiagnostics extends LegacyHandler implements StatisticsProvi
             }
 
             $bean->setIntervalHumanReadable();
+
+            $this->close();
 
             $result['fields'][$key] = [
                 'value' => $bean->intervalHumanReadable
