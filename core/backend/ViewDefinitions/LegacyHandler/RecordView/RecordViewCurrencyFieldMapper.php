@@ -309,7 +309,7 @@ class RecordViewCurrencyFieldMapper implements ViewDefinitionMapperInterface
                 $currencyName,
                 $baseName,
                 $currencyIdName,
-                $logic[$logicKey]['params']['fieldDependencies']
+                $logic[$logicKey]['params']
             );
         }
     }

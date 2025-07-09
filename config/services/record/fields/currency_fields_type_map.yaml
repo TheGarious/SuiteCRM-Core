@@ -12,6 +12,8 @@ parameters:
                 modes: ['edit', 'create', 'massupdate', 'filter']
                 params:
                   fieldDependencies: ['{currency_id}']
+                  currencyIdField: '{currency_id}'
+                  baseCurrencyField: '{base_currency}'
                 triggeringStatus: ['onAnyLogic']
           '{currency_id}':
             modes: ['edit', 'create', 'massupdate', 'filter']
@@ -28,4 +30,6 @@ parameters:
                 modes: ['edit', 'create', 'massupdate', 'filter']
                 params:
                   fieldDependencies: ['{currency}']
+                  currencyField: '{currency}'
+                  currencyIdField: '{currency_id}'
                 triggeringStatus: ['onAnyLogic']
