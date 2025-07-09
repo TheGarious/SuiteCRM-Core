@@ -40,6 +40,7 @@
                     <scrm-popup-button [icon]="item?.value?.icon"
                                        [klass]="item?.value?.klass"
                                        [dynamicClass]="item.value.dynamicClass"
+                                       [openStatusEventEmitter]="showPopups"
                                        [showPopup]="item.value.showPopup"
                                        [popoverClass]="''"
                                        [titleKey]="item.value.titleKey"
@@ -59,6 +60,7 @@
                                        [dynamicClass]="item.value.dynamicClass"
                                        [klass]="item?.value?.klass"
                                        [showPopup]="item?.value?.showPopup"
+                                       [openStatusEventEmitter]="showPopups"
                                        [popoverClass]="''"
                                        [titleKey]="item.value.titleKey"
                                        placement="bottom"
@@ -91,7 +93,9 @@
 
                 <ng-container *ngIf="item?.value?.type === 'color-selector'">
                     <scrm-color-selector class="squire-editor-toolbar-item"
-                                         [config]="item?.value"></scrm-color-selector>
+                                         [config]="item?.value"
+                                         [openStatusEventEmitter]="showPopups"
+                    ></scrm-color-selector>
                 </ng-container>
 
             </ng-container>

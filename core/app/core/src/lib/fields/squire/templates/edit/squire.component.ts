@@ -89,6 +89,8 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
     styleSignal: WritableSignal<string> = signal('');
     editorMode: WritableSignal<string> = signal('html');
 
+    showPopups: EventEmitter<boolean> = new EventEmitter()
+
     protected currentEditorPath: WritableSignal<string> = signal('');
     protected editor: Squire;
 
@@ -1202,6 +1204,11 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
         this.initEditor();
         iframe.contentDocument.addEventListener('click', () => {
             this.editor.focus();
+            this.showPopups.emit(false);
+
+            if (this.availableButtons) {
+                this.availableButtons.insertLink.metadata.openStatusEventEmitter.emit(false);
+            }
         });
         this.initHtml()
         this.calculateActiveButtons();

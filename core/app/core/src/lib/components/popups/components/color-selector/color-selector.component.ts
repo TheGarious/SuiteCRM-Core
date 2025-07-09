@@ -24,7 +24,7 @@
  * the words "Supercharged by SuiteCRM".
  */
 
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit} from '@angular/core';
 import {KeyValuePipe, NgClass, NgForOf} from "@angular/common";
 import {ColorSection} from "./color-selector.model";
 import {PopupButtonModule} from "../popup-button/popup-button.module";
@@ -50,6 +50,7 @@ import {ButtonModule} from "../../../button/button.module";
 export class ColorSelectorComponent implements OnInit {
 
     @Input('config') buttonConfig: ButtonInterface;
+    @Input() openStatusEventEmitter: EventEmitter<boolean>;
     colorSelectorConfig: DropdownButtonInterface;
 
     ngOnInit(): void {
