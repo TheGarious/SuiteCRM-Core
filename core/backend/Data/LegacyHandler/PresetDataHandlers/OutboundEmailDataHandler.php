@@ -92,6 +92,7 @@ class OutboundEmailDataHandler extends BaseListDataHandler implements ListDataHa
     {
         $listData = new ListData();
         $records = $this->recordMapper->mapRecords($resultData['data'] ?? [], $resultData['pageData'] ?? []);
+        $this->filterInvalidOutbounds($records);
         $listData->setRecords($records);
         $listData->setOrdering($resultData['pageData']['ordering'] ?? []);
         if (isset($resultData['pageData']['offsets']['total']) && is_numeric($resultData['pageData']['offsets']['total'])) {
@@ -110,8 +111,27 @@ class OutboundEmailDataHandler extends BaseListDataHandler implements ListDataHa
 
         $showGroupRecords = "(type IS NULL) OR (type != 'user' ) OR ";
 
-        $where .= " AND ($showGroupRecords (type = 'user' AND user_id = '".$currentUser?->db->quote($currentUser?->id)."')) ";
+        $query = "($showGroupRecords (type = 'user' AND user_id = '".$currentUser?->db->quote($currentUser?->id)."'))";
+
+        if (empty($where)) {
+            return $query;
+        }
+
+        $where .= " AND $query";
 
         return $where;
+    }
+
+    protected function filterInvalidOutbounds(array &$records): void
+    {
+        foreach ($records as $key => $record) {
+            $attributes = $record->getAttributes();
+
+            if (!empty($attributes['from_addr'])) {
+                continue;
+            }
+
+            unset($records[$key]);
+        }
     }
 }
