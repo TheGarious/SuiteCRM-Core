@@ -68,7 +68,7 @@ export class GroupFieldComponent extends BaseFieldComponent implements AfterView
     ngOnInit(): void {
         super.ngOnInit();
 
-        this.subs.push(this.recalculateDirectionBuffer$.pipe(debounceTime(50)).subscribe(() => {
+        this.subs.push(this.recalculateDirectionBuffer$.pipe().subscribe(() => {
             this.calculateDirection();
         }));
 
