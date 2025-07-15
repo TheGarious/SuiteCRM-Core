@@ -33,6 +33,7 @@ import {LanguageStore} from '../../store/language/language.store';
 import get from 'lodash-es/get';
 import {SystemConfigStore} from '../../store/system-config/system-config.store';
 import {UserPreferenceStore} from '../../store/user-preference/user-preference.store';
+import {AttributeMap} from "../../common/record/record.model";
 
 
 export declare type TemplateValueFilter = (value: string, filterArguments?: string[]) => string;
@@ -98,7 +99,7 @@ export class DynamicLabelService implements DynamicLabelServiceInterface {
         this.fieldPipes[name] = processor;
     }
 
-    parse(template: string, context: StringMap, fields: FieldMap): string {
+    parse(template: string, context: StringMap, fields: FieldMap, attributes: AttributeMap = {}): string {
 
         if (!template) {
             return template;
@@ -159,7 +160,7 @@ export class DynamicLabelService implements DynamicLabelServiceInterface {
             }
 
 
-            let sourceValues: { [key: string]: string | Field } = context;
+            let sourceValues: { [key: string]: any | Field } = context;
             if (source === 'fields') {
                 sourceValues = fields;
             }
@@ -227,6 +228,13 @@ export class DynamicLabelService implements DynamicLabelServiceInterface {
                         return this.preferences.getUserPreference(key);
                     }
                 );
+                return;
+            }
+
+            if (source === 'attributes') {
+                sourceValues = attributes;
+                value = sourceValues[variableName] ?? '';
+                parsedTemplate = parsedTemplate.replace(regexMatch, value);
                 return;
             }
 

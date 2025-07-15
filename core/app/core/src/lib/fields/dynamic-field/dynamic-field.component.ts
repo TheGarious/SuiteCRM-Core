@@ -192,7 +192,7 @@ export class DynamicFieldComponent implements OnInit, OnDestroy {
         const fieldMetadata = this?.field?.metadata ?? null;
         const linkRoute = fieldMetadata.linkRoute ?? null;
         if (fieldMetadata && linkRoute) {
-            return this.dynamicLabelService.parse(linkRoute, {}, this.record.fields);
+            return this.dynamicLabelService.parse(linkRoute, {}, this.record.fields, this.record.attributes);
         }
 
         return this.navigation.getRecordRouterLink(this.record.module, this.record.id);
