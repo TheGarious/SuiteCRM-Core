@@ -45,6 +45,8 @@ require_once __DIR__ . '/ApiBeanModuleMappers.php';
 require_once __DIR__ . '/ModuleMappers/SavedSearch/SavedSearchMappers.php';
 require_once __DIR__ . '/ModuleMappers/AOP_Case_Updates/CaseUpdatesMappers.php';
 require_once __DIR__ . '/ModuleMappers/Alerts/AlertsMappers.php';
+require_once __DIR__ . '/ModuleMappers/EmailMan/EmailManMappers.php';
+require_once __DIR__ . '/ModuleMappers/Tasks/TasksMappers.php';
 require_once __DIR__ . '/../Bean/Field/Validation/FieldValidatorRegistry.php';
 
 class ApiBeanMapper
@@ -96,6 +98,8 @@ class ApiBeanMapper
         $this->linkMappers[EmailAddressLinkMapper::getRelateModule()]['all'] = new EmailAddressLinkMapper();
         $this->moduleMappers[CaseUpdatesMappers::getModule()] = new CaseUpdatesMappers();
         $this->moduleMappers[AlertsMappers::getModule()] = new AlertsMappers();
+        $this->moduleMappers[EmailManMappers::getModule()] = new EmailManMappers();
+        $this->moduleMappers[TasksMappers::getModule()] = new TasksMappers();
         $this->linkMappers[DefaultLinkMapper::getRelateModule()] = [];
         $this->linkMappers[DefaultLinkMapper::getRelateModule()]['all'] = new DefaultLinkMapper();
         global $api_bean_mappers;
