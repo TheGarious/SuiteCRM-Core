@@ -3238,6 +3238,16 @@ function get_emails_by_assign_or_link($params)
     return $return_array;
 }
 
+function getUpcomingEmails($bean) {
+    $query = [];
+    $query['select'] = " ";
+    $query['from'] = " FROM emailman";
+    $query['join'] = " ";
+    $query['where'] = " WHERE emailman.deleted = '0' AND email_marketing.deleted = '0' AND emailman.related_id = " . $bean->db->quoted($bean->id);
+
+    return $query;
+}
+
 /**
  * Check to see if the number is empty or non-zero.
  *
