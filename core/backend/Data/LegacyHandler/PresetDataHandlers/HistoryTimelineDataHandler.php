@@ -200,7 +200,6 @@ class HistoryTimelineDataHandler extends SubpanelDataQueryHandler implements Pre
                     "status" => [],
                     "date_modified" => [],
                     "date_entered" => [
-
                         "alias" => 'date_end',
                         "sort_by" => 'date_end'
                     ],
@@ -215,6 +214,13 @@ class HistoryTimelineDataHandler extends SubpanelDataQueryHandler implements Pre
                     ],
                     "date_entered" => [],
                     "date_due" => [],
+                ],
+                'emailman' => [
+                    "name" => [],
+                    "status" => [],
+                    "date_modified" => [],
+                    "date_entered" => [],
+                    "date_end" => [],
                 ],
                 'linkedemails' => [
                     "name" => [],
@@ -237,6 +243,7 @@ class HistoryTimelineDataHandler extends SubpanelDataQueryHandler implements Pre
             'oldcalls' => 'Calls',
             'notes' => 'Notes',
             'emails' => 'Emails',
+            'emailman' => 'EmailMan',
             'linkedemails' => 'Emails',
             'audit' => 'audit'
         ];

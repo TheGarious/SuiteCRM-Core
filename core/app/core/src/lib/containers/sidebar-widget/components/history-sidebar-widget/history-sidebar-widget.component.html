@@ -62,7 +62,7 @@
                             <div class="card">
                                 <div class="card-body p-1 pr-2 pl-2">
                                     <p class="card-title text-break history-timeline-entry-title">
-                                        <a *ngIf="entry.record.module !== 'audit'"
+                                        <a *ngIf="entry.record.module !== 'audit' && entry.record.module !== 'emailman'"
                                            [routerLink]="redirectLink(entry.record.module, entry.record.id)"
                                         >
                                             <scrm-field [type]="entry.title.type"
@@ -71,7 +71,7 @@
                                                         [record]="entry.record">
                                             </scrm-field>
                                         </a>
-                                        <a *ngIf="entry.record.module === 'audit'">
+                                        <a *ngIf="entry.record.module === 'audit' || entry.record.module === 'emailman'">
                                             <scrm-field [type]="entry.title.type"
                                                         mode="list"
                                                         [field]="entry.title"
