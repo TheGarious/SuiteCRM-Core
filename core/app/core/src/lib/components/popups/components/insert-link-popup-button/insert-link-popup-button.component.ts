@@ -78,9 +78,9 @@ export class InsertLinkPopupButtonComponent implements OnInit, OnDestroy {
             });
         }
 
-        this.linkEventEmitter.subscribe((string) => {
+        this.subs.push(this.linkEventEmitter.subscribe((string) => {
             this.linkUrl = string;
-        })
+        }));
     }
 
     ngOnDestroy() {
