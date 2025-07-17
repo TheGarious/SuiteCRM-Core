@@ -450,6 +450,11 @@ $dictionary['EmailMarketing'] = [
             'vname' => 'LBL_BODY',
             'inline_edit' => false,
             'rows' => 10,
+            'asyncValidators' => [
+                'unsubscribe-link-validation' => [
+                    'key' => 'unsubscribe-link-validation'
+                ]
+            ],
             'cols' => 250,
             'metadata' => [
                 'trustHTML' => true,
