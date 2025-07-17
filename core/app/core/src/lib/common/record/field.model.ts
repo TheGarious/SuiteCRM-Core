@@ -43,6 +43,11 @@ export interface Option {
     labelKey?: string;
 }
 
+export interface AsyncValidationDefinition {
+    key: string;
+    params?: { [key: string]: string };
+}
+
 export interface ValidationDefinition {
     [key: string]: number | string;
 
@@ -81,6 +86,7 @@ export interface FieldDefinition {
     inline_edit?: boolean;
     validation?: ValidationDefinition;
     validations?: ValidationDefinition[];
+    asyncValidators?: AsyncValidationDefinition[]
     template?: string;
     display?: string;
     displayType?: string;

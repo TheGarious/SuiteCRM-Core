@@ -27,10 +27,18 @@
 import {Record} from '../../../common/record/record.model';
 import {ViewFieldDefinition} from '../../../common/metadata/metadata.model';
 import {AsyncValidatorFn} from '@angular/forms';
+import {AsyncValidationDefinition} from "../../../common/record/field.model";
 
 export interface AsyncValidatorInterface {
 
     applies(record: Record, viewField: ViewFieldDefinition): boolean;
 
     getValidator(viewField: ViewFieldDefinition, record: Record): AsyncValidatorFn;
+}
+
+export interface AsyncProcessValidatorInterface {
+
+    applies(record: Record, viewField: ViewFieldDefinition): boolean;
+
+    getValidator(validator: AsyncValidationDefinition, viewField: ViewFieldDefinition, record: Record): AsyncValidatorFn;
 }
