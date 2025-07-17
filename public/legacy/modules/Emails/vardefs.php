@@ -645,6 +645,7 @@ $dictionary['Email'] = array(
                     ]
                 ]
             ],
+            'initDefaultProcess' => 'outbound-email-default',
             'filterOnEmpty' => true,
             'link' => 'outbound_email',
             'table' => 'outbound_email',

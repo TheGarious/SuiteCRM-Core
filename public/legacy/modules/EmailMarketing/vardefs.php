@@ -387,6 +387,7 @@ $dictionary['EmailMarketing'] = [
             'defaultValueModes' => [
                 'create'
             ],
+            'initDefaultProcess' => 'outbound-email-default',
             'showFilter' => false,
             'filter' => [
                 'preset' => [
