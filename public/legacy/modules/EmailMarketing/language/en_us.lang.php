@@ -132,6 +132,7 @@ $mod_strings = array(
     'LBL_TARGET_LISTS_HELP' => 'Marketing recipients. Recipients on the campaign\'s suppression lists will be blocked.',
     'LBL_STATUS_DRAFT_NOT_SEND_HELP' => 'Marketing process will only start when scheduled.',
     'LBL_TYPE_MARKETING_HELP' => 'Recipients are subject to opt-out validation.',
+    'LBL_TYPE_LEGACY_HELP' => 'This is a Legacy Email Marketing Record and exists for historical data purposes.',
     'LBL_TYPE_TRANSACTIONAL_HELP' => 'Recipients are NOT subject to opt-out validation.',
 
     'LBL_SCHEDULER_WIDGET' => 'Email Marketing Diagnostics',

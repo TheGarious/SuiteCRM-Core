@@ -200,6 +200,18 @@ $dictionary['EmailMarketing'] = [
             'importable' => 'required',
             'footnotes' => [
                 [
+                    'labelKey' => 'LBL_TYPE_LEGACY_HELP',
+                    'displayModes' => ['edit', 'create', 'detail'],
+                    'icon' => 'info_circled',
+                    'iconKlass' => 'mr-1 align-text-bottom svg-size-3 stroke-info fill-info',
+                    'activeOn' => [
+                        [
+                            'operator' => 'is-equal',
+                            'values' => ['legacy']
+                        ]
+                    ]
+                ],
+                [
                     'labelKey' => 'LBL_TYPE_MARKETING_HELP',
                     'displayModes' => ['edit', 'create', 'detail'],
                     'icon' => 'info_circled',
@@ -207,7 +219,7 @@ $dictionary['EmailMarketing'] = [
                     'activeOn' => [
                         [
                             'operator' => 'not-equal',
-                            'values' => ['transactional']
+                            'values' => ['transactional', 'legacy']
                         ]
                     ]
                 ],
