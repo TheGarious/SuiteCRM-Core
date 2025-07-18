@@ -26,9 +26,15 @@
 */
 -->
 <ng-container *ngIf="!field?.loading()">
-    <ng-container *ngIf="getErrorPosition() === 'top' && isEdit() && field.formControl && field.formControl.errors && touched()">
-        <ng-container *ngIf="validateOnlyOnSubmit ? isInvalid() : (field.formControl.invalid && field.formControl.touched)">
-            <scrm-field-validation [field]="field" [record]="record"></scrm-field-validation>
+    <ng-container *ngIf="getErrorPosition() === 'top' && isEdit() && field.formControl && touched()">
+        <ng-container *ngIf="field.formControl.errors">
+            <ng-container
+                    *ngIf="validateOnlyOnSubmit ? isInvalid() : (field.formControl.invalid && field.formControl.touched)">
+                <scrm-field-validation [field]="field" [record]="record" [errors]="field.formControl.errors"></scrm-field-validation>
+            </ng-container>
+        </ng-container>
+        <ng-container *ngIf="field.asyncValidationErrors !== null">
+            <scrm-field-validation [field]="field" [record]="record" [errors]="field.asyncValidationErrors"></scrm-field-validation>
         </ng-container>
     </ng-container>
     <div class="d-flex w-100 flex-grow-1"
@@ -102,7 +108,8 @@
 <ng-container *ngIf="activeFootnotes().length">
     <ng-container *ngFor="let footnote of activeFootnotes()">
         <div class="form-text small text-lighter {{footnote?.klass ?? ''}}">
-            <scrm-image *ngIf="footnote?.icon" [image]="footnote?.icon" [klass]="footnote?.iconKlass ?? ''"></scrm-image>
+            <scrm-image *ngIf="footnote?.icon" [image]="footnote?.icon"
+                        [klass]="footnote?.iconKlass ?? ''"></scrm-image>
             <scrm-dynamic-label [context]="footnote.context"
                                 [fields]="{field: field}"
                                 [labelKey]="footnote?.labelKey ?? ''"
@@ -112,8 +119,14 @@
         </div>
     </ng-container>
 </ng-container>
-<ng-container *ngIf="getErrorPosition() !== 'top' && isEdit() && field.formControl && field.formControl.errors && touched()">
-    <ng-container *ngIf="validateOnlyOnSubmit ? isInvalid() : (field.formControl.invalid && field.formControl.touched)">
-        <scrm-field-validation [field]="field" [record]="record"></scrm-field-validation>
+<ng-container *ngIf="getErrorPosition() !== 'top' && isEdit() && field.formControl && touched()">
+    <ng-container *ngIf="field.formControl.errors">
+        <ng-container
+                *ngIf="validateOnlyOnSubmit ? isInvalid() : (field.formControl.invalid && field.formControl.touched)">
+            <scrm-field-validation [field]="field" [record]="record" [errors]="field.formControl.errors"></scrm-field-validation>
+        </ng-container>
+    </ng-container>
+    <ng-container *ngIf="field.asyncValidationErrors !== null">
+        <scrm-field-validation [field]="field" [record]="record" [errors]="field.asyncValidationErrors"></scrm-field-validation>
     </ng-container>
 </ng-container>

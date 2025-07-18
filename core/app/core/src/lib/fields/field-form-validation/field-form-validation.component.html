@@ -25,7 +25,7 @@
 * the words "Supercharged by SuiteCRM".
 */
 -->
-<div *ngFor="let item of field.formControl.errors | keyvalue" class="invalid-feedback d-block">
+<div *ngFor="let item of errors | keyvalue" class="invalid-feedback d-block">
     <ng-container *ngIf="hasLabels(item.value)">
         <scrm-label [labelKey]="getMessageStartLabelKey(item.value)"> </scrm-label>
         <scrm-image *ngIf="getValidationIcon(item.value)" [image]="getValidationIcon(item.value)"></scrm-image>

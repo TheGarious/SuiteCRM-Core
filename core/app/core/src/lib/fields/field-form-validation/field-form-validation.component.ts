@@ -27,6 +27,7 @@ import {Record} from "../../common/record/record.model";
 import {StringMap} from "../../common/types/string-map";
 import {Component, Input} from "@angular/core";
 import {Field} from "../../common/record/field.model";
+import {StandardValidationErrors} from "../../common/services/validators/validators.model";
 
 @Component({
     selector: 'scrm-field-validation',
@@ -38,6 +39,7 @@ export class FieldFormValidationComponent {
 
     @Input('field') field: Field;
     @Input('record') record: Record;
+    @Input('errors') errors: StandardValidationErrors;
 
     hasLabels(item: any): boolean {
         return item?.message?.labels?.startLabelKey || item?.message?.labels?.endLabelKey;
