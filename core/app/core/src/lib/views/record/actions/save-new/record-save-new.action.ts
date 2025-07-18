@@ -30,6 +30,7 @@ import {take} from 'rxjs/operators';
 import {RecordActionData, RecordActionHandler} from '../record.action';
 import {MessageService} from '../../../../services/message/message.service';
 import {ModuleNavigation} from '../../../../services/navigation/module-navigation/module-navigation.service';
+import {FieldMap} from "../../../../common/record/field.model";
 
 @Injectable({
     providedIn: 'root'
@@ -47,7 +48,16 @@ export class RecordSaveNewAction extends RecordActionHandler {
     }
 
     run(data: RecordActionData): void {
+
+        const record = data.store.recordStore.getStaging();
+        const fields = record.fields;
+        data.store.setLoading(true, 'validate');
+        this.setAsyncValidators(fields);
+
         data.store.recordStore.validate().pipe(take(1)).subscribe(valid => {
+            this.clearAsyncValidators(fields);
+            data.store.setLoading(false, 'validate');
+
             if (valid) {
                 data.store.save().pipe(take(1)).subscribe(
                     record => {
@@ -66,5 +76,30 @@ export class RecordSaveNewAction extends RecordActionHandler {
 
     shouldDisplay(data: RecordActionData): boolean {
         return true;
+    }
+
+    setAsyncValidators(fields: FieldMap): void {
+        Object.keys(fields).forEach(fieldKey => {
+            const field = fields[fieldKey];
+
+            field.asyncValidationErrors = null;
+
+            if (field?.asyncValidators?.length) {
+                field.formControl.setAsyncValidators(field?.asyncValidators);
+                field.formControl.updateValueAndValidity();
+            }
+        });
+    }
+
+    clearAsyncValidators(fields: FieldMap): void {
+        Object.keys(fields).forEach(fieldKey => {
+            const field = fields[fieldKey];
+
+            if (field?.asyncValidators?.length) {
+                field.formControl.clearAsyncValidators();
+                field.formControl.updateValueAndValidity();
+            }
+
+        });
     }
 }

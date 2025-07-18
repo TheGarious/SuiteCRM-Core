@@ -33,6 +33,7 @@ import {NotificationStore} from '../../../../store/notification/notification.sto
 import {RecordModalActionData, RecordModalActionHandler} from "../record-modal.action";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {ViewMode} from "../../../../common/views/view.model";
+import {FieldMap} from "../../../../common/record/field.model";
 
 @Injectable({
     providedIn: 'root'
@@ -53,8 +54,10 @@ export class RecordModalSaveAction extends RecordModalActionHandler {
     }
 
     run(data: RecordModalActionData): void {
-        const isFieldLoading = Object.keys(data.store.recordStore.getStaging().fields).some(fieldKey => {
-            const field = data.store.recordStore.getStaging().fields[fieldKey];
+        const record = data.store.recordStore.getStaging();
+        const fields = record.fields;
+        const isFieldLoading = Object.keys(fields).some(fieldKey => {
+            const field = fields[fieldKey];
             return field.loading() ?? false;
         });
 
@@ -63,7 +66,13 @@ export class RecordModalSaveAction extends RecordModalActionHandler {
             return;
         }
 
+        data.store.setLoading(true, 'validate');
+        this.setAsyncValidators(fields);
+
         data.store.recordStore.validate().pipe(take(1)).subscribe(valid => {
+            this.clearAsyncValidators(fields);
+            data.store.setLoading(false, 'validate');
+
             if (valid) {
                 data.store.save().pipe(take(1)).subscribe(record => {
                     this.notificationStore.conditionalNotificationRefresh('edit');
@@ -78,5 +87,29 @@ export class RecordModalSaveAction extends RecordModalActionHandler {
 
     shouldDisplay(data: RecordModalActionData): boolean {
         return true;
+    }
+
+    setAsyncValidators(fields: FieldMap): void {
+        Object.keys(fields).forEach(fieldKey => {
+            const field = fields[fieldKey];
+
+            field.asyncValidationErrors = null;
+
+            if (field?.asyncValidators?.length) {
+                field.formControl.setAsyncValidators(field?.asyncValidators);
+                field.formControl.updateValueAndValidity();
+            }
+        });
+    }
+
+    clearAsyncValidators(fields: FieldMap): void {
+        Object.keys(fields).forEach(fieldKey => {
+            const field = fields[fieldKey];
+
+            if (field?.asyncValidators?.length) {
+                field.formControl.clearAsyncValidators();
+                field.formControl.updateValueAndValidity();
+            }
+        });
     }
 }
