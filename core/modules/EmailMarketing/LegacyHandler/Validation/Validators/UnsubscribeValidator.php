@@ -94,11 +94,18 @@ class UnsubscribeValidator implements ProcessHandlerInterface
 
         $trackers = $this->getTrackers();
 
+        $data = [
+          'errors' => []
+        ];
+
         if ($attributes['type'] === 'transactional') {
 
             if ($this->containsTrackers($value, $trackers)){
                 $process->setStatus('error');
-                $process->setMessages(['startLabelKey' => 'LBL_VALIDATION_ERROR_REMOVE_UNSUBSCRIBE_LINK']);
+                $data['errors'] = [
+                  'startLabelKey' => 'LBL_VALIDATION_ERROR_REMOVE_UNSUBSCRIBE_LINK'
+                ];
+                $process->setData($data);
                 return;
             }
 
@@ -108,7 +115,13 @@ class UnsubscribeValidator implements ProcessHandlerInterface
 
         if (!$this->containsTrackers($value, $trackers)){
             $process->setStatus('error');
-            $process->setMessages(['startLabelKey' => 'LBL_VALIDATION_ERROR_UNSUBSCRIBE_LINK', 'icon' => 'unsubscribe']);
+            $data = [
+                'errors' => [
+                    'startLabelKey' => 'LBL_VALIDATION_ERROR_UNSUBSCRIBE_LINK',
+                    'icon' => 'unsubscribe'
+                ]
+            ];
+            $process->setData($data);
             return;
         }
 

@@ -69,11 +69,14 @@ export const asyncValidator = (validator: AsyncValidationDefinition, viewField: 
                 }
             }
 
-            Object.keys(process?.messages).forEach((key) => {
-                if (error[processKey].message.labels[key] === ''){
-                    error[processKey].message.labels[key] = process.messages[key];
-                }
-            })
+            if (process?.data?.errors ?? false){
+                Object.keys(process?.data?.errors).forEach((key) => {
+                    if (error[processKey].message.labels[key] === ''){
+                        error[processKey].message.labels[key] = process?.data?.errors[key];
+                    }
+                });
+            }
+
 
             record.fields[viewField.name].asyncValidationErrors = error;
 
