@@ -95,10 +95,6 @@ export class RecordValidationHandler {
         if (validators?.length) {
             field.formControl.setValidators(validators);
         }
-
-        if (asyncValidators?.length) {
-            field.formControl.setAsyncValidators(asyncValidators);
-        }
     }
 
     /**
