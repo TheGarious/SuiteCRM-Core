@@ -791,6 +791,21 @@ $viewdefs ['EmailMarketing'] = [
                         ]
                     ],
                     'acl' => ['delete'],
+                    'displayLogic' => [
+                        'hide-on-legacy' => [
+                            'modes' => ['detail'],
+                            'params' => [
+                                'activeOnFields' => [
+                                    'type' => [
+                                        [
+                                            'operator' => 'is-equal',
+                                            'values' => ['legacy']
+                                        ],
+                                    ],
+                                ]
+                            ]
+                        ],
+                    ],
                 ],
             ],
         ],
