@@ -75,6 +75,8 @@ export const asyncValidator = (validator: AsyncValidationDefinition, viewField: 
                 }
             })
 
+            record.fields[viewField.name].asyncValidationErrors = error;
+
             return error;
         }), take(1));
     }

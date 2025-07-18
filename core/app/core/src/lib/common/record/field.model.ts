@@ -33,6 +33,7 @@ import {ObjectMap} from '../types/object-map';
 import {ViewMode} from '../views/view.model';
 import {signal, WritableSignal} from "@angular/core";
 import {FieldActions} from "../metadata/metadata.model";
+import {StandardValidationErrors} from "../services/validators/validators.model";
 
 export type DisplayType = 'none' | 'show' | 'readonly' | 'inline' | 'disabled' | 'default';
 
@@ -206,6 +207,7 @@ export interface Field {
     metadata?: FieldMetadata;
     definition?: FieldDefinition;
     criteria?: SearchCriteriaFieldFilter;
+    asyncValidationErrors?: StandardValidationErrors;
     formControl?: UntypedFormControl;
     itemFormArray?: UntypedFormArray;
     validators?: ValidatorFn[];
