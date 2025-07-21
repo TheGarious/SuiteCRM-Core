@@ -24,17 +24,35 @@
  * feasible for technical reasons, the Appropriate Legal Notices must display
  * the words "Supercharged by SuiteCRM".
  */
+namespace App\Data\Service\Record\Repository;
 
-namespace App\MediaObjects\Repository;
-
-use App\Data\Service\Record\Repository\RecordEntityRepository;
-use App\MediaObjects\Entity\PrivateDocumentMediaObject;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
-class PrivateDocumentMediaObjectRepository extends RecordEntityRepository
+abstract class RecordEntityRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(
+        ManagerRegistry $registry,
+        string $entityClass,
+    ) {
+        parent::__construct($registry, $entityClass);
+    }
+
+    public function save(object $entity, bool $flush = false): void
     {
-        parent::__construct($registry, PrivateDocumentMediaObject::class);
+        $this->getEntityManager()->persist($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
+    public function remove(object $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->remove($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
     }
 }
