@@ -120,6 +120,8 @@ import {MultiFlexRelateEditFieldComponent} from "./multiflexrelate/templates/edi
 import {EmailDetailFieldsComponent} from "./email/templates/detail/email.component";
 import {SquireDetailFieldModule} from "./squire/templates/detail/squire.module";
 import {SquireDetailFieldComponent} from "./squire/templates/detail/squire.component";
+import {FileEditFieldModule} from "./file/templates/edit/file.module";
+import {FileEditFieldComponent} from "./file/templates/edit/file.component";
 
 export const baseFieldModules = [
     VarcharDetailFieldModule,
@@ -130,6 +132,7 @@ export const baseFieldModules = [
     IntDetailFieldModule,
     IconListFieldModule,
     FileDetailFieldModule,
+    FileEditFieldModule,
     FloatDetailFieldModule,
     PhoneDetailFieldModule,
     DateDetailFieldModule,
@@ -178,6 +181,7 @@ export const baseFieldComponents = [
     PasswordEditFieldComponent,
     IntDetailFieldComponent,
     FileDetailFieldComponent,
+    FileEditFieldComponent,
     FloatDetailFieldComponent,
     PhoneDetailFieldComponent,
     DateDetailFieldComponent,
@@ -233,6 +237,7 @@ export const baseViewFieldsMap: FieldComponentMap = {
     'char.detail': VarcharDetailFieldComponent,
     'int.list': IntDetailFieldComponent,
     'int.detail': IntDetailFieldComponent,
+    'file.edit': FileEditFieldComponent,
     'file.detail': FileDetailFieldComponent,
     'file.list': FileDetailFieldComponent,
     'float.list': FloatDetailFieldComponent,
