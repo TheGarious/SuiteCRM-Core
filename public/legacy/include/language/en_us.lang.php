@@ -4283,6 +4283,12 @@ $app_strings['LBL_UNSUBSCRIBE'] = 'Unsubscribe';
 $app_strings['LBL_INACTIVE'] = 'Inactive';
 $app_strings['LBL_DISPLAYING_TEST_EMAIL_MARKETING_DATA'] = 'Charts and Subpanels currently displaying data generated from Test Emails.';
 $app_strings['LBL_DASH_SYMBOL'] = '-';
+$app_strings['LBL_FIELD_STORAGE_NOT_SET'] = 'File storage type not set for field. Unable to upload file.';
+$app_strings['LBL_UPLOAD'] = 'Upload';
+$app_strings['LBL_UPLOAD_FAILED'] = 'Upload failed, please try again later';
+$app_strings['LBL_UPLOADING'] = 'Uploading';
+$app_strings['LBL_FILE_FIELD_UPLOAD_BUTTON_DESCRIPTION'] = 'Click or drag a file here to upload';
+$app_strings['LBL_TEMPORARY'] = 'Temporary';
 
 $app_strings['LBL_DEFAULT_OUTBOUND_NOT_SET'] = 'Unable to retrieve Default Outbound Email';
 $app_strings['LBL_DEFAULT_OUTBOUND_NOT_CONFIGURED'] = 'Outbound Email Account not correctly configured.';
