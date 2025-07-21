@@ -61,6 +61,13 @@ $mediaObjectFields = [
         'name' => 'parent_id',
         'type' => 'id',
     ],
+    'temporary' => [
+        'name' => 'temporary',
+        'type' => 'bool',
+        'vname' => 'LBL_TEMPORARY',
+        'default' => '1',
+        'reportable' => false,
+    ],
 ];
 
 $dictionary['ArchivedDocumentMediaObject'] = [
