@@ -80,9 +80,10 @@ use Symfony\Component\Validator\Constraints as Assert;
     normalizationContext: ['groups' => ['media_object:read']],
     security: "is_granted('ROLE_USER')"
 )]
-class PublicImageMediaObject implements DefaultRecordInterface
+class PublicImageMediaObject implements MediaObjectInterface
 {
     use DefaultRecordTrait;
+    use MediaObjectTrait;
 
     #[ORM\Id]
     #[ORM\Column(
@@ -130,6 +131,16 @@ class PublicImageMediaObject implements DefaultRecordInterface
     #[ApiProperty(writable: false)]
     #[ORM\Column(name: "parent_id", type: "string", length: 36, nullable: true, options: ["fixed" => true])]
     public ?string $parentId = null;
+
+    #[ApiProperty(writable: false)]
+    #[ORM\Column(
+        name: "temporary",
+        type: "boolean",
+        length: 1,
+        nullable: true,
+        options: ["default" => 0],
+    )]
+    public ?bool $temporary = true;
 
     #[ApiProperty(writable: false)]
     #[ORM\Column(name: "name", type: "string", length: 255, nullable: true, options: ["default" => null])]
