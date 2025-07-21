@@ -97,6 +97,7 @@
 @import 'components/squire-editor';
 @import 'components/color-selector';
 @import 'components/insert-link-popup';
+@import 'components/uploaded-file';
 
 @import 'layout/panel';
 @import 'layout/app';
@@ -130,3 +131,5 @@
 @import 'fields/multienum';
 @import 'fields/multi-flex-relate';
 @import 'fields/parent-field';
+@import 'fields/file';
+

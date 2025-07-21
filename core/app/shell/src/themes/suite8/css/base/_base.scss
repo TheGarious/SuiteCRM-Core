@@ -71,6 +71,10 @@ ul li::marker {
   color: $btn-danger !important;
 }
 
+.text-error {
+  color: $error !important;
+}
+
 .text-bigger-0 {
   font-size: 100%;
 }
@@ -91,8 +95,12 @@ ul li::marker {
   font-size: 140%;
 }
 
+.text-smaller-95 {
+  font-size: 95%
+}
+
 .text-smaller-90 {
-  font-size: 85%
+  font-size: 90%
 }
 
 .text-smaller-85 {
