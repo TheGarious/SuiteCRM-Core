@@ -73,7 +73,7 @@ export class FileEditFieldComponent extends BaseFileComponent {
         const id = this.record.id;
         const type = this.record.module;
 
-        this.storageType = this?.field?.metadata?.storageType ?? '';
+        this.storageType = this?.field?.metadata?.storage_type ?? '';
 
         this.filenameLink = this.legacyEntrypointLinkBuilder.getDownloadEntrypointLink(id, type);
     }
