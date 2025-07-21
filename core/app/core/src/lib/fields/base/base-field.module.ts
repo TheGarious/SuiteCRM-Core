@@ -36,6 +36,7 @@ import {BaseNameComponent} from './base-name.component';
 import {BaseRelateComponent} from './base-relate.component';
 import {BaseDateComponent} from './datetime/base-date.component';
 import {BaseMultiFlexRelateComponent} from "./base-multi-flex-relate.component";
+import {BaseFileComponent} from "./base-file.component";
 
 @NgModule({
     exports: [
@@ -48,7 +49,8 @@ import {BaseMultiFlexRelateComponent} from "./base-multi-flex-relate.component";
         BaseRelateComponent,
         BaseMultiFlexRelateComponent,
         BaseDateTimeComponent,
-        BaseDateComponent
+        BaseDateComponent,
+        BaseFileComponent
     ],
     declarations: [
         BaseBooleanComponent,
@@ -60,7 +62,8 @@ import {BaseMultiFlexRelateComponent} from "./base-multi-flex-relate.component";
         BaseRelateComponent,
         BaseMultiFlexRelateComponent,
         BaseDateTimeComponent,
-        BaseDateComponent
+        BaseDateComponent,
+        BaseFileComponent
     ],
     imports: [
         CommonModule
