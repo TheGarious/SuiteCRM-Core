@@ -348,6 +348,7 @@ export class RelateFilterFieldComponent extends BaseRelateComponent {
                 }
             });
 
+            this.onAdd();
             this.tag.updateModel(this.selectedValues);
         });
     }
@@ -383,7 +384,8 @@ export class RelateFilterFieldComponent extends BaseRelateComponent {
         const relateName = this.getRelateFieldName();
         const newItem = {
             id: record?.attributes?.id,
-            [relateName]: record?.attributes[relateName]
+            [relateName]: record?.attributes[relateName],
+            attributes: record?.attributes
         } as ObjectMap;
 
         const inList = this.isInList(this.selectedValues, newItem);
