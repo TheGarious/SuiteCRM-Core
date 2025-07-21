@@ -127,7 +127,10 @@ class Kernel extends BaseKernel
     public function getLegacyRoute(Request $request): array
     {
         if ($this->container->has('legacy.route.handler')) {
-            return $this->container->get('legacy.route.handler')->getLegacyRoute($request);
+            $legacyRouteHandler = $this->container->get('legacy.route.handler');
+            $legacyRouteHandler->setCurrentDir(getcwd());
+
+            return $legacyRouteHandler->getLegacyRoute($request);
         }
 
         return [];

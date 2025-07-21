@@ -99,6 +99,7 @@ return static function (ContainerConfigurator $containerConfig) {
         ['path' => '^/api', 'roles' => 'PUBLIC_ACCESS'],
         ['path' => '^/api/graphql', 'roles' => 'PUBLIC_ACCESS'],
         ['path' => '^/api/graphql/graphiql*', 'roles' => 'PUBLIC_ACCESS'],
+        ['path' => '^/ep', 'roles' => 'PUBLIC_ACCESS'],
         ['path' => '^/', 'roles' => 'PUBLIC_ACCESS']
     ];
 

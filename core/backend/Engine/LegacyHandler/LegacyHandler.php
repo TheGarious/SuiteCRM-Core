@@ -153,6 +153,16 @@ abstract class LegacyHandler
         return true;
     }
 
+    public function getProjectDir(): string
+    {
+        return $this->projectDir;
+    }
+
+    public function setProjectDir(string $projectDir): void
+    {
+        $this->projectDir = $projectDir;
+    }
+
     /**
      * Swap symfony session with legacy suite session
      * @param string $sessionName
