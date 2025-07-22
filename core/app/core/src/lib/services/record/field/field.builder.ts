@@ -140,6 +140,8 @@ export class FieldBuilder {
         if (Array.isArray(value)) {
             valueList = value;
             value = null;
+        } else if (typeof value === 'object' && value !== null) {
+            return {value, valueList, valueObject: value};
         }
 
         return {value, valueList};
