@@ -24,6 +24,13 @@
  * the words "Supercharged by SuiteCRM".
  */
 
+a.clickable:hover {
+  .uploaded-file {
+    text-decoration: none;
+    border: 1px solid $bright-purple;
+  }
+}
+
 .uploaded-file {
   display: flex;
   align-items: start;
@@ -81,7 +88,7 @@
         color: $bright-purple;
         font-weight: 500;
         margin-right: 0.5em;
-        line-height: 1;
+        line-height: 1.25;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -90,7 +97,7 @@
       .uploaded-file-size {
         color: $shell-grey;
         font-size: 0.9em;
-        line-height: 1;
+        line-height: 1.25;
         margin-top: 0.2rem;
         overflow: hidden;
         text-overflow: ellipsis;
