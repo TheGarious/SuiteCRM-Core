@@ -28,7 +28,7 @@ import {HttpClient, HttpEventType, HttpHeaders} from "@angular/common/http";
 import {UploadedFile} from "../../components/uploaded-file/uploaded-file.model";
 
 export type UploadProgressCallback = (progress: number) => void;
-export type UploadSuccessCallback = () => void;
+export type UploadSuccessCallback = (uploadFile: UploadedFile) => void;
 export type UploadErrorCallback = (error) => void;
 
 @Injectable({
@@ -36,7 +36,8 @@ export type UploadErrorCallback = (error) => void;
 })
 export class MediaObjectsService {
 
-    constructor(private http: HttpClient) {}
+    constructor(private http: HttpClient) {
+    }
 
     uploadFile(
         storageType: string,
@@ -44,7 +45,7 @@ export class MediaObjectsService {
         onProgress: UploadProgressCallback,
         onSuccess: UploadSuccessCallback,
         onError: UploadErrorCallback
-    ) {
+    ): UploadedFile {
 
         const formData = new FormData();
         formData.append('file', file);
@@ -57,8 +58,7 @@ export class MediaObjectsService {
             progress: signal(10)
         } as UploadedFile;
 
-        const headers = new HttpHeaders({
-        });
+        const headers = new HttpHeaders({});
 
         this.http.post(`./api/${storageType}-media-objects`, formData, {
             headers,
@@ -71,7 +71,8 @@ export class MediaObjectsService {
                 } else if (event.type === HttpEventType.Response) {
                     uploadFile.status.set('uploaded');
                     uploadFile.progress.set(100);
-                    onSuccess()
+                    uploadFile.id = event?.body?.id ?? ''; // Assuming the response contains the file ID
+                    onSuccess(uploadFile);
                 }
             },
             error: err => {
@@ -80,5 +81,7 @@ export class MediaObjectsService {
                 onError(err);
             }
         });
+
+        return uploadFile;
     }
 }

@@ -27,9 +27,6 @@
 import {Component, HostListener, signal, ViewChild, WritableSignal} from '@angular/core';
 import {DataTypeFormatter} from '../../../../services/formatters/data-type.formatter.service';
 import {FieldLogicManager} from '../../../field-logic/field-logic.manager';
-import {
-    LegacyEntrypointLinkBuilder
-} from "../../../../services/navigation/legacy-entrypoint-link-builder/legacy-entrypoint-link-builder.service";
 import {FieldLogicDisplayManager} from "../../../field-logic-display/field-logic-display.manager";
 import {UploadedFile} from "../../../../components/uploaded-file/uploaded-file.model";
 import {MediaObjectsService} from "../../../../services/media-objects/media-objects.service";
@@ -37,6 +34,7 @@ import {BaseFileComponent} from "../../../base/base-file.component";
 import {FileUploadAreaComponent} from "../../../../components/file-upload-area/file-upload-area.component";
 import {isEqual} from "lodash-es";
 import {Record} from "../../../../common/record/record.model";
+import {FieldValue} from "../../../../common/record/field.model";
 
 @Component({
     selector: 'scrm-file-edit',
@@ -63,7 +61,6 @@ export class FileEditFieldComponent extends BaseFileComponent {
         protected typeFormatter: DataTypeFormatter,
         protected logic: FieldLogicManager,
         protected logicDisplay: FieldLogicDisplayManager,
-        protected legacyEntrypointLinkBuilder: LegacyEntrypointLinkBuilder,
         protected mediaObjects: MediaObjectsService,
     ) {
         super(typeFormatter, logic, logicDisplay, mediaObjects);
@@ -75,15 +72,43 @@ export class FileEditFieldComponent extends BaseFileComponent {
 
         this.storageType = this?.field?.metadata?.storage_type ?? '';
 
-        this.filenameLink = this.legacyEntrypointLinkBuilder.getDownloadEntrypointLink(id, type);
+        if (this.field.valueObject && this.field.valueObject.id) {
+            this.initFileFromValueObject(this.field.valueObject);
+
+            this.displayUploadArea.set(false);
+
+            this.subs.push(this.field.valueChanges$.subscribe((fieldValue: FieldValue) => {
+                this.initFileFromValueObject(this.field.valueObject);
+            }));
+        }
+    }
+
+    protected initFileFromValueObject(valueObject: any) {
+
+        if (!valueObject) {
+            this.uploadedFile.set(null);
+            return;
+        }
+
+        this.uploadedFile.set({
+            id: valueObject?.id ?? '',
+            name: valueObject?.attributes?.original_name ?? '',
+            size: valueObject?.attributes?.size ?? 0,
+            type: valueObject?.attributes?.type ?? '',
+            url: './' + valueObject?.attributes?.contentUrl || '',
+            status: signal('saved'),
+            progress: signal(100),
+            dateCreated: valueObject?.attributes?.date_entered || ''
+        } as UploadedFile);
     }
 
     onFileAdd(files: FileList) {
         const uploadedField = this.uploadFile(
             this.storageType,
             files[0],
-            () => {
-                this.setValue(this.uploadedFile())
+            (uploadFile: UploadedFile) => {
+                this.uploadedFile.set(uploadFile);
+                this.setValue(uploadFile)
             }
         );
         this.uploadedFile.set(uploadedField ?? null);

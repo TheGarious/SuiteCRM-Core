@@ -48,32 +48,20 @@ export class BaseFileComponent extends BaseFieldComponent {
 
     protected uploadFile(storageType: string, file: File, onUpload: UploadSuccessCallback): UploadedFile {
 
-        const uploadFile = {
-            name: file.name,
-            size: file.size,
-            type: file.type,
-            status: signal('uploading'),
-            progress: signal(10)
-        } as UploadedFile;
 
-        this.mediaObjects.uploadFile(
+        const uploadedFile = this.mediaObjects.uploadFile(
             storageType,
             file,
             (progress: number) => {
-                uploadFile.progress.set(progress);
             },
-            () => {
-                uploadFile.status.set('uploaded');
-                uploadFile.progress.set(100);
-                onUpload();
+            (uploadFile: UploadedFile) => {
+                onUpload(uploadFile);
             },
             (error) => {
-                uploadFile.status.set('error');
-                uploadFile.progress.set(0);
             }
         );
 
-        return uploadFile;
+        return uploadedFile;
     }
 
     protected subscribeValueChanges(): void {
@@ -81,13 +69,13 @@ export class BaseFileComponent extends BaseFieldComponent {
 
     protected mapToRecord(uploadFile: UploadedFile): Record {
         return {
-            id: uploadFile.name,
+            id: uploadFile?.id ?? uploadFile?.name ?? '',
             module: 'media-objects',
             attributes: {
-                id: uploadFile.name,
-                name: uploadFile.name,
-                size: uploadFile.size,
-                type: uploadFile.type,
+                id: uploadFile?.id ?? uploadFile?.name ?? '',
+                name: uploadFile?.name ?? '',
+                size: uploadFile?.size ?? '',
+                type: uploadFile?.type ?? '',
             }
         } as Record;
     }
