@@ -159,6 +159,7 @@ $dictionary['Campaign'] = [
             'vname' => 'LBL_CURRENCY',
             'type' => 'id',
             'group' => 'currency_id',
+            'initDefaultProcess' => 'currency-default',
             'function' => ['name' => 'getCurrencyDropDown', 'returns' => 'html', 'onListView' => true],
             'required' => false,
             'do_report' => false,
