@@ -1,13 +1,13 @@
 <?php
 /**
- * SuiteCRM is a customer relationship management program developed by SalesAgility Ltd.
- * Copyright (C) 2025 SalesAgility Ltd.
+ * SuiteCRM is a customer relationship management program developed by SuiteCRM Ltd.
+ * Copyright (C) 2025 SuiteCRM Ltd.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by the
  * Free Software Foundation with the addition of the following permission added
  * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
- * IN WHICH THE COPYRIGHT IS OWNED BY SALESAGILITY, SALESAGILITY DISCLAIMS THE
+ * IN WHICH THE COPYRIGHT IS OWNED BY SUITECRM, SUITECRM DISCLAIMS THE
  * WARRANTY OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT
@@ -30,6 +30,7 @@ namespace App\MediaObjects\Services;
 use App\MediaObjects\Entity\ArchivedDocumentMediaObject;
 use App\MediaObjects\Entity\PrivateDocumentMediaObject;
 use App\MediaObjects\Entity\PrivateImageMediaObject;
+use App\MediaObjects\Repository\MediaObjectManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
@@ -40,7 +41,8 @@ class PrivateMediaObjectNormalizer implements NormalizerInterface
 
     public function __construct(
         #[Autowire(service: 'api_platform.jsonld.normalizer.item')]
-        private readonly NormalizerInterface $normalizer
+        private readonly NormalizerInterface $normalizer,
+        protected MediaObjectManagerInterface $mediaObjectManager
     ) {
     }
 
@@ -49,9 +51,7 @@ class PrivateMediaObjectNormalizer implements NormalizerInterface
         $context[self::ALREADY_CALLED] = true;
 
         if (!empty($object?->id)) {
-            $prefix = $this->getPath($object);
-
-            $object->contentUrl = $prefix . $object->id;
+            $object->contentUrl = $this->mediaObjectManager->buildContentUrl($this->mediaObjectManager->getObjectStorageType($object), $object);
         }
 
         return $this->normalizer->normalize($object, $format, $context);
@@ -80,26 +80,5 @@ class PrivateMediaObjectNormalizer implements NormalizerInterface
             PrivateDocumentMediaObject::class => true,
             PrivateImageMediaObject::class => true,
         ];
-    }
-
-    /**
-     * @param mixed $object
-     * @return string
-     */
-    protected function getPath(mixed $object): string
-    {
-        $prefixMap = [
-            ArchivedDocumentMediaObject::class => '/media/archived/',
-            PrivateDocumentMediaObject::class => '/media/documents/',
-            PrivateImageMediaObject::class => '/media/images/',
-        ];
-
-        foreach ($prefixMap as $type => $prefix) {
-            if ($object instanceof $type) {
-                return $prefix;
-            }
-        }
-
-        return 'media';
     }
 }

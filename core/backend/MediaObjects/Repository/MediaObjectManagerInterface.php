@@ -89,10 +89,11 @@ interface MediaObjectManagerInterface
     /**
      * Maps a media object to a record.
      *
+     * @param string $storageType
      * @param MediaObjectInterface|null $mediaObject The record to map
      * @return Record|null
      */
-    public function mapToRecord(?MediaObjectInterface $mediaObject): ?Record;
+    public function mapToRecord(string $storageType, ?MediaObjectInterface $mediaObject): ?Record;
 
     /**
      * Synchronizes related records for a parent object.
@@ -112,4 +113,21 @@ interface MediaObjectManagerInterface
      * @param string $parentId The ID of the parent object
      */
     public function linkParent(string $type, MediaObjectInterface $mediaObject, string $parentType, string $parentId): void;
+
+    /**
+     * Builds a content URL for a media object.
+     *
+     * @param string $type The type of media object (e.g., 'archived-document', 'private-document', etc.)
+     * @param mixed $object The media object or record to build the URL for
+     * @return string The content URL
+     */
+    public function buildContentUrl(string $type, mixed $object): string;
+
+    /**
+     * Returns the storage type for a given media object.
+     *
+     * @param mixed $object The media object to get the storage type for
+     * @return string The storage type (e.g., 'archived-document', 'private-document', etc.)
+     */
+    public function getObjectStorageType(object $object): string;
 }

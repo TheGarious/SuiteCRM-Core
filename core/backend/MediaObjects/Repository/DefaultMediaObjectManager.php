@@ -29,18 +29,26 @@ namespace App\MediaObjects\Repository;
 
 use App\Data\Entity\Record;
 use App\Data\Service\Record\Repository\RecordEntityRepository;
+use App\MediaObjects\Entity\ArchivedDocumentMediaObject;
 use App\MediaObjects\Entity\MediaObjectInterface;
+use App\MediaObjects\Entity\PrivateDocumentMediaObject;
+use App\MediaObjects\Entity\PrivateImageMediaObject;
+use App\MediaObjects\Entity\PublicDocumentMediaObject;
+use App\MediaObjects\Entity\PublicImageMediaObject;
+use Vich\UploaderBundle\Storage\StorageInterface;
 
 class DefaultMediaObjectManager implements MediaObjectManagerInterface
 {
     protected array $typeMap = [];
+    protected array $objectTypeMap;
 
     public function __construct(
         protected ArchivedDocumentMediaObjectRepository $archivedDocumentRepository,
         protected PrivateDocumentMediaObjectRepository $privateDocumentRepository,
         protected PrivateImageMediaObjectRepository $privateImageRepository,
         protected PublicDocumentMediaObjectRepository $publicDocumentRepository,
-        protected PublicImageMediaObjectRepository $publicImageRepository
+        protected PublicImageMediaObjectRepository $publicImageRepository,
+        protected StorageInterface $storage
     ) {
 
         $this->typeMap = [
@@ -49,6 +57,14 @@ class DefaultMediaObjectManager implements MediaObjectManagerInterface
             'private-image' => $privateImageRepository,
             'public-document' => $publicDocumentRepository,
             'public-image' => $publicImageRepository,
+        ];
+
+        $this->objectTypeMap = [
+            ArchivedDocumentMediaObject::class => 'archived-document',
+            PrivateDocumentMediaObject::class => 'private-document',
+            PrivateImageMediaObject::class => 'private-image',
+            PublicDocumentMediaObject::class => 'public-document',
+            PublicImageMediaObject::class => 'public-image',
         ];
     }
 
@@ -89,7 +105,7 @@ class DefaultMediaObjectManager implements MediaObjectManagerInterface
     {
         $repository = $this->getRepository($type);
         if ($repository) {
-            $repository->save($mediaObject);
+            $repository->save($mediaObject, true);
         }
     }
 
@@ -177,10 +193,11 @@ class DefaultMediaObjectManager implements MediaObjectManagerInterface
     /**
      * Maps a media object to a record.
      *
+     * @param string $storageType
      * @param MediaObjectInterface|null $mediaObject The record to map
      * @return Record|null
      */
-    public function mapToRecord(?MediaObjectInterface $mediaObject): ?Record
+    public function mapToRecord(string $storageType, ?MediaObjectInterface $mediaObject): ?Record
     {
         if (!$mediaObject instanceof MediaObjectInterface) {
             return null;
@@ -190,6 +207,7 @@ class DefaultMediaObjectManager implements MediaObjectManagerInterface
         $record->setId($mediaObject->getId());
         $record->setModule('media-objects');
         $record->setType('media-objects');
+
         $record->setAttributes(
             [
                 'id' => $mediaObject->getId(),
@@ -202,7 +220,7 @@ class DefaultMediaObjectManager implements MediaObjectManagerInterface
                 'parent_type' => $mediaObject->getParentType(),
                 'parent_id' => $mediaObject->getParentId(),
                 'temporary' => $mediaObject->getTemporary(),
-                'content_url' => $mediaObject->getContentUrl(),
+                'contentUrl' => $this->buildContentUrl($storageType, $mediaObject),
                 'date_entered' => $mediaObject->getDateEntered(),
                 'date_modified' => $mediaObject->getDateModified(),
                 'created_by' => $mediaObject->getCreatedBy(),
@@ -267,5 +285,64 @@ class DefaultMediaObjectManager implements MediaObjectManagerInterface
                 $this->deleteMediaObject($type, $mediaObject);
             }
         }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function buildContentUrl(string $type, mixed $object): string
+    {
+        $privateTypes = [
+            'archived-document' => true,
+            'private-document' => true,
+            'private-image' => true
+        ];
+        if ($privateTypes[$type]) {
+            $prefix = $this->getPath($object);
+            return $prefix . $object->id;
+        }
+
+        $publicTypes = [
+            'public-document' => true,
+            'public-image' => true,
+        ];
+
+        if ($publicTypes[$type]) {
+            return $this->storage->resolveUri($object, 'file');
+        }
+
+        return '';
+    }
+
+    /**
+     * @param mixed $object
+     * @return string
+     */
+    protected function getPath(mixed $object): string
+    {
+        $prefixMap = [
+            ArchivedDocumentMediaObject::class => '/media/archived/',
+            PrivateDocumentMediaObject::class => '/media/documents/',
+            PrivateImageMediaObject::class => '/media/images/',
+        ];
+
+        foreach ($prefixMap as $type => $prefix) {
+            if ($object instanceof $type) {
+                return $prefix;
+            }
+        }
+
+        return 'media';
+    }
+
+    public function getObjectStorageType(object $object): string
+    {
+        foreach ($this->objectTypeMap as $class => $type) {
+            if ($object instanceof $class) {
+                return $type;
+            }
+        }
+
+        return '';
     }
 }
