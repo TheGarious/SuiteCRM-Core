@@ -95,6 +95,7 @@ class PublicDocumentMediaObject implements MediaObjectInterface
     )]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
+    #[Groups(['media_object:read'])]
     public ?string $id;
 
     #[ApiProperty(writable: false, types: ['https://schema.org/contentUrl'])]
@@ -110,18 +111,22 @@ class PublicDocumentMediaObject implements MediaObjectInterface
 
     #[ApiProperty(writable: false)]
     #[ORM\Column(name: "size", type: "integer", nullable: true, options: ["default" => null])]
+    #[Groups(['media_object:read'])]
     public ?int $size = null;
 
     #[ApiProperty(writable: false)]
     #[ORM\Column(name: "mime_type", type: "string", length: 255, nullable: true, options: ["default" => null])]
+    #[Groups(['media_object:read'])]
     public ?string $mimeType = null;
 
     #[ApiProperty(writable: false)]
     #[ORM\Column(name: "original_name", type: "string", length: 255, nullable: true, options: ["default" => null])]
+    #[Groups(['media_object:read'])]
     public ?string $originalName = null;
 
     #[ApiProperty(writable: false)]
     #[ORM\Column(nullable: true)]
+    #[Groups(['media_object:read'])]
     public ?array $dimensions = null;
 
     #[ApiProperty(writable: false)]
