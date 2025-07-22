@@ -27,7 +27,8 @@
 -->
 <div class="uploaded-file">
     <div>
-        <div class="uploaded-file-info-container">
+        <div class="uploaded-file-info-container"
+             [class.uploaded-file-error]="file?.status() === 'error'">
             <div class="uploaded-file-icon-container">
                 <div *ngIf="file?.status() === 'saved'">
                     <scrm-image [image]="'file-earmark-arrow-down'" class="uploaded-file-icon"></scrm-image>
@@ -45,14 +46,7 @@
             </div>
             <div class="uploaded-file-info">
                 <span class="uploaded-file-name" [style.max-width]="textMaxWidth()">
-                    <ng-container *ngIf="file?.url">
-                        <a [href]="file?.url" class="clickable field-link" target="_blank">
-                            {{ file?.name }}
-                        </a>
-                    </ng-container>
-                    <ng-container *ngIf="!file?.url">
-                            {{ file?.name }}
-                    </ng-container>
+                    {{ file?.name }}
                 </span>
                 <span class="uploaded-file-size" [style.max-width]="textMaxWidth()">
                     ({{ file?.size | fileSize }})

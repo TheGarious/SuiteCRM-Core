@@ -43,6 +43,16 @@
     display: flex;
     align-items: start;
 
+    &.uploaded-file-error {
+      .uploaded-file-icon {
+        color: $error;
+      }
+
+      .uploaded-file-name {
+        color: $error;
+      }
+    }
+
     .uploaded-file-icon-container {
       .uploaded-file-icon {
         margin-right: 0.5em;
@@ -68,6 +78,7 @@
       flex-direction: column;
 
       .uploaded-file-name {
+        color: $bright-purple;
         font-weight: 500;
         margin-right: 0.5em;
         line-height: 1;

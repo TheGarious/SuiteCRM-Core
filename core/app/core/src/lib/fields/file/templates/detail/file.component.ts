@@ -24,7 +24,7 @@
  * the words "Supercharged by SuiteCRM".
  */
 
-import {Component} from '@angular/core';
+import {Component, signal, WritableSignal} from '@angular/core';
 import {BaseFieldComponent} from '../../../base/base-field.component';
 import {DataTypeFormatter} from '../../../../services/formatters/data-type.formatter.service';
 import {FieldLogicManager} from '../../../field-logic/field-logic.manager';
@@ -32,6 +32,8 @@ import {
     LegacyEntrypointLinkBuilder
 } from "../../../../services/navigation/legacy-entrypoint-link-builder/legacy-entrypoint-link-builder.service";
 import {FieldLogicDisplayManager} from "../../../field-logic-display/field-logic-display.manager";
+import {UploadedFile} from "../../../../components/uploaded-file/uploaded-file.model";
+import {FieldValue} from "../../../../common/record/field.model";
 
 @Component({
     selector: 'scrm-file-detail',
@@ -40,6 +42,9 @@ import {FieldLogicDisplayManager} from "../../../field-logic-display/field-logic
 })
 export class FileDetailFieldComponent extends BaseFieldComponent {
     filenameLink: string = '';
+
+    isLegacy: boolean = true;
+    file: WritableSignal<UploadedFile> = signal(null);
 
     constructor(
         protected typeFormatter: DataTypeFormatter,
@@ -54,6 +59,35 @@ export class FileDetailFieldComponent extends BaseFieldComponent {
         const id = this.record.id;
         const type = this.record.module;
 
+        if (this.field.valueObject && this.field.valueObject.id) {
+            this.isLegacy = false;
+            this.initFileFromValueObject(this.field.valueObject);
+
+            this.subs.push(this.field.valueChanges$.subscribe((fieldValue: FieldValue) => {
+                this.initFileFromValueObject(this.field.valueObject);
+            }));
+        }
+
+
         this.filenameLink = this.legacyEntrypointLinkBuilder.getDownloadEntrypointLink(id, type);
+    }
+
+    protected initFileFromValueObject(valueObject: any) {
+
+        if (!valueObject) {
+            this.file.set(null);
+            return;
+        }
+
+        this.file.set({
+            id: valueObject?.id ?? '',
+            name: valueObject?.attributes?.original_name ?? '',
+            size: valueObject?.attributes?.size ?? 0,
+            type: valueObject?.attributes?.type ?? '',
+            url: './' + valueObject?.attributes?.contentUrl || '',
+            status: signal('saved'),
+            progress: signal(100),
+            dateCreated: valueObject?.attributes?.date_entered || ''
+        } as UploadedFile);
     }
 }

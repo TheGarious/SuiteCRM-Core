@@ -29,6 +29,7 @@ import {CommonModule} from '@angular/common';
 
 import {RouterModule} from "@angular/router";
 import {FileDetailFieldComponent} from "./file.component";
+import {UploadedFileComponent} from "../../../../components/uploaded-file/uploaded-file.component";
 
 @NgModule({
     declarations: [FileDetailFieldComponent],
@@ -36,6 +37,7 @@ import {FileDetailFieldComponent} from "./file.component";
     imports: [
         CommonModule,
         RouterModule,
+        UploadedFileComponent,
     ]
 })
 export class FileDetailFieldModule {
