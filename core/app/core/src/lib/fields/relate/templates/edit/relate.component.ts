@@ -24,7 +24,17 @@
  * the words "Supercharged by SuiteCRM".
  */
 
-import {AfterViewInit, Component, computed, ElementRef, Signal, signal, ViewChild, WritableSignal} from '@angular/core';
+import {
+    AfterViewInit,
+    Component,
+    computed,
+    ElementRef,
+    HostListener,
+    Signal,
+    signal,
+    ViewChild,
+    WritableSignal
+} from '@angular/core';
 import {emptyObject} from '../../../../common/utils/object-utils';
 import {ButtonInterface} from '../../../../common/components/button/button.model';
 import {Field} from '../../../../common/record/field.model';
@@ -60,6 +70,22 @@ import {AppStateStore} from "../../../../store/app-state/app-state.store";
 export class RelateEditFieldComponent extends BaseRelateComponent implements AfterViewInit {
     @ViewChild('tag') tag: Dropdown;
     @ViewChild('dropdownFilterInput') dropdownFilterInput: ElementRef;
+    @HostListener('document:click', ['$event'])
+    onDocClick(event) {
+        const clickedInside = this.tag?.el?.nativeElement.contains(event.target);
+        if (!clickedInside){
+            this.tag.hide();
+        }
+    }
+
+    @HostListener('window:message', ['$event'])
+    onMessage(event) {
+        if (event.data !== 'iframe-clicked'){
+            return;
+        }
+        this.tag.hide();
+    }
+
     selectButton: ButtonInterface;
     idField: Field;
     selectedValue: AttributeMap = {};

@@ -24,7 +24,7 @@
  * the words "Supercharged by SuiteCRM".
  */
 
-import {Component, computed, ElementRef, Signal, signal, ViewChild, WritableSignal} from '@angular/core';
+import {Component, computed, ElementRef, HostListener, Signal, signal, ViewChild, WritableSignal} from '@angular/core';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ModuleNameMapper} from '../../../../services/navigation/module-name-mapper/module-name-mapper.service';
 import {DataTypeFormatter} from '../../../../services/formatters/data-type.formatter.service';
@@ -56,6 +56,23 @@ import {StringMap} from "../../../../common/types/string-map";
 export class MultiFlexRelateEditFieldComponent extends BaseMultiFlexRelateComponent {
     @ViewChild('tag') tag: MultiSelect;
     @ViewChild('dropdownFilterInput') dropdownFilterInput: ElementRef;
+    @HostListener('document:click', ['$event'])
+    onDocClick(event) {
+        const clickedInside = this.tag?.el?.nativeElement.contains(event.target);
+        if (!clickedInside){
+            this.tag.hide();
+        }
+    }
+
+    @HostListener('window:message', ['$event'])
+    onMessage(event) {
+        if (event.data !== 'iframe-clicked'){
+            return;
+        }
+        this.tag.hide();
+    }
+
+
     selectButton: ButtonInterface;
 
     placeholderLabel: string = '';

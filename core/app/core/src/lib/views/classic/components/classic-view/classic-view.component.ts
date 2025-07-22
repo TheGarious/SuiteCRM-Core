@@ -59,6 +59,10 @@ export class ClassicViewUiComponent implements OnInit, OnDestroy, AfterViewInit 
             return;
         }
 
+        if (isString(event.data)) {
+            return;
+        }
+
         const options = JSON.parse(event.data);
 
         if (options.type === 'record-modal'){

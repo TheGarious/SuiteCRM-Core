@@ -1105,6 +1105,7 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
             this.currentEditorPath.set(this.editor.getPath());
         });
         this.editor.addEventListener('click', (e: Event) => {
+            window.postMessage('iframe-clicked');
             e.stopImmediatePropagation();
             this.hidePopups();
         })
@@ -1193,6 +1194,7 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
         this.setEditor(iframe.contentWindow.editor);
         this.initEditor();
         iframe.contentDocument.addEventListener('click', () => {
+            window.postMessage('iframe-clicked');
             this.editor.focus();
             this.editor.moveCursorToEnd();
             this.hidePopups();
