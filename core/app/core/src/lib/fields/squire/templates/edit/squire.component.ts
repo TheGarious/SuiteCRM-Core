@@ -585,7 +585,6 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
                 insertLink.metadata.linkURL = '';
             }
 
-            this.styleSignal.set('link');
             insertLink.metadata.openStatusEventEmitter.emit(true);
             insertLink.metadata.linkEventEmitter.emit(insertLink.metadata.linkURL);
         };
@@ -605,6 +604,7 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
                     }
 
                     this?.editor?.makeLink(linkValue, {title: linkValue});
+                    this.styleSignal.set('link');
 
                     insertLink.metadata.openStatusEventEmitter.emit(false);
                 },
