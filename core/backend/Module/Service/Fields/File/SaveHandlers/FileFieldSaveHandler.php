@@ -31,6 +31,7 @@ use App\Data\Service\LinkedRecords\LinkedRecordsProviderInterface;
 use App\Data\Service\Record\RecordSaveHandlers\RecordFieldTypeSaveHandlerInterface;
 use App\FieldDefinitions\Entity\FieldDefinition;
 use App\MediaObjects\Repository\MediaObjectManagerInterface;
+use App\Module\Service\ModuleNameMapperInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 
 
@@ -38,7 +39,8 @@ use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 class FileFieldSaveHandler implements RecordFieldTypeSaveHandlerInterface
 {
     public function __construct(
-        protected MediaObjectManagerInterface $mediaObjectManager
+        protected MediaObjectManagerInterface $mediaObjectManager,
+        protected ModuleNameMapperInterface $moduleNameMapper
     ) {
     }
 
@@ -101,7 +103,7 @@ class FileFieldSaveHandler implements RecordFieldTypeSaveHandlerInterface
         $fileFieldData = $attributes[$field] ?? [];
         $mediaObjectId = $fileFieldData['id'] ?? '';
 
-        $parentType = $savedRecord->getType();
+        $parentType = $this->moduleNameMapper->toLegacy($savedRecord->getModule());
         $parentId = $savedRecord->getId();
 
         $currentMediaObject = $this->mediaObjectManager->getLinkedMediaObjects($storageType, $savedRecord->getType(), $savedRecord->getId(), $field) ?? [];
