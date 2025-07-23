@@ -470,6 +470,8 @@ function get_sugar_config_defaults(): array
         'subpanel_max_height' => 620,
         'lock_default_user_name' => false,
         'log_memory_usage' => false,
+        'max_temp_file_lifetime' => '72 hour',
+        'max_temp_file_batch_per_table' => '50',
         'oauth2_encryption_key' => base64_encode(random_bytes(32)),
         'portal_view' => 'single_user',
         'pdf' => [
