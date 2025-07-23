@@ -34,6 +34,7 @@
                        [openStatusEventEmitter]="openStatusEventEmitter"
                        [showPopup]="colorSelectorConfig.showPopup"
                        [titleKey]="colorSelectorConfig?.titleKey"
+                       [class.hide-popover]="!colorSelectorConfig.showPopup()"
                        [popoverClass]="''"
                        placement="bottom"
     >

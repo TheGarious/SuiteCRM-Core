@@ -70,14 +70,14 @@ export class PopupButtonComponent implements OnInit, OnDestroy {
         this.subs = [];
 
         if (this.openStatusEventEmitter) {
-            this.openStatusEventEmitter.subscribe((status: boolean) => {
+            this.subs.push(this.openStatusEventEmitter.subscribe((status: boolean) => {
                 if (status === true) {
                     this.popover.open();
                     return;
                 }
 
                 this.popover.close();
-            });
+            }));
         }
     }
 

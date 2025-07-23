@@ -408,11 +408,7 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
                 }
             }),
             showPopup: (): boolean => {
-                if (this.editorMode() === 'code') {
-                    this.hidePopup();
-                    return false;
-                }
-                return true;
+                return this.editorMode() !== 'code';
             },
             titleKey: 'LBL_FONT_FACE',
             klass: 'squire-editor-button btn btn-sm ',
@@ -460,11 +456,7 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
             type: 'popup-button-list',
             icon: 'text-size',
             showPopup: (): boolean => {
-                if (this.editorMode() === 'code') {
-                    this.hidePopup();
-                    return false;
-                }
-                return true;
+                return this.editorMode() !== 'code';
             },
             titleKey: 'LBL_TEXT_SIZE',
             klass: 'squire-editor-button btn btn-sm ',
@@ -523,11 +515,7 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
                 this?.editor?.setTextColor(color.color);
             },
             showPopup: (): boolean => {
-                if (this.editorMode() === 'code') {
-                    this.hidePopup();
-                    return false;
-                }
-                return true;
+                return this.editorMode() !== 'code';
             },
             dynamicClass: computed((): string => {
                 if (this.editorMode() === 'code'){
@@ -548,11 +536,7 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
                 }
             }),
             showPopup: (): boolean => {
-                if (this.editorMode() === 'code') {
-                    this.hidePopup();
-                    return false;
-                }
-                return true;
+                return this.editorMode() !== 'code';
             },
         } as ButtonInterface;
 
@@ -1158,12 +1142,6 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
         );
 
         return alignment;
-    }
-
-    protected hidePopup(): void {
-        document.querySelectorAll('.popover-body').forEach((element) => {
-            element.classList.add('p-0')
-        });
     }
 
     protected getTextDirection(path: string): string {

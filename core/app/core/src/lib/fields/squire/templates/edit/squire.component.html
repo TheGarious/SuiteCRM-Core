@@ -45,6 +45,7 @@
                                        [popoverClass]="''"
                                        [titleKey]="item.value.titleKey"
                                        placement="bottom"
+                                       [class.hide-popover]="!item.value.showPopup()"
                                        class="squire-editor-toolbar-item"
                     >
                         <div popup-content class="container container-popover scrollbar-thin">
@@ -63,6 +64,7 @@
                                        [openStatusEventEmitter]="showPopups"
                                        [popoverClass]="''"
                                        [titleKey]="item.value.titleKey"
+                                       [class.hide-popover]="!item.value.showPopup()"
                                        placement="bottom"
                                        class="squire-editor-toolbar-item"
                     >

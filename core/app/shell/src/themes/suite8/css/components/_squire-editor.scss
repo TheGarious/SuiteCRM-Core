@@ -66,6 +66,12 @@
       }
     }
 
+    .hide-popover {
+      .popover-body {
+        padding: 0!important;
+      }
+    }
+
     .squire-editor-button-row {
       border-radius: 3px;
 
