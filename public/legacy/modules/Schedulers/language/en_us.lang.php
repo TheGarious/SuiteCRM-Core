@@ -59,6 +59,7 @@ $mod_strings = array(
     'LBL_OOTB_ELASTIC_INDEX' => 'Perform Elasticsearch Index',
     'LBL_OOTB_SEND_EMAIL_TO_QUEUE' => 'Queue Campaign Emails',
     'LBL_OOTB_SEND_EMAIL_FROM_QUEUE' => 'Send Campaign Emails',
+    'LBL_OOTB_CLEAN_UP_TEMP_FILES' => 'Clean Up Temporary Files',
 
 // List Labels
     'LBL_LIST_JOB_INTERVAL' => 'Interval:',
@@ -159,6 +160,7 @@ $mod_strings = array(
 
     'LBL_RUNELASTICSEARCHINDEXERSCHEDULER' => 'Elasticsearch indexer',
     'LBL_SENDFROMQUEUE' => 'Send Emails from Email Queue',
+    'LBL_CLEANUPTEMPORARYFILES' => 'Clean Up Temporary Files',
     'LBL_EMAILTOQUEUE' => 'Send Scheduled Emails to Email Queue',
 
     'LBL_SCHEDULER_TIMES' => 'Scheduler Times',

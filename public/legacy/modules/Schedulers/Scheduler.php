@@ -1017,6 +1017,18 @@ class Scheduler extends SugarBean
         $sched19->modified_user_id = '1';
         $sched19->catch_up = '0';
         $sched19->save();
+
+        $sched20 = new Scheduler;
+        $sched20->name = $mod_strings['LBL_OOTB_CLEAN_UP_TEMP_FILES'];
+        $sched20->job = 'scheduler::clean-up-temporary-files';
+        $sched20->date_time_start = create_date(2015, 1, 1) . ' ' . create_time(0, 0, 1);
+        $sched20->date_time_end = null;
+        $sched20->job_interval = '*::*::*::*::*';
+        $sched20->status = 'Active';
+        $sched20->created_by = '1';
+        $sched20->modified_user_id = '1';
+        $sched20->catch_up = '0';
+        $sched20->save();
     }
 
     ////	END SCHEDULER HELPER FUNCTIONS

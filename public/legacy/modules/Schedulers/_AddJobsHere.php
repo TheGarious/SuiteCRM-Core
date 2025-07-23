@@ -86,7 +86,8 @@ $job_strings = array(
 
 $jobStrings = [
     0 => 'send-from-queue',
-    1 => 'email-to-queue'
+    1 => 'email-to-queue',
+    2 => 'clean-up-temporary-files'
 ];
 /**
  * Job 0 refreshes all job schedulers at midnight
