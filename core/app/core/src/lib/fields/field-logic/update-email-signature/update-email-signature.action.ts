@@ -97,8 +97,9 @@ export class UpdateEmailSignatureAction extends FieldLogicActionHandler {
 
         field.value = tempDiv.innerHTML;
         field.formControl.setValue(field.value);
+        field.formControl.updateValueAndValidity({onlySelf: true, emitEvent: true})
         // re-validate the parent form-control after value update
-        record.formGroup.updateValueAndValidity({onlySelf: true, emitEvent: true});
+        record?.formGroup?.updateValueAndValidity({onlySelf: true, emitEvent: true});
     }
 
 }
