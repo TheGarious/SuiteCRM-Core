@@ -105,6 +105,10 @@ export interface LogicDefinitions {
     [key: string]: LogicDefinition;
 }
 
+export interface AfterActionLogicDefinitions {
+    [key: string]: AfterActionLogicDefinition;
+}
+
 export interface AfterActionLogicDefinition {
     field?: string;
     logic?: LogicDefinition;

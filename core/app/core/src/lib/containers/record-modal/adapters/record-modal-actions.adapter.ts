@@ -42,7 +42,11 @@ import {RecordModalActionManager} from "../actions/record-modal-action-manager.s
 import {RecordModalActionData} from "../actions/record-modal.action";
 import {Action, ActionContext, ActionHandler} from "../../../common/actions/action.model";
 import {ViewMode} from "../../../common/views/view.model";
-import {LogicDefinitions, Panel, AfterActionLogicDefinition} from "../../../common/metadata/metadata.model";
+import {
+    LogicDefinitions,
+    Panel,
+    AfterActionLogicDefinitions
+} from "../../../common/metadata/metadata.model";
 import {Record} from "../../../common/record/record.model";
 import {FieldModalService} from "../../../services/modals/field-modal.service";
 import {RecordMapperRegistry} from "../../../common/record/record-mappers/record-mapper.registry";
@@ -150,7 +154,7 @@ export class RecordModalActionsAdapter extends BaseRecordActionsAdapter<RecordMo
         action: Action,
         actionData: RecordModalActionData,
         context: ActionContext,
-        afterActionLogic: AfterActionLogicDefinition = null
+        afterActionLogic: AfterActionLogicDefinitions = null
     ) {
         super.afterAsyncAction(
             actionName,

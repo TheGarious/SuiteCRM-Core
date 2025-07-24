@@ -49,7 +49,10 @@ import {FieldModalService} from "../modals/field-modal.service";
 import {Field, FieldMap} from "../../common/record/field.model";
 import {StringMap} from "../../common/types/string-map";
 import {FieldLogicManager} from "../../fields/field-logic/field-logic.manager";
-import {LogicDefinition, AfterActionLogicDefinition} from "../../common/metadata/metadata.model";
+import {
+    LogicDefinition,
+    AfterActionLogicDefinitions
+} from "../../common/metadata/metadata.model";
 
 export abstract class BaseActionsAdapter<D extends ActionData> implements ActionDataSource {
 
@@ -269,7 +272,7 @@ export abstract class BaseActionsAdapter<D extends ActionData> implements Action
      */
     protected callAction(action: Action, context: ActionContext = null) {
 
-        const afterActionLogic = action?.afterActionLogic ?? null as AfterActionLogicDefinition;
+        const afterActionLogic = action?.afterActionLogic ?? null as AfterActionLogicDefinitions;
 
         if (action.asyncProcess) {
             this.runAsyncAction(action, context, afterActionLogic);
@@ -284,7 +287,7 @@ export abstract class BaseActionsAdapter<D extends ActionData> implements Action
      * @param context
      * @param afterActionLogic
      */
-    protected runAsyncAction(action: Action, context: ActionContext = null, afterActionLogic: AfterActionLogicDefinition = null): void {
+    protected runAsyncAction(action: Action, context: ActionContext = null, afterActionLogic: AfterActionLogicDefinitions = null): void {
         const actionName = this.getActionName(action);
         const moduleName = this.getModuleName(context);
 
@@ -317,24 +320,10 @@ export abstract class BaseActionsAdapter<D extends ActionData> implements Action
         action: Action,
         actionData: D,
         context: ActionContext,
-        afterActionLogic: AfterActionLogicDefinition
+        afterActionLogic: AfterActionLogicDefinitions
     ) {
         if (afterActionLogic ?? false) {
-
-            const dependentFieldKey = this.getDependentFieldKeys(afterActionLogic.logic);
-            const dependentField = actionData.store?.recordStore?.getStaging()?.fields[dependentFieldKey];
-
-            if (!context?.record?.fields) {
-                context.record.fields = actionData.store?.recordStore?.getStaging()?.fields;
-            }
-
-            this.logic.runLogic(
-                actionData.store?.recordStore?.getStaging()?.fields[afterActionLogic.field],
-                this.getMode(),
-                context.record,
-                'onDependencyChange',
-                dependentField
-            )
+            this.runAfterActionLogic(afterActionLogic, actionData, context);
         }
 
         if (this.shouldReload(process)) {
@@ -454,6 +443,25 @@ export abstract class BaseActionsAdapter<D extends ActionData> implements Action
 
     protected getDependentFieldKeys(logic: LogicDefinition): string {
         return logic.params?.fieldDependencies[0];
+    }
+
+    runAfterActionLogic(afterActionLogic: AfterActionLogicDefinitions, actionData: D, context: ActionContext): void {
+        Object.values(afterActionLogic).forEach((logic) => {
+            const dependentFieldKey = this.getDependentFieldKeys(logic.logic);
+            const dependentField = actionData.store?.recordStore?.getStaging()?.fields[dependentFieldKey];
+
+            if (!context?.record?.fields) {
+                context.record.fields = actionData.store?.recordStore?.getStaging()?.fields;
+            }
+
+            this.logic.runLogic(
+                actionData.store?.recordStore?.getStaging()?.fields[logic.field],
+                this.getMode(),
+                context.record,
+                'onDependencyChange',
+                dependentField
+            )
+        });
     }
 
     isActive(action: Action, context: ActionContext = null): boolean {
