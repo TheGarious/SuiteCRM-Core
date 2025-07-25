@@ -74,6 +74,11 @@ class CleanUpTemporaryFilesScheduler implements SchedulerInterface
             $lifetime = rtrim($lifetime, 'S');
         }
 
+        if (!preg_match('/^\d+\s+(HOUR|DAY|MINUTE|SECOND)$/', $lifetime)) {
+            $this->logger->error('Invalid lifetime format: ' . $lifetime . '. Using default 72 HOUR.');
+            $lifetime = '72 HOUR';
+        }
+
         foreach ($tableTypeMap as $type => $table) {
             $this->removeTempFiles($table, $type, $batch, $lifetime);
             $this->logger->info('Temporary files cleanup completed for table: ' . $table);
@@ -99,10 +104,11 @@ class CleanUpTemporaryFilesScheduler implements SchedulerInterface
             ->addSelect(":type as type")
             ->from($table)
             ->where('temporary = 1')
-            ->andWhere("DATE_ADD(date_entered, INTERVAL $lifetime) < NOW()")
+            ->andWhere('date_entered < :expire_before')
             ->orderBy('date_entered', 'ASC')
             ->setMaxResults((int)$batch)
-            ->setParameter('type', $type);
+            ->setParameter('type', $type)
+            ->setParameter('expire_before', (new \DateTimeImmutable("-$lifetime"))->format('Y-m-d H:i:s'));
 
         $records = [];
 
