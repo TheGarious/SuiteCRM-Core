@@ -70,7 +70,7 @@ export class UpdateEmailSignatureAction extends FieldLogicActionHandler {
         return ['onDependencyChange', 'onFieldInitialize'];
     }
 
-    private replaceSignaturePlaceholder(field: Field, outboundId: string, signatureString: string, body: string, record: Record) {
+    private replaceSignaturePlaceholder(field: Field, outboundId: string, signatureString: string, body: string, record: Record): void {
         const placeholderClass = 'scrm-signature-placeholder';
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = body;
