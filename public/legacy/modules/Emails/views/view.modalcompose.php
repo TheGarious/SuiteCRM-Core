@@ -40,7 +40,7 @@ class EmailsViewModalCompose extends ViewEdit
     public $bean;
 
     /**
-     * EmailsViewCompose constructor.
+     * EmailsViewModalCompose constructor.
      */
     public function __construct()
     {
@@ -126,16 +126,16 @@ class EmailsViewModalCompose extends ViewEdit
     }
 
     /**
-     * Prepends body with $user's default signature
+     * Append body with $user's default signature
      *
      * @deprecated
      *
      * @param Email $email
      * @param User $user
-     * @return bool|Email
+     * @return null|Email
      * @throws SugarControllerException
      */
-    public function getSignatures(User $user)
+    public function getSignatures(User $user): ?Email
     {
         $email = null;
         if (empty($user->id) || $user->new_with_id === true) {
@@ -162,6 +162,6 @@ class EmailsViewModalCompose extends ViewEdit
             'EmailsController::composeSignature() was unable to get the signature id for user: '.
                 $user->name
             );
-        return false;
+        return null;
     }
 }
