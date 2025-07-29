@@ -24,7 +24,7 @@
  * the words "Supercharged by SuiteCRM".
  */
 
-import {Component, signal} from "@angular/core";
+import {Component, signal, WritableSignal} from "@angular/core";
 import {BaseFieldComponent} from "./base-field.component";
 import {UploadedFile} from "../../components/uploaded-file/uploaded-file.model";
 import {DataTypeFormatter} from "../../services/formatters/data-type.formatter.service";
@@ -32,16 +32,26 @@ import {FieldLogicManager} from "../field-logic/field-logic.manager";
 import {FieldLogicDisplayManager} from "../field-logic-display/field-logic-display.manager";
 import {MediaObjectsService, UploadSuccessCallback} from "../../services/media-objects/media-objects.service";
 import {Record} from "../../common/record/record.model";
+import {FieldValue} from "../../common/record/field.model";
+import {
+    LegacyEntrypointLinkBuilder
+} from "../../services/navigation/legacy-entrypoint-link-builder/legacy-entrypoint-link-builder.service";
 
 
 @Component({template: ''})
 export class BaseFileComponent extends BaseFieldComponent {
+
+    filenameLink: string = '';
+
+    isLegacy: boolean = true;
+    uploadedFile: WritableSignal<UploadedFile> = signal(null);
 
     constructor(
         protected typeFormatter: DataTypeFormatter,
         protected logic: FieldLogicManager,
         protected logicDisplay: FieldLogicDisplayManager,
         protected mediaObjects: MediaObjectsService,
+        protected legacyEntrypointLinkBuilder: LegacyEntrypointLinkBuilder
     ) {
         super(typeFormatter, logic, logicDisplay);
     }
@@ -76,7 +86,44 @@ export class BaseFileComponent extends BaseFieldComponent {
                 name: uploadFile?.name ?? '',
                 size: uploadFile?.size ?? '',
                 type: uploadFile?.type ?? '',
+                original_name: uploadFile?.name ?? '',
             }
         } as Record;
+    }
+
+    protected initUploadedFile(): void {
+        const id = this.record.id;
+        const type = this.record.module;
+
+        if (this.field.valueObject && this.field.valueObject.id) {
+            this.isLegacy = false;
+            this.initFileFromValueObject(this.field.valueObject);
+
+            this.subs.push(this.field.valueChanges$.subscribe((fieldValue: FieldValue) => {
+                this.initFileFromValueObject(this.field.valueObject);
+            }));
+        }
+
+
+        this.filenameLink = this.legacyEntrypointLinkBuilder.getDownloadEntrypointLink(id, type);
+    }
+
+    protected initFileFromValueObject(valueObject: any): void {
+
+        if (!valueObject) {
+            this.uploadedFile.set(null);
+            return;
+        }
+
+        this.uploadedFile.set({
+            id: valueObject?.id ?? '',
+            name: valueObject?.attributes?.original_name ?? '',
+            size: valueObject?.attributes?.size ?? 0,
+            type: valueObject?.attributes?.type ?? '',
+            url: '.' + valueObject?.attributes?.contentUrl || '',
+            status: signal('saved'),
+            progress: signal(100),
+            dateCreated: valueObject?.attributes?.date_entered || ''
+        } as UploadedFile);
     }
 }

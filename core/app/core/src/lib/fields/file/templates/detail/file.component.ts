@@ -24,70 +24,35 @@
  * the words "Supercharged by SuiteCRM".
  */
 
-import {Component, signal, WritableSignal} from '@angular/core';
-import {BaseFieldComponent} from '../../../base/base-field.component';
+import {Component} from '@angular/core';
 import {DataTypeFormatter} from '../../../../services/formatters/data-type.formatter.service';
 import {FieldLogicManager} from '../../../field-logic/field-logic.manager';
 import {
     LegacyEntrypointLinkBuilder
 } from "../../../../services/navigation/legacy-entrypoint-link-builder/legacy-entrypoint-link-builder.service";
 import {FieldLogicDisplayManager} from "../../../field-logic-display/field-logic-display.manager";
-import {UploadedFile} from "../../../../components/uploaded-file/uploaded-file.model";
-import {FieldValue} from "../../../../common/record/field.model";
+import {BaseFileComponent} from "../../../base/base-file.component";
+import {MediaObjectsService} from "../../../../services/media-objects/media-objects.service";
 
 @Component({
     selector: 'scrm-file-detail',
     templateUrl: './file.component.html',
     styleUrls: []
 })
-export class FileDetailFieldComponent extends BaseFieldComponent {
-    filenameLink: string = '';
+export class FileDetailFieldComponent extends BaseFileComponent {
 
-    isLegacy: boolean = true;
-    file: WritableSignal<UploadedFile> = signal(null);
 
     constructor(
         protected typeFormatter: DataTypeFormatter,
         protected logic: FieldLogicManager,
         protected logicDisplay: FieldLogicDisplayManager,
-        private legacyEntrypointLinkBuilder: LegacyEntrypointLinkBuilder
+        protected mediaObjects: MediaObjectsService,
+        protected legacyEntrypointLinkBuilder: LegacyEntrypointLinkBuilder
     ) {
-        super(typeFormatter, logic, logicDisplay);
+        super(typeFormatter, logic, logicDisplay, mediaObjects, legacyEntrypointLinkBuilder);
     }
 
     ngOnInit() {
-        const id = this.record.id;
-        const type = this.record.module;
-
-        if (this.field.valueObject && this.field.valueObject.id) {
-            this.isLegacy = false;
-            this.initFileFromValueObject(this.field.valueObject);
-
-            this.subs.push(this.field.valueChanges$.subscribe((fieldValue: FieldValue) => {
-                this.initFileFromValueObject(this.field.valueObject);
-            }));
-        }
-
-
-        this.filenameLink = this.legacyEntrypointLinkBuilder.getDownloadEntrypointLink(id, type);
-    }
-
-    protected initFileFromValueObject(valueObject: any) {
-
-        if (!valueObject) {
-            this.file.set(null);
-            return;
-        }
-
-        this.file.set({
-            id: valueObject?.id ?? '',
-            name: valueObject?.attributes?.original_name ?? '',
-            size: valueObject?.attributes?.size ?? 0,
-            type: valueObject?.attributes?.type ?? '',
-            url: '.' + valueObject?.attributes?.contentUrl || '',
-            status: signal('saved'),
-            progress: signal(100),
-            dateCreated: valueObject?.attributes?.date_entered || ''
-        } as UploadedFile);
+        this.initUploadedFile();
     }
 }
