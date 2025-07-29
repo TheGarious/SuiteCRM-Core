@@ -24,10 +24,10 @@
  * feasible for technical reasons, the Appropriate Legal Notices must display
  * the words "Supercharged by SuiteCRM".
  */
+
 namespace App\Module\Service\Fields\File\SaveHandlers;
 
 use App\Data\Entity\Record;
-use App\Data\Service\LinkedRecords\LinkedRecordsProviderInterface;
 use App\Data\Service\Record\RecordSaveHandlers\RecordFieldTypeSaveHandlerInterface;
 use App\FieldDefinitions\Entity\FieldDefinition;
 use App\MediaObjects\Repository\MediaObjectManagerInterface;
@@ -106,7 +106,7 @@ class FileFieldSaveHandler implements RecordFieldTypeSaveHandlerInterface
         $parentType = $this->moduleNameMapper->toLegacy($savedRecord->getModule());
         $parentId = $savedRecord->getId();
 
-        $currentMediaObject = $this->mediaObjectManager->getLinkedMediaObjects($storageType, $savedRecord->getType(), $savedRecord->getId(), $field) ?? [];
+        $currentMediaObjects = $this->mediaObjectManager->getLinkedMediaObjects($storageType, $parentType, $parentId) ?? [];
 
         if (empty($mediaObjectId)) {
             return;
@@ -119,8 +119,15 @@ class FileFieldSaveHandler implements RecordFieldTypeSaveHandlerInterface
         }
 
         $mediaObject->setParentType($parentType);
-        $mediaObject->setParentId($savedRecord->getId());
+        $mediaObject->setParentId($parentId);
         $mediaObject->setTemporary(false);
+
+        foreach ($currentMediaObjects as $currentMediaObject) {
+            if ($currentMediaObject->getId() !== $mediaObject->getId()) {
+                // This will delete the media object from the repository and file system
+                $this->mediaObjectManager->deleteMediaObject($storageType, $currentMediaObject);
+            }
+        }
 
         $this->mediaObjectManager->saveMediaObject($storageType, $mediaObject);
     }
