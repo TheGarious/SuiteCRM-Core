@@ -50,6 +50,8 @@ trait MediaObjectTrait
 
     public ?string $parentId = null;
 
+    public ?string $parentField = null;
+
     public ?bool $temporary = true;
 
     public function getContentUrl(): ?string
@@ -140,6 +142,16 @@ trait MediaObjectTrait
     public function setParentId(?string $parentId): void
     {
         $this->parentId = $parentId;
+    }
+
+    public function getParentField(): ?string
+    {
+        return $this->parentField;
+    }
+
+    public function setParentField(?string $parentField): void
+    {
+        $this->parentField = $parentField;
     }
 
     public function getTemporary(): ?bool

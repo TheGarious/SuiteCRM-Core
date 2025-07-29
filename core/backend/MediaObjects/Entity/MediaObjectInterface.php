@@ -68,6 +68,10 @@ interface MediaObjectInterface extends DefaultRecordInterface
 
     public function setParentId(?string $parentId): void;
 
+    public function getParentField(): ?string;
+
+    public function setParentField(?string $parentField): void;
+
     public function getTemporary(): ?bool;
 
     public function setTemporary(?bool $temporary): void;
