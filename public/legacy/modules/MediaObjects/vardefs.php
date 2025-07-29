@@ -61,6 +61,11 @@ $mediaObjectFields = [
         'name' => 'parent_id',
         'type' => 'id',
     ],
+    'parent_field' => [
+        'name' => 'parent_field',
+        'type' => 'varchar',
+        'len' => 100,
+    ],
     'temporary' => [
         'name' => 'temporary',
         'type' => 'bool',

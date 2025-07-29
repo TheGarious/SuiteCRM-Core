@@ -55,6 +55,7 @@ class MediaObject extends Basic
     public $dimensions;
     public $parent_type;
     public $parent_id;
+    public $parent_field;
 
     /**
      * @param string $interface
