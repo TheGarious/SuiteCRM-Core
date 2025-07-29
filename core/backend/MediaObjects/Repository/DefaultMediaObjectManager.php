@@ -158,7 +158,7 @@ class DefaultMediaObjectManager implements MediaObjectManagerInterface
     {
         $repository = $this->getRepository($type);
         if ($repository) {
-            return $repository->findBy(['parentType' => $parentType, 'parentId' => $parentId, 'deleted' => 0]);
+            return $repository->findBy(['parentType' => $parentType, 'parentId' => $parentId, 'temporary' => 0, 'deleted' => 0]);
         }
         return [];
     }
