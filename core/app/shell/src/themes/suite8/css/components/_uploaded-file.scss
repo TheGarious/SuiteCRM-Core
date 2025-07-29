@@ -24,20 +24,21 @@
  * the words "Supercharged by SuiteCRM".
  */
 
-a.clickable:hover {
+a.clickable.file-field-uploaded-link:hover {
+  text-decoration: none;
+
   .uploaded-file {
-    text-decoration: none;
     border: 1px solid $bright-purple;
   }
 }
 
 .uploaded-file {
   display: flex;
-  align-items: start;
+  align-items: center;
   font-size: 0.95em;
   margin-top: 0.5em;
   width: fit-content;
-  padding: 0.5em;
+  padding: 0.1em;
   background: $off-white-lighter;
   border-radius: 0.2rem;
   border: 1px solid $lightgray;
@@ -48,21 +49,24 @@ a.clickable:hover {
 
   .uploaded-file-info-container {
     display: flex;
-    align-items: start;
+    align-items: center;
 
     &.uploaded-file-error {
       .uploaded-file-icon {
         color: $error;
       }
 
-      .uploaded-file-name {
-        color: $error;
+      .uploaded-file-info {
+        .uploaded-file-name {
+          color: $error;
+        }
       }
+
     }
 
     .uploaded-file-icon-container {
       .uploaded-file-icon {
-        margin-right: 0.5em;
+        margin-right: .3em;
         color: $bright-purple;
         font-size: x-large;
         line-height: 100%;
@@ -98,7 +102,6 @@ a.clickable:hover {
         color: $shell-grey;
         font-size: 0.9em;
         line-height: 1.25;
-        margin-top: 0.2rem;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -158,3 +161,56 @@ a.clickable:hover {
   }
 
 }
+
+.field-mode-list.field-type-file {
+
+  a.clickable.file-field-uploaded-link:hover {
+    .uploaded-file {
+      &:hover {
+        border: none;
+        border-bottom: 1px solid $bright-purple;
+        border-radius: 0;
+        padding-bottom: 1px;
+      }
+    }
+  }
+
+  .uploaded-file {
+    padding: 0em;
+    background: transparent;
+    border-radius: 0;
+    border: none;
+    border-bottom: 1px solid transparent;
+    padding-bottom: 1px;
+
+    &:hover {
+      border: none;
+      border-bottom: 1px solid $bright-purple;
+      border-radius: 0;
+      padding-bottom: 1px;
+    }
+
+    .uploaded-file-info-container {
+
+      .uploaded-file-icon-container {
+
+        .uploaded-file-icon {
+          margin-right: .4em;
+          font-size: 0.8rem;
+        }
+      }
+
+      .uploaded-file-info {
+
+        .uploaded-file-name {
+          font-weight: 700;
+          margin-right: initial;
+        }
+      }
+
+
+    }
+
+  }
+}
+
