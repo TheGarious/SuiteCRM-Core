@@ -122,6 +122,8 @@ import {SquireDetailFieldModule} from "./squire/templates/detail/squire.module";
 import {SquireDetailFieldComponent} from "./squire/templates/detail/squire.component";
 import {FileEditFieldModule} from "./file/templates/edit/file.module";
 import {FileEditFieldComponent} from "./file/templates/edit/file.component";
+import {FileListFieldModule} from "./file/templates/list/file.module";
+import {FileListFieldComponent} from "./file/templates/list/file.component";
 
 export const baseFieldModules = [
     VarcharDetailFieldModule,
@@ -133,6 +135,7 @@ export const baseFieldModules = [
     IconListFieldModule,
     FileDetailFieldModule,
     FileEditFieldModule,
+    FileListFieldModule,
     FloatDetailFieldModule,
     PhoneDetailFieldModule,
     DateDetailFieldModule,
@@ -182,6 +185,7 @@ export const baseFieldComponents = [
     IntDetailFieldComponent,
     FileDetailFieldComponent,
     FileEditFieldComponent,
+    FileListFieldComponent,
     FloatDetailFieldComponent,
     PhoneDetailFieldComponent,
     DateDetailFieldComponent,
@@ -239,7 +243,7 @@ export const baseViewFieldsMap: FieldComponentMap = {
     'int.detail': IntDetailFieldComponent,
     'file.edit': FileEditFieldComponent,
     'file.detail': FileDetailFieldComponent,
-    'file.list': FileDetailFieldComponent,
+    'file.list': FileListFieldComponent,
     'float.list': FloatDetailFieldComponent,
     'float.detail': FloatDetailFieldComponent,
     'phone.list': PhoneDetailFieldComponent,
