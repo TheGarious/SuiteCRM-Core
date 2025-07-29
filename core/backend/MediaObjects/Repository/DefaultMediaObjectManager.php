@@ -131,8 +131,9 @@ class DefaultMediaObjectManager implements MediaObjectManagerInterface
      * @param MediaObjectInterface $mediaObject The media object to link
      * @param string $parentType The type of the parent object
      * @param string $parentId The ID of the parent object
+     * @param string $parentField The name of the parent field
      */
-    public function linkParent(string $type, MediaObjectInterface $mediaObject, string $parentType, string $parentId): void
+    public function linkParent(string $type, MediaObjectInterface $mediaObject, string $parentType, string $parentId, string $parentField): void
     {
         $repository = $this->getRepository($type);
 
@@ -142,6 +143,7 @@ class DefaultMediaObjectManager implements MediaObjectManagerInterface
 
         $mediaObject->setParentType($parentType);
         $mediaObject->setParentId($parentId);
+        $mediaObject->setParentField($parentField);
 
         $repository->save($mediaObject);
     }
@@ -152,13 +154,14 @@ class DefaultMediaObjectManager implements MediaObjectManagerInterface
      * @param string $type The type of media object (e.g., 'archived-document', 'private-document', etc.)
      * @param string $parentType The type of the parent object
      * @param string $parentId The ID of the parent object
+     * @param string $parentField The name of the parent field
      * @return MediaObjectInterface[] An array of linked media objects
      */
-    public function getLinkedMediaObjects(string $type, string $parentType, string $parentId): array
+    public function getLinkedMediaObjects(string $type, string $parentType, string $parentId, string $parentField): array
     {
         $repository = $this->getRepository($type);
         if ($repository) {
-            return $repository->findBy(['parentType' => $parentType, 'parentId' => $parentId, 'temporary' => 0, 'deleted' => 0]);
+            return $repository->findBy(['parentType' => $parentType, 'parentId' => $parentId, 'parentField' => $parentField, 'temporary' => 0, 'deleted' => 0]);
         }
         return [];
     }
@@ -170,8 +173,9 @@ class DefaultMediaObjectManager implements MediaObjectManagerInterface
      * @param string $id The ID of the media object
      * @param string $parentType The type of the parent object
      * @param string $parentId The ID of the parent object
+     * @param string $parentField The name of the parent field
      */
-    public function linkParentById(string $type, string $id, string $parentType, string $parentId): void
+    public function linkParentById(string $type, string $id, string $parentType, string $parentId, string $parentField): void
     {
         $repository = $this->getRepository($type);
 
@@ -186,6 +190,7 @@ class DefaultMediaObjectManager implements MediaObjectManagerInterface
 
         $mediaObject->setParentType($parentType);
         $mediaObject->setParentId($parentId);
+        $mediaObject->setParentField($parentField);
 
         $repository->save($mediaObject);
     }
@@ -219,6 +224,7 @@ class DefaultMediaObjectManager implements MediaObjectManagerInterface
                 'dimensions' => $mediaObject->getDimensions(),
                 'parent_type' => $mediaObject->getParentType(),
                 'parent_id' => $mediaObject->getParentId(),
+                'parent_field' => $mediaObject->getParentField(),
                 'temporary' => $mediaObject->getTemporary(),
                 'contentUrl' => $this->buildContentUrl($storageType, $mediaObject),
                 'date_entered' => $mediaObject->getDateEntered(),
@@ -238,9 +244,10 @@ class DefaultMediaObjectManager implements MediaObjectManagerInterface
      *
      * @param string $type The type of media object (e.g., 'archived-document', 'private-document', etc.)
      * @param Record $parent The parent record to which the media objects are linked
+     * @param string $parentField The name of the parent field
      * @param Record[] $records An array of records to sync with the parent
      */
-    public function syncLinkedMediaObjects(string $type, Record $parent, array $records): void
+    public function syncLinkedMediaObjects(string $type, Record $parent, string $parentField, array $records): void
     {
         $repository = $this->getRepository($type);
 
@@ -253,7 +260,7 @@ class DefaultMediaObjectManager implements MediaObjectManagerInterface
 
         $records = $records ?? [];
         $relatedRecordIds = [];
-        $relatedMediaObjects = $this->getLinkedMediaObjects($type, $parentType, $parentId) ?? [];
+        $relatedMediaObjects = $this->getLinkedMediaObjects($type, $parentType, $parentId, $parentField) ?? [];
 
         foreach ($relatedMediaObjects as $mediaObject) {
             $id = $mediaObject->getId();
@@ -275,7 +282,7 @@ class DefaultMediaObjectManager implements MediaObjectManagerInterface
             $submittedRecordIds[$record->getId()] = true;
 
             if (empty($relatedRecordIds[$id])) {
-                $this->linkParent($type, $mediaObject, $parentType, $parentId);
+                $this->linkParent($type, $mediaObject, $parentType, $parentId, $parentField);
             }
         }
 

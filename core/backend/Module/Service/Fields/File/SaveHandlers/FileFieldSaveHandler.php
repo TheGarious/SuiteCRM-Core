@@ -106,7 +106,7 @@ class FileFieldSaveHandler implements RecordFieldTypeSaveHandlerInterface
         $parentType = $this->moduleNameMapper->toLegacy($savedRecord->getModule());
         $parentId = $savedRecord->getId();
 
-        $currentMediaObjects = $this->mediaObjectManager->getLinkedMediaObjects($storageType, $parentType, $parentId) ?? [];
+        $currentMediaObjects = $this->mediaObjectManager->getLinkedMediaObjects($storageType, $parentType, $parentId, $field) ?? [];
 
         if (empty($mediaObjectId)) {
             return;
@@ -120,6 +120,7 @@ class FileFieldSaveHandler implements RecordFieldTypeSaveHandlerInterface
 
         $mediaObject->setParentType($parentType);
         $mediaObject->setParentId($parentId);
+        $mediaObject->setParentField($field);
         $mediaObject->setTemporary(false);
 
         foreach ($currentMediaObjects as $currentMediaObject) {

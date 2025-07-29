@@ -72,9 +72,10 @@ interface MediaObjectManagerInterface
      * @param string $type The type of media object (e.g., 'archived-document', 'private-document', etc.)
      * @param string $parentType The type of the parent object
      * @param string $parentId The ID of the parent object
+     * @param string $parentField The field in the parent object that links to the media objects
      * @return MediaObjectInterface[] An array of linked media objects
      */
-    public function getLinkedMediaObjects(string $type, string $parentType, string $parentId): array;
+    public function getLinkedMediaObjects(string $type, string $parentType, string $parentId, string $parentField): array;
 
     /**
      * Sets the parent type and ID for a media object.
@@ -83,8 +84,9 @@ interface MediaObjectManagerInterface
      * @param string $id The ID of the media object
      * @param string $parentType The type of the parent object
      * @param string $parentId The ID of the parent object
+     * @param string $parentField The field in the parent object that links to the media objects
      */
-    public function linkParentById(string $type, string $id, string $parentType, string $parentId): void;
+    public function linkParentById(string $type, string $id, string $parentType, string $parentId, string $parentField): void;
 
     /**
      * Maps a media object to a record.
@@ -100,9 +102,10 @@ interface MediaObjectManagerInterface
      *
      * @param string $type The type of media object (e.g., 'archived-document', 'private-document', etc.)
      * @param Record $parent The parent record to which the media objects are linked
+     * @param string $parentField The field in the parent record that links to the media objects
      * @param Record[] $records An array of records to sync with the parent
      */
-    public function syncLinkedMediaObjects(string $type, Record $parent, array $records): void;
+    public function syncLinkedMediaObjects(string $type, Record $parent, string $parentField, array $records): void;
 
     /**
      * Sets the parent type and ID for a media object.
@@ -111,8 +114,9 @@ interface MediaObjectManagerInterface
      * @param MediaObjectInterface $mediaObject The media object to link
      * @param string $parentType The type of the parent object
      * @param string $parentId The ID of the parent object
+     * @param string $parentField The field in the parent object that links to the media objects
      */
-    public function linkParent(string $type, MediaObjectInterface $mediaObject, string $parentType, string $parentId): void;
+    public function linkParent(string $type, MediaObjectInterface $mediaObject, string $parentType, string $parentId, string $parentField): void;
 
     /**
      * Builds a content URL for a media object.

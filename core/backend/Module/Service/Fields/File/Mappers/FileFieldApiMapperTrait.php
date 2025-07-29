@@ -51,7 +51,7 @@ trait FileFieldApiMapperTrait
 
         $module = $moduleNameMapper->toLegacy($record->getModule());
 
-        $mediaObjects = $mediaObjectManager->getLinkedMediaObjects($type, $module, $record->getId());
+        $mediaObjects = $mediaObjectManager->getLinkedMediaObjects($type, $module, $record->getId(), $field);
 
         if (empty($mediaObjects)) {
             return;
