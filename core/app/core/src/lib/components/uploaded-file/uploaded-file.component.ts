@@ -1,12 +1,12 @@
 /**
- * SuiteCRM is a customer relationship management program developed by SalesAgility Ltd.
- * Copyright (C) 2025 SalesAgility Ltd.
+ * SuiteCRM is a customer relationship management program developed by SuiteCRM Ltd.
+ * Copyright (C) 2025 SuiteCRM Ltd.
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by the
  * Free Software Foundation with the addition of the following permission added
  * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
- * IN WHICH THE COPYRIGHT IS OWNED BY SALESAGILITY, SALESAGILITY DISCLAIMS THE
+ * IN WHICH THE COPYRIGHT IS OWNED BY SUITECRM, SUITECRM DISCLAIMS THE
  * WARRANTY OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT
@@ -63,6 +63,11 @@ export class UploadedFileComponent implements OnInit {
     @Input() file: UploadedFile;
     @Input() maxWidth: string;
     @Input() allowClear: boolean = true;
+    @Input() savedIcon: string = 'file-earmark-arrow-down';
+    @Input() uploadingIcon: string = 'file-earmark-arrow-up';
+    @Input() uploadedIcon: string = 'file-earmark-check';
+    @Input() errorIcon: string = 'file-earmark-x';
+    @Input() displaySize: boolean = true;
     @Output('clear') clear: EventEmitter<UploadedFile> = new EventEmitter<UploadedFile>();
     clearButtonConfig: ButtonInterface;
     errorClearButtonConfig: ButtonInterface;
