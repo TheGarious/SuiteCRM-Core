@@ -42,6 +42,7 @@ p-multiselect {
         table-layout: fixed;
         white-space: nowrap;
         overflow: hidden;
+        line-height: 1.15rem;
         text-overflow: ellipsis;
       }
 
@@ -53,6 +54,7 @@ p-multiselect {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        line-height: .975rem;
       }
     }
 

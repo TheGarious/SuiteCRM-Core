@@ -28,11 +28,11 @@
 
 .p-multiselect {
   width: 100%;
-  height: calc(1.5em + 0.5rem + 1px);
+  height: calc(1.5em + 0.5rem - 1px);
 
   .p-multiselect-label {
     font-size: 0.85rem;
-    padding: 0.35rem 0.48rem;
+    padding: 0.30rem 0.48rem;
     max-width: 400px;
   }
 
@@ -73,6 +73,7 @@
 
     ul.p-multiselect-items {
       padding-inline-start: 0em;
+      padding: 0!important;
 
      .p-multiselect-empty-message{
        font-size: 0.875rem!important;
