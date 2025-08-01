@@ -27,50 +27,62 @@
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-
 return static function (ContainerConfigurator $containerConfig) {
     $env = $_ENV ?? [];
 
-    $awsS3Version = $env['AWS_S3_VERSION'] ?? '2006-03-01';
-    if (empty($awsS3Version)) {
-        $awsS3Version = '2006-03-01';
+    $awsS3ClientsEnv = $env['AWS_S3_INSTANCES'] ?? '{}';
+    $awsS3Clients = json_decode($awsS3ClientsEnv, true, 512, JSON_THROW_ON_ERROR);
+
+    if (!empty($awsS3Clients)) {
+
+        foreach ($awsS3Clients as $name => $config) {
+            if (empty($config)) {
+                continue;
+            }
+
+            $version = $config['version'] ?? '2006-03-01';
+            $region = $config['region'] ?? '';
+            $accessKey = $config['access_key'] ?? '';
+            $accessSecret = $config['access_secret'] ?? '';
+
+            $containerConfig->services()
+                            ->set("aws.s3.client.$name", 'Aws\S3\S3Client')
+                            ->factory(['App\MediaObjects\DependencyInjection\AwsS3ClientFactory', 'create'])
+                            ->args(
+                                [
+                                    '$accessKey' => $accessKey,
+                                    '$accessSecret' => $accessSecret,
+                                    '$region' => $region,
+                                    '$version' => $version,
+                                ]
+                            )
+                            ->public();
+        }
     }
 
-    $awsS3Region = $env['AWS_S3_ACCESS_REGION'] ?? '';
-    if (empty($awsS3Region)) {
-        $awsS3Region = '';
+
+    $azureBlobClientsEnv = $env['AZURE_BLOB_INSTANCES'] ?? '{}';
+    $azureBlobClients = json_decode($azureBlobClientsEnv, true, 512, JSON_THROW_ON_ERROR);
+
+    if (!empty($azureBlobClients)) {
+
+        foreach ($azureBlobClients as $name => $config) {
+            if (empty($config) || empty($config['connection_string'])) {
+                continue;
+            }
+
+            $containerConfig->services()
+                            ->set("azure.blob.client.$name", 'AzureOss\Storage\Blob\BlobServiceClient')
+                            ->factory(['\App\MediaObjects\DependencyInjection\AzureBlobClientFactory', 'create'])
+                            ->args(
+                                [
+                                    '$connectionString' => $config['connection_string'],
+                                ]
+                            )
+                            ->public();
+        }
     }
 
-    if (!empty($env['AWS_S3_ACCESS_KEY'])) {
-        $awsS3AccessKey = $env['AWS_S3_ACCESS_KEY'];
-    } else {
-        $awsS3AccessKey = '%env(AWS_S3_ACCESS_KEY)%';
-    }
-
-    if (!empty($env['AWS_S3_ACCESS_SECRET'])) {
-        $awsS3AccessSecret = $env['AWS_S3_ACCESS_SECRET'];
-    } else {
-        $awsS3AccessSecret = '%env(AWS_S3_ACCESS_SECRET)%';
-    }
-
-    $s3ClientArgs = [];
-
-    if (!empty($awsS3Version)) {
-        $s3ClientArgs['version'] = $awsS3Version;
-    }
-
-    if (!empty($awsS3Region)) {
-        $s3ClientArgs['region'] = $awsS3Region;
-    }
-
-    $s3ClientArgs['credentials'] = [
-        'key' => $awsS3AccessKey,
-        'secret' => $awsS3AccessSecret,
-    ];
-
-    if (!empty($s3ClientArgs)) {
-        $containerConfig->services()->set('app_aws_s3_client', 'Aws\S3\S3Client')->public()->args([$s3ClientArgs]);
-    }
 
     $dbDriver = $env['MEDIA_UPLOADER_DB_DRIVER'] ?? 'orm';
 
