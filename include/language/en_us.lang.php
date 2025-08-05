@@ -296,6 +296,12 @@ $app_list_strings = array(
         'Dr.' => 'Dr.',
         'Prof.' => 'Prof.',
     ),
+
+    'redirect_uri_type_dom' => [
+        'pretty_url' => 'Pretty URL (/ep/)',
+        'query_string' => 'Query String (index.php?entryPoint=)'
+    ],
+
     //time is in seconds; the greater the time the longer it takes;
     'reminder_max_time' => 90000,
     'reminder_time_options' => array(
@@ -707,6 +713,12 @@ $app_list_strings = array(
     ],
 
     'dom_inbound_email_auth_types' => [
+        'basic' => 'Basic Auth',
+        'oauth' => 'OAuth',
+    ],
+
+    'dom_outbound_email_auth_types' => [
+        'no_auth' => 'No Auth',
         'basic' => 'Basic Auth',
         'oauth' => 'OAuth',
     ],
@@ -1399,6 +1411,7 @@ $app_strings = array(
     'LBL_EMAIL_SETTINGS_CHECK_INTERVAL' => 'Check for New Mail',
     'LBL_EMAIL_SETTINGS_FROM_ADDR' => 'From Address',
     'LBL_EMAIL_SETTINGS_FROM_TO_EMAIL_ADDR' => 'Email Address For Test Notification:',
+    'LBL_EMAIL_SETTINGS_FROM_ADDR_NOT_SET' => 'From address and/or From name not set',
     'LBL_EMAIL_SETTINGS_FROM_NAME' => 'From Name',
     'LBL_EMAIL_SETTINGS_REPLY_TO_ADDR' => 'Reply to Address',
     'LBL_EMAIL_SETTINGS_FULL_SYNC' => 'Synchronize All Mail Accounts',
@@ -3949,6 +3962,8 @@ $app_strings['LBL_VALUE_SET_PLACEHOLDER'] = 'Value set. Enter new value to overr
 
 $app_strings['ERR_IMAP_OAUTH_CONNECTION_ERROR'] = 'Not able to connect using OAuth login with Inbound Email server. For connection: ';
 $app_strings['WARN_OAUTH_TOKEN_SESSION_EXPIRED'] = 'Your IMAP OAuth session has expired, please login again in the connection: ';
+
+$app_strings['ERR_OAUTH_CONNECTION_ERROR'] = 'Not able to connect using OAuth login. For connection: ';
 
 $app_strings['LBL_KEY'] = 'Key';
 $app_strings['LBL_VALUE'] = 'Value';
