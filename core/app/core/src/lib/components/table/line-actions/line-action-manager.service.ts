@@ -29,6 +29,7 @@ import {LineActionData} from './line.action';
 import {CreateRelatedLineAction} from './create-related/create-related.action';
 import {BaseActionManager} from '../../../services/actions/base-action-manager.service';
 import {AsyncProcessLineAction} from './async-process/async-process.action';
+import {ModalCreateLineAction} from './modal-create/modal-create.action';
 
 @Injectable({
     providedIn: 'root',
@@ -38,9 +39,11 @@ export class LineActionActionManager extends BaseActionManager<LineActionData> {
     constructor(
         protected createRelated: CreateRelatedLineAction,
         protected async: AsyncProcessLineAction,
+        protected modalCreate: ModalCreateLineAction,
     ) {
         super();
         createRelated.modes.forEach(mode => this.actions[mode][createRelated.key] = createRelated);
         async.modes.forEach(mode => this.actions[mode][async.key] = async);
+        modalCreate.modes.forEach(mode => this.actions[mode][modalCreate.key] = modalCreate);
     }
 }
