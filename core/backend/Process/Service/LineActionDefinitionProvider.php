@@ -105,14 +105,19 @@ class LineActionDefinitionProvider implements LineActionDefinitionProviderInterf
         $defaults = $this->listViewLineActions['default'] ?? [];
         $defaultActions = $defaults['actions'] ?? [];
 
-        $createActions = $defaultActions['create'] ?? [];
-        $filteredCreateActions = $this->filterCreateActions($module, $createActions);
+        $allProcessedActions = [];
+        foreach ($defaultActions as $actionKey => $actionDef) {
+            switch ($actionKey) {
+                case 'create':
+                    $allProcessedActions[] = $this->filterCreateActions($module, $actionDef);
+                    break;
+                case 'modal-create':
+                    $allProcessedActions[] = $this->filterModalCreateActions($module, $actionDef);
+                    break;
+            }
+        }
 
-        $filterActions = [];
-
-        $filterActions = array_merge($filterActions, $filteredCreateActions);
-
-        return $filterActions;
+        return array_reduce($allProcessedActions, 'array_merge', []);
     }
 
     /**
@@ -151,6 +156,88 @@ class LineActionDefinitionProvider implements LineActionDefinitionProviderInterf
         }
 
         return $createActions;
+    }
+
+    /**
+     * Process modal-create actions - EMAIL SPECIFIC ONLY
+     *
+     * This method is specifically designed for email compose modals only.
+     * Other modules (calls, meetings, tasks) should remain in the 'create'
+     * action type to maintain their current URL navigation behavior.
+     *
+     * EMAIL-SPECIFIC FEATURES:
+     * - Uses modalComposeView instead of standard recordView
+     * - Sets up email-specific field mapping (to_addrs_names, etc.)
+     * - Configures email modal options (large size, confirmation)
+     *
+     * @param string $module - The module requesting actions (e.g. 'accounts')
+     * @param array $actionDefinition - YAML config for modal actions
+     * @return array - Array of email modal Action objects for frontend
+     */
+    protected function filterModalCreateActions(string $module, array $actionDefinition): array
+    {
+        $actions = [];
+
+        // Process related_modules structure - EMAIL ONLY
+        $relatedModules = $actionDefinition['related_modules'] ?? [];
+        $actionTemplate = $actionDefinition;
+        unset($actionTemplate['related_modules']);
+
+        foreach ($relatedModules as $relatedModuleDef) {
+            $relatedModuleName = $relatedModuleDef['module'];
+
+            // FILTER: Only process email modules in modal-create actions
+            if ($relatedModuleName !== 'emails') {
+                // Skip non-email modules - they should use 'create' actions instead
+                continue;
+            }
+
+            // Check access permissions for email module
+            if ($this->checkAccess($relatedModuleName, $actionDefinition['acl'] ?? []) === false) {
+                continue;
+            }
+
+            // Email modal setup
+            $relatedModuleDef['mapping'] = [];
+            $relatedModuleDef['legacyModuleName'] = $this->moduleNameMapper->toLegacy($module);
+            $relatedModuleDef['action'] = $relatedModuleDef['action'] ?? $actionDefinition['key'];
+
+            // Create email modal action object
+            $action = array_merge($actionTemplate, $relatedModuleDef);
+            $action['modes'] = $action['modes'] ?? ['list'];
+            $action['params'] = $action['params'] ?? [];
+
+            // Email-specific modal parameters for Suite 8 email compose
+            $action['metadataView'] = 'modalComposeView';
+            $action['params']['mapFields'] = [
+                'default' => [
+                    'parent_id' => 'id',
+                    'parent_name' => 'fields.name',
+                    'parent_type' => 'attributes.module_name',
+                    'to_addrs_names' => [
+                        [
+                            'id' => 'id',
+                            'name' => 'fields.name',
+                            'email1' => 'attributes.email1',
+                            'module_name' => 'attributes.module_name'
+                        ]
+                    ]
+                ]
+            ];
+            $action['params']['closeConfirmationModal'] = true;
+            $action['params']['closeConfirmationLabel'] = 'LBL_CLOSE_EMAIL_MODAL';
+            $action['params']['detached'] = true;
+            $action['params']['headerClass'] = 'left-aligned-title';
+            $action['params']['dynamicTitleKey'] = 'LBL_EMAIL_MODAL_DYNAMIC_TITLE';
+            $action['params']['modalOptions'] = [
+                'size' => 'lg',
+                'scrollable' => false
+            ];
+
+            $actions[] = $action;
+        }
+
+        return $actions;
     }
 
     /**
