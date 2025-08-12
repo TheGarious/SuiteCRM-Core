@@ -32,15 +32,15 @@ parameters:
                 create:
                   module: tasks
                   returnAction: DetailView
+          acl:
+            - edit
+        modal-create:
+          key: modal-create
+          related_modules:
             emails:
               name: create-emails
               module: emails
               icon: email
-              action: compose
               labelKey: LBL_COMPOSE_EMAIL_BUTTON_LABEL
-              params:
-                create:
-                  module: emails
-                  returnAction: index
           acl:
             - edit
