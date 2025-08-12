@@ -24,7 +24,7 @@
  * the words "Supercharged by SuiteCRM".
  */
 
-import {ChangeDetectionStrategy, Component, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, computed, OnDestroy, OnInit} from '@angular/core';
 import {CommonModule} from "@angular/common";
 import {ActivatedRoute, Router} from "@angular/router";
 import {combineLatestWith, Observable, Subscription} from "rxjs";
@@ -124,7 +124,9 @@ export class RecordPaginationComponent implements OnInit, OnDestroy {
             },
             icon: 'paginate_previous',
             iconKlass: 'sicon-2x',
-            disabled: this.currentIndex === 1 || this.isRecordsLoading,
+            disabled: computed((): boolean => {
+                return this.currentIndex === 1 || this.isRecordsLoading;
+            }),
             onClick: () => this.prevRecord()
         } as ButtonInterface;
 
@@ -136,7 +138,9 @@ export class RecordPaginationComponent implements OnInit, OnDestroy {
             },
             icon: 'paginate_next',
             iconKlass: 'sicon-2x',
-            disabled: this.currentIndex === this.totalRecordsCount || this.isRecordsLoading,
+            disabled: computed((): boolean => {
+                return this.currentIndex === this.totalRecordsCount || this.isRecordsLoading;
+            }),
             onClick: () => this.nextRecord()
         } as ButtonInterface;
 

@@ -39,6 +39,7 @@ export class ButtonComponent implements OnInit, OnDestroy {
 
     dynamicClass: Signal<string> = signal('');
     dynamicIcon: Signal<string> = signal('');
+    disabled: Signal<boolean> = signal(false);
     clickCallBack: ButtonCallback;
     protected clickBuffer = new Subject<any>();
     protected clickBuffer$: Observable<any> = this.clickBuffer.asObservable();
@@ -60,6 +61,9 @@ export class ButtonComponent implements OnInit, OnDestroy {
             this.dynamicIcon = this.config?.dynamicIcon;
         }
 
+        if (this.config?.disabled) {
+            this.disabled = this.config?.disabled;
+        }
 
         if (isToDebounce && this.clickCallBack) {
             this.subs.push(this.clickBuffer$.pipe(debounceTime(clickDebounceTime)).subscribe(value => {

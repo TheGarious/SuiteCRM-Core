@@ -29,7 +29,7 @@
         [ngClass]="config.klass"
         [class]="dynamicClass()"
         (click)="runClick($event)"
-        [disabled]="config?.disabled || ''"
+        [disabled]="disabled() || ''"
         [style]="config?.style || ''"
         [style.max-width]="config?.maxWidth ? config?.maxWidth + 'px': null"
         [title]="(language.getFieldLabel(config.titleKey) || config?.title) || ''">

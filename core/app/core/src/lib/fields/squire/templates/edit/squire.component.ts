@@ -302,7 +302,10 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
                     return 'disabled';
                 }
                 return this?.editor?.hasFormat('B') ? 'active squire-editor-button-active' : '';
-            })
+            }),
+            disabled: computed((): boolean => {
+                return this.editorMode() === 'code';
+            }),
         } as ButtonInterface;
 
         this.availableButtons.italic = {
@@ -333,7 +336,10 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
                     return 'disabled';
                 }
                 return this?.editor?.hasFormat('I') ? 'active squire-editor-button-active' : '';
-            })
+            }),
+            disabled: computed((): boolean => {
+                return this.editorMode() === 'code';
+            }),
         } as ButtonInterface;
 
         this.availableButtons.underline = {
@@ -364,7 +370,10 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
                     return 'disabled';
                 }
                 return this?.editor?.hasFormat('U') ? 'active squire-editor-button-active' : '';
-            })
+            }),
+            disabled: computed((): boolean => {
+                return this.editorMode() === 'code';
+            }),
         } as ButtonInterface;
 
         this.availableButtons.strikethrough = {
@@ -395,7 +404,10 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
                     return 'disabled';
                 }
                 return this?.editor?.hasFormat('S') ? 'active squire-editor-button-active' : '';
-            })
+            }),
+            disabled: computed((): boolean => {
+                return this.editorMode() === 'code';
+            }),
         } as ButtonInterface;
 
         this.availableButtons.font = {
@@ -410,6 +422,9 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
             showPopup: (): boolean => {
                 return this.editorMode() !== 'code';
             },
+            disabled: computed((): boolean => {
+                return this.editorMode() === 'code';
+            }),
             titleKey: 'LBL_FONT_FACE',
             klass: 'squire-editor-button btn btn-sm ',
             items: [
@@ -465,6 +480,9 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
                     return 'disabled';
                 }
             }),
+            disabled: computed((): boolean => {
+                return this.editorMode() === 'code';
+            }),
             items: [
                 {
                     key: 'Small',
@@ -517,6 +535,9 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
             showPopup: (): boolean => {
                 return this.editorMode() !== 'code';
             },
+            disabled: computed((): boolean => {
+                return this.editorMode() === 'code';
+            }),
             dynamicClass: computed((): string => {
                 if (this.editorMode() === 'code'){
                     return 'disabled';
@@ -538,6 +559,9 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
             showPopup: (): boolean => {
                 return this.editorMode() !== 'code';
             },
+            disabled: computed((): boolean => {
+                return this.editorMode() === 'code';
+            }),
         } as ButtonInterface;
 
         const insertLink = {
@@ -551,6 +575,9 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
             titleKey: 'LBL_LINK',
             klass: 'squire-editor-button btn btn-sm',
             hotkey: 'ctrl+k',
+            disabled: computed((): boolean => {
+                return this.editorMode() === 'code';
+            }),
             dynamicClass: computed((): string => {
                 const path = this.currentEditorPath();
                 const trigger = this.styleSignal();
@@ -628,6 +655,9 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
             titleKey: 'LBL_UNORDERED_LIST',
             klass: 'squire-editor-button btn btn-sm ',
             hotkey: 'ctrl+shift+8',
+            disabled: computed((): boolean => {
+                return this.editorMode() === 'code';
+            }),
             onClick: () => {
                 if (this.editorMode() === 'code'){
                     return;
@@ -656,6 +686,9 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
             key: 'orderedList',
             type: 'button',
             icon: 'list-ol',
+            disabled: computed((): boolean => {
+                return this.editorMode() === 'code';
+            }),
             titleKey: 'LBL_ORDERED_LIST',
             klass: 'squire-editor-button btn btn-sm ',
             hotkey: 'ctrl+shift+9',
@@ -689,6 +722,9 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
             icon: 'text-indent-left',
             titleKey: 'LBL_TEXT_INDENT_LEFT',
             klass: 'squire-editor-button btn btn-sm ',
+            disabled: computed((): boolean => {
+                return this.editorMode() === 'code';
+            }),
             dynamicClass: computed((): string => {
                 if (this.editorMode() === 'code'){
                     return 'disabled';
@@ -703,6 +739,9 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
             icon: 'text-indent-right',
             titleKey: 'LBL_TEXT_INDENT_RIGHT',
             klass: 'squire-editor-button btn btn-sm ',
+            disabled: computed((): boolean => {
+                return this.editorMode() === 'code';
+            }),
             dynamicClass: computed((): string => {
                 if (this.editorMode() === 'code'){
                     return 'disabled';
@@ -716,6 +755,9 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
             type: 'button',
             icon: 'text-left',
             titleKey: 'LBL_ALIGN_LEFT',
+            disabled: computed((): boolean => {
+                return this.editorMode() === 'code';
+            }),
             klass: 'squire-editor-button btn btn-sm ',
             onClick: () => this.editorMode() !== 'code' ? this?.editor?.setTextAlignment('left') : '',
             dynamicClass: computed((): string => {
@@ -733,6 +775,9 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
             type: 'button',
             icon: 'text-center',
             titleKey: 'LBL_ALIGN_CENTER',
+            disabled: computed((): boolean => {
+                return this.editorMode() === 'code';
+            }),
             klass: 'squire-editor-button btn btn-sm ',
             onClick: () => this.editorMode() !== 'code' ? this?.editor?.setTextAlignment('center') : '',
             dynamicClass: computed((): string => {
@@ -748,6 +793,9 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
         this.availableButtons.alignRight = {
             key: 'alignRight',
             type: 'button',
+            disabled: computed((): boolean => {
+                return this.editorMode() === 'code';
+            }),
             icon: 'text-right',
             titleKey: 'LBL_ALIGN_RIGHT',
             klass: 'squire-editor-button btn btn-sm ',
@@ -776,6 +824,9 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
                 }
                 const alignment = this.getTextAlignment(path);
                 return alignment === 'justify' ? 'active squire-editor-button-active' : '';
+            }),
+            disabled: computed((): boolean => {
+                return this.editorMode() === 'code';
             })
         } as ButtonInterface;
 
@@ -786,6 +837,9 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
             titleKey: 'LBL_QUOTE',
             klass: 'squire-editor-button btn btn-sm ',
             hotkey: 'ctrl+]',
+            disabled: computed((): boolean => {
+                return this.editorMode() === 'code';
+            }),
             onClick: () => this.editorMode() !== 'code' ? this?.editor?.increaseQuoteLevel() : '',
             dynamicClass: computed((): string => {
                 if (this.editorMode() === 'code'){
@@ -800,6 +854,9 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
             icon: 'unquote',
             titleKey: 'LBL_UNQUOTE',
             klass: 'squire-editor-button btn btn-sm',
+            disabled: computed((): boolean => {
+                return this.editorMode() === 'code';
+            }),
             hotkey: 'ctrl+[',
             onClick: () => this.editorMode() !== 'code' ? this?.editor?.decreaseQuoteLevel() : '',
             dynamicClass: computed((): string => {
@@ -816,6 +873,9 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
             icon: 'text-left-to-right',
             titleKey: 'LBL_TEXT_LEFT_TO_RIGHT',
             klass: 'squire-editor-button btn btn-sm',
+            disabled: computed((): boolean => {
+                return this.editorMode() === 'code';
+            }),
             onClick: () => this.editorMode() !== 'code' ? this?.editor?.setTextDirection('ltr') : '',
             dynamicClass: computed((): string => {
                 const path = this.currentEditorPath();
@@ -833,6 +893,9 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
             icon: 'text-right-to-left',
             titleKey: 'LBL_TEXT_RIGHT_TO_LEFT',
             klass: 'squire-editor-button btn btn-sm',
+            disabled: computed((): boolean => {
+                return this.editorMode() === 'code';
+            }),
             onClick: () => this.editorMode() !== 'code' ? this?.editor?.setTextAlignment('rtl') : '',
             dynamicClass: computed((): string => {
                 const path = this.currentEditorPath();
@@ -849,6 +912,9 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
             type: 'button',
             icon: 'clear-formatting',
             titleKey: 'LBL_CLEAR_FORMATTING',
+            disabled: computed((): boolean => {
+                return this.editorMode() === 'code';
+            }),
             klass: 'squire-editor-button btn btn-sm',
             onClick: () => this.editorMode() !== 'code' ? this?.editor?.removeAllFormatting() : '',
             dynamicClass: computed((): string => {

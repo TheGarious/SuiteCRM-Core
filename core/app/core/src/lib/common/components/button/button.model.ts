@@ -50,7 +50,7 @@ export interface ButtonInterface {
     iconKlass?: string;
     labelModule?: string;
     section?: string;
-    disabled?: boolean;
+    disabled?: Signal<boolean>;
     type?: string;
     metadata?: ObjectMap;
     active?: boolean;

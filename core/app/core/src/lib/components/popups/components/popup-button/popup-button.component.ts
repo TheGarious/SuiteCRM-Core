@@ -29,7 +29,7 @@ import {
     EventEmitter,
     Input,
     OnDestroy,
-    OnInit,
+    OnInit, Signal,
     signal,
     ViewChild,
     WritableSignal
@@ -53,7 +53,8 @@ export class PopupButtonComponent implements OnInit, OnDestroy {
     @Input() popoverClass: string = 'popover-wrapper';
     @Input() openStatusEventEmitter: EventEmitter<boolean>;
     @Input() displayButton: WritableSignal<boolean> = signal(true);
-    @Input() dynamicClass: WritableSignal<string> = signal('');
+    @Input() dynamicClass: Signal<string> = signal('');
+    @Input() disabled: Signal<boolean> = signal(false);
     @Input() showPopup: PopoverValidation = () => {return true};
 
     @ViewChild('popover') popover: NgbPopover;
@@ -94,6 +95,7 @@ export class PopupButtonComponent implements OnInit, OnDestroy {
             klass: this.klass,
             titleKey: this.titleKey,
             dynamicClass: this.dynamicClass,
+            disabled: this.disabled
         } as ButtonInterface;
     }
 
