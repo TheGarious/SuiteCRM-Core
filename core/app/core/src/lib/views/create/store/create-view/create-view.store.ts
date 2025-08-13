@@ -129,7 +129,7 @@ export class CreateViewStore extends RecordViewStore {
     }
 
     save(): Observable<Record> {
-        this.appStateStore.updateLoading(`${this.internalState.module}-record-save-new`, true);
+        this.appStateStore.updateLoading(`${this.internalState.module}-record-save-new`, true, false);
 
         return this.recordStore.save().pipe(
             catchError(() => {
@@ -138,7 +138,7 @@ export class CreateViewStore extends RecordViewStore {
             }),
             finalize(() => {
                 this.setMode('detail' as ViewMode);
-                this.appStateStore.updateLoading(`${this.internalState.module}-record-save-new`, false);
+                this.appStateStore.updateLoading(`${this.internalState.module}-record-save-new`, false, false);
             })
         );
     }

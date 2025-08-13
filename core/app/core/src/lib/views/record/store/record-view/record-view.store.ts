@@ -402,12 +402,7 @@ export class RecordViewStore extends ViewStore implements StateStore, BaseRecord
     }
 
     setLoading(value: boolean, key: string): void {
-        this.appStateStore.updateLoading(`${this.internalState.module}-record-${key}`, value);
-
-        this.updateState({
-            ...this.internalState,
-            loading: value
-        });
+        this.appStateStore.updateLoading(`${this.internalState.module}-record-${key}`, value, false);
     }
 
     save(): Observable<Record> {
