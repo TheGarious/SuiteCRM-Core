@@ -30,7 +30,7 @@ import {animate, transition, trigger} from '@angular/animations';
 import {ButtonInterface} from '../../../../common/components/button/button.model';
 import {ModalCloseFeedBack} from '../../../../common/components/modal/modal.model';
 import {Observable, of, Subscription} from 'rxjs';
-import {distinctUntilChanged, skip} from 'rxjs/operators';
+import {debounceTime, distinctUntilChanged, skip, take} from 'rxjs/operators';
 import {ModalRecordFilterAdapter} from '../../adapters/filter.adapter';
 import {ModalRecordListTableAdapter} from '../../adapters/table.adapter';
 import {RecordListModalTableAdapterInterface} from '../../adapters/adapter.model';
@@ -77,7 +77,7 @@ export class RecordListModalComponent implements OnInit, OnDestroy {
     tableConfig: TableConfig;
     filterConfig: FilterConfig;
     store: RecordListModalStore;
-    maxHeight:number;
+    maxHeight: number;
 
     showFilterSignal: WritableSignal<boolean> = signal(true);
 
@@ -104,6 +104,13 @@ export class RecordListModalComponent implements OnInit, OnDestroy {
                 } as ModalCloseFeedBack);
             }
         } as ButtonInterface;
+
+        this.subs.push(this.store.recordList.criteria$.pipe(debounceTime(100)).subscribe(() => {
+            if (Object.entries(this.store.recordList.criteria.filters).length < 1) {
+                return;
+            }
+            this.updateSelection();
+        }));
 
         this.init();
     }
@@ -152,7 +159,7 @@ export class RecordListModalComponent implements OnInit, OnDestroy {
 
         this.tableConfig = this.adapter.getTable(this.store, this.multiSelect);
 
-        if (this.store?.listMetadata?.maxHeight){
+        if (this.store?.listMetadata?.maxHeight) {
             this.tableConfig.maxListHeight = this.store.listMetadata.maxHeight;
 
         }
@@ -175,23 +182,29 @@ export class RecordListModalComponent implements OnInit, OnDestroy {
 
     protected initStore(): void {
         this.store.init(this.module, this.parentModule ?? '', this.presetFilter);
-
-        if (this.selectedValues) {
-            const selected = this.selectedValues.split(',');
-            Object.values(selected).forEach((record) => {
-                this.store.recordList.toggleSelection(record, false)
-            });
-        }
+        this.updateSelection();
 
         this.loading$ = this.store.metadataLoading$;
 
         this.subs.push(this.store.linkClicked$.pipe(distinctUntilChanged(), skip(1)).subscribe(clicked => {
-            if (!clicked){
+            if (!clicked) {
                 return;
             }
 
             this.linkSelectedRecords();
 
         }));
+    }
+
+    protected updateSelection(): void {
+
+        if (!this.selectedValues ?? false) {
+            return;
+        }
+
+        const selected = this.selectedValues.split(',');
+        Object.values(selected).forEach((record) => {
+            this.store.recordList.toggleSelection(record, false)
+        });
     }
 }
