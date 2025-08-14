@@ -228,7 +228,7 @@ class EmailMan extends SugarBean
                 . "'pending_send' as status ";
 
             if (in_array('marketing_id', array_keys($filter))) {
-                $query['select'] .= ', email_marketing.id as marketing_id, u.user_name as assigned_user_name ';
+                $query['select'] .= ', ' . $this->table_name . '.id, email_marketing.id as marketing_id, u.user_name as assigned_user_name ';
             }
 
         }
