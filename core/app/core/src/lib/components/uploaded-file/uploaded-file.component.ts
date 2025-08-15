@@ -61,7 +61,7 @@ import {animate, style, transition, trigger} from "@angular/animations";
 export class UploadedFileComponent implements OnInit {
 
     @Input() file: UploadedFile;
-    @Input() maxWidth: string;
+    @Input() maxTextWidth: string;
     @Input() minWidth: string = '0px';
     @Input() allowClear: boolean = true;
     @Input() savedIcon: string = 'file-earmark-arrow-down';
@@ -82,12 +82,16 @@ export class UploadedFileComponent implements OnInit {
     ngOnInit(): void {
         this.buildClearButtonConfig();
         this.initMaxWidth();
+
+        if (this.file) {
+            this.uploadedFile.set(this.file);
+        }
     }
 
 
     protected initMaxWidth(): void {
-        if (this.maxWidth) {
-            this.textMaxWidth.set(this.maxWidth);
+        if (this.maxTextWidth) {
+            this.textMaxWidth.set(this.maxTextWidth);
         } else {
             this.textMaxWidth.set('200px');
         }
