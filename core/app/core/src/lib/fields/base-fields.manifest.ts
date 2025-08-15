@@ -124,6 +124,10 @@ import {FileEditFieldModule} from "./file/templates/edit/file.module";
 import {FileEditFieldComponent} from "./file/templates/edit/file.component";
 import {FileListFieldModule} from "./file/templates/list/file.module";
 import {FileListFieldComponent} from "./file/templates/list/file.component";
+import {AttachmentEditFieldModule} from "./attachments/templates/edit/attachment.module";
+import {AttachmentEditFieldComponent} from "./attachments/templates/edit/attachment.component";
+import {AttachmentDetailFieldModule} from "./attachments/templates/detail/attachment.module";
+import {AttachmentDetailFieldComponent} from "./attachments/templates/detail/attachment.component";
 
 export const baseFieldModules = [
     VarcharDetailFieldModule,
@@ -174,7 +178,9 @@ export const baseFieldModules = [
     TinymceDetailFieldModule,
     TinymceEditFieldModule,
     SquireEditFieldModule,
-    SquireDetailFieldModule
+    SquireDetailFieldModule,
+    AttachmentEditFieldModule,
+    AttachmentDetailFieldModule
 ];
 export const baseFieldComponents = [
     VarcharDetailFieldComponent,
@@ -226,7 +232,9 @@ export const baseFieldComponents = [
     TinymceDetailFieldComponent,
     TinymceEditFieldComponent,
     SquireEditFieldComponent,
-    SquireDetailFieldComponent
+    SquireDetailFieldComponent,
+    AttachmentEditFieldComponent,
+    AttachmentDetailFieldComponent
 ];
 
 export const baseViewFieldsMap: FieldComponentMap = {
@@ -316,6 +324,8 @@ export const baseViewFieldsMap: FieldComponentMap = {
     'bool.edit': BooleanEditFieldComponent,
     'bool.filter': MultiEnumFilterFieldComponent,
     'bool-checkbox.filter': BooleanCheckboxFilterFieldComponent,
+    'attachment.edit': AttachmentEditFieldComponent,
+    'attachment.detail': AttachmentDetailFieldComponent,
     'html-native.detail': HtmlDetailFieldComponent,
     'html.detail': TinymceDetailFieldComponent,
     'html.edit': TinymceEditFieldComponent,

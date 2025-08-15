@@ -34,6 +34,7 @@
      [ngClass]="config.wrapperKlass">
     <button [disabled]="disabled"
             [ngClass]="config.klass"
+            [type]="config.type || 'button'"
             [title]="language.getFieldLabel(config.titleKey) || ''"
             ngbDropdownToggle>
 

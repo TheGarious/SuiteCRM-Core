@@ -37,6 +37,7 @@ import {BaseRelateComponent} from './base-relate.component';
 import {BaseDateComponent} from './datetime/base-date.component';
 import {BaseMultiFlexRelateComponent} from "./base-multi-flex-relate.component";
 import {BaseFileComponent} from "./base-file.component";
+import {BaseAttachmentComponent} from "./base-attachment.component";
 
 @NgModule({
     exports: [
@@ -50,7 +51,8 @@ import {BaseFileComponent} from "./base-file.component";
         BaseMultiFlexRelateComponent,
         BaseDateTimeComponent,
         BaseDateComponent,
-        BaseFileComponent
+        BaseFileComponent,
+        BaseAttachmentComponent
     ],
     declarations: [
         BaseBooleanComponent,
@@ -63,7 +65,8 @@ import {BaseFileComponent} from "./base-file.component";
         BaseMultiFlexRelateComponent,
         BaseDateTimeComponent,
         BaseDateComponent,
-        BaseFileComponent
+        BaseFileComponent,
+        BaseAttachmentComponent
     ],
     imports: [
         CommonModule
