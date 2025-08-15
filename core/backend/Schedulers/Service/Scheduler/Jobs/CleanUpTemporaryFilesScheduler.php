@@ -67,7 +67,12 @@ class CleanUpTemporaryFilesScheduler implements SchedulerInterface
             'public-image' => 'public_image_media_objects'
         ];
 
-        $batch = $this->systemConfigProvider->getSystemConfig('max_temp_file_batch_per_table')?->getValue() ?? '50';
+        $batch = (int)($this->systemConfigProvider->getSystemConfig('max_temp_file_batch_per_table')?->getValue());
+
+        if (empty($batch) || !is_numeric($batch)) {
+            $batch = 50;
+        }
+
         $lifetime = strtoupper($this->systemConfigProvider->getSystemConfig('max_temp_file_lifetime')?->getValue()) ?? '72 HOUR';
 
         if (str_ends_with($lifetime, 'S')) {
