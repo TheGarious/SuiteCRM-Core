@@ -46,6 +46,7 @@ export class BaseFileComponent extends BaseFieldComponent {
     isLegacy: boolean = true;
     compact: boolean = false;
     uploadedFile: WritableSignal<UploadedFile> = signal(null);
+    uploadedFiles: WritableSignal<UploadedFile[]> = signal([]);
 
     constructor(
         protected typeFormatter: DataTypeFormatter,
