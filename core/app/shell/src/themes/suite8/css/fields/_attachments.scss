@@ -24,47 +24,60 @@
  * the words "Supercharged by SuiteCRM".
  */
 
-.file-field-container {
+.attachments {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  .dropdown-button {
 
-  .file-upload {
-
-    border: 2px dashed $lightgray;
-    border-radius: 6px;
-    padding: 0px;
-    text-align: center;
-    cursor: pointer;
-    background: $off-white;
-    transition: border-color .2s;
-    height: 100px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    &:hover, &:focus-within {
-      border-color: $bright-purple;
-      background: $off-white;
+    .dropdown-item {
+      background-color: white;
     }
-
-    .upload-label {
-      display: flex;
-      font-size: 1.1em;
-      cursor: pointer;
-      flex-grow: 1;
-      height: 100%;
-      align-items: center;
-      flex-direction: column;
-      justify-content: center;
-      margin: 0;
-    }
-
-    .error {
-      color: $danger;
-      margin-top: 12px;
-    }
-
   }
 
   .uploaded-files {
-    width: fit-content;
+
+    .file-group {
+      display: flex;
+      line-height: .25rem;
+    }
+
+    .uploaded-file-size {
+      font-size: .7em!important;
+      align-content: center!important;
+    }
+
+    .popover-body {
+      line-height: .25rem;
+      padding: 0 .5rem 0 0!important;
+
+      u {
+        padding-inline-start: 0.5em!important;
+      }
+    }
+
+    .clickable {
+      color: $bright-purple!important;
+    }
+    .popover {
+      max-width: fit-content!important;
+    }
+  }
+
+  .file-upload {
+    display: flex;
+    flex-grow: 1;
+
+    .upload-label-container {
+      display: flex;
+      flex-grow: 1;
+
+      .upload-label {
+        padding-right: 0.5rem;
+      }
+      .image-upload {
+        padding-left: 0.5rem;
+      }
+    }
   }
 }
