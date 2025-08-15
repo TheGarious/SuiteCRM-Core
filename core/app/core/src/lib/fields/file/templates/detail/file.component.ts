@@ -53,6 +53,7 @@ export class FileDetailFieldComponent extends BaseFileComponent {
     }
 
     ngOnInit() {
+        this.compact = this.field.metadata.compact || false;
         this.initUploadedFile();
     }
 }

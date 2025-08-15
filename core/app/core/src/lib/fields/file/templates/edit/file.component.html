@@ -39,6 +39,7 @@
         </scrm-file-upload-area>
         <div [class.d-none]="displayUploadArea() || !uploadedFile()" class="uploaded-files">
             <scrm-uploaded-file [file]="uploadedFile()"
+                                [compact]="compact"
                                 (clear)="clearUpload()">
             </scrm-uploaded-file>
         </div>

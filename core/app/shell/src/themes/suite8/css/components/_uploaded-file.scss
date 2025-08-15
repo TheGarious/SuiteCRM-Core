@@ -32,6 +32,137 @@ a.clickable.file-field-uploaded-link:hover {
   }
 }
 
+.uploaded-file-compact {
+  display: flex;
+  align-items: center;
+  font-size: 0.95em;
+  margin-top: 0.5em;
+  justify-content: center;
+  width: fit-content;
+  padding: 0.1em;
+  background: $off-white-lighter;
+  border-radius: 0.2rem;
+  border: 1px solid $lightgray;
+
+  &:first-child {
+    margin-top: 0;
+  }
+
+  .uploaded-file-info-container {
+    display: flex;
+    align-items: center;
+
+    &.uploaded-file-error {
+      .uploaded-file-icon {
+        color: $error;
+      }
+
+      .uploaded-file-info {
+        .uploaded-file-name {
+          color: $error;
+        }
+      }
+
+    }
+
+    .uploaded-file-icon-container {
+      .uploaded-file-icon {
+        margin-right: .3em;
+        color: $bright-purple;
+        font-size: larger;
+        line-height: 100%;
+        height: auto;
+        display: block;
+
+        &.uploaded-file-icon-error {
+          color: $error;
+        }
+
+        svg-icon {
+          display: block;
+          line-height: 1;
+        }
+      }
+    }
+
+    .uploaded-file-info {
+      display: flex;
+      flex-direction: row;
+
+      .uploaded-file-name {
+        color: $bright-purple;
+        font-weight: 500;
+        line-height: 1.25;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .uploaded-file-size {
+        color: $shell-grey;
+        font-size: 0.9em;
+        line-height: 1.25;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        align-content: end;
+      }
+    }
+
+
+  }
+
+  .upload-progress-bar {
+    height: 4px;
+    background: $lightgray;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 4px;
+    display: flex;
+    margin-left: 0.2em;
+  }
+
+  .upload-progress-bar-fill {
+    height: 100%;
+    background: $bright-purple;
+    transition: width 0.3s ease;
+    border-radius: 4px 0 0 4px;
+  }
+
+  .uploaded-file-actions {
+    .upload-clear-button {
+
+      font-size: large;
+      color: $bright-purple;
+      fill: $bright-purple;
+
+      &.upload-clear-button-error {
+        color: $error;
+        fill: $error;
+      }
+
+      svg-icon {
+        line-height: 1;
+        display: block;
+
+        svg {
+          width: 1em;
+          height: 1em;
+        }
+      }
+
+
+      &:hover {
+        color: $dark-purple;
+        fill: $dark-purple;
+        border-color: transparent;
+        background: transparent;
+      }
+    }
+  }
+
+}
+
 .uploaded-file {
   display: flex;
   align-items: center;

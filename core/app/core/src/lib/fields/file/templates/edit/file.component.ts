@@ -69,6 +69,7 @@ export class FileEditFieldComponent extends BaseFileComponent {
 
     ngOnInit() {
         this.storageType = this?.field?.metadata?.storage_type ?? '';
+        this.compact = this.field.metadata?.compact ?? false;
         this.initUploadedFile();
     }
 
@@ -131,7 +132,6 @@ export class FileEditFieldComponent extends BaseFileComponent {
 
         this.field.formControl.markAsDirty();
     }
-
 
     protected calculateDynamicMaxWidth(): void {
 

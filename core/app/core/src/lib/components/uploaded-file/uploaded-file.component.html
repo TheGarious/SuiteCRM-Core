@@ -25,7 +25,10 @@
  * the words "Supercharged by SuiteCRM".
  */
 -->
-<div class="uploaded-file">
+<div [class.uploaded-file]="!compact"
+     [class.uploaded-file-compact]="compact"
+     [style.min-width]="minWidth"
+>
     <div>
         <div class="uploaded-file-info-container"
              [class.uploaded-file-error]="file?.status() === 'error'">

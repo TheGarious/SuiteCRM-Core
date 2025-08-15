@@ -44,6 +44,7 @@ export class BaseFileComponent extends BaseFieldComponent {
     filenameLink: string = '';
 
     isLegacy: boolean = true;
+    compact: boolean = false;
     uploadedFile: WritableSignal<UploadedFile> = signal(null);
 
     constructor(

@@ -62,11 +62,13 @@ export class UploadedFileComponent implements OnInit {
 
     @Input() file: UploadedFile;
     @Input() maxWidth: string;
+    @Input() minWidth: string = '0px';
     @Input() allowClear: boolean = true;
     @Input() savedIcon: string = 'file-earmark-arrow-down';
     @Input() uploadingIcon: string = 'file-earmark-arrow-up';
     @Input() uploadedIcon: string = 'file-earmark-check';
     @Input() errorIcon: string = 'file-earmark-x';
+    @Input() compact: boolean = false;
     @Input() displaySize: boolean = true;
     @Output('clear') clear: EventEmitter<UploadedFile> = new EventEmitter<UploadedFile>();
     clearButtonConfig: ButtonInterface;
