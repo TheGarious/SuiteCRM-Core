@@ -116,6 +116,25 @@ $dictionary['Email'] = array(
             'source' => 'non-db',
             'inline_edit' => false,
         ),
+        'attachments' => array(
+            'name' => 'attachments',
+            'type' => 'attachment',
+            'source' => 'non-db',
+            'vname' => 'LBL_ATTACHMENTS',
+            'metadata' => [
+                'breakpoint' => 2,
+                'maxPerRow' => 2,
+                'popoverMaxTextLength' => '250px',
+                'popoverMinWidth' => '360px',
+                'compact' => true,
+                'maxTextWidth' => '75px',
+                'ignoreLimit' => true,
+                'minWidth' => '185px',
+                'labelDisplay' => 'none',
+                'storage_type' => 'private-document'
+            ],
+            'inline_edit' => false,
+        ),
         'description_html' => array(
             'name' => 'description_html',
             'type' => 'emailbody',
@@ -253,15 +272,15 @@ $dictionary['Email'] = array(
         ),
 
         'parent_name' => array(
-            'name'=> 'parent_name',
-            'parent_type'=>'record_type_display' ,
-            'type_name'=>'parent_type',
-            'id_name'=>'parent_id',
-            'vname'=>'LBL_EMAIL_RELATE',
+            'name' => 'parent_name',
+            'parent_type' => 'record_type_display',
+            'type_name' => 'parent_type',
+            'id_name' => 'parent_id',
+            'vname' => 'LBL_EMAIL_RELATE',
             'group' => 'parent_name',
-            'type'=>'parent',
-            'source'=>'non-db',
-            'options'=> 'record_type_display',
+            'type' => 'parent',
+            'source' => 'non-db',
+            'options' => 'record_type_display',
             'inline_edit' => false,
         ),
         'parent_type' => array(
@@ -303,7 +322,7 @@ $dictionary['Email'] = array(
                 'name' => 'displayIndicatorField',
                 'returns' => 'html',
                 'include' => 'modules/Emails/include/displayIndicatorField.php',
-                'onListView' =>  true
+                'onListView' => true
             ),
         ),
 
@@ -321,25 +340,7 @@ $dictionary['Email'] = array(
                 'name' => 'displaySubjectField',
                 'returns' => 'html',
                 'include' => 'modules/Emails/include/displaySubjectField.php',
-                'onListView' =>  true
-            ),
-        ),
-
-        'attachment' => array(
-            'name' => 'attachment',
-            'vname' => 'LBL_ATTACHMENTS',
-            'type' => 'function',
-            'source' => 'non-db',
-            'massupdate' => 0,
-            'importable' => 'false',
-            'duplicate_merge' => 'disabled',
-            'studio' => 'visible',
-            'inline_edit' => false,
-            'function' => array(
-                'name' => 'displayAttachmentField',
-                'returns' => 'html',
-                'include' => 'modules/Emails/include/displayAttachmentField.php',
-                'onListView' =>  true
+                'onListView' => true
             ),
         ),
 
@@ -418,7 +419,7 @@ $dictionary['Email'] = array(
                 'name' => 'displayHasAttachmentField',
                 'returns' => 'html',
                 'include' => 'modules/Emails/include/displayHasAttachmentField.php',
-                'onListView' =>  true
+                'onListView' => true
             ),
         ),
 
@@ -618,7 +619,7 @@ $dictionary['Email'] = array(
                 'name' => 'displayEmailAddressOptInField',
                 'returns' => 'html',
                 'include' => 'modules/Emails/include/displayEmailAddressOptInField.php',
-                'onListView' =>  true
+                'onListView' => true
             ),
         ),
         'outbound_email_id' => [
@@ -836,6 +837,6 @@ $dictionary['Email'] = array(
 );
 
 VardefManager::createVardef('Emails', 'Email', array('default',
-        'basic',
-        'assignable','security_groups',
+    'basic',
+    'assignable', 'security_groups',
 ));
