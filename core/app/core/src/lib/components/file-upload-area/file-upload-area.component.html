@@ -32,17 +32,19 @@
            type="file" [id]="elementId"
            (change)="onFileSelected($event)" [disabled]="!enabled()"
            class="upload-input d-none"
-           [accept]="acceptedTypes"/>
-    <label [for]="elementId" class="upload-label">
+           [accept]="acceptedTypes"
+           [multiple]="allowMultiple"
+    />
+    <label [for]="elementId" class="upload-label-container">
         <div>
                 <span class="">
-                    <scrm-image [image]="'upload'"></scrm-image>
-                    <scrm-label class="pl-1" labelKey="LBL_UPLOAD"></scrm-label>
+                    <scrm-image *ngIf="showUploadIcon" [image]="'upload'"></scrm-image>
+                    <scrm-label class="pl-1 upload-label" [labelKey]="uploadLabel"></scrm-label>
                 </span>
         </div>
         <div>
                 <span class="text-muted small">
-                    <scrm-label labelKey="LBL_FILE_FIELD_UPLOAD_BUTTON_DESCRIPTION"></scrm-label>
+                    <scrm-label [labelKey]="uploadDescription"></scrm-label>
                 </span>
         </div>
     </label>

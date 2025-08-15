@@ -23,16 +23,28 @@
  * feasible for technical reasons, the Appropriate Legal Notices must display
  * the words "Supercharged by SuiteCRM".
  */
-import {Component, EventEmitter, Input, OnInit, Output, signal, ViewChild, WritableSignal} from '@angular/core';
+import {
+    Component,
+    ElementRef,
+    EventEmitter,
+    Input,
+    OnInit,
+    Output,
+    signal,
+    ViewChild,
+    WritableSignal
+} from '@angular/core';
 import {ImageModule} from "../image/image.module";
 import {LabelModule} from "../label/label.module";
+import {NgIf} from "@angular/common";
 
 @Component({
     selector: 'scrm-file-upload-area',
     standalone: true,
     imports: [
         ImageModule,
-        LabelModule
+        LabelModule,
+        NgIf
     ],
     templateUrl: './file-upload-area.component.html',
 })
@@ -47,6 +59,10 @@ export class FileUploadAreaComponent implements OnInit {
 
     @Input() enabled: WritableSignal<boolean> = signal(true);
     @Input() acceptedTypes: string = '*/*';
+    @Input() showUploadIcon: boolean = true;
+    @Input() uploadLabel: string = 'LBL_UPLOAD';
+    @Input() uploadDescription: string = 'LBL_FILE_FIELD_UPLOAD_BUTTON_DESCRIPTION';
+    @Input() allowMultiple: boolean = false;
     @Output('onFileAdd') onFileAdd: EventEmitter<FileList> = new EventEmitter<FileList>();
 
     onFileSelected(event: Event) {
