@@ -50,7 +50,7 @@ import {NgIf} from "@angular/common";
 })
 export class FileUploadAreaComponent implements OnInit {
 
-    @ViewChild('uploadInput') uploadInput: HTMLInputElement;
+    @ViewChild('uploadInput') uploadInput: ElementRef<HTMLInputElement>;
 
     elementId: string = '';
     ngOnInit(): void {
@@ -85,8 +85,14 @@ export class FileUploadAreaComponent implements OnInit {
 
     resetUploadArea():void {
         if (this.uploadInput) {
-            this.uploadInput.value = '';
-            this.uploadInput.files = null;
+            this.uploadInput.nativeElement.value = '';
+            this.uploadInput.nativeElement.files = null;
+        }
+    }
+
+    triggerFileInput(): void {
+        if (this.uploadInput && this.enabled()) {
+            this.uploadInput.nativeElement.click();
         }
     }
 }
