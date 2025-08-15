@@ -58,7 +58,6 @@ export class BaseFileComponent extends BaseFieldComponent {
 
     protected uploadFile(storageType: string, file: File, onUpload: UploadSuccessCallback): UploadedFile {
 
-
         const uploadedFile = this.mediaObjects.uploadFile(
             storageType,
             file,
@@ -86,6 +85,7 @@ export class BaseFileComponent extends BaseFieldComponent {
                 name: uploadFile?.name ?? '',
                 size: uploadFile?.size ?? '',
                 type: uploadFile?.type ?? '',
+                contentUrl: uploadFile?.contentUrl ?? '',
                 original_name: uploadFile?.name ?? '',
             }
         } as Record;
@@ -103,7 +103,6 @@ export class BaseFileComponent extends BaseFieldComponent {
                 this.initFileFromValueObject(this.field.valueObject);
             }));
         }
-
 
         this.filenameLink = this.legacyEntrypointLinkBuilder.getDownloadEntrypointLink(id, type);
     }

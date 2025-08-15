@@ -34,6 +34,7 @@ export interface UploadedFile {
     size?: number;
     type?: string;
     url?: string;
+    contentUrl?: string;
     thumbnailUrl?: string;
     dateCreated?: string;
     status?: WritableSignal<UploadedFileStatus>;
