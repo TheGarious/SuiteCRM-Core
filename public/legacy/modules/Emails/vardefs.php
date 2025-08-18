@@ -118,26 +118,10 @@ $dictionary['Email'] = array(
         ),
         'description_html' => array(
             'name' => 'description_html',
-            'type' => 'html',
-            'vname' => 'LBL_BODY',
+            'type' => 'emailbody',
+            'vname' => 'description_html',
             'source' => 'non-db',
             'inline_edit' => false,
-            'displayType' => 'html',
-            'rows' => 5,
-            'cols' => 150,
-            'logic' => [
-                'updateEmailSignature' => [
-                    'key' => 'updateEmailSignature',
-                    'modes' => ['edit', 'create'],
-                    'params' => [
-                        'fieldDependencies' => [
-                            'outbound_email_name'
-                        ],
-                        'fromField' => 'outbound_email_name',
-                        'signatureAttribute' => 'signature',
-                    ],
-                ]
-            ]
         ),
         'description' => array(
             'name' => 'description',
