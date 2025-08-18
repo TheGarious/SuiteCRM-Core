@@ -31,7 +31,7 @@
     </a>
 </ng-container>
 <ng-container *ngIf="!isLegacy">
-    <a [href]="uploadedFile()?.url" class="clickable field-link mb-2 d-inline-block file-field-uploaded-link" target="_blank">
+    <a [href]="uploadedFile()?.contentUrl" class="clickable field-link mb-2 d-inline-block file-field-uploaded-link" target="_blank">
         <scrm-uploaded-file
                 [file]="uploadedFile()"
                 [compact]="compact"

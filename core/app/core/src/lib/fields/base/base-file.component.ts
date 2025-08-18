@@ -121,7 +121,7 @@ export class BaseFileComponent extends BaseFieldComponent {
             name: valueObject?.attributes?.original_name ?? '',
             size: valueObject?.attributes?.size ?? 0,
             type: valueObject?.attributes?.type ?? '',
-            url: '.' + valueObject?.attributes?.contentUrl || '',
+            contentUrl: '.' + valueObject?.attributes?.contentUrl || '',
             status: signal('saved'),
             progress: signal(100),
             dateCreated: valueObject?.attributes?.date_entered || ''

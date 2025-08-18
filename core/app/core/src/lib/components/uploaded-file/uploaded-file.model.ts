@@ -33,7 +33,6 @@ export interface UploadedFile {
     name?: string;
     size?: number;
     type?: string;
-    url?: string;
     contentUrl?: string;
     thumbnailUrl?: string;
     dateCreated?: string;
