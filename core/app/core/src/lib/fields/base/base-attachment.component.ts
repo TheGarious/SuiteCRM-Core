@@ -61,15 +61,16 @@ export class BaseAttachmentComponent extends BaseFileComponent {
 
     clearFile(event) {
         const updatedFiles = this.uploadedFiles().filter((file) => file.id !== event.id);
+        this.field.valueObject = Object.values(this.field.valueObject).filter((file: UploadedFile) => file.id !== event.id);
         this.uploadedFiles.set(updatedFiles);
     }
 
     initUploadedFiles() {
-        const files = this.field.valueList ?? {};
+        this.field.valueObject = this.field?.valueList ?? this.field?.valueObject ?? {};
 
         const uploadedFiles: UploadedFile[] = [];
 
-        Object.values(files).forEach((file) => {
+        Object.values(this.field.valueObject).forEach((file) => {
             const mapped = this.mapFile(file);
             uploadedFiles.push(mapped);
         })
@@ -87,10 +88,10 @@ export class BaseAttachmentComponent extends BaseFileComponent {
             status: signal('saved'),
             progress: signal(100),
             dateCreated: file?.attributes?.date_entered || ''
-        } as UploadedFile
+        } as UploadedFile;
     }
 
-    protected getValuesFromMetadata() {
+    protected getValuesFromMetadata(): void {
         const metadata = this.field.metadata ?? {};
         this.breakpoint = metadata?.breakpoint ?? 3;
         this.chunks = metadata?.maxPerRow ?? 3;

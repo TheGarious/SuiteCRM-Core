@@ -92,7 +92,7 @@ export class AttachmentEditFieldComponent extends BaseAttachmentComponent implem
         this.displayUploadArea.set(false);
     }
 
-    buildButtonItems() {
+    buildButtonItems(): void {
         this.dropdownButton = {
             labelKey: 'LBL_EMAIL_ATTACHMENT',
             icon: 'paperclip',

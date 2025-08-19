@@ -27,8 +27,12 @@
 .attachments {
   display: flex;
   flex-grow: 1;
-  flex-direction: column;
+
   .dropdown-button {
+
+    .dropdown-toggle {
+      padding: .15rem .5rem;
+    }
 
     .dropdown-item {
       background-color: white;
@@ -40,27 +44,71 @@
     .file-group {
       display: flex;
       line-height: .25rem;
+
+      .file {
+        padding-top: .2em;
+
+        .uploaded-file-name {
+          line-height: 1.25!important;
+          top: 2px;
+          position: relative;
+        }
+
+        .uploaded-file-actions {
+          .upload-clear-button {
+            font-size: larger !important;
+          }
+        }
+      }
     }
 
     .uploaded-file-size {
-      font-size: .7em!important;
-      align-content: center!important;
+      font-size: .7em !important;
+      align-content: center !important;
+      top: 3px;
+      position: relative;
     }
 
     .popover-body {
       line-height: .25rem;
-      padding: 0 .5rem 0 0!important;
+      padding: 2px !important;
+      box-shadow: 0 .5rem 1rem #00000026 !important;
+
+      .popover-content {
+        padding-left: 0;
+        padding-right: 0;
+        margin-left: 1px;
+        margin-right: 0;
+      }
+
+      ul .scrollbar-thin:not(:last-child) {
+        border-bottom: 1px solid lightgrey;
+        padding-left: 5px;
+        padding-right: 0;
+        margin-bottom: 5px;
+        padding-bottom: 5px;
+      }
+
+      ul .scrollbar-thin {
+        .uploaded-file-compact {
+          border: none;
+          background-color: transparent;
+          justify-content: space-between;
+          align-items: center;
+        }
+      }
 
       u {
-        padding-inline-start: 0.5em!important;
+        padding-inline-start: 0.5em !important;
       }
     }
 
     .clickable {
-      color: $bright-purple!important;
+      color: $bright-purple !important;
     }
+
     .popover {
-      max-width: fit-content!important;
+      max-width: fit-content !important;
     }
   }
 
@@ -75,6 +123,7 @@
       .upload-label {
         padding-right: 0.5rem;
       }
+
       .image-upload {
         padding-left: 0.5rem;
       }
