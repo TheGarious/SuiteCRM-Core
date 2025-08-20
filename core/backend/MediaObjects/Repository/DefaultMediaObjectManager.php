@@ -304,7 +304,7 @@ class DefaultMediaObjectManager implements MediaObjectManagerInterface
             'private-documents' => true,
             'private-images' => true
         ];
-        if ($privateTypes[$type]) {
+        if ($privateTypes[$type] ?? false) {
             $prefix = $this->getPath($object);
             return $prefix . $object->id;
         }
@@ -314,7 +314,7 @@ class DefaultMediaObjectManager implements MediaObjectManagerInterface
             'public-images' => true,
         ];
 
-        if ($publicTypes[$type]) {
+        if ($publicTypes[$type] ?? false) {
             return $this->storage->resolveUri($object, 'file');
         }
 
