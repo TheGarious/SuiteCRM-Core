@@ -36,7 +36,7 @@
         </div>
     </ng-container>
 </ng-container>
-<div class="d-flex" #popoverTarget *ngIf="files && files.length > breakpoint">
+<div class="d-flex" #popoverDefaultTarget *ngIf="files && files.length > breakpoint">
     <ng-container *ngFor="let chunk of (files | slice:0:breakpoint | chunk:chunks)">
         <div class="file-group">
             <ng-container *ngFor="let file of chunk">
@@ -49,7 +49,7 @@
     </ng-container>
 
     <ng-template #popContent>
-        <ul class="mt-1 mb-1">
+        <ul class="mt-1 mb-1 popover-content">
             <div class="scrollbar-thin"
                  *ngFor="let file of files.slice(breakpoint)">
                 <scrm-uploaded-file class="d-flex justify-content-center pr-1" [file]="file" [compact]="compact"
@@ -59,9 +59,9 @@
             </div>
         </ul>
     </ng-template>
-    <a class="pl-1 clickable align-content-end" [ngbPopover]="popContent"  [positionTarget]="popoverTarget" [autoClose]="'outside'"
-    [placement]="'bottom'">
-        <div class="pr-1 align-content-center"> +{{ files.length - breakpoint }}
+    <a class="pl-1 clickable align-content-end" [ngbPopover]="popContent"  [positionTarget]="getPopoverTarget()" [autoClose]="'outside'"
+    [placement]="'bottom-left'">
+        <div [class.small-font]="breakpoint < 2" class="pr-1 align-content-center"> +{{ files.length - breakpoint }}
             <scrm-label [labelKey]="'LBL_MORE'"></scrm-label>
         </div>
     </a>

@@ -33,6 +33,7 @@
      [class.sectioned-dropdown-menu]="sectionsEnabled"
      [ngClass]="config.wrapperKlass">
     <button [disabled]="disabled"
+            #dropdownButtonDiv
             [ngClass]="config.klass"
             [type]="config.type || 'button'"
             [title]="language.getFieldLabel(config.titleKey) || ''"

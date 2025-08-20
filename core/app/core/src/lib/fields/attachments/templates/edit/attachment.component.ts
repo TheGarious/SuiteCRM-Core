@@ -23,7 +23,7 @@
  * feasible for technical reasons, the Appropriate Legal Notices must display
  * the words "Supercharged by SuiteCRM".
  */
-import {Component, OnInit, signal, ViewChild, WritableSignal} from "@angular/core";
+import {AfterViewInit, Component, OnInit, signal, ViewChild, WritableSignal} from "@angular/core";
 import {FileUploadAreaComponent} from "../../../../components/file-upload-area/file-upload-area.component";
 import {BaseAttachmentComponent} from "../../../base/base-attachment.component";
 import {DropdownButtonInterface} from "../../../../common/components/button/dropdown-button.model";
@@ -36,17 +36,20 @@ import {FieldLogicDisplayManager} from "../../../field-logic-display/field-logic
 import {
     LegacyEntrypointLinkBuilder
 } from "../../../../services/navigation/legacy-entrypoint-link-builder/legacy-entrypoint-link-builder.service";
+import {DropdownButtonComponent} from "../../../../components/dropdown-button/dropdown-button.component";
 
 @Component({
     selector: 'scrm-attachments-edit',
     templateUrl: './attachment.component.html',
     styles: [],
 })
-export class AttachmentEditFieldComponent extends BaseAttachmentComponent implements OnInit {
+export class AttachmentEditFieldComponent extends BaseAttachmentComponent implements OnInit, AfterViewInit {
 
     @ViewChild('uploadArea') uploadArea: FileUploadAreaComponent;
+    @ViewChild('dropdownButtonComponent') dropdownButtonComponent: DropdownButtonComponent;
 
     dropdownButton: DropdownButtonInterface;
+    dropdownButtonEl: HTMLElement;
 
     displayUploadArea: WritableSignal<boolean> = signal(false);
 
@@ -55,6 +58,10 @@ export class AttachmentEditFieldComponent extends BaseAttachmentComponent implem
         this.getValuesFromMetadata();
         this.buildButtonItems();
         this.initUploadedFiles();
+    }
+
+    ngAfterViewInit() {
+        this.dropdownButtonEl = this.dropdownButtonComponent?.dropdownButtonDiv?.nativeElement;
     }
 
     constructor(

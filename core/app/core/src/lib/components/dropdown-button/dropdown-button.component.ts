@@ -24,7 +24,12 @@
  * the words "Supercharged by SuiteCRM".
  */
 
-import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    Component, ElementRef,
+    Input,
+    OnInit, Output, ViewChild,
+} from '@angular/core';
 import {deepClone, emptyObject} from '../../common/utils/object-utils';
 import {ButtonInterface} from '../../common/components/button/button.model';
 import {DropdownButtonInterface, DropdownButtonSection, DropdownButtonSectionMap} from '../../common/components/button/dropdown-button.model';
@@ -44,6 +49,8 @@ export class DropdownButtonComponent implements OnInit {
     @Input() config: DropdownButtonInterface;
     @Input() disabled = false;
     @Input() autoClose: boolean | 'outside' | 'inside' = true;
+
+    @ViewChild('dropdownButtonDiv') dropdownButtonDiv: ElementRef;
 
     sections: DropdownButtonSection[] = [];
     sectionsEnabled: boolean = false;

@@ -32,24 +32,14 @@
 <div *ngIf="storageType" class="attachments" (dragover)="displayUploadArea.set(true)"
      (dragleave)="displayUploadArea.set(false)">
 
-    <scrm-dropdown-button [class.d-none]="displayUploadArea()" [config]="dropdownButton"></scrm-dropdown-button>
+    <scrm-dropdown-button [class.d-none]="displayUploadArea()" #dropdownButtonComponent [config]="dropdownButton"></scrm-dropdown-button>
 
     <div [class.d-none]="displayUploadArea() || !uploadedFiles()" class="uploaded-files">
         <scrm-multiple-uploaded-files class="d-flex"
-                [files]="uploadedFiles()"
-                [breakpoint]="breakpoint"
-                [chunks]="chunks"
-                [popoverMaxTextLength]="popoverMaxTextLength"
-                [popoverMinWidth]="popoverMinWidth"
-                [compact]="compact"
-                [maxTextWidth]="maxTextWidth"
-                [minWidth]="minWidth"
-                [limitConfigKey]="limitConfigKey"
-                [ignoreLimit]="ignoreLimit"
-                (clear)="clearFile($event)"
                                       [files]="uploadedFiles()"
                                       [breakpoint]="breakpoint"
                                       [chunks]="chunks"
+                                      [popoverTarget]="dropdownButtonEl"
                                       [popoverMaxTextLength]="popoverMaxTextLength"
                                       [popoverMinWidth]="popoverMinWidth"
                                       [compact]="compact"

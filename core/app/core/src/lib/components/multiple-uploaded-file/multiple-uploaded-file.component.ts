@@ -24,7 +24,16 @@
  * the words "Supercharged by SuiteCRM".
  */
 
-import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
+import {
+    Component,
+    ElementRef,
+    EventEmitter,
+    Input,
+    OnChanges,
+    OnInit,
+    Output, SimpleChanges,
+    ViewChild
+} from "@angular/core";
 import {UploadedFile} from "../uploaded-file/uploaded-file.model";
 import {
     ScreenSize,
@@ -38,11 +47,11 @@ import {BehaviorSubject} from "rxjs";
     templateUrl: './multiple-uploaded-file.component.html',
     styles: [],
 })
-export class MultipleUploadedFileComponent implements OnInit {
+export class MultipleUploadedFileComponent implements OnInit, OnChanges {
 
-    limit: number;
     limitPerRow: number;
     breakpointMax: number;
+    popover: HTMLElement;
 
     @Input() files: UploadedFile[] = [];
     @Input() compact: boolean = false;
@@ -52,12 +61,12 @@ export class MultipleUploadedFileComponent implements OnInit {
     @Input() minWidth: string;
     @Input() popoverMinWidth: string = '355px';
     @Input() popoverMaxTextLength: string = '250px';
+    @Input() popoverTarget: HTMLElement = {} as HTMLElement;
     @Input() clickable: boolean = false;
-    @Input() ignoreLimit: boolean = false;
-    @Input() limitConfigKey: string = 'recordview_attachments_limit';
     @Input() ignoreRowLimit: boolean = false;
     @Input() ignoreBreakpointLimit: boolean = false;
     @Input() limitConfigKey: string = 'recordview_attachment_limit';
+    @ViewChild('popoverDefaultTarget') popoverDefaultTarget: ElementRef;
     @Output('clear') clear: EventEmitter<UploadedFile> = new EventEmitter<UploadedFile>();
 
     protected screen: ScreenSize = ScreenSize.Medium;
@@ -75,6 +84,17 @@ export class MultipleUploadedFileComponent implements OnInit {
         this.breakpoint = this.getBreakpoint();
     }
 
+    ngOnChanges(changes: SimpleChanges): void {
+        if (this.files && this.files.length < this.breakpoint){
+            return;
+        }
+
+        if (!this.popoverDefaultTarget){
+            return;
+        }
+
+        this.popover = this.popoverDefaultTarget.nativeElement;
+    }
     protected initLimit() {
         const limit = this.systemConfigStore.getConfigValue('recordview_attachment_limit');
 
@@ -123,5 +143,12 @@ export class MultipleUploadedFileComponent implements OnInit {
         }
 
         return this.breakpoint;
+    }
+
+    getPopoverTarget(): HTMLElement {
+        if (this.breakpoint > 1){
+            return this.popover;
+        }
+        return this.popoverTarget;
     }
 }
