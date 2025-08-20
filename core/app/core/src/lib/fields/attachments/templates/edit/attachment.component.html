@@ -47,6 +47,18 @@
                 [limitConfigKey]="limitConfigKey"
                 [ignoreLimit]="ignoreLimit"
                 (clear)="clearFile($event)"
+                                      [files]="uploadedFiles()"
+                                      [breakpoint]="breakpoint"
+                                      [chunks]="chunks"
+                                      [popoverMaxTextLength]="popoverMaxTextLength"
+                                      [popoverMinWidth]="popoverMinWidth"
+                                      [compact]="compact"
+                                      [maxTextWidth]="maxTextWidth"
+                                      [minWidth]="minWidth"
+                                      [limitConfigKey]="limitConfigKey"
+                                      [ignoreRowLimit]="ignoreRowLimit"
+                                      [ignoreBreakpointLimit]="ignoreBreakpointLimit"
+                                      (clear)="clearFile($event)"
         ></scrm-multiple-uploaded-files>
     </div>
 

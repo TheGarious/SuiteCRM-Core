@@ -41,6 +41,8 @@ import {BehaviorSubject} from "rxjs";
 export class MultipleUploadedFileComponent implements OnInit {
 
     limit: number;
+    limitPerRow: number;
+    breakpointMax: number;
 
     @Input() files: UploadedFile[] = [];
     @Input() compact: boolean = false;
@@ -53,6 +55,9 @@ export class MultipleUploadedFileComponent implements OnInit {
     @Input() clickable: boolean = false;
     @Input() ignoreLimit: boolean = false;
     @Input() limitConfigKey: string = 'recordview_attachments_limit';
+    @Input() ignoreRowLimit: boolean = false;
+    @Input() ignoreBreakpointLimit: boolean = false;
+    @Input() limitConfigKey: string = 'recordview_attachment_limit';
     @Output('clear') clear: EventEmitter<UploadedFile> = new EventEmitter<UploadedFile>();
 
     protected screen: ScreenSize = ScreenSize.Medium;
@@ -67,23 +72,28 @@ export class MultipleUploadedFileComponent implements OnInit {
     ngOnInit() {
         this.initLimit();
         this.chunks = this.getChunks();
+        this.breakpoint = this.getBreakpoint();
     }
 
     protected initLimit() {
-        const limit = this.systemConfigStore.getConfigValue('recordview_attachments_limit');
+        const limit = this.systemConfigStore.getConfigValue('recordview_attachment_limit');
 
-        let sizeConfig = limit.default;
+        let sizeConfig = limit.row_default_limit;
+        let breakpointConfig = limit.breakpoints_default_limit
 
         if (this.compact) {
-            sizeConfig = limit.compact;
+            sizeConfig = limit.row_compact_limit;
+            breakpointConfig = limit.breakpoints_compact_limit
         }
 
         this.screenSizeState = this.screenSize.screenSize;
 
-        this.limit = sizeConfig[this.screenSizeState.value];
+        this.limitPerRow = sizeConfig[this.screenSizeState.value];
+        this.breakpointMax = breakpointConfig[this.screenSizeState.value];
 
         this.screenSize.screenSize$.subscribe((size) => {
-            this.limit = sizeConfig[size] || this.limit;
+            this.limitPerRow = sizeConfig[size] || this.limitPerRow;
+            this.breakpointMax = breakpointConfig[size] || this.breakpointMax;
         })
     }
 
@@ -92,9 +102,26 @@ export class MultipleUploadedFileComponent implements OnInit {
     }
 
     getChunks(): number {
-        if (this.chunks > this.limit && !this.ignoreLimit){
-            return this.limit;
+        if (this.ignoreRowLimit){
+            return this.chunks;
         }
+
+        if (this.chunks > this.limitPerRow){
+            return this.limitPerRow;
+        }
+
         return this.chunks;
+    }
+
+    getBreakpoint(): number {
+        if (this.ignoreBreakpointLimit){
+            return this.breakpoint;
+        }
+
+        if (this.breakpoint > this.breakpointMax){
+            return this.breakpointMax;
+        }
+
+        return this.breakpoint;
     }
 }

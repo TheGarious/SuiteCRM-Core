@@ -46,7 +46,8 @@ export class BaseAttachmentComponent extends BaseFileComponent {
     maxTextWidth: string;
     minWidth: string;
     storageType: string;
-    ignoreLimit: boolean;
+    ignoreRowLimit: boolean;
+    ignoreBreakpointLimit: boolean;
     limitConfigKey: string;
 
     constructor(
@@ -101,7 +102,8 @@ export class BaseAttachmentComponent extends BaseFileComponent {
         this.storageType = this.field.metadata.storage_type ?? 'private-document';
         this.maxTextWidth = metadata?.maxTextWidth ?? '';
         this.minWidth = metadata?.minWidth ?? '';
-        this.limitConfigKey = metadata.limitConfigKey ?? 'recordview_attachments_limit';
-        this.ignoreLimit = metadata.ignoreLimit ?? false;
+        this.limitConfigKey = metadata.limitConfigKey ?? 'recordview_attachment_limit';
+        this.ignoreRowLimit = metadata.ignoreRowLimit ?? false;
+        this.ignoreBreakpointLimit = metadata.ignoreBreakpointLimit ?? false;
     }
 }
