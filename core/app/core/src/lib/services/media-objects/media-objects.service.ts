@@ -60,7 +60,23 @@ export class MediaObjectsService {
 
         const headers = new HttpHeaders({});
 
-        this.http.post(`./api/${storageType}-media-objects`, formData, {
+        const typeMap = {
+            'archived-documents': './api/archived-document-media-objects',
+            'private-documents': './api/private-document-media-objects',
+            'private-images': './api/private-image-media-objects',
+            'public-documents': './api/public-document-media-objects',
+            'public-images': './api/public-image-media-objects',
+        };
+
+        const apiUrl = typeMap[storageType];
+        if (!apiUrl) {
+            uploadFile.status.set('error');
+            uploadFile.progress.set(0);
+            onError(new Error(`Invalid storage type: ${storageType}`));
+            return uploadFile;
+        }
+
+        this.http.post(apiUrl, formData, {
             headers,
             observe: 'events',
             reportProgress: true

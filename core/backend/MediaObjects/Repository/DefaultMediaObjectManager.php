@@ -52,19 +52,19 @@ class DefaultMediaObjectManager implements MediaObjectManagerInterface
     ) {
 
         $this->typeMap = [
-            'archived-document' => $archivedDocumentRepository,
-            'private-document' => $privateDocumentRepository,
-            'private-image' => $privateImageRepository,
-            'public-document' => $publicDocumentRepository,
-            'public-image' => $publicImageRepository,
+            'archived-documents' => $archivedDocumentRepository,
+            'private-documents' => $privateDocumentRepository,
+            'private-images' => $privateImageRepository,
+            'public-documents' => $publicDocumentRepository,
+            'public-images' => $publicImageRepository,
         ];
 
         $this->objectTypeMap = [
-            ArchivedDocumentMediaObject::class => 'archived-document',
-            PrivateDocumentMediaObject::class => 'private-document',
-            PrivateImageMediaObject::class => 'private-image',
-            PublicDocumentMediaObject::class => 'public-document',
-            PublicImageMediaObject::class => 'public-image',
+            ArchivedDocumentMediaObject::class => 'archived-documents',
+            PrivateDocumentMediaObject::class => 'private-documents',
+            PrivateImageMediaObject::class => 'private-images',
+            PublicDocumentMediaObject::class => 'public-documents',
+            PublicImageMediaObject::class => 'public-images',
         ];
     }
 
@@ -300,9 +300,9 @@ class DefaultMediaObjectManager implements MediaObjectManagerInterface
     public function buildContentUrl(string $type, mixed $object): string
     {
         $privateTypes = [
-            'archived-document' => true,
-            'private-document' => true,
-            'private-image' => true
+            'archived-documents' => true,
+            'private-documents' => true,
+            'private-images' => true
         ];
         if ($privateTypes[$type]) {
             $prefix = $this->getPath($object);
@@ -310,8 +310,8 @@ class DefaultMediaObjectManager implements MediaObjectManagerInterface
         }
 
         $publicTypes = [
-            'public-document' => true,
-            'public-image' => true,
+            'public-documents' => true,
+            'public-images' => true,
         ];
 
         if ($publicTypes[$type]) {
