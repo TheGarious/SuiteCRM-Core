@@ -4283,3 +4283,6 @@ $app_strings['LBL_UNSUBSCRIBE'] = 'Unsubscribe';
 $app_strings['LBL_INACTIVE'] = 'Inactive';
 $app_strings['LBL_DISPLAYING_TEST_EMAIL_MARKETING_DATA'] = 'Charts and Subpanels currently displaying data generated from Test Emails.';
 $app_strings['LBL_DASH_SYMBOL'] = '-';
+
+$app_strings['LBL_DEFAULT_OUTBOUND_NOT_SET'] = 'Unable to retrieve Default Outbound Email';
+$app_strings['LBL_DEFAULT_OUTBOUND_NOT_CONFIGURED'] = 'Outbound Email Account not correctly configured.';
