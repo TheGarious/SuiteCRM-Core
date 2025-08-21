@@ -66,12 +66,12 @@ export class RecordModalSaveAction extends RecordModalActionHandler {
             return;
         }
 
-        data.store.setLoading(true, 'validate');
+        data.store.setAppLoading(true, 'validate', false);
         this.setAsyncValidators(fields);
 
         data.store.recordStore.validate().pipe(take(1)).subscribe(valid => {
             this.clearAsyncValidators(fields);
-            data.store.setLoading(false, 'validate');
+            data.store.setAppLoading(false, 'validate');
 
             if (valid) {
                 data.store.save().pipe(take(1)).subscribe(record => {

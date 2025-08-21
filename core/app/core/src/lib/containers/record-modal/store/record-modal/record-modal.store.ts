@@ -264,13 +264,8 @@ export class RecordModalStore implements StateStore, BaseRecordContainerStoreInt
         return this.meta.getMetadata(module);
     }
 
-    setLoading(value: boolean, key: string): void {
-        this.appStateStore.updateLoading(`${this.internalState.module}-record-${key}`, value);
-
-        this.updateState({
-            ...this.internalState,
-            loading: value
-        });
+    setAppLoading(value: boolean, key: string, delay: boolean = true): void {
+        this.appStateStore.updateLoading(`${this.internalState.module}-record-${key}`, value, delay);
     }
 
     save(): Observable<Record> {

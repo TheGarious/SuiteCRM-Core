@@ -401,8 +401,8 @@ export class RecordViewStore extends ViewStore implements StateStore, BaseRecord
         this.calculateShowWidgets();
     }
 
-    setLoading(value: boolean, key: string): void {
-        this.appStateStore.updateLoading(`${this.internalState.module}-record-${key}`, value, false);
+    setAppLoading(value: boolean, key: string, delay: boolean = true): void {
+        this.appStateStore.updateLoading(`${this.internalState.module}-record-${key}`, value, delay);
     }
 
     save(): Observable<Record> {
