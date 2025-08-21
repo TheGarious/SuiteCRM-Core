@@ -160,6 +160,9 @@ $dictionary['Campaign'] = [
             'type' => 'id',
             'group' => 'currency_id',
             'initDefaultProcess' => 'currency-default',
+            'defaultValueModes' => [
+                'create'
+            ],
             'function' => ['name' => 'getCurrencyDropDown', 'returns' => 'html', 'onListView' => true],
             'required' => false,
             'do_report' => false,

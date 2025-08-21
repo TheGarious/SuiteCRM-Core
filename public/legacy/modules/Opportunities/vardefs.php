@@ -183,6 +183,9 @@ $dictionary['Opportunity'] = array('table' => 'opportunities', 'audited' => true
                 'name' => 'currency_id',
                 'type' => 'id',
                 'initDefaultProcess' => 'currency-default',
+                'defaultValueModes' => [
+                    'create',
+                ],
                 'group' => 'currency_id',
                 'vname' => 'LBL_CURRENCY',
                 'function' => array('name' => 'getCurrencyDropDown', 'returns' => 'html', 'onListView' => true),
