@@ -115,7 +115,7 @@ export class RecordManager {
 
         Object.entries(record.fields).forEach(([key, field]) => {
             const fieldHandler = this.fieldHandlerRegistry.get(record.module, field.type);
-            fieldHandler.initDefaultValue(field, record);
+            fieldHandler.initDefaultValue(field, record, false);
             fieldHandler.initDefaultValueObject(field, record);
         });
     }

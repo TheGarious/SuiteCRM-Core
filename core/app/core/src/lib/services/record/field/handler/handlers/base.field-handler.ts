@@ -44,7 +44,7 @@ export class BaseFieldHandler<T extends BaseField> implements FieldHandler<T> {
     ) {
     }
 
-    initDefaultValue(field: T, record: Record): void {
+    initDefaultValue(field: T, record: Record, runInitDefaultProcess: boolean = false): void {
 
         if (field.defaultValueInitialized) {
             return;
@@ -53,7 +53,7 @@ export class BaseFieldHandler<T extends BaseField> implements FieldHandler<T> {
         const defaultValue = field?.default ?? field?.definition?.default ?? field?.definition?.defaultValue ?? null;
         const initDefaultProcess = field?.initDefaultProcess ?? field?.definition?.initDefaultProcess ?? null;
 
-        if (!this.hasValue(field) && initDefaultProcess) {
+        if (!this.hasValue(field) && initDefaultProcess && runInitDefaultProcess) {
             field.defaultValueInitialized = true;
             this.callInitDefaultBackedProcess(initDefaultProcess, field, record);
             return;
@@ -117,7 +117,7 @@ export class BaseFieldHandler<T extends BaseField> implements FieldHandler<T> {
             field: field.name,
         } as AsyncActionInput;
 
-        field.loading.set(true)
+        field.loading.set(true);
 
         this.processService.submit(processType, options).pipe(take(1)).subscribe((result) => {
             field.loading.set(false);

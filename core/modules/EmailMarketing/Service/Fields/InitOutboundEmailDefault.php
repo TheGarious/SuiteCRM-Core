@@ -119,11 +119,11 @@ class InitOutboundEmailDefault implements ProcessHandlerInterface
 
         if ($id === '') {
             $responseData = [
-                'value' => null
+                'value' => ''
             ];
 
             $process->setStatus('error');
-            $process->setMessages([]);
+            $process->setMessages(['LBL_DEFAULT_OUTBOUND_NOT_SET']);
             $process->setData($responseData);
             return;
         }
@@ -134,6 +134,17 @@ class InitOutboundEmailDefault implements ProcessHandlerInterface
 
         if (!isset($attributes['from_name'])) {
             $attributes['from_addr'] = $attributes['smtp_from_name'] . ' ' . $attributes['smtp_from_addr'];
+        }
+
+        if ((empty($attributes['from_addr']) || $attributes['from_addr'] === ' ') && empty($attributes['from_name'])) {
+            $responseData = [
+                'value' => ''
+            ];
+
+            $process->setStatus('error');
+            $process->setMessages(['LBL_DEFAULT_OUTBOUND_NOT_CONFIGURED']);
+            $process->setData($responseData);
+            return;
         }
 
         $responseData = [

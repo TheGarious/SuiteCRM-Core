@@ -90,7 +90,7 @@ export class BaseFieldComponent implements FieldComponentInterface, OnInit, OnDe
         const defaultValueModes = this?.field?.defaultValueModes ?? [];
         if (defaultValueModes.includes(this.originalMode as ViewMode)) {
             const fieldHandler = this.fieldHandlerRegistry.get(this.record.module, this.field.type);
-            fieldHandler.initDefaultValue(this.field, this.record);
+            fieldHandler.initDefaultValue(this.field, this.record, true);
             fieldHandler.initDefaultValueObject(this.field, this.record);
         }
     }

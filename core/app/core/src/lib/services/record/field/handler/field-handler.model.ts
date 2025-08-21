@@ -28,7 +28,7 @@ import {BaseField} from '../../../../common/record/field.model';
 import {Record} from '../../../../common/record/record.model';
 
 export interface FieldHandler<T extends BaseField> {
-    initDefaultValue(field: T, record: Record): void;
+    initDefaultValue(field: T, record: Record, runInitDefaultProcess: boolean): void;
     initDefaultValueObject(field: T, record: Record): void;
 }
 

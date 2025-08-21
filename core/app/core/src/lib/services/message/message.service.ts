@@ -69,6 +69,19 @@ export class MessageService {
         return found;
     }
 
+    addMessageByTypeWithKey(type: string, labelKey: string, defaultText: string = null): number {
+        const message = {
+            type: MessageTypes[type],
+            labelKey
+        } as Message;
+
+        if (defaultText) {
+            message.defaultText = defaultText;
+        }
+
+        return this.addMessage(message);
+    }
+
     addMessage(message: Message): number {
         // push message only if it does not contains already...
         let ret = -1;
