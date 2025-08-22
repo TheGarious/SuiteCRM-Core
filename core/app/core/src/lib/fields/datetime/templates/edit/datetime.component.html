@@ -38,7 +38,7 @@
     >
 
     <div class="input-group-append">
-        <scrm-button [config]="getOpenButton()" [ngbPopover]="calendarContent">
+        <scrm-button triggers="manual" (click)="togglePopover()" [config]="getOpenButton()" [ngbPopover]="calendarContent">
         </scrm-button>
     </div>
 </div>

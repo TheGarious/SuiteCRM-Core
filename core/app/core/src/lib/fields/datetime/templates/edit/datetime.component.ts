@@ -24,7 +24,7 @@
  * the words "Supercharged by SuiteCRM".
  */
 
-import {Component, OnDestroy, OnInit, ViewChild,} from '@angular/core';
+import {Component, HostListener, OnDestroy, OnInit, ViewChild,} from '@angular/core';
 import {NgbCalendar, NgbDateStruct, NgbPopover, NgbPopoverConfig, NgbTimeStruct} from '@ng-bootstrap/ng-bootstrap';
 import {isVoid, isEmptyString} from '../../../../common/utils/value-utils';
 import {ButtonInterface} from '../../../../common/components/button/button.model';
@@ -45,6 +45,14 @@ export class DateTimeEditFieldComponent extends BaseDateTimeComponent implements
 
     @ViewChild(NgbPopover, {static: true})
     private popover: NgbPopover;
+
+    @HostListener('window:message', ['$event'])
+    onMessage(event) {
+        if (event.data !== 'iframe-clicked'){
+            return;
+        }
+        this.popover.close();
+    }
 
     dateTimeModel: DateTimeModel = new DateTimeModel();
 
@@ -123,6 +131,10 @@ export class DateTimeEditFieldComponent extends BaseDateTimeComponent implements
 
     getPlacement(): PlacementArray {
         return ['bottom-right', 'top-right', 'bottom-left', 'top-left'];
+    }
+
+    togglePopover() {
+        this.popover.isOpen() ? this.popover.close() : this.popover.open();
     }
 
 }
