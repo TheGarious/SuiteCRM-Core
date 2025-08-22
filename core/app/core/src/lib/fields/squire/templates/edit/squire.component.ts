@@ -288,6 +288,11 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
                 }
                 const hasBold = this?.editor?.hasFormat('B');
                 if (hasBold) {
+
+                    if (this.styleSignal() === 'non-bold'){
+                        this.styleSignal.set('bold');
+                    }
+
                     this?.editor?.removeBold();
                     this.styleSignal.set('non-bold');
                     return;
@@ -321,6 +326,11 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
                 }
                 const hasItalic = this?.editor?.hasFormat('I');
                 if (hasItalic) {
+
+                    if (this.styleSignal() === 'non-italic'){
+                        this.styleSignal.set('italic');
+                    }
+
                     this?.editor?.removeItalic();
                     this.styleSignal.set('non-italic');
                     return;
@@ -355,6 +365,11 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
                 }
                 const hasUnderline = this?.editor?.hasFormat('U');
                 if (hasUnderline) {
+
+                    if (this.styleSignal() === 'non-underline'){
+                        this.styleSignal.set('underline');
+                    }
+
                     this?.editor?.removeUnderline();
                     this.styleSignal.set('non-underline');
                     return;
@@ -389,6 +404,11 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
                 }
                 const hasStrikeThrough = this?.editor?.hasFormat('S');
                 if (hasStrikeThrough) {
+
+                    if (this.styleSignal() === 'non-strikethrough'){
+                        this.styleSignal.set('strikethrough');
+                    }
+
                     this?.editor?.removeStrikethrough();
                     this.styleSignal.set('non-strikethrough');
                     return;
@@ -600,6 +620,11 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
             }
             const isLink = this?.editor?.hasFormat('A');
             if (isLink) {
+
+                if (this.styleSignal() === 'non-link'){
+                    this.styleSignal.set('link');
+                }
+
                 this?.editor?.removeLink();
                 this.styleSignal.set('non-link');
                 return;
@@ -664,6 +689,11 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
                 }
                 const isUL = this?.editor?.hasFormat('UL');
                 if (isUL) {
+
+                    if (this.styleSignal() === 'non-unordered-list'){
+                        this.styleSignal.set('unordered-list');
+                    }
+
                     this?.editor?.removeList();
                     this.styleSignal.set('non-unordered-list');
                     return;
@@ -698,6 +728,11 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
                 }
                 const isOL = this?.editor?.hasFormat('OL');
                 if (isOL) {
+
+                    if (this.styleSignal() === 'non-ordered-list'){
+                        this.styleSignal.set('ordered-list');
+                    }
+
                     this?.editor?.removeList();
                     this.styleSignal.set('non-ordered-list');
                     return;
@@ -1259,7 +1294,8 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
     initIframeEditor(iframe) {
         this.setEditor(iframe.contentWindow.editor);
         this.initEditor();
-        iframe.contentDocument.addEventListener('click', () => {
+        iframe.contentWindow.addEventListener('click', (event: Event) => {
+            this.editorEl.nativeElement.contains(event.target)
             window.postMessage('iframe-clicked');
             this.editor.focus();
             this.editor.moveCursorToEnd();
