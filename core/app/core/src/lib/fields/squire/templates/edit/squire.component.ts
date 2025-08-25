@@ -1198,6 +1198,11 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
     initEditor() {
 
         this.editor.setHTML(this?.value ?? '');
+        this.initEditorListeners();
+        this.editor.focus();
+    }
+
+    protected initEditorListeners(): void {
         this.editor.addEventListener('input', (e: Event) => {
             this.setFormControlValue(this.editor.getHTML())
         });
@@ -1210,7 +1215,6 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
             e.stopImmediatePropagation();
             this.hidePopups();
         })
-        this.editor.focus();
     }
 
     hidePopups(): void {
@@ -1295,8 +1299,13 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
         this.setEditor(iframe.contentWindow.editor);
         this.initEditor();
         iframe.contentWindow.addEventListener('click', (event: Event) => {
-            this.editorEl.nativeElement.contains(event.target)
+            const selection = iframe.contentWindow.getSelection();
             window.postMessage('iframe-clicked');
+
+            if (!selection?.isCollapsed || selection?.type !== 'None') {
+                return;
+            }
+
             this.editor.focus();
             this.editor.moveCursorToEnd();
             this.hidePopups();
