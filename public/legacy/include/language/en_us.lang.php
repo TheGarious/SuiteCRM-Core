@@ -4289,6 +4289,9 @@ $app_strings['LBL_UPLOAD_FAILED'] = 'Upload failed, please try again later';
 $app_strings['LBL_UPLOADING'] = 'Uploading';
 $app_strings['LBL_FILE_FIELD_UPLOAD_BUTTON_DESCRIPTION'] = 'Click or drag a file here to upload';
 $app_strings['LBL_TEMPORARY'] = 'Temporary';
+$app_strings['LBL_MAX_FILE_SIZE_EXCEEDED'] = 'The file exceeds the maximum allowed size.';
+$app_strings['LBL_UNSUPPORTED_IMAGE_TYPE'] = 'The image type is not supported.';
+$app_strings['LBL_UNSUPPORTED_FILE_TYPE'] = 'The file type is not supported.';
 
 $app_strings['LBL_DEFAULT_OUTBOUND_NOT_SET'] = 'Unable to retrieve Default Outbound Email';
 $app_strings['LBL_DEFAULT_OUTBOUND_NOT_CONFIGURED'] = 'Outbound Email Account not correctly configured.';
