@@ -33,9 +33,9 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\OpenApi\Model;
-use App\Data\Entity\DefaultRecordInterface;
 use App\Data\Entity\DefaultRecordTrait;
 use App\MediaObjects\Repository\PublicDocumentMediaObjectRepository;
+use App\MediaObjects\Validator\UploadValidator\UploadConstraint;
 use DateTime;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
@@ -103,6 +103,7 @@ class PublicDocumentMediaObject implements MediaObjectInterface
     public ?string $contentUrl = null;
 
     #[Assert\NotNull]
+    #[UploadConstraint(storageType: 'public-documents')]
     public ?File $file = null;
 
     #[ApiProperty(writable: false)]
