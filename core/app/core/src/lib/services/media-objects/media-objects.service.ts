@@ -26,6 +26,7 @@
 import {Injectable, signal} from "@angular/core";
 import {HttpClient, HttpEventType, HttpHeaders} from "@angular/common/http";
 import {UploadedFile} from "../../components/uploaded-file/uploaded-file.model";
+import {MessageService} from "../message/message.service";
 
 export type UploadProgressCallback = (progress: number) => void;
 export type UploadSuccessCallback = (uploadFile: UploadedFile) => void;
@@ -36,7 +37,10 @@ export type UploadErrorCallback = (error) => void;
 })
 export class MediaObjectsService {
 
-    constructor(private http: HttpClient) {
+    constructor(
+        private http: HttpClient,
+        private messages: MessageService
+    ) {
     }
 
     uploadFile(
@@ -55,7 +59,8 @@ export class MediaObjectsService {
             size: file.size,
             type: file.type,
             status: signal('uploading'),
-            progress: signal(10)
+            progress: signal(10),
+            errorMessage: signal('')
         } as UploadedFile;
 
         const headers = new HttpHeaders({});
@@ -92,6 +97,13 @@ export class MediaObjectsService {
                 }
             },
             error: err => {
+                const validationErrors = err?.error?.violations ?? [];
+                if (validationErrors.length > 0) {
+                    validationErrors.forEach(v => {
+                        this.messages.addDangerMessageByKey(v.message);
+                    });
+                    uploadFile.errorMessage.set(validationErrors[0]?.message ?? '');
+                }
                 uploadFile.status.set('error');
                 uploadFile.progress.set(0);
                 onError(err);

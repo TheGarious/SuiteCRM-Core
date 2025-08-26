@@ -36,6 +36,7 @@ export interface UploadedFile {
     url?: string;
     thumbnailUrl?: string;
     dateCreated?: string;
-    status?: WritableSignal<UploadedFileStatus>; // Optional, for upload status
-    progress?: WritableSignal<number>; // Optional, for upload progress
+    status?: WritableSignal<UploadedFileStatus>;
+    errorMessage?: WritableSignal<string>;
+    progress?: WritableSignal<number>;
 }

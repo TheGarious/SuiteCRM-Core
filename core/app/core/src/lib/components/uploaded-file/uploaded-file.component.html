@@ -52,7 +52,10 @@
                     ({{ file?.size | fileSize }})
                 </span>
                 <div *ngIf="file?.status() === 'error'">
-                    <span class="text-error text-smaller-95">
+                    <span *ngIf="file?.errorMessage()" class="text-error text-smaller-95">
+                        <scrm-label [labelKey]="file?.errorMessage()"></scrm-label>
+                    </span>
+                    <span *ngIf="!file?.errorMessage()" class="text-error text-smaller-95">
                         <scrm-label labelKey="LBL_UPLOAD_FAILED"></scrm-label>
                     </span>
                 </div>
