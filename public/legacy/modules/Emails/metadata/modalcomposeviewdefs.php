@@ -277,6 +277,15 @@ $viewdefs['Emails']['ModalComposeView'] = [
             ],
             [
                 [
+                    'name' => 'attachments',
+                    'metadata' => [
+                        'headerColumnClass' => 'col-xs-12 col-sm-2 col-md-2 col-lg-2',
+                        'valueColumnClass' => 'col-xs-12 col-sm-12 col-md-12 col-lg-12',
+                    ],
+                ],
+            ],
+            [
+                [
                     'name' => 'description_html',
                     'useFullColumn' => ['xs', 'sm', 'md', 'lg', 'xl'],
                     'displayType' => 'squire',
