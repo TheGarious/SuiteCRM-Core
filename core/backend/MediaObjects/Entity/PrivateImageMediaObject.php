@@ -45,7 +45,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: PrivateImageMediaObjectRepository::class)]
-#[ORM\Table(name: 'private_image_media_objects')]
+#[ORM\Table(name: 'private_images_media_objects')]
 #[ApiResource(
     types: ['https://schema.org/MediaObject'],
     operations: [

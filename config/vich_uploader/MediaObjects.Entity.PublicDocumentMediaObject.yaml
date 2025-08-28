@@ -1,6 +1,6 @@
 App\MediaObjects\Entity\PublicDocumentMediaObject:
   file:
-    mapping: public_document_media_object # required
+    mapping: public_documents_media_object # required
     filename_property: filePath  # required
     size: size
     mime_type: mimeType

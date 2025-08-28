@@ -1,6 +1,6 @@
 App\MediaObjects\Entity\ArchivedDocumentMediaObject:
   file:
-    mapping: archived_document_media_object # required
+    mapping: archived_documents_media_object # required
     filename_property: filePath  # required
     size: size
     mime_type: mimeType

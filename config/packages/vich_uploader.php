@@ -113,7 +113,7 @@ return static function (ContainerConfigurator $containerConfig) {
 
     $mappings = $env['MEDIA_UPLOADER_MAPPINGS'] ?? '';
     $defaultMappings = [
-        'archived_document_media_object' => [
+        'archived_documents_media_object' => [
             'uri_prefix' => '/media/archived',
             'upload_destination' => 'archived.documents.storage',
             'namer' => 'App\MediaObjects\Services\UuidMediaObjectFileNamer',
@@ -125,7 +125,7 @@ return static function (ContainerConfigurator $containerConfig) {
                 ]
             ]
         ],
-        'private_document_media_object' => [
+        'private_documents_media_object' => [
             'uri_prefix' => '/media/documents',
             'upload_destination' => 'private.documents.storage',
             'namer' => 'App\MediaObjects\Services\UuidMediaObjectFileNamer',
@@ -137,7 +137,7 @@ return static function (ContainerConfigurator $containerConfig) {
                 ]
             ]
         ],
-        'private_image_media_object' => [
+        'private_images_media_object' => [
             'uri_prefix' => '/media/images',
             'upload_destination' => 'private.images.storage',
             'namer' => 'App\MediaObjects\Services\UuidMediaObjectFileNamer',
@@ -149,7 +149,7 @@ return static function (ContainerConfigurator $containerConfig) {
                 ]
             ]
         ],
-        'public_image_media_object' => [
+        'public_images_media_object' => [
             'uri_prefix' => '/media-upload/images',
             'upload_destination' => 'public.images.storage',
             'namer' => 'Vich\UploaderBundle\Naming\SmartUniqueNamer',
@@ -161,7 +161,7 @@ return static function (ContainerConfigurator $containerConfig) {
                 ]
             ]
         ],
-        'public_document_media_object' => [
+        'public_documents_media_object' => [
             'uri_prefix' => '/media-upload/documents',
             'upload_destination' => 'public.documents.storage',
             'namer' => 'Vich\UploaderBundle\Naming\SmartUniqueNamer',
