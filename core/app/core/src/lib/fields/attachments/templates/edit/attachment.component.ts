@@ -56,6 +56,11 @@ export class AttachmentEditFieldComponent extends BaseAttachmentComponent implem
     ngOnInit() {
         super.ngOnInit();
         this.getValuesFromMetadata();
+
+        if (this.validStorageTypes.includes(this.storageType)) {
+            this.isValidStorageType = true;
+        }
+
         this.buildButtonItems();
         this.initUploadedFiles();
     }

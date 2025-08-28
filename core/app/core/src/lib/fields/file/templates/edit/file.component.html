@@ -30,7 +30,10 @@
     <ng-container *ngIf="!storageType">
         <scrm-label labelKey="LBL_FIELD_STORAGE_NOT_SET"></scrm-label>
     </ng-container>
-    <ng-container *ngIf="storageType">
+    <ng-container *ngIf="storageType && !isValidStorageType">
+        <scrm-label labelKey="LBL_FIELD_STORAGE_NOT_SET"></scrm-label>
+    </ng-container>
+    <ng-container *ngIf="storageType && isValidStorageType">
         <scrm-file-upload-area #uploadArea
                                [class.d-none]="!displayUploadArea()"
                                [enabled]="displayUploadArea"

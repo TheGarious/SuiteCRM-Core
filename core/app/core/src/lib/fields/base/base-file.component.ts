@@ -47,6 +47,15 @@ export class BaseFileComponent extends BaseFieldComponent {
     compact: boolean = false;
     uploadedFile: WritableSignal<UploadedFile> = signal(null);
     uploadedFiles: WritableSignal<UploadedFile[]> = signal([]);
+    isValidStorageType: boolean = false;
+
+    validStorageTypes: string[] = [
+        'archived-documents',
+        'private-documents',
+        'private-images',
+        'public-documents',
+        'public-images',
+    ];
 
     constructor(
         protected typeFormatter: DataTypeFormatter,

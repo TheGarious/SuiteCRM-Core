@@ -99,7 +99,7 @@ export class BaseAttachmentComponent extends BaseFileComponent {
         this.compact = metadata?.compact ?? false;
         this.popoverMaxTextLength = metadata?.popoverMaxTextLength ?? '';
         this.popoverMinWidth = metadata?.popoverMinWidth ?? '';
-        this.storageType = this.field.metadata.storage_type ?? 'private-document';
+        this.storageType = this.field.metadata.storage_type ?? 'private-documents';
         this.maxTextWidth = metadata?.maxTextWidth ?? '';
         this.minWidth = metadata?.minWidth ?? '';
         this.limitConfigKey = metadata.limitConfigKey ?? 'recordview_attachment_limit';

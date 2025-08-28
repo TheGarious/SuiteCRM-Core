@@ -29,7 +29,11 @@
     <scrm-label labelKey="LBL_FIELD_STORAGE_NOT_SET"></scrm-label>
 </ng-container>
 
-<div *ngIf="storageType" class="attachments" (dragover)="displayUploadArea.set(true)"
+<ng-container *ngIf="storageType && !isValidStorageType">
+    <scrm-label labelKey="LBL_FIELD_STORAGE_INVALID_TYPE"></scrm-label>
+</ng-container>
+
+<div *ngIf="storageType && isValidStorageType" class="attachments" (dragover)="displayUploadArea.set(true)"
      (dragleave)="displayUploadArea.set(false)">
 
     <scrm-dropdown-button [class.d-none]="displayUploadArea()" #dropdownButtonComponent [config]="dropdownButton"></scrm-dropdown-button>
