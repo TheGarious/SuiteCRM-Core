@@ -28,11 +28,24 @@
 namespace App\Emails\Service\RecordToEmailMapper;
 
 use App\Data\Entity\Record;
+use App\FieldDefinitions\Service\FieldDefinitionsProviderInterface;
+use App\MediaObjects\Repository\DefaultMediaObjectManager;
+use App\MediaObjects\Services\MediaObjectFileHandler;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 
 class RecordToEmailService
 {
+
+    public function __construct(
+        protected DefaultMediaObjectManager $defaultMediaObjectManager,
+        protected FieldDefinitionsProviderInterface $fieldDefinitionsProvider,
+        protected LoggerInterface $logger,
+        protected MediaObjectFileHandler $mediaObjectFileHandler
+    )
+    {
+    }
 
     /**
      * @param Record $emailRecord
@@ -55,6 +68,8 @@ class RecordToEmailService
         $email->subject($emailRecordAttributes['name'] ?? '');
         $email->text($emailRecordAttributes['description'] ?? '');
         $email->html($emailRecordAttributes['description_html'] ?? '');
+
+        $this->addAttachment($emailRecord, $emailRecordAttributes, $email);
 
         $headers = $emailRecordAttributes['headers'] ?? [];
 
@@ -112,6 +127,60 @@ class RecordToEmailService
 
         foreach ($bcc as $address) {
             $email->addBcc($address);
+        }
+    }
+
+    protected function getMediaObjects(array $emailRecordAttributes, string $storageType): array
+    {
+        $attachments = $emailRecordAttributes['attachments'] ?? [];
+
+        $mediaObjects = [];
+
+        foreach ($attachments as $key => $attachment) {
+            $mediaObject = $this->defaultMediaObjectManager->getMediaObject($storageType, $attachment['id'] ?? '');
+            if (!$mediaObject) {
+                $this->logger->warning('Attachment with id '.$attachment['id'].' not found');
+                continue;
+            }
+            $mediaObject->contentUrl = $this->defaultMediaObjectManager->buildContentUrl($storageType, $mediaObject);
+            $mediaObjects[] = $mediaObject;
+        }
+
+        return $mediaObjects;
+    }
+
+    protected function getStorageType(Record $emailRecord): string
+    {
+        $definition = $this->fieldDefinitionsProvider->getVardef($emailRecord->getModule());
+        $vardefs = $definition->getVardef() ?? [];
+
+        if (!isset($vardefs['attachments']['metadata']['storage_type'])) {
+            $this->logger->warning('No storage type found for attachments field in module '.$emailRecord->getModule());
+            return '';
+        }
+
+        return $vardefs['attachments']['metadata']['storage_type'];
+    }
+
+    /**
+     * @param Record $emailRecord
+     * @param array $emailRecordAttributes
+     * @param Email $email
+     * @return void
+     */
+    protected function addAttachment(Record $emailRecord, array $emailRecordAttributes, Email $email): void
+    {
+        $mediaObjectStorageType = $this->getStorageType($emailRecord);
+        $mediaObjects = $this->getMediaObjects($emailRecordAttributes, $mediaObjectStorageType);
+
+        foreach ($mediaObjects as $key => $mediaObject) {
+            $fileInfo = $this->mediaObjectFileHandler->getObjectStream(
+                $mediaObject,
+                'file',
+                $mediaObject::class,
+                $mediaObject->originalName
+            );
+            $email->attach($fileInfo['stream'], $fileInfo['fileName'], $fileInfo['mimeType']);
         }
     }
 

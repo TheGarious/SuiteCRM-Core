@@ -166,8 +166,8 @@ class LegacyMailer extends LegacyHandler
         $this->addRecipients($mail, $message);
 
         $mail->handleAttachments($attachments);
-        //$mail->prepForOutbound();
 
+        $this->addAttachments($mail, $message, $attachments);
 
         $headers = $options['headers'] ?? [];
         foreach ($headers as $headerName => $headerValue) {
@@ -178,6 +178,23 @@ class LegacyMailer extends LegacyHandler
 
         return $mail;
     }
+
+    /**
+     * @param \SugarPHPMailer $mail
+     * @param Email $mail
+     * @return void
+     * @throws Exception
+     */
+    protected function addAttachments(\SugarPHPMailer $mail, Email $message): void
+    {
+        foreach ($message->getAttachments() as $key => $attachment) {
+            $contents = $attachment->getBody();
+            $name = $attachment->getFilename();
+            $type = $attachment->getContentType() ?? 'application/octet-stream';
+            $mail->addStringAttachment($contents, $name, 'base64', $type);
+        }
+    }
+
 
     /**
      * @param \SugarPHPMailer $mail
