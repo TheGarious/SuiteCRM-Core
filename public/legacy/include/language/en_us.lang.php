@@ -4284,6 +4284,7 @@ $app_strings['LBL_INACTIVE'] = 'Inactive';
 $app_strings['LBL_DISPLAYING_TEST_EMAIL_MARKETING_DATA'] = 'Charts and Subpanels currently displaying data generated from Test Emails.';
 $app_strings['LBL_DASH_SYMBOL'] = '-';
 $app_strings['LBL_FIELD_STORAGE_NOT_SET'] = 'File storage type not set for field. Unable to upload file.';
+$app_strings['LBL_FIELD_STORAGE_INVALID_TYPE'] = 'File storage type is not valid for field. Unable to upload file.';
 $app_strings['LBL_UPLOAD'] = 'Upload';
 $app_strings['LBL_UPLOAD_FAILED'] = 'Upload failed, please try again later';
 $app_strings['LBL_UPLOADING'] = 'Uploading';
