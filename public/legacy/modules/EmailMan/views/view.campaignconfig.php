@@ -113,7 +113,6 @@ class ViewCampaignconfig extends SugarView
             } else {
                 $this->ss->assign("TRACKERS_ENABLED", 'false');
             }
-            $this->ss->assign("TRACKERS_ENABLED", 'true');
         } else {
             $this->ss->assign("TRACKERS_ENABLED", $sugar_config['trackers_enabled'] ?? 'true');
         }
