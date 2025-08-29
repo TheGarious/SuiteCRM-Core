@@ -45,21 +45,30 @@
       background: $off-white;
     }
 
-    .upload-label {
+    .upload-label-container {
       display: flex;
-      font-size: 1.1em;
-      cursor: pointer;
-      flex-grow: 1;
-      height: 100%;
-      align-items: center;
       flex-direction: column;
+      flex-grow: 1;
+      height: inherit;
       justify-content: center;
-      margin: 0;
-    }
+      align-items: center;
+      cursor: pointer;
 
-    .error {
-      color: $danger;
-      margin-top: 12px;
+      .upload-label {
+        display: flex;
+        font-size: 1.1em;
+        cursor: pointer;
+        flex-grow: 1;
+        height: 100%;
+        align-items: center;
+        flex-direction: column;
+        margin: 0;
+      }
+
+      .error {
+        color: $danger;
+        margin-top: 12px;
+      }
     }
 
   }
