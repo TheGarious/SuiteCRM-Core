@@ -912,7 +912,7 @@ class Scheduler extends SugarBean
 
         $sched7 = BeanFactory::newBean('Schedulers');
         $sched7->name               = $mod_strings['LBL_OOTB_PRUNE'];
-        $sched7->job                = 'function::pruneDatabase';
+        $sched7->job                = 'scheduler::prune-database';
         $sched7->date_time_start    = create_date(2015, 1, 1) . ' ' . create_time(0, 0, 1);
         $sched7->date_time_end      = null;
         $sched7->job_interval       = '0::4::1::*::*';
