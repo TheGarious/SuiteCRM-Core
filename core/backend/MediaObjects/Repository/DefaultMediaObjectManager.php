@@ -119,7 +119,7 @@ class DefaultMediaObjectManager implements MediaObjectManagerInterface
     {
         $repository = $this->getRepository($type);
         if ($repository) {
-            $repository->remove($mediaObject);
+            $repository->remove($mediaObject, true);
         }
     }
 
