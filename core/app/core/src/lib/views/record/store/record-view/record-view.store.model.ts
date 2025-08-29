@@ -47,6 +47,7 @@ export interface RecordViewState {
     module: string;
     recordID: string;
     loading: boolean;
+    validating: boolean;
     widgets: boolean;
     showSidebarWidgets: boolean;
     showBottomWidgets: boolean;

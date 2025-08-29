@@ -74,6 +74,7 @@ import {toObservable} from "@angular/core/rxjs-interop";
 const initialState: RecordViewState = {
     module: '',
     recordID: '',
+    validating: false,
     loading: false,
     widgets: false,
     showSidebarWidgets: false,
@@ -99,6 +100,7 @@ export class RecordViewStore extends ViewStore implements StateStore, BaseRecord
     record$: Observable<Record>;
     stagingRecord$: Observable<Record>;
     loading$: Observable<boolean>;
+    validating$: Observable<boolean>;
     widgets$: Observable<boolean>;
     showSidebarWidgets$: Observable<boolean>;
     showBottomWidgets$: Observable<boolean>;
@@ -162,6 +164,7 @@ export class RecordViewStore extends ViewStore implements StateStore, BaseRecord
         this.record$ = this.recordStore.state$.pipe(distinctUntilChanged());
         this.stagingRecord$ = this.recordStore.staging$.pipe(distinctUntilChanged());
         this.loading$ = this.state$.pipe(map(state => state.loading));
+        this.validating$ = this.state$.pipe(map(state => state.validating));
         this.widgets$ = this.state$.pipe(map(state => state.widgets));
         this.showSidebarWidgets$ = this.state$.pipe(map(state => state.showSidebarWidgets));
         this.showBottomWidgets$ = this.state$.pipe(map(state => state.showBottomWidgets));
@@ -405,8 +408,11 @@ export class RecordViewStore extends ViewStore implements StateStore, BaseRecord
         this.calculateShowWidgets();
     }
 
-    setAppLoading(value: boolean, key: string, delay: boolean = true): void {
-        this.appStateStore.updateLoading(`${this.internalState.module}-record-${key}`, value, delay);
+    setValidating(value: boolean): void {
+        this.updateState({
+            ...this.internalState,
+            validating: value
+        });
     }
 
     save(): Observable<Record> {
