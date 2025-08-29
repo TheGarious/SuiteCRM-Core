@@ -73,9 +73,10 @@ interface MediaObjectManagerInterface
      * @param string $parentType The type of the parent object
      * @param string $parentId The ID of the parent object
      * @param string $parentField The field in the parent object that links to the media objects
+     * @param bool $includeDeleted Whether to include deleted media objects
      * @return MediaObjectInterface[] An array of linked media objects
      */
-    public function getLinkedMediaObjects(string $type, string $parentType, string $parentId, string $parentField): array;
+    public function getLinkedMediaObjects(string $type, string $parentType, string $parentId, string $parentField, bool $includeDeleted = false): array;
 
     /**
      * Sets the parent type and ID for a media object.

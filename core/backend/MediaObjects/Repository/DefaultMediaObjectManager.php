@@ -155,13 +155,19 @@ class DefaultMediaObjectManager implements MediaObjectManagerInterface
      * @param string $parentType The type of the parent object
      * @param string $parentId The ID of the parent object
      * @param string $parentField The name of the parent field
+     * @param bool $includeDeleted Whether to include deleted media objects
      * @return MediaObjectInterface[] An array of linked media objects
      */
-    public function getLinkedMediaObjects(string $type, string $parentType, string $parentId, string $parentField): array
+    public function getLinkedMediaObjects(string $type, string $parentType, string $parentId, string $parentField, bool $includeDeleted = false): array
     {
         $repository = $this->getRepository($type);
         if ($repository) {
-            return $repository->findBy(['parentType' => $parentType, 'parentId' => $parentId, 'parentField' => $parentField, 'temporary' => 0, 'deleted' => 0]);
+            $filters = ['parentType' => $parentType, 'parentId' => $parentId, 'parentField' => $parentField, 'temporary' => 0];
+
+            if ($includeDeleted === false) {
+                $filters['deleted'] = 0;
+            }
+            return $repository->findBy($filters);
         }
         return [];
     }
