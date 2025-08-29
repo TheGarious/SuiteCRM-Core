@@ -28,6 +28,7 @@
 namespace App\Data\LegacyHandler;
 
 use App\Data\Entity\Record;
+use App\Data\Service\Record\RecordDeleteHandlers\RecordDeleteHandlerRunnerInterface;
 use App\Engine\LegacyHandler\LegacyHandler;
 use App\Engine\LegacyHandler\LegacyScopeState;
 use App\Module\Service\ModuleNameMapperInterface;
@@ -64,6 +65,7 @@ class RecordDeletionHandler extends LegacyHandler implements RecordDeletionServi
      * @param ModuleNameMapperInterface $moduleNameMapper
      * @param RecordListProviderInterface $listViewProvider
      * @param RequestStack $session
+     * @param RecordDeleteHandlerRunnerInterface $deleteHandlerRunner
      */
     public function __construct(
         string $projectDir,
@@ -73,7 +75,8 @@ class RecordDeletionHandler extends LegacyHandler implements RecordDeletionServi
         LegacyScopeState $legacyScopeState,
         ModuleNameMapperInterface $moduleNameMapper,
         RecordListProviderInterface $listViewProvider,
-        RequestStack $session
+        RequestStack $session,
+        protected RecordDeleteHandlerRunnerInterface $deleteHandlerRunner
     )
     {
         parent::__construct($projectDir, $legacyDir, $legacySessionName, $defaultSessionName, $legacyScopeState, $session);
@@ -124,18 +127,29 @@ class RecordDeletionHandler extends LegacyHandler implements RecordDeletionServi
     }
 
     /**
-     * @param string $moduleName
+     * @param string $legacyModuleName
      * @param string $id
      * @return bool
      */
-    protected function internalDelete(string $moduleName, string $id): bool
+    protected function internalDelete(string $legacyModuleName, string $id): bool
     {
+        $moduleName = $this->moduleNameMapper->toFrontEnd($legacyModuleName);
+
         // NOTE: Do not use BeanFactory::getBean($moduleName, $id) with mark_deleted
         // may cause errors when there are related records.
-        $bean = BeanFactory::newBean($moduleName);
+        $bean = BeanFactory::newBean($legacyModuleName);
         $bean->retrieve($id);
         if ($bean && $bean->id && $bean->ACLAccess('Delete')) {
+
+            $this->close();
+            $this->deleteHandlerRunner->run($moduleName, $id, 'before-delete');
+            $this->init();
+
             $bean->mark_deleted($id);
+
+            $this->close();
+
+            $this->deleteHandlerRunner->run($moduleName, $id, 'after-delete');
 
             return true;
         }
