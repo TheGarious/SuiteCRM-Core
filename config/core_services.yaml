@@ -143,6 +143,12 @@ services:
       tags: [ 'record.saveHandlers.fieldType' ]
     App\Data\Service\Record\RecordSaveHandlers\RecordSaveHandlerInterface:
       tags: [ 'record.saveHandlers.record' ]
+    App\Data\Service\Record\RecordDeleteHandlers\RecordFieldDeleteHandlerInterface:
+      tags: [ 'record.deleteHandlers.field' ]
+    App\Data\Service\Record\RecordDeleteHandlers\RecordFieldTypeDeleteHandlerInterface:
+      tags: [ 'record.deleteHandlers.fieldType' ]
+    App\Data\Service\Record\RecordDeleteHandlers\RecordDeleteHandlerInterface:
+      tags: [ 'record.deleteHandlers.record' ]
     App\Module\Campaigns\Service\Email\Targets\Validation\EmailTargetValidatorInterface:
       tags: [ 'email.target.validator' ]
     App\Emails\Service\EmailParserHandler\EmailParserInterface:
@@ -446,6 +452,19 @@ services:
     lazy: true
     arguments:
       - !tagged { tag: 'record.saveHandlers.record' }
+
+  App\Data\Service\Record\RecordDeleteHandlers\RecordFieldDeleteHandlerRegistry:
+    arguments:
+      - !tagged { tag: 'record.deleteHandlers.field' }
+
+  App\Data\Service\Record\RecordDeleteHandlers\RecordFieldTypeDeleteHandlerRegistry:
+    arguments:
+      - !tagged { tag: 'record.deleteHandlers.fieldType' }
+
+  App\Data\Service\Record\RecordDeleteHandlers\RecordDeleteHandlerRegistry:
+    lazy: true
+    arguments:
+      - !tagged { tag: 'record.deleteHandlers.record' }
 
   App\Emails\Service\EmailParserHandler\EmailParserRegistry:
     arguments:
