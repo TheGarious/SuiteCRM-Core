@@ -34,9 +34,15 @@
       padding: .15rem .5rem;
     }
 
-    .dropdown-item {
-      background-color: white;
+    .dropdown-menu {
+      background-color: white!important;
+      .dropdown-item {
+        background-color: inherit;
+        box-shadow: 0 .2rem 1rem #00000026 !important;
+      }
     }
+
+
   }
 
   .uploaded-files {

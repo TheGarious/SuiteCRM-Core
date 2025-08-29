@@ -111,7 +111,7 @@ export class AttachmentEditFieldComponent extends BaseAttachmentComponent implem
             klass: 'btn-sm btn btn-outline-main',
             items: [{
                 label: 'Upload from files',
-                klass: 'btn-outline-main',
+                klass: 'btn-outline-main rounded',
                 onClick: (): void => {
                     this.uploadArea.triggerFileInput()
                 }
