@@ -32,5 +32,5 @@ class PrivateDocumentMediaObject extends MediaObject
 {
     public $module_dir = 'MediaObjects';
     public $object_name = 'PrivateDocumentMediaObject';
-    public $table_name = 'private_document_media_objects';
+    public $table_name = 'private_documents_media_objects';
 }

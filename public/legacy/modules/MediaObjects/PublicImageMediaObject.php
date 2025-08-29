@@ -32,5 +32,5 @@ class PublicImageMediaObject extends MediaObject
 {
     public $module_dir = 'MediaObjects';
     public $object_name = 'PublicImageMediaObject';
-    public $table_name = 'public_image_media_objects';
+    public $table_name = 'public_images_media_objects';
 }

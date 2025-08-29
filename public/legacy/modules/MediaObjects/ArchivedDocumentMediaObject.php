@@ -32,5 +32,5 @@ class ArchivedDocumentMediaObject extends MediaObject
 {
     public $module_dir = 'MediaObjects';
     public $object_name = 'ArchivedDocumentMediaObject';
-    public $table_name = 'archived_document_media_objects';
+    public $table_name = 'archived_documents_media_objects';
 }

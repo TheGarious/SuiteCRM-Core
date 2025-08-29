@@ -32,5 +32,5 @@ class PublicDocumentMediaObject extends MediaObject
 {
     public $module_dir = 'MediaObjects';
     public $object_name = 'PublicDocumentMediaObject';
-    public $table_name = 'public_document_media_objects';
+    public $table_name = 'public_documents_media_objects';
 }

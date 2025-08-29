@@ -76,7 +76,7 @@ $mediaObjectFields = [
 ];
 
 $dictionary['ArchivedDocumentMediaObject'] = [
-    'table' => 'archived_document_media_objects',
+    'table' => 'archived_documents_media_objects',
     'audited' => false,
     'inline_edit' => false,
     'duplicate_merge' => false,
@@ -91,7 +91,7 @@ $dictionary['ArchivedDocumentMediaObject'] = [
 ];
 
 $dictionary['PrivateDocumentMediaObject'] = [
-    'table' => 'private_document_media_objects',
+    'table' => 'private_documents_media_objects',
     'audited' => false,
     'inline_edit' => false,
     'duplicate_merge' => false,
@@ -106,7 +106,7 @@ $dictionary['PrivateDocumentMediaObject'] = [
 ];
 
 $dictionary['PrivateImageMediaObject'] = [
-    'table' => 'private_image_media_objects',
+    'table' => 'private_images_media_objects',
     'audited' => false,
     'inline_edit' => false,
     'duplicate_merge' => false,
@@ -121,7 +121,7 @@ $dictionary['PrivateImageMediaObject'] = [
 ];
 
 $dictionary['PublicDocumentMediaObject'] = [
-    'table' => 'public_document_media_objects',
+    'table' => 'public_documents_media_objects',
     'audited' => false,
     'inline_edit' => false,
     'duplicate_merge' => false,
@@ -136,7 +136,7 @@ $dictionary['PublicDocumentMediaObject'] = [
 ];
 
 $dictionary['PublicImageMediaObject'] = [
-    'table' => 'public_image_media_objects',
+    'table' => 'public_images_media_objects',
     'audited' => false,
     'inline_edit' => false,
     'duplicate_merge' => false,
