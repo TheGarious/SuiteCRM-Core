@@ -78,14 +78,6 @@ export class RelateEditFieldComponent extends BaseRelateComponent implements Aft
         }
     }
 
-    @HostListener('window:message', ['$event'])
-    onMessage(event) {
-        if (event.data !== 'iframe-clicked'){
-            return;
-        }
-        this.tag.hide();
-    }
-
     selectButton: ButtonInterface;
     idField: Field;
     selectedValue: AttributeMap = {};

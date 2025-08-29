@@ -64,14 +64,6 @@ export class MultiFlexRelateEditFieldComponent extends BaseMultiFlexRelateCompon
         }
     }
 
-    @HostListener('window:message', ['$event'])
-    onMessage(event) {
-        if (event.data !== 'iframe-clicked'){
-            return;
-        }
-        this.tag.hide();
-    }
-
 
     selectButton: ButtonInterface;
 

@@ -26,7 +26,7 @@
 */
 -->
 
-<div class="input-group mr-2">
+<div class="input-group mr-2" #calendarContainer>
 
     <input
         [ngClass]="klass"
@@ -34,16 +34,16 @@
         [class.is-invalid]="validateOnlyOnSubmit ? isInvalid() : (field.formControl.invalid && field.formControl.touched)"
         [formControl]="field.formControl"
         (change)="onInputChange($event)"
-        [ngbPopover]="calendarContent"
+        [ngbPopover]="calendarTemplate"
     >
 
     <div class="input-group-append">
-        <scrm-button triggers="manual" (click)="togglePopover()" [config]="getOpenButton()" [ngbPopover]="calendarContent">
+        <scrm-button triggers="manual" (click)="togglePopover()" [config]="getOpenButton()" [ngbPopover]="calendarTemplate">
         </scrm-button>
     </div>
 </div>
 
-<ng-template #calendarContent>
+<ng-template #calendarTemplate>
     <div>
         <div>
             <ngb-datepicker name="datepicker"

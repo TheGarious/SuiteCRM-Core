@@ -24,7 +24,7 @@
  * the words "Supercharged by SuiteCRM".
  */
 
-import {Component, HostListener, OnDestroy, OnInit, ViewChild,} from '@angular/core';
+import {Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild,} from '@angular/core';
 import {NgbCalendar, NgbDateStruct, NgbPopover, NgbPopoverConfig, NgbTimeStruct} from '@ng-bootstrap/ng-bootstrap';
 import {isVoid, isEmptyString} from '../../../../common/utils/value-utils';
 import {ButtonInterface} from '../../../../common/components/button/button.model';
@@ -45,14 +45,15 @@ export class DateTimeEditFieldComponent extends BaseDateTimeComponent implements
 
     @ViewChild(NgbPopover, {static: true})
     private popover: NgbPopover;
+    @ViewChild('calendarContainer') calendarContainer: ElementRef;
 
-    @HostListener('window:message', ['$event'])
-    onMessage(event) {
-        if (event.data !== 'iframe-clicked'){
-            return;
+    @HostListener('document:click', ['$event'])
+    onDocumentClick(event: Event) {
+        if (!this.calendarContainer.nativeElement.contains(event.target)) {
+            this.popover.close();
         }
-        this.popover.close();
     }
+
 
     dateTimeModel: DateTimeModel = new DateTimeModel();
 

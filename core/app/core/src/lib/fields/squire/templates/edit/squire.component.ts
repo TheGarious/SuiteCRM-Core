@@ -67,7 +67,7 @@ import {LanguageStore} from "../../../../store/language/language.store";
 })
 export class SquireEditFieldComponent extends BaseFieldComponent implements OnDestroy, AfterViewInit {
 
-    @ViewChild('editorEl') editorEl: ElementRef;
+    @ViewChild('editorEl') editorEl: ElementRef<HTMLIFrameElement>;
     @ViewChild('editorWrapper') editorWrapper: ElementRef;
     @ViewChild('toolbar') toolbar: ElementRef;
     @ViewChild('monacoEditor') monacoEditor: MonacoEditorComponent;
@@ -101,6 +101,15 @@ export class SquireEditFieldComponent extends BaseFieldComponent implements OnDe
         }
 
         this.calculateDynamicMaxHeight();
+    }
+
+    @HostListener('window:message', ['$event'])
+    onMessage(event) {
+        if (event.data !== 'iframe-clicked'){
+            return;
+        }
+
+        this.editorEl.nativeElement.click();
     }
 
     constructor(

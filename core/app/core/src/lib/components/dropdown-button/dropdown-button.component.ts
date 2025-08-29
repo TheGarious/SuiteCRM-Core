@@ -26,9 +26,9 @@
 
 import {
     ChangeDetectionStrategy,
-    Component, ElementRef,
+    Component, ElementRef, HostListener,
     Input,
-    OnInit, Output, ViewChild,
+    OnInit, ViewChild,
 } from '@angular/core';
 import {deepClone, emptyObject} from '../../common/utils/object-utils';
 import {ButtonInterface} from '../../common/components/button/button.model';
@@ -51,6 +51,14 @@ export class DropdownButtonComponent implements OnInit {
     @Input() autoClose: boolean | 'outside' | 'inside' = true;
 
     @ViewChild('dropdownButtonDiv') dropdownButtonDiv: ElementRef;
+    @ViewChild('dropDown') dropdown: NgbDropdown;
+
+    @HostListener('document:click', ['$event'])
+    onDocumentClick(event: Event) {
+        if (!this.dropdownButtonDiv.nativeElement.contains(event.target)) {
+            this.dropdown.close();
+        }
+    }
 
     sections: DropdownButtonSection[] = [];
     sectionsEnabled: boolean = false;
