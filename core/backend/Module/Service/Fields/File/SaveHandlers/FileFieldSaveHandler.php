@@ -109,6 +109,10 @@ class FileFieldSaveHandler implements RecordFieldTypeSaveHandlerInterface
         $currentMediaObjects = $this->mediaObjectManager->getLinkedMediaObjects($storageType, $parentType, $parentId, $field) ?? [];
 
         if (empty($mediaObjectId)) {
+            foreach ($currentMediaObjects as $currentMediaObject) {
+                // This will delete the media object from the repository and file system
+                $this->mediaObjectManager->deleteMediaObject($storageType, $currentMediaObject);
+            }
             return;
         }
 
