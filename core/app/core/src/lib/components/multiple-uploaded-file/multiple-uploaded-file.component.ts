@@ -31,8 +31,8 @@ import {
     Input,
     OnChanges,
     OnInit,
-    Output, SimpleChanges,
-    ViewChild
+    Output, signal, SimpleChanges,
+    ViewChild, WritableSignal
 } from "@angular/core";
 import {UploadedFile} from "../uploaded-file/uploaded-file.model";
 import {
@@ -51,7 +51,7 @@ export class MultipleUploadedFileComponent implements OnInit, OnChanges {
 
     limitPerRow: number;
     breakpointMax: number;
-    popover: HTMLElement;
+    popover: WritableSignal<HTMLElement> = signal({} as HTMLElement);
 
     @Input() files: UploadedFile[] = [];
     @Input() compact: boolean = false;
@@ -82,6 +82,7 @@ export class MultipleUploadedFileComponent implements OnInit, OnChanges {
         this.initLimit();
         this.chunks = this.getChunks();
         this.breakpoint = this.getBreakpoint();
+        this.popover.set(this.popoverTarget);
     }
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -89,11 +90,17 @@ export class MultipleUploadedFileComponent implements OnInit, OnChanges {
             return;
         }
 
-        if (!this.popoverDefaultTarget){
-            return;
-        }
+        this.setPopover();
+    }
 
-        this.popover = this.popoverDefaultTarget.nativeElement;
+    setPopover(): void {
+        setTimeout(() => {
+            if (!this.popoverDefaultTarget){
+                return;
+            }
+
+            this.popover.set(this.popoverDefaultTarget.nativeElement);
+        }, 300)
     }
     protected initLimit() {
         const limit = this.systemConfigStore.getConfigValue('recordview_attachment_limit');
@@ -143,12 +150,5 @@ export class MultipleUploadedFileComponent implements OnInit, OnChanges {
         }
 
         return this.breakpoint;
-    }
-
-    getPopoverTarget(): HTMLElement {
-        if (this.breakpoint > 1){
-            return this.popover;
-        }
-        return this.popoverTarget;
     }
 }
