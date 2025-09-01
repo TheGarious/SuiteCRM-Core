@@ -51,6 +51,8 @@ export class MultipleUploadedFileComponent implements OnInit, OnChanges {
 
     limitPerRow: number;
     breakpointMax: number;
+    chunkedArray: any[][];
+
     popover: WritableSignal<HTMLElement> = signal({} as HTMLElement);
 
     @Input() files: UploadedFile[] = [];
@@ -86,6 +88,8 @@ export class MultipleUploadedFileComponent implements OnInit, OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges): void {
+        this.chunkedArray = this.chunkArray(this.files.slice(0, this.breakpoint), this.chunks);
+
         if (this.files && this.files.length < this.breakpoint){
             return;
         }
@@ -102,6 +106,16 @@ export class MultipleUploadedFileComponent implements OnInit, OnChanges {
             this.popover.set(this.popoverDefaultTarget.nativeElement);
         }, 300)
     }
+
+    chunkArray<T>(arr: T[], chunkSize: number): T[][] {
+        if (!arr) return [];
+        const out = [];
+        for (let i = 0; i < arr.length; i += chunkSize) {
+            out.push(arr.slice(i, i + chunkSize));
+        }
+        return out;
+    }
+
     protected initLimit() {
         const limit = this.systemConfigStore.getConfigValue('recordview_attachment_limit');
 

@@ -26,7 +26,7 @@
 */
 -->
 <ng-container *ngIf="files && files.length <= breakpoint">
-    <ng-container *ngFor="let group of files | chunk:chunks">
+    <ng-container *ngFor="let group of chunkedArray">
         <div class="file-group">
             <scrm-uploaded-file *ngFor="let file of group" class="file pl-1" [file]="file" [minWidth]="minWidth"
                                 [maxTextWidth]="maxTextWidth"
@@ -37,7 +37,7 @@
     </ng-container>
 </ng-container>
 <div class="d-flex" #popoverDefaultTarget *ngIf="files && files.length > breakpoint">
-    <ng-container *ngFor="let chunk of (files | slice:0:breakpoint | chunk:chunks)">
+    <ng-container *ngFor="let chunk of chunkedArray">
         <div class="file-group">
             <ng-container *ngFor="let file of chunk">
                 <scrm-uploaded-file class="pl-1 file" [file]="file" [compact]="compact" [minWidth]="minWidth"

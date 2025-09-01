@@ -524,7 +524,6 @@ export * from './fields/varchar/templates/edit/varchar.component';
 export * from './fields/varchar/templates/edit/varchar.module';
 export * from './fields/varchar/templates/filter/filter.component';
 export * from './fields/varchar/templates/filter/filter.module';
-export * from './pipes/chunks/chunks.pipe';
 export * from './pipes/file-size/file-size.pipe';
 export * from './pipes/format-currency/format-currency.module';
 export * from './pipes/format-currency/format-currency.pipe';

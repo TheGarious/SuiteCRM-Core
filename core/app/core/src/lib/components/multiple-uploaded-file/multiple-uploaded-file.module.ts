@@ -30,7 +30,6 @@ import {MultipleUploadedFileComponent} from "./multiple-uploaded-file.component"
 import {UploadedFileComponent} from "../uploaded-file/uploaded-file.component";
 import {LabelModule} from "../label/label.module";
 import {NgbPopover} from "@ng-bootstrap/ng-bootstrap";
-import {ChunkPipe} from "../../pipes/chunks/chunks.pipe";
 
 @NgModule({
     declarations: [MultipleUploadedFileComponent],
@@ -42,7 +41,6 @@ import {ChunkPipe} from "../../pipes/chunks/chunks.pipe";
         UploadedFileComponent,
         LabelModule,
         NgbPopover,
-        ChunkPipe,
     ]
 })
 export class MultipleUploadedFileModule {
