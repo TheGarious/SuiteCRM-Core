@@ -107,6 +107,14 @@ class AttachmentFieldSaveHandler implements RecordFieldTypeSaveHandlerInterface
 
         $attachments = $attributes[$field];
 
+        if (empty($attachments)) {
+            foreach ($currentMediaObjects as $currentMediaObject) {
+                // This will delete the media object from the repository and file system
+                $this->mediaObjectManager->deleteMediaObject($storageType, $currentMediaObject);
+            }
+            return;
+        }
+
         foreach ($attachments as $key => $attachment) {
             $id = $attachment['id'] ?? '';
             if (empty($id)) {
