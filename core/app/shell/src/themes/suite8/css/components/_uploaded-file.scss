@@ -37,7 +37,7 @@ a.clickable.file-field-uploaded-link:hover {
   align-items: center;
   font-size: 0.95em;
   margin-top: 0.5em;
-  justify-content: center;
+  justify-content: space-between;
   width: fit-content;
   padding: 0.1em;
   background: $off-white-lighter;
@@ -51,6 +51,7 @@ a.clickable.file-field-uploaded-link:hover {
   .uploaded-file-info-container {
     display: flex;
     align-items: center;
+    flex-grow: 1;
 
     &.uploaded-file-error {
       .uploaded-file-icon {
@@ -88,6 +89,9 @@ a.clickable.file-field-uploaded-link:hover {
     .uploaded-file-info {
       display: flex;
       flex-direction: row;
+      flex-grow: 1;
+      justify-content: space-between;
+      align-items: center;
 
       .uploaded-file-name {
         color: $bright-purple;

@@ -56,13 +56,11 @@
 
         .uploaded-file-name {
           line-height: 1.25!important;
-          top: 2px;
-          position: relative;
         }
 
         .uploaded-file-actions {
           .upload-clear-button {
-            font-size: larger !important;
+            font-size: medium !important;
           }
         }
       }
@@ -70,8 +68,7 @@
 
     .uploaded-file-size {
       font-size: .7em !important;
-      align-content: center !important;
-      top: 3px;
+      top: 2px;
       position: relative;
     }
 
@@ -87,12 +84,15 @@
         margin-right: 0;
       }
 
-      ul .scrollbar-thin:not(:last-child) {
-        border-bottom: 1px solid lightgrey;
+      ul .scrollbar-thin {
         padding-left: 5px;
         padding-right: 0;
         margin-bottom: 5px;
         padding-bottom: 5px;
+
+        &:not(:last-child) {
+          border-bottom: 1px solid lightgrey;
+        }
       }
 
       ul .scrollbar-thin {
@@ -101,6 +101,10 @@
           background-color: transparent;
           justify-content: space-between;
           align-items: center;
+
+          .uploaded-file-name {
+            line-height: 1.25!important;
+          }
         }
       }
 
