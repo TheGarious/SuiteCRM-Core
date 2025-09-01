@@ -215,19 +215,14 @@ class LegacyMailer extends LegacyHandler
             $mail->Mailer = 'smtp';
             $mail->Host = $outboundEmail->mail_smtpserver;
             $mail->Port = $outboundEmail->mail_smtpport;
-            if ($outboundEmail->mail_smtpssl === 1) {
-                $mail->SMTPSecure = 'ssl';
-            }
 
-            if ($outboundEmail->mail_smtpssl === 2) {
-                $mail->SMTPSecure = 'tls';
-            }
-
-            if ($outboundEmail->mail_smtpauth_req) {
-                $mail->SMTPAuth = true;
-                $mail->Username = $outboundEmail->mail_smtpuser;
-                $mail->Password = $outboundEmail->mail_smtppass;
-            }
+            $mail->setSecureProtocol($outboundEmail->mail_smtpssl);
+            $mail->initSMTPAuth(
+                $outboundEmail->auth_type ?? '',
+                $outboundEmail->external_oauth_connection_id ?? '',
+                $outboundEmail->mail_smtpuser ?? '',
+                $outboundEmail->mail_smtppass ?? '',
+            );
         } else {
             $mail->Mailer = 'sendmail';
         }
