@@ -234,29 +234,21 @@ class ApiBeanMapper
 
         [$linkFields, $idFields] = $this->getLinkFields($bean);
 
+        $idTypeFields = $this->getIdTypeFields($bean);
+
         $mappedAttributes = [];
 
         foreach ($bean->field_defs as $field => $properties) {
-            $mappedAttributes[$field] = true;
 
-            if (!isset($values[$field])) {
+            if ($idTypeFields[$field] ?? null){
                 continue;
             }
 
-            $this->toBeanMap($bean, $values, $properties, $field);
+            $this->processMapping($bean, $values, $idFields, $mappedAttributes, $field, $properties);
+        }
 
-            if (!$this->isIdField($idFields, $field) && $this->isLinkField($properties)) {
-                if (!$this->hasLinkMapper($bean->module_name, $properties)) {
-                    continue;
-                }
-
-                $this->mapLinkFieldToBean($bean, $values, $properties);
-                continue;
-            }
-
-            $this->validate($bean->module_name, $field, $properties, $values[$field] ?? null, $idFields);
-
-            $bean->$field = $values[$field];
+        foreach ($idTypeFields as $field => $properties) {
+            $this->processMapping($bean, $values, $idFields, $mappedAttributes, $field, $properties, true);
         }
 
         foreach ($bean->relationship_fields as $field => $link) {
@@ -276,6 +268,30 @@ class ApiBeanMapper
                 $attributeMapper->toBean($bean, $values, $field);
             }
         }
+    }
+
+    protected function processMapping($bean, &$values, $idFields, &$mappedAttributes, $field, $properties): void
+    {
+        $mappedAttributes[$field] = true;
+
+        if (!isset($values[$field])) {
+            return;
+        }
+
+        $this->toBeanMap($bean, $values, $properties, $field);
+
+        if (!$this->isIdField($idFields, $field) && $this->isLinkField($properties)) {
+            if (!$this->hasLinkMapper($bean->module_name, $properties)) {
+                return;
+            }
+
+            $this->mapLinkFieldToBean($bean, $values, $properties);
+            return;
+        }
+
+        $this->validate($bean->module_name, $field, $properties, $values[$field] ?? null, $idFields);
+
+        $bean->$field = $values[$field];
     }
 
 
@@ -823,5 +839,22 @@ class ApiBeanMapper
             $registry->logErrors($errors, 'ApiBeanMapper field validation');
             throw new InvalidArgumentException("Invalid $field field value ");
         }
+    }
+
+    /**
+     * @param SugarBean $bean
+     * @return array
+     */
+    protected function getIdTypeFields(SugarBean $bean): array
+    {
+        $idTypeFields = [];
+        foreach ($bean->field_defs as $field => $properties) {
+            if (isset($properties['type']) && $properties['type'] !== 'id') {
+                continue;
+            }
+
+            $idTypeFields[$field] = $properties;
+        }
+        return $idTypeFields;
     }
 }
