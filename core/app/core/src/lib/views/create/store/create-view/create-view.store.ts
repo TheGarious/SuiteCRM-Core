@@ -24,7 +24,7 @@
  * the words "Supercharged by SuiteCRM".
  */
 
-import {Injectable} from '@angular/core';
+import {inject, Injectable} from '@angular/core';
 import {Observable, of} from 'rxjs';
 import {catchError, finalize, map, shareReplay, tap} from 'rxjs/operators';
 import {Params} from '@angular/router';
@@ -46,11 +46,13 @@ import {Record} from '../../../../common/record/record.model';
 import {ViewMode} from '../../../../common/views/view.model';
 import {RecordStoreFactory} from '../../../../store/record/record.store.factory';
 import {UserPreferenceStore} from '../../../../store/user-preference/user-preference.store';
-import {PanelLogicManager} from '../../../../components/panel-logic/panel-logic.manager';
 import {RecordConvertService} from "../../../../services/record/record-convert.service";
+import {RecordDuplicateService} from "../../../../services/record/record-duplicate.service";
 
 @Injectable()
 export class CreateViewStore extends RecordViewStore {
+
+    protected duplicateService: RecordDuplicateService;
 
     constructor(
         protected recordFetchGQL: RecordFetchGQL,
@@ -87,6 +89,8 @@ export class CreateViewStore extends RecordViewStore {
             preferences,
             recordConvertService
         );
+
+        this.duplicateService = inject(RecordDuplicateService);
     }
 
     /**
@@ -194,11 +198,11 @@ export class CreateViewStore extends RecordViewStore {
                 false
             ).pipe(
                 tap((data: Record) => {
-                    data.id = '';
-                    data.attributes.id = '';
-                    // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
-                    data.attributes.date_entered = '';
-                    this.recordManager.injectParamFields(this.params, data, this.getVardefs());
+
+                    const parsedRecord = this.duplicateService.duplicateParse(data);
+
+                    this.recordManager.injectParamFields(this.params, parsedRecord, this.getVardefs());
+
                     this.recordStore.setRecord(data);
                     this.updateState({
                         ...this.internalState,
