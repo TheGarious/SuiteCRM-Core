@@ -42,5 +42,27 @@ parameters:
               module: emails
               icon: email
               labelKey: LBL_COMPOSE_EMAIL_BUTTON_LABEL
+              modes: ['list']
+              metadataView: 'modalComposeView'
+              params:
+                closeConfirmationModal: true
+                closeConfirmationLabel: 'LBL_CLOSE_EMAIL_MODAL'
+                detached: true
+                headerClass: 'left-aligned-title'
+                dynamicTitleKey: 'LBL_EMAIL_MODAL_DYNAMIC_TITLE'
+                modalOptions:
+                  size: 'lg'
+                  scrollable: false
+                mapFields:
+                  default:
+                    parent_id: id
+                    parent_name: fields.name
+                    parent_type: attributes.module_name
+                    to_addrs_names:
+                      - id: id
+                        name: fields.name
+                        email1: attributes.email1
+                        module_name: attributes.module_name
+
           acl:
             - edit
