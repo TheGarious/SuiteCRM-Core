@@ -25,6 +25,7 @@
  */
 
 import {
+    AfterViewInit,
     Component,
     ElementRef,
     EventEmitter,
@@ -47,11 +48,13 @@ import {BehaviorSubject} from "rxjs";
     templateUrl: './multiple-uploaded-file.component.html',
     styles: [],
 })
-export class MultipleUploadedFileComponent implements OnInit, OnChanges {
+export class MultipleUploadedFileComponent implements OnInit, OnChanges, AfterViewInit {
 
     limitPerRow: number;
     breakpointMax: number;
     chunkedArray: any[][];
+    sizeConfig: any = {};
+    breakpointConfig: any = {};
 
     popover: WritableSignal<HTMLElement> = signal({} as HTMLElement);
 
@@ -84,13 +87,18 @@ export class MultipleUploadedFileComponent implements OnInit, OnChanges {
         this.initLimit();
         this.chunks = this.getChunks();
         this.breakpoint = this.getBreakpoint();
-        this.popover.set(this.popoverTarget);
+    }
+
+    ngAfterViewInit() {
+        setTimeout(() => {
+            this.popover.set(this.popoverTarget);
+        }, 300)
     }
 
     ngOnChanges(changes: SimpleChanges): void {
         this.chunkedArray = this.chunkArray(this.files.slice(0, this.breakpoint), this.chunks);
 
-        if (this.files && this.files.length < this.breakpoint){
+        if (this.breakpointMax < this.breakpointConfig[ScreenSize.Large]) {
             return;
         }
 
@@ -119,22 +127,22 @@ export class MultipleUploadedFileComponent implements OnInit, OnChanges {
     protected initLimit() {
         const limit = this.systemConfigStore.getConfigValue('recordview_attachment_limit');
 
-        let sizeConfig = limit.row_default_limit;
-        let breakpointConfig = limit.breakpoints_default_limit
+        this.sizeConfig = limit.row_default_limit;
+        this.breakpointConfig = limit.breakpoints_default_limit
 
         if (this.compact) {
-            sizeConfig = limit.row_compact_limit;
-            breakpointConfig = limit.breakpoints_compact_limit
+            this.sizeConfig = limit.row_compact_limit;
+            this.breakpointConfig = limit.breakpoints_compact_limit
         }
 
         this.screenSizeState = this.screenSize.screenSize;
 
-        this.limitPerRow = sizeConfig[this.screenSizeState.value];
-        this.breakpointMax = breakpointConfig[this.screenSizeState.value];
+        this.limitPerRow = this.sizeConfig[this.screenSizeState.value];
+        this.breakpointMax = this.breakpointConfig[this.screenSizeState.value];
 
         this.screenSize.screenSize$.subscribe((size) => {
-            this.limitPerRow = sizeConfig[size] || this.limitPerRow;
-            this.breakpointMax = breakpointConfig[size] || this.breakpointMax;
+            this.limitPerRow = this.sizeConfig[size] || this.limitPerRow;
+            this.breakpointMax = this.breakpointConfig[size] || this.breakpointMax;
         })
     }
 
