@@ -52,6 +52,7 @@ services:
       $recordViewHeaderWidgets: '%module.recordview.header_widgets%'
       $recordViewTopWidgets: '%module.recordview.top_widgets%'
       $recordViewConvertIgnore: '%module.recordview.convert_ignore%'
+      $recordViewDuplicateIgnore: '%module.recordview.duplicate_ignore%'
       $recordViewSubpanelButtonLimits: '%module.recordview.subpanel_button_limits%'
       $subpanelViewActionLimits: '%module.subpanelview.actions_limits%'
       $groupedFieldsTypeMap: '%record.fields.grouped_fields_type_map%'

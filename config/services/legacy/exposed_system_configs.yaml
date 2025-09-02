@@ -40,6 +40,7 @@ parameters:
     recordview_section_tab_limits: true
     recordview_subpanel_button_limits: true
     convert_ignore: true
+    duplicate_ignore: true
     subpanelview_actions_limits: true
     ui: true
     extensions: true
