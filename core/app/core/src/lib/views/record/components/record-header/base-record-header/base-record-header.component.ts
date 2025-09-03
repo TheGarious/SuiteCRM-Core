@@ -25,7 +25,7 @@
  */
 
 
-import {Component, HostListener, OnDestroy, OnInit} from '@angular/core';
+import {Component, HostListener, OnDestroy, OnInit, signal, WritableSignal} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {RecordViewStore} from '../../../store/record-view/record-view.store';
 import {ModuleNavigation} from '../../../../../services/navigation/module-navigation/module-navigation.service';
@@ -49,6 +49,7 @@ export class BaseRecordHeaderComponent implements OnInit, OnDestroy {
     mode: ViewMode = 'detail';
     loading: boolean = true;
     isScrolled: boolean = false;
+    validating: WritableSignal<boolean> = signal(false);
     backButtonConfig: ButtonInterface;
 
     protected subs: Subscription[] = [];
@@ -96,6 +97,11 @@ export class BaseRecordHeaderComponent implements OnInit, OnDestroy {
         this.subs.push(this.recordViewStore.loading$.subscribe(loading => {
             this.loading = loading;
         }))
+
+        this.subs.push(this.recordViewStore.validating$.subscribe(validating => {
+            this.validating.set(validating);
+        }))
+
     }
 
     ngOnDestroy(): void {

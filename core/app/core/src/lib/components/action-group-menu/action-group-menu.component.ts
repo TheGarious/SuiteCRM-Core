@@ -26,12 +26,12 @@
 
 import {
     AfterViewInit,
-    Component,
+    Component, computed,
     ElementRef,
     HostListener,
     Input,
     OnDestroy,
-    OnInit,
+    OnInit, Signal,
     signal,
     ViewChild,
     WritableSignal
@@ -74,6 +74,7 @@ export class ActionGroupMenuComponent implements OnInit, AfterViewInit, OnDestro
     @Input() dynamicBreakpoint = false;
     @Input() dynamicBreakpointButtonMax = 100;
     @Input() pushActiveToExpanded = false;
+    @Input() isRunning: Signal<boolean> = signal(false);
 
     @ViewChild('container') containerElement: ElementRef;
     protected screenSize$: Observable<ScreenSize>;
@@ -306,6 +307,12 @@ export class ActionGroupMenuComponent implements OnInit, AfterViewInit, OnDestro
 
         if (isFalse(debounceClick)) {
             button.debounceClick = false;
+        }
+
+        if (action.params?.loadOnSubmit) {
+            button.validating = computed(() => {
+                return this.isRunning();
+            });
         }
 
         if (action.icon) {
