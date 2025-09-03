@@ -60,11 +60,11 @@ class CleanUpTemporaryFilesScheduler implements SchedulerInterface
     public function run(): bool
     {
         $tableTypeMap = [
-            'archived-document' => 'archived_documents_media_objects',
-            'private-document' => 'private_documents_media_objects',
-            'private-image' => 'private_images_media_objects',
-            'public-document' => 'public_documents_media_objects',
-            'public-image' => 'public_images_media_objects'
+            'archived-documents' => 'archived_documents_media_objects',
+            'private-documents' => 'private_documents_media_objects',
+            'private-images' => 'private_images_media_objects',
+            'public-documents' => 'public_documents_media_objects',
+            'public-images' => 'public_images_media_objects'
         ];
 
         $batch = (int)($this->systemConfigProvider->getSystemConfig('max_temp_file_batch_per_table')?->getValue());
