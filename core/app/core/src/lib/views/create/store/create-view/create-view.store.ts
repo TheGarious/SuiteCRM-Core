@@ -199,9 +199,11 @@ export class CreateViewStore extends RecordViewStore {
             ).pipe(
                 tap((data: Record) => {
 
-                    const parsedRecord = this.duplicateService.duplicateParse(data);
+                    const vardefs = this.getVardefs();
 
-                    this.recordManager.injectParamFields(this.params, parsedRecord, this.getVardefs());
+                    const parsedRecord = this.duplicateService.duplicateParse(data, vardefs);
+
+                    this.recordManager.injectParamFields(this.params, parsedRecord, vardefs);
 
                     this.recordStore.setRecord(data);
                     this.updateState({

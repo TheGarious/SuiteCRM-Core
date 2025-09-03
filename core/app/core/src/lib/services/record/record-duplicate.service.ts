@@ -26,6 +26,7 @@
 import {Injectable} from "@angular/core";
 import {SystemConfigStore} from "../../store/system-config/system-config.store";
 import {Record} from "../../common/record/record.model";
+import {FieldDefinitionMap} from "../../common/record/field.model";
 
 @Injectable({
     providedIn: 'root'
@@ -35,23 +36,28 @@ export class RecordDuplicateService {
     constructor(protected systemConfigStore: SystemConfigStore) {
     }
 
-    public duplicateParse(record: Record): Record {
+    public duplicateParse(record: Record, vardefs: FieldDefinitionMap): Record {
 
         record.id = '';
         record.attributes.id = '';
         record.attributes.date_entered = '';
 
         const excludedFields = this.systemConfigStore.getConfigValue('duplicate_ignore') ?? [];
-        const nextModule = record.module ?? '';
+        const module = record.module ?? '';
 
-        record.id = '';
-        record.attributes.id = '';
-
-        const moduleExcludedFields = [...excludedFields['default'] ?? [], excludedFields[nextModule] ?? []];
+        const moduleExcludedFields = [...excludedFields['default'] ?? [], excludedFields[module] ?? []];
 
         moduleExcludedFields.forEach(field => {
             record.attributes[field] = '';
         });
+
+        Object.keys(vardefs).forEach((fieldName: string) => {
+            const fieldDef = vardefs[fieldName];
+            const allowDuplicate = fieldDef?.metadata?.allow_duplicate ?? true;
+            if (!allowDuplicate) {
+                record.attributes[fieldName] = '';
+            }
+        })
 
         return record;
     }
