@@ -223,6 +223,10 @@ a.clickable.file-field-uploaded-link:hover {
       display: flex;
       flex-direction: column;
 
+      a.clickable:hover {
+        color: #8d74cc !important;
+      }
+
       .uploaded-file-name {
         color: $bright-purple;
         font-weight: 500;
