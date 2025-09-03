@@ -109,9 +109,11 @@ class OutboundEmailDataHandler extends BaseListDataHandler implements ListDataHa
             return $where;
         }
 
-        $showGroupRecords = "(type IS NULL) OR (type != 'user' ) OR ";
+        $table = \BeanFactory::newBean('OutboundEmailAccounts')->getTableName();
 
-        $query = "($showGroupRecords (type = 'user' AND user_id = '".$currentUser?->db->quote($currentUser?->id)."'))";
+        $showGroupRecords = "($table.type IS NULL) OR ($table.type != 'user' ) OR ";
+
+        $query = "($showGroupRecords ($table.type = 'user' AND user_id = '".$currentUser?->db->quote($currentUser?->id)."'))";
 
         if (empty($where)) {
             return $query;
