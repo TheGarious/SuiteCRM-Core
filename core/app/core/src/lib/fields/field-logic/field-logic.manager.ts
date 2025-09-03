@@ -206,6 +206,11 @@ export class FieldLogicManager extends BaseActionManager<FieldLogicActionData> {
                 return;
             }
 
+            if (triggeringStatus === 'onFieldInitialize' && actionTriggeringStatus.includes('onFieldInitialize')) {
+                actions.push(action);
+                return;
+            }
+
             if (actionTriggeringStatus.includes('onDependencyChange') && !dependentFieldsKeys?.includes(fieldDependent.name)) {
                 return;
             }
