@@ -29,10 +29,11 @@
         [ngClass]="config.klass"
         [class]="dynamicClass()"
         (click)="runClick($event)"
-        [disabled]="disabled() || ''"
+        [disabled]="disabled() || isRunning()"
         [style]="config?.style || ''"
         [style.max-width]="config?.maxWidth ? config?.maxWidth + 'px': null"
         [title]="(language.getFieldLabel(config.titleKey) || config?.title) || ''">
+    <ng-container *ngIf="!isRunning()">
     <scrm-image *ngIf="config.icon"
                 [image]="config.icon"
                 [klass]="config.iconKlass || ''"
@@ -47,5 +48,9 @@
                         [labelKey]="config.dynamicLabelKey"
                         [module]="config.labelModule ?? ''"
                         [fields]="config?.dynamicLabelFields"></scrm-dynamic-label>
+    </ng-container>
     <ng-content></ng-content>
+    <ng-container *ngIf="isRunning()">
+        <scrm-inline-loading-spinner klass="inline-spinner-md"></scrm-inline-loading-spinner>
+    </ng-container>
 </button>

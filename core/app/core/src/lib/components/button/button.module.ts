@@ -32,6 +32,7 @@ import {LabelModule} from '../label/label.module';
 import {ImageModule} from '../image/image.module';
 import {NgbTooltipModule} from '@ng-bootstrap/ng-bootstrap';
 import {DynamicLabelModule} from "../dynamic-label/dynamic-label.module";
+import {InlineLoadingSpinnerModule} from "../inline-loading-spinner/inline-loading-spinner.module";
 
 @NgModule({
     declarations: [ButtonComponent],
@@ -42,6 +43,7 @@ import {DynamicLabelModule} from "../dynamic-label/dynamic-label.module";
         LabelModule,
         NgbTooltipModule,
         DynamicLabelModule,
+        InlineLoadingSpinnerModule,
     ]
 })
 export class ButtonModule {

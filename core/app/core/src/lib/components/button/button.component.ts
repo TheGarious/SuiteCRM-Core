@@ -37,6 +37,7 @@ import {debounceTime} from 'rxjs/operators';
 export class ButtonComponent implements OnInit, OnDestroy {
     @Input() config: ButtonInterface;
 
+    isRunning: Signal<boolean> = signal(false);
     dynamicClass: Signal<string> = signal('');
     dynamicIcon: Signal<string> = signal('');
     disabled: Signal<boolean> = signal(false);
@@ -63,6 +64,10 @@ export class ButtonComponent implements OnInit, OnDestroy {
 
         if (this.config?.disabled) {
             this.disabled = this.config?.disabled;
+        }
+
+        if (this.config.isRunning){
+            this.isRunning = this.config.isRunning;
         }
 
         if (isToDebounce && this.clickCallBack) {

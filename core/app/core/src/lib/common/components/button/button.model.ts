@@ -51,6 +51,7 @@ export interface ButtonInterface {
     labelModule?: string;
     section?: string;
     disabled?: Signal<boolean>;
+    isRunning?: Signal<boolean>;
     type?: string;
     metadata?: ObjectMap;
     active?: boolean;
