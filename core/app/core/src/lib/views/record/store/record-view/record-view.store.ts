@@ -211,7 +211,11 @@ export class RecordViewStore extends ViewStore implements StateStore, BaseRecord
     }
 
     set showSidebarWidgets(show: boolean) {
-        this.savePreference(this.getModuleName(), 'show-sidebar-widgets', show);
+
+        if (this.getMode() !== 'create') {
+            this.savePreference(this.getModuleName(), 'show-sidebar-widgets', show);
+        }
+
         this.updateState({
             ...this.internalState,
             showSidebarWidgets: show
