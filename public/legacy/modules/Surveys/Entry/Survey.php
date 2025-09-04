@@ -52,6 +52,16 @@ $companyLogoURL = $themeObject->getImageURL('company_logo.png');
 
 require_once 'modules/Campaigns/utils.php';
 if ($trackerId) {
+    global $db;
+    $identifierQuoted = $db->quote($trackerId);
+    $query = "select * from campaign_log where target_tracker_key='$identifierQuoted' and activity_type='viewed'";
+    $viewedQuery = $db->query($query);
+    $row = $db->fetchByAssoc($viewedQuery);
+
+    if (empty($row)) {
+        log_campaign_activity($trackerId, 'viewed');
+    }
+
     $surveyLinkTracker = getSurveyLinkTracker($trackerId);
     log_campaign_activity($trackerId, 'link', true, $surveyLinkTracker);
 }
