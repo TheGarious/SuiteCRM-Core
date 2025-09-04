@@ -64,6 +64,7 @@ const initialState: any = {
     module: '',
     recordID: '',
     loading: false,
+    validating: false,
     mode: 'detail',
     params: {
         returnModule: '',
@@ -77,6 +78,7 @@ export class RecordModalStore implements StateStore, BaseRecordContainerStoreInt
     record$: Observable<Record>;
     stagingRecord$: Observable<Record>;
     loading$: Observable<boolean>;
+    validating$: Observable<boolean>;
     mode$: Observable<ViewMode>;
     viewContext$: Observable<ViewContext>;
     metadata$: Observable<Metadata>;
@@ -136,7 +138,7 @@ export class RecordModalStore implements StateStore, BaseRecordContainerStoreInt
 
 
         this.loading$ = this.state$.pipe(map(state => state.loading));
-
+        this.validating$ = this.state$.pipe(map(state => state.validating));
         this.metadataLoadingState = new BehaviorSubject(false);
         this.metadataLoading$ = this.metadataLoadingState.asObservable();
         this.mode$ = this.state$.pipe(map(state => state.mode));

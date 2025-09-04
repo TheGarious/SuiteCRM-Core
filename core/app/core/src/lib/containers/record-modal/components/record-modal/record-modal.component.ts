@@ -97,6 +97,8 @@ export class RecordModalComponent implements OnInit, OnDestroy {
     @Input() closeConfirmationMessages: string[] = [];
     @Input() closeConfirmationModal: boolean = false;
 
+    validating: WritableSignal<boolean> = signal(false);
+
     record: Record;
     modalStore: RecordModalStore;
     viewContext: ActionContext;
@@ -137,6 +139,10 @@ export class RecordModalComponent implements OnInit, OnDestroy {
             }
         } as ButtonInterface;
 
+
+        this.subs.push(this.modalStore.validating$.subscribe((validating: boolean) => {
+            this.validating.set(validating);
+        }));
     }
 
     ngOnDestroy(): void {

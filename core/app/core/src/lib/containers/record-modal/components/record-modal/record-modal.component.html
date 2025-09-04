@@ -60,7 +60,9 @@
             <scrm-action-group-menu
                     [config]="actionsAdapter"
                     [actionContext]="viewContext"
-                    buttonClass="settings-button">
+                    buttonClass="settings-button"
+                    [isRunning]="validating"
+            >
             </scrm-action-group-menu>
         </div>
     </div>
