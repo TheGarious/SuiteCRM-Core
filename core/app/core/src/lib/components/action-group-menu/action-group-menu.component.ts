@@ -309,9 +309,9 @@ export class ActionGroupMenuComponent implements OnInit, AfterViewInit, OnDestro
             button.debounceClick = false;
         }
 
-        if (action.params?.loadOnSubmit) {
-            button.validating = computed(() => {
-                return this.isRunning();
+        if (action.params?.disableOnRun && action.isRunning) {
+            button.isRunning = computed(() => {
+                return action.isRunning();
             });
         }
 

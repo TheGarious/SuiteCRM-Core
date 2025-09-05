@@ -53,6 +53,7 @@ import {
     LogicDefinition,
     AfterActionLogicDefinitions
 } from "../../common/metadata/metadata.model";
+import {signal} from "@angular/core";
 
 export abstract class BaseActionsAdapter<D extends ActionData> implements ActionDataSource {
 
@@ -251,10 +252,9 @@ export abstract class BaseActionsAdapter<D extends ActionData> implements Action
 
             const module = (context && context.module) || '';
             const label = this.language.getFieldLabel(action.labelKey, module);
-            actions.push({
-                ...action,
-                label
-            });
+            const newAction = {...action, label};
+            newAction.isRunning = signal(false);
+            actions.push(newAction);
         });
 
         return actions;
@@ -295,7 +295,10 @@ export abstract class BaseActionsAdapter<D extends ActionData> implements Action
         const actionData: D = this.buildActionData(action, context);
         const asyncData = this.buildActionInput(action, actionName, moduleName, context, actionData);
 
+        action.isRunning?.set(true);
+
         this.asyncActionService.run(actionName, asyncData, null, null, actionData).pipe(take(1)).subscribe((process: Process) => {
+            action.isRunning.set(false);
             this.afterAsyncAction(actionName, moduleName, asyncData, process, action, actionData, context, afterActionLogic);
         });
     }

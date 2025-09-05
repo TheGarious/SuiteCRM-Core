@@ -33,6 +33,7 @@ import {LogicDefinitions, AfterActionLogicDefinitions} from '../metadata/metadat
 import {ObjectMap} from "../types/object-map";
 import {AsyncActionInput} from "../../services/process/processes/async-action/async-action";
 import {BaseRecordContainerStoreInterface} from "../containers/record/record-container.store.model";
+import {WritableSignal} from "@angular/core";
 
 export interface ActionData {
     [key: string]: any;
@@ -102,6 +103,7 @@ export interface Action {
     acl?: string[];
     afterActionLogic?: AfterActionLogicDefinitions;
     displayLogic?: LogicDefinitions;
+    isRunning?: WritableSignal<boolean>;
 }
 
 export interface ActionDataSource {
