@@ -85,6 +85,7 @@ $viewdefs['Emails']['ModalComposeView'] = [
                 'asyncProcess' => true,
                 'params' => [
                     'validate' => true,
+                    'disableOnRun' => true,
                     'expanded' => true
                 ],
                 'modes' => ['detail', 'edit', 'create'],
