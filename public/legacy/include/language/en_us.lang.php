@@ -4275,6 +4275,7 @@ $app_strings['LBL_POLL_BOUNCED_CAMPAIGN_DYNAMIC_LABEL'] = '{{ fields.pollMonitor
 $app_strings['LBL_MARKETING_ITEMS_PER_RUN'] = 'Campaign Marketing Items Per Run';
 $app_strings['LBL_EMAILS_PER_RUN'] = 'Campaign Emails Per Run';
 $app_strings['LBL_TRACKERS_ENABLED'] = 'Trackers Enabled';
+$app_strings['LBL_TRACKER_LINKS_ENABLED'] = 'Tracker Links Enabled';
 
 $app_strings['LBL_MARKETING_ITEMS_PER_RUN_DYNAMIC_LABEL'] = '{{ fields.campaign_marketing_items_per_run.value }}';
 $app_strings['LBL_EMAILS_PER_RUN_DYNAMIC_LABEL'] = '{{ fields.campaign_emails_per_run.value }}';
