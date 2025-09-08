@@ -65,6 +65,7 @@ $mod_strings = array(
     'LBL_EMAILS_PER_RUN' => 'Number of emails processed/sent per batch:',
     'LBL_CAMPAIGN_MARKETING_RECORDS_PER_RUN' => 'Number of emails marketing records to process per run:',
     'LBL_TRACKERS_ENABLED' => 'Trackers enabled:',
+    'LBL_TRACKER_LINKS_ENABLED' => 'Tracker Links Enabled',
     'LBL_ID' => 'Id',
     'LBL_LIST_CAMPAIGN' => 'Campaign',
     'LBL_LIST_FORM_TITLE' => 'Queue',

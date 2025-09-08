@@ -108,7 +108,7 @@ function clearQueryParamsAndNavigate() {
 				</tr>
 				<tr>
 					<td scope="row">
-						{$MOD.LBL_TRACKERS_ENABLED}&nbsp;<span class="required">{$APP.LBL_REQUIRED_SYMBOL}</span>
+						{$MOD.LBL_TRACKER_LINKS_ENABLED}&nbsp;<span class="required">{$APP.LBL_REQUIRED_SYMBOL}</span>
 					</td>
 					<td >
 						<input type="radio" name="massemailer_trackers_enabled" {if $TRACKERS_ENABLED == 'true'}checked{/if} value="true"> {$APP.LBL_YES}
