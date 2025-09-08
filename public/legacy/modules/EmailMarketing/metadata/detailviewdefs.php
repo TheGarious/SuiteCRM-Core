@@ -372,7 +372,7 @@ $viewdefs ['EmailMarketing'] = [
                                 'class' => 'campaign-status-check-row  mb-0',
                                 'cols' => [
                                     [
-                                        'labelKey' => 'LBL_TRACKERS_ENABLED',
+                                        'labelKey' => 'LBL_TRACKER_LINKS_ENABLED',
                                         'class' => 'campaign-status-check-row-label text-uppercase',
                                         'bold' => true
                                     ],

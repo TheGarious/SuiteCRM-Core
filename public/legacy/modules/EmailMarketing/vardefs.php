@@ -260,7 +260,7 @@ $dictionary['EmailMarketing'] = [
         ],
         'trackers_enabled' => [
             'name' => 'trackers_enabled',
-            'vname' => 'LBL_TRACKERS_ENABLED',
+            'vname' => 'LBL_TRACKER_LINKS_ENABLED',
             'type' => 'bool',
             'displayType' => 'dropdown',
             'options' => 'dom_int_bool_string',
