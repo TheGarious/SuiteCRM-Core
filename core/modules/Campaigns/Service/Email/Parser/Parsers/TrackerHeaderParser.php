@@ -60,9 +60,7 @@ class TrackerHeaderParser implements CampaignEmailParserInterface
             return false;
         }
 
-        $trackersEnabled = $emailMarketing->getAttributes()['trackers_enabled'] ?? null;
-
-        return isTrue($trackersEnabled) && $this->trackerManager->isTrackingEnabled();
+        return true;
     }
 
     public function parse(Record $record, array $context): void
