@@ -46,12 +46,16 @@ export class MediaObjectsService {
     uploadFile(
         storageType: string,
         file: File,
+        parentType: string,
+        parentField: string,
         onProgress: UploadProgressCallback,
         onSuccess: UploadSuccessCallback,
         onError: UploadErrorCallback
     ): UploadedFile {
 
         const formData = new FormData();
+        formData.append('parentType', parentType ?? '');
+        formData.append('parentField', parentField ?? '');
         formData.append('file', file);
 
         const uploadFile = {
