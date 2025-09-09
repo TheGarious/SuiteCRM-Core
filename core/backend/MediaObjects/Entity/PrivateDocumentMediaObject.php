@@ -64,6 +64,14 @@ use Symfony\Component\Validator\Constraints as Assert;
                                         'file' => [
                                             'type' => 'string',
                                             'format' => 'binary'
+                                        ],
+                                        'parentType' => [
+                                            'type' => 'string',
+                                            'format' => 'string'
+                                        ],
+                                        'parentField' => [
+                                            'type' => 'string',
+                                            'format' => 'string'
                                         ]
                                     ]
                                 ]
@@ -130,7 +138,7 @@ class PrivateDocumentMediaObject implements MediaObjectInterface
     #[Groups(['media_object:read'])]
     public ?array $dimensions = null;
 
-    #[ApiProperty(writable: false)]
+    #[ApiProperty(writable: true)]
     #[ORM\Column(name: "parent_type", type: "string", length: 100, nullable: true, options: ["default" => null])]
     public ?string $parentType = null;
 
@@ -138,7 +146,7 @@ class PrivateDocumentMediaObject implements MediaObjectInterface
     #[ORM\Column(name: "parent_id", type: "string", length: 36, nullable: true, options: ["fixed" => true])]
     public ?string $parentId = null;
 
-    #[ApiProperty(writable: false)]
+    #[ApiProperty(writable: true)]
     #[ORM\Column(name: "parent_field", type: "string", length: 36, nullable: true, options: ["fixed" => true])]
     public ?string $parentField = null;
 
