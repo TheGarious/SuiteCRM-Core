@@ -27,6 +27,7 @@
 
 namespace App\MediaObjects\Validator\UploadValidator\Validators;
 
+use App\FieldDefinitions\Service\FieldDefinitionsProviderInterface;
 use App\MediaObjects\Validator\UploadValidator\UploadValidatorInterface;
 use App\SystemConfig\Service\SystemConfigProviderInterface;
 use Symfony\Component\HttpFoundation\File\File;
@@ -36,7 +37,8 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 class MaxFileSizeUploadValidator implements UploadValidatorInterface
 {
     public function __construct(
-        protected SystemConfigProviderInterface $config
+        protected SystemConfigProviderInterface $config,
+        protected FieldDefinitionsProviderInterface $fieldDefinitionProvider
     ) {
     }
 
@@ -65,10 +67,21 @@ class MaxFileSizeUploadValidator implements UploadValidatorInterface
 
         $maxSize = $this->config->getConfigs()['upload_maxsize'] ?? null;
 
+        $record = $context?->getObject();
+        $parentType = $record?->getParentType() ?? '';
+        $parentField = $record?->getParentField() ?? '';
+        if (!empty($parentType) && !empty($parentField)) {
+
+            $fieldDefinition = $this->fieldDefinitionProvider->getFieldDefinition($parentType, $parentField) ?? [];
+            $vardefsMaxSize = $fieldDefinition['metadata']['upload_maxsize'] ?? '';
+            if (!empty($vardefsMaxSize)) {
+                $maxSize = $vardefsMaxSize;
+            }
+        }
+
         if (empty($maxSize) || !is_numeric($maxSize)) {
             $maxSize = 5000000;
         }
-
 
         if ($value->getSize() > $maxSize) {
             $context->buildViolation($this->getErrorMessageLabelKey())
