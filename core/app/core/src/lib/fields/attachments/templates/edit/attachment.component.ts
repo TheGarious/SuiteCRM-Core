@@ -89,6 +89,8 @@ export class AttachmentEditFieldComponent extends BaseAttachmentComponent implem
             this.mediaObjectsService.uploadFile(
                 this.storageType,
                 file,
+                this?.record?.module ?? '',
+                this?.field?.name ?? '',
                 () => {
                 },
                 (uploadFile: UploadedFile) => {
