@@ -27,6 +27,7 @@ import {Injectable} from "@angular/core";
 import {SystemConfigStore} from "../../store/system-config/system-config.store";
 import {Record} from "../../common/record/record.model";
 import {FieldDefinitionMap} from "../../common/record/field.model";
+import {isTrue} from "../../common/utils/value-utils";
 
 @Injectable({
     providedIn: 'root'
@@ -53,7 +54,7 @@ export class RecordDuplicateService {
 
         Object.keys(vardefs).forEach((fieldName: string) => {
             const fieldDef = vardefs[fieldName];
-            const allowDuplicate = fieldDef?.metadata?.allow_duplicate ?? true;
+            const allowDuplicate = isTrue(fieldDef?.metadata?.allow_duplicate ?? true);
             if (!allowDuplicate) {
                 record.attributes[fieldName] = '';
             }
