@@ -72,6 +72,8 @@ export class BaseFileComponent extends BaseFieldComponent {
         const uploadedFile = this.mediaObjects.uploadFile(
             storageType,
             file,
+            this?.record?.module ?? '',
+            this?.field?.name ?? '',
             (progress: number) => {
             },
             (uploadFile: UploadedFile) => {
