@@ -40,4 +40,12 @@ interface FieldDefinitionsProviderInterface
      * @return FieldDefinition
      */
     public function getVardef(string $moduleName): FieldDefinition;
+
+    /**
+     * Get definition for a single field
+     * @param string $moduleName
+     * @param string $field
+     * @return array|null
+     */
+    public function getFieldDefinition(string $moduleName, string $field): ?array;
 }

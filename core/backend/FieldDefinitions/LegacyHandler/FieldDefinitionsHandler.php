@@ -118,6 +118,29 @@ class FieldDefinitionsHandler extends LegacyHandler implements FieldDefinitionsP
     }
 
     /**
+     * @inheritDoc
+     */
+    public function getFieldDefinition(string $moduleName, string $field): ?array
+    {
+        $fieldDefinitions = $this->getVardef($moduleName);
+        if (empty($fieldDefinitions)) {
+            return null;
+        }
+
+        $vardefs = $fieldDefinitions->getVardef();
+        if (empty($vardefs)) {
+            return null;
+        }
+
+        $fieldDefinition = $vardefs[$field] ?? null;
+        if (empty($fieldDefinition)) {
+            return null;
+        }
+
+        return $fieldDefinition;
+    }
+
+    /**
      * Get legacy definitions
      * @param string $legacyModuleName
      * @return array|mixed
