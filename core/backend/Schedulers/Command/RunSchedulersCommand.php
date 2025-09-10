@@ -30,6 +30,7 @@ namespace App\Schedulers\Command;
 use App\Authentication\LegacyHandler\Authentication;
 use App\Engine\LegacyHandler\DefaultLegacyHandler;
 use App\Install\Command\BaseCommand;
+use App\Schedulers\LegacyHandler\CronHandler;
 use App\Schedulers\LegacyHandler\SchedulerHandler;
 use App\SystemConfig\LegacyHandler\SystemConfigHandler;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -39,23 +40,16 @@ use Symfony\Component\Console\Output\OutputInterface;
 #[AsCommand(name: 'schedulers:run')]
 class RunSchedulersCommand extends BaseCommand
 {
-    protected SchedulerHandler $schedulerHandler;
-    protected Authentication $authentication;
-    protected SystemConfigHandler $systemConfigHandler;
-
     public function __construct(
-        SchedulerHandler $schedulerHandler,
-        Authentication $authentication,
-        DefaultLegacyHandler $legacyHandler,
-        SystemConfigHandler $systemConfigHandler,
+        protected SchedulerHandler $schedulerHandler,
+        protected Authentication $authentication,
+        protected DefaultLegacyHandler $legacyHandler,
+        protected SystemConfigHandler $systemConfigHandler,
+        protected CronHandler $cronHandler,
         ?string          $name = null
     )
     {
-        $this->schedulerHandler = $schedulerHandler;
         $this->initSession = true;
-        $this->authentication = $authentication;
-        $this->legacyHandler = $legacyHandler;
-        $this->systemConfigHandler = $systemConfigHandler;
         parent::__construct($name);
     }
 
@@ -69,6 +63,20 @@ class RunSchedulersCommand extends BaseCommand
     protected function executeCommand(InputInterface $input, OutputInterface $output, array $inputs): int
     {
         $this->authentication->initLegacySystemSession();
+
+        $allowed = $this->cronHandler->isAllowedCronUser();
+
+        if (!$allowed) {
+            $output->writeln([
+                '',
+                'ERROR: The cron job is being run by an unauthorized user.',
+                'Please ensure that the cron job is run by one of the following users:',
+                implode(', ', $this->cronHandler->getAllowedUsers()),
+                'Current user: ' . $this->cronHandler->getRunningUser(),
+                ''
+            ]);
+            return 1;
+        }
 
         $appStrings = $this->getAppStrings();
 
