@@ -92,7 +92,15 @@ export class MediaObjectsService {
                 } else if (event.type === HttpEventType.Response) {
                     uploadFile.status.set('uploaded');
                     uploadFile.progress.set(100);
-                    uploadFile.contentUrl = '.' + event?.body?.contentUrl ?? '';
+
+                    let contentUrl = event?.body?.contentUrl ?? '';
+
+                    if (contentUrl && (!contentUrl.startsWith('https://') && !contentUrl.startsWith('http://'))) {
+                        contentUrl = '.' + contentUrl ?? '';
+                    }
+
+
+                    uploadFile.contentUrl = contentUrl;
                     uploadFile.id = event?.body?.id ?? ''; // Assuming the response contains the file ID
                     onSuccess(uploadFile);
                 }

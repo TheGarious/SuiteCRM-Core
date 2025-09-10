@@ -125,12 +125,18 @@ export class BaseFileComponent extends BaseFieldComponent {
             return;
         }
 
+        let contentUrl = valueObject?.attributes?.contentUrl ?? '';
+
+        if (contentUrl && (!contentUrl.startsWith('https://') && !contentUrl.startsWith('http://'))) {
+            contentUrl = '.' + contentUrl ?? '';
+        }
+
         this.uploadedFile.set({
             id: valueObject?.id ?? '',
             name: valueObject?.attributes?.original_name ?? '',
             size: valueObject?.attributes?.size ?? 0,
             type: valueObject?.attributes?.type ?? '',
-            contentUrl: '.' + valueObject?.attributes?.contentUrl || '',
+            contentUrl: contentUrl || '',
             status: signal('saved'),
             progress: signal(100),
             dateCreated: valueObject?.attributes?.date_entered || ''
