@@ -189,7 +189,8 @@ return static function (ContainerConfigurator $containerConfig) {
             'db_driver' => $dbDriver,
             'storage' => $storage,
             'metadata' => $metadata,
-            'mappings' => $mappings
+            'mappings' => $mappings,
+            'use_flysystem_to_resolve_uri' => true
         ]
     );
 
