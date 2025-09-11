@@ -376,7 +376,7 @@ class SystemConfigHandler extends LegacyHandler implements SystemConfigProviderI
         if (is_array($sugar_config[$configKey])) {
             $items = $sugar_config[$configKey];
 
-            if (is_array($this->exposedSystemConfigs[$configKey])) {
+            if ($filterNonExposed && is_array($this->exposedSystemConfigs[$configKey])) {
                 $items = $this->filterItems($sugar_config[$configKey], $this->exposedSystemConfigs[$configKey]);
             }
 
