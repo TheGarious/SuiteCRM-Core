@@ -59,6 +59,7 @@ export class MultipleUploadedFileComponent implements OnInit, OnChanges, AfterVi
     popover: WritableSignal<HTMLElement> = signal({} as HTMLElement);
 
     @Input() files: UploadedFile[] = [];
+    @Input() allowClear: boolean = true;
     @Input() compact: boolean = false;
     @Input() chunks: number = 3;
     @Input() breakpoint: number = 3;

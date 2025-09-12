@@ -30,6 +30,7 @@
         <div class="file-group">
             <scrm-uploaded-file *ngFor="let file of group" class="file pl-1" [file]="file" [minWidth]="minWidth"
                                 [maxTextWidth]="maxTextWidth"
+                                [allowClear]="allowClear"
                                 [compact]="compact"
                                 (clear)="clearFiles($event)">
             </scrm-uploaded-file>
