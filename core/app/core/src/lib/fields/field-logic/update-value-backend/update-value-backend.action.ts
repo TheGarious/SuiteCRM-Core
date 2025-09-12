@@ -107,7 +107,20 @@ export class UpdateValueBackendAction extends FieldLogicActionHandler {
                 next: (result) => {
 
                     const value = result?.data?.value ?? null;
-                    field.loading.set(false)
+                    field.loading.set(false);
+
+                    let handler = 'addSuccessMessageByKey';
+                    if (result?.status === 'error') {
+                        handler = 'addDangerMessageByKey';
+                    }
+
+                    if (result?.messages && result?.messages?.length) {
+                        result.messages.forEach(message => {
+                            if(!!message) {
+                                this.messages[handler](message);
+                            }
+                        });
+                    }
 
                     if (value === null) {
                         this.messages.addDangerMessageByKey("ERR_FIELD_LOGIC_BACKEND_CALCULATION");
