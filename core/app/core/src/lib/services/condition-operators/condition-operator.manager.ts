@@ -32,6 +32,7 @@ import {ConditionOperatorModel} from './condition-operator.model';
 import {IsEmptyAction} from './is-empty/is-empty.action';
 import {IsEqualAction} from './is-equal/is-equal.action';
 import {NotEqualAction} from './not-equal/not-equal.action';
+import {AnyValueAction} from "./any-value/any-value.action";
 
 @Injectable({
     providedIn: 'root'
@@ -44,8 +45,8 @@ export class ConditionOperatorManager {
         public notEmptyAction: NotEmptyAction,
         public isEmptyAction: IsEmptyAction,
         public isEqualAction: IsEqualAction,
-        public notEqualAction: NotEqualAction
-
+        public notEqualAction: NotEqualAction,
+        public anyValueAction: AnyValueAction
     ) {
     }
 
@@ -57,6 +58,7 @@ export class ConditionOperatorManager {
             'is-empty': this.isEmptyAction,
             'is-equal': this.isEqualAction,
             'not-equal': this.notEqualAction,
+            'any-value': this.anyValueAction
         };
 
         return operatorMap[key];
