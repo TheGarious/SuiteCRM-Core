@@ -25,7 +25,7 @@
 * the words "Supercharged by SuiteCRM".
 */
 -->
-<div class="attachments">
+<div class="attachments attachments-detail-mode">
     <div [class.d-none]="!uploadedFiles()" class="uploaded-files">
         <scrm-multiple-uploaded-files
                 [files]="uploadedFiles()"
@@ -39,6 +39,7 @@
                 [limitConfigKey]="limitConfigKey"
                 [ignoreRowLimit]="ignoreRowLimit"
                 [ignoreBreakpointLimit]="ignoreBreakpointLimit"
+                [allowClear]="false"
                 (clear)="clearFile($event)"
         ></scrm-multiple-uploaded-files>
     </div>

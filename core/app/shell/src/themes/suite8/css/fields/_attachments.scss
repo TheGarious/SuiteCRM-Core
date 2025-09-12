@@ -23,6 +23,49 @@
  * feasible for technical reasons, the Appropriate Legal Notices must display
  * the words "Supercharged by SuiteCRM".
  */
+.field-mode-detail.field-type-attachment {
+  .attachments-detail-mode {
+    margin-bottom: 0.4em;
+    .uploaded-files {
+      .file-group {
+        .file {
+          padding-top: 0;
+
+          .uploaded-file {
+            padding: .2em;
+
+            .uploaded-file-info-container {
+              .uploaded-file-icon-container {
+                .uploaded-file-icon {
+                  line-height: inherit;
+                  svg-icon {
+                    line-height: inherit;
+
+                    svg {
+                      width: 1em;
+                      height: 1em;
+                    }
+                  }
+                }
+              }
+
+              .uploaded-file-info {
+                justify-content: start;
+                >a {
+                  line-height: 1;
+                }
+                .uploaded-file-size {
+                  top: inherit;
+                  position: inherit;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
 
 .attachments {
   display: flex;
