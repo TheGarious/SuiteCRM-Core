@@ -80,12 +80,18 @@ export class BaseAttachmentComponent extends BaseFileComponent {
     }
 
     mapFile(file): UploadedFile {
+
+        let contentUrl = file?.attributes?.contentUrl ?? '';
+        if (contentUrl && (!contentUrl.startsWith('https://') && !contentUrl.startsWith('http://'))) {
+            contentUrl = '.' + contentUrl ?? '';
+        }
+
         return {
             id: file?.id ?? '',
             name: file?.attributes?.original_name ?? '',
             size: file?.attributes?.size ?? 0,
             type: file?.attributes?.type ?? '',
-            contentUrl: file?.attributes?.contentUrl ?? '',
+            contentUrl: contentUrl,
             status: signal('saved'),
             progress: signal(100),
             dateCreated: file?.attributes?.date_entered || ''
@@ -94,14 +100,14 @@ export class BaseAttachmentComponent extends BaseFileComponent {
 
     protected getValuesFromMetadata(): void {
         const metadata = this.field.metadata ?? {};
-        this.breakpoint = metadata?.breakpoint ?? 3;
+        this.breakpoint = metadata?.breakpoint ?? 1;
         this.chunks = metadata?.maxPerRow ?? 3;
         this.compact = metadata?.compact ?? false;
-        this.popoverMaxTextLength = metadata?.popoverMaxTextLength ?? '';
-        this.popoverMinWidth = metadata?.popoverMinWidth ?? '';
+        this.popoverMaxTextLength = metadata?.popoverMaxTextLength ?? '200px';
+        this.popoverMinWidth = metadata?.popoverMinWidth ?? '315px';
         this.storageType = this.field.metadata.storage_type ?? 'private-documents';
-        this.maxTextWidth = metadata?.maxTextWidth ?? '';
-        this.minWidth = metadata?.minWidth ?? '';
+        this.maxTextWidth = metadata?.maxTextWidth ?? '150px';
+        this.minWidth = metadata?.minWidth ?? '185px';
         this.limitConfigKey = metadata.limitConfigKey ?? 'recordview_attachment_limit';
         this.ignoreRowLimit = metadata.ignoreRowLimit ?? false;
         this.ignoreBreakpointLimit = metadata.ignoreBreakpointLimit ?? false;
