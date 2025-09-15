@@ -172,10 +172,38 @@
   }
 }
 
+.field-mode-list.field-type-attachment {
+  .attachments.attachments-list-mode {
+    .uploaded-files {
+      .file-group {
+        .file {
+          .uploaded-file {
+            min-width: 150px !important;
+            .uploaded-file-info-container {
+              .uploaded-file-info {
+                > a {
+                  max-width: 130px !important;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      .attachments-more-link {
+        > div {
+          min-width: 46px;
+        }
+      }
+    }
+  }
+}
+
 
 .attachments {
   display: flex;
   flex-grow: 1;
+  flex-wrap: wrap;
 
   .dropdown-button {
 
@@ -289,6 +317,27 @@
 
       .image-upload {
         padding-left: 0.5rem;
+      }
+    }
+  }
+}
+
+@media (min-width: 600px) and (max-width: 640px) {
+  .attachments {
+    .uploaded-files {
+      .file-group {
+        .file {
+          .uploaded-file {
+            min-width: 160px !important;
+            .uploaded-file-info-container {
+              .uploaded-file-info {
+                > a {
+                  max-width: 130px !important;
+                }
+              }
+            }
+          }
+        }
       }
     }
   }
