@@ -128,6 +128,8 @@ import {AttachmentEditFieldModule} from "./attachments/templates/edit/attachment
 import {AttachmentEditFieldComponent} from "./attachments/templates/edit/attachment.component";
 import {AttachmentDetailFieldModule} from "./attachments/templates/detail/attachment.module";
 import {AttachmentDetailFieldComponent} from "./attachments/templates/detail/attachment.component";
+import {AttachmentListFieldModule} from "./attachments/templates/list/attachment.module";
+import {AttachmentListFieldComponent} from "./attachments/templates/list/attachment.component";
 
 export const baseFieldModules = [
     VarcharDetailFieldModule,
@@ -180,7 +182,8 @@ export const baseFieldModules = [
     SquireEditFieldModule,
     SquireDetailFieldModule,
     AttachmentEditFieldModule,
-    AttachmentDetailFieldModule
+    AttachmentDetailFieldModule,
+    AttachmentListFieldModule
 ];
 export const baseFieldComponents = [
     VarcharDetailFieldComponent,
@@ -234,7 +237,8 @@ export const baseFieldComponents = [
     SquireEditFieldComponent,
     SquireDetailFieldComponent,
     AttachmentEditFieldComponent,
-    AttachmentDetailFieldComponent
+    AttachmentDetailFieldComponent,
+    AttachmentListFieldComponent
 ];
 
 export const baseViewFieldsMap: FieldComponentMap = {
@@ -326,6 +330,7 @@ export const baseViewFieldsMap: FieldComponentMap = {
     'bool-checkbox.filter': BooleanCheckboxFilterFieldComponent,
     'attachment.edit': AttachmentEditFieldComponent,
     'attachment.detail': AttachmentDetailFieldComponent,
+    'attachment.list': AttachmentListFieldComponent,
     'html-native.detail': HtmlDetailFieldComponent,
     'html.detail': TinymceDetailFieldComponent,
     'html.edit': TinymceEditFieldComponent,
