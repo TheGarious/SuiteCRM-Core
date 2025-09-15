@@ -116,8 +116,8 @@ $dictionary['Email'] = array(
             'source' => 'non-db',
             'inline_edit' => false,
         ),
-        'attachments' => array(
-            'name' => 'attachments',
+        'email_attachments' => array(
+            'name' => 'email_attachments',
             'type' => 'attachment',
             'source' => 'non-db',
             'vname' => 'LBL_ATTACHMENTS',
