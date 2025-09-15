@@ -83,7 +83,11 @@ class ParentMapper implements TypeMapperInterface
         }
 
         $relate['id'] = $parentId;
-        $relatedName = $this->getName($parentType, $parentId) ?? html_entity_decode($bean->$name ?? '', ENT_QUOTES);
+        $relatedName = '';
+        if (!empty($parentId)) {
+            $relatedName = $this->getName($parentType, $parentId) ?? html_entity_decode($bean->$name ?? '', ENT_QUOTES);
+        }
+
         $relate[$rName] = $relatedName;
 
         $container[$newName] = $relate;
@@ -117,6 +121,6 @@ class ParentMapper implements TypeMapperInterface
 
     protected function getName($parentType, $parentId)
     {
-        return BeanFactory::getBean($parentType, $parentId)->name;
+        return BeanFactory::getBean($parentType, $parentId)?->name ?? '';
     }
 }
