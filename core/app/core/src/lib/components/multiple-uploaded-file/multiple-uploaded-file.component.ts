@@ -72,6 +72,7 @@ export class MultipleUploadedFileComponent implements OnInit, OnChanges, AfterVi
     @Input() ignoreRowLimit: boolean = false;
     @Input() ignoreBreakpointLimit: boolean = false;
     @Input() limitConfigKey: string = 'recordview_attachment_limit';
+    @Input() displayType: string = 'default';
     @ViewChild('popoverDefaultTarget') popoverDefaultTarget: ElementRef;
     @Output('clear') clear: EventEmitter<UploadedFile> = new EventEmitter<UploadedFile>();
 
@@ -92,7 +93,8 @@ export class MultipleUploadedFileComponent implements OnInit, OnChanges, AfterVi
 
     ngAfterViewInit() {
         setTimeout(() => {
-            this.popover.set(this.popoverTarget);
+
+            this.setPopover();
         }, 300)
     }
 
@@ -108,7 +110,9 @@ export class MultipleUploadedFileComponent implements OnInit, OnChanges, AfterVi
 
     setPopover(): void {
         setTimeout(() => {
-            if (!this.popoverDefaultTarget){
+            const target = this.popoverTarget ? this.popoverTarget : this.popoverDefaultTarget?.nativeElement;
+
+            if (!target){
                 return;
             }
 

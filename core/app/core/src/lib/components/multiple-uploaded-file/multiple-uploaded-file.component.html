@@ -28,12 +28,49 @@
 <ng-container *ngIf="files && files.length <= breakpoint">
     <ng-container *ngFor="let group of chunkedArray">
         <div class="file-group">
-            <scrm-uploaded-file *ngFor="let file of group" class="file pl-1" [file]="file" [minWidth]="minWidth"
+            <ng-container *ngIf="displayType === 'button'">
+                <ng-container *ngFor="let file of group">
+                    <a [href]="file?.contentUrl" download class="clickable pl-1 field-link d-inline-block file-field-uploaded-link" target="_blank">
+                        <scrm-uploaded-file
+                                class="file"
+                                [file]="file"
+                                [minWidth]="minWidth"
                                 [maxTextWidth]="maxTextWidth"
-                                [allowClear]="allowClear"
                                 [compact]="compact"
-                                (clear)="clearFiles($event)">
-            </scrm-uploaded-file>
+                                [allowClear]="false"
+                        >
+                        </scrm-uploaded-file>
+                    </a>
+                </ng-container>
+
+            </ng-container>
+            <ng-container *ngIf="displayType === 'link'">
+
+                <ng-container *ngFor="let file of group">
+                    <a [href]="file?.contentUrl" download class="clickable pl-1 field-link d-inline-block file-field-uploaded-link" target="_blank">
+                        <scrm-uploaded-file
+                                class="file"
+                                [file]="file"
+                                [minWidth]="minWidth"
+                                [maxTextWidth]="maxTextWidth"
+                                [allowClear]="false"
+                                [savedIcon]="'download-arrow'"
+                                [displaySize]="false"
+                        >
+                        </scrm-uploaded-file>
+                    </a>
+                </ng-container>
+
+
+            </ng-container>
+            <ng-container *ngIf="displayType !== 'link' && displayType !== 'button'">
+                <scrm-uploaded-file *ngFor="let file of group" class="file pl-1" [file]="file" [minWidth]="minWidth"
+                                    [maxTextWidth]="maxTextWidth"
+                                    [allowClear]="allowClear"
+                                    [compact]="compact"
+                                    (clear)="clearFiles($event)">
+                </scrm-uploaded-file>
+            </ng-container>
         </div>
     </ng-container>
 </ng-container>
@@ -41,19 +78,52 @@
     <ng-container *ngFor="let chunk of chunkedArray">
         <div class="file-group">
             <ng-container *ngFor="let file of chunk">
-                <scrm-uploaded-file class="pl-1 file" [file]="file" [compact]="compact" [minWidth]="minWidth"
+
+                <ng-container *ngIf="displayType === 'button'">
+                        <a [href]="file?.contentUrl" download class="clickable pl-1 field-link d-inline-block file-field-uploaded-link" target="_blank">
+                            <scrm-uploaded-file
+                                    class="file"
+                                    [file]="file"
+                                    [minWidth]="minWidth"
                                     [maxTextWidth]="maxTextWidth"
-                                    (clear)="clearFiles($event)">
-                </scrm-uploaded-file>
+                                    [compact]="compact"
+                                    [allowClear]="false"
+                            >
+                            </scrm-uploaded-file>
+                        </a>
+                </ng-container>
+                <ng-container *ngIf="displayType === 'link'">
+                        <a [href]="file?.contentUrl" download class="clickable pl-1 field-link d-inline-block file-field-uploaded-link" target="_blank">
+                            <scrm-uploaded-file
+                                    class="file"
+                                    [file]="file"
+                                    [compact]="compact"
+                                    [minWidth]="minWidth"
+                                    [maxTextWidth]="maxTextWidth"
+                                    [allowClear]="false"
+                                    [savedIcon]="'download-arrow'"
+                                    [displaySize]="false"
+                            >
+                            </scrm-uploaded-file>
+                        </a>
+                </ng-container>
+                <ng-container *ngIf="displayType !== 'link' && displayType !== 'button'">
+                    <scrm-uploaded-file class="pl-1 file" [file]="file" [compact]="compact" [minWidth]="minWidth"
+                                        [allowClear]="allowClear"
+                                        [maxTextWidth]="maxTextWidth"
+                                        (clear)="clearFiles($event)">
+                    </scrm-uploaded-file>
+                </ng-container>
             </ng-container>
         </div>
     </ng-container>
 
     <ng-template #popContent>
-        <ul class="mt-1 mb-1 popover-content">
-            <div class="scrollbar-thin"
+        <ul class="mt-1 mb-1 popover-content scrollbar-thin">
+            <div class="uploaded-files-popover-item"
                  *ngFor="let file of files.slice(breakpoint)">
                 <scrm-uploaded-file class="d-flex justify-content-center pr-1" [file]="file" [compact]="compact"
+                                    [allowClear]="allowClear"
                                     [minWidth]="popoverMinWidth" [maxTextWidth]="popoverMaxTextLength"
                                     (clear)="clearFiles($event)">
                 </scrm-uploaded-file>
