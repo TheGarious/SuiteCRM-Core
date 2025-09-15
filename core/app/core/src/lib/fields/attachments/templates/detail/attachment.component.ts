@@ -56,4 +56,12 @@ export class AttachmentDetailFieldComponent extends BaseAttachmentComponent impl
         this.getValuesFromMetadata();
         this.initUploadedFiles();
     }
+
+    protected getValuesFromMetadata(): void {
+        super.getValuesFromMetadata();
+        const metadata = this.field.metadata ?? {};
+        this.breakpoint = metadata?.breakpoint ?? 1;
+        this.chunks = metadata?.maxPerRow ?? 1;
+        this.popoverMaxTextLength = metadata?.popoverMaxTextLength ?? '248px';
+    }
 }
