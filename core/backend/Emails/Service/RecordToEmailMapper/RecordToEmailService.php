@@ -132,7 +132,7 @@ class RecordToEmailService
 
     protected function getMediaObjects(array $emailRecordAttributes, string $storageType): array
     {
-        $attachments = $emailRecordAttributes['attachments'] ?? [];
+        $attachments = $emailRecordAttributes['email_attachments'] ?? [];
 
         $mediaObjects = [];
 
@@ -154,12 +154,12 @@ class RecordToEmailService
         $definition = $this->fieldDefinitionsProvider->getVardef($emailRecord->getModule());
         $vardefs = $definition->getVardef() ?? [];
 
-        if (!isset($vardefs['attachments']['metadata']['storage_type'])) {
+        if (!isset($vardefs['email_attachments']['metadata']['storage_type'])) {
             $this->logger->warning('No storage type found for attachments field in module '.$emailRecord->getModule());
             return '';
         }
 
-        return $vardefs['attachments']['metadata']['storage_type'];
+        return $vardefs['email_attachments']['metadata']['storage_type'];
     }
 
     /**
