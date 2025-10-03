@@ -34,6 +34,7 @@ use App\Schedulers\LegacyHandler\CronHandler;
 use App\Schedulers\LegacyHandler\SchedulerHandler;
 use App\SystemConfig\LegacyHandler\SystemConfigHandler;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -75,7 +76,7 @@ class RunSchedulersCommand extends BaseCommand
                 'Current user: ' . $this->cronHandler->getRunningUser(),
                 ''
             ]);
-            return 1;
+            return Command::FAILURE;
         }
 
         $appStrings = $this->getAppStrings();
@@ -84,7 +85,7 @@ class RunSchedulersCommand extends BaseCommand
 
         $this->runSchedulers($output);
 
-        return 0;
+        return Command::SUCCESS;
     }
 
 
