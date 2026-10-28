@@ -73,6 +73,11 @@ class NavbarHandler extends LegacyHandler implements NavigationProviderInterface
     /**
      * @var array
      */
+    protected $moduleRoutingOverrides;
+
+    /**
+     * @var array
+     */
     protected $navbarAdministrationOverrides;
 
     /**
@@ -102,6 +107,7 @@ class NavbarHandler extends LegacyHandler implements NavigationProviderInterface
      * @param array $navbarAdministrationOverrides
      * @param array $navbarOverrides
      * @param array $quickActions
+     * @param array $moduleRoutingOverrides
      */
     public function __construct(
         string $projectDir,
@@ -117,7 +123,8 @@ class NavbarHandler extends LegacyHandler implements NavigationProviderInterface
         array $moduleRouting,
         array $navbarAdministrationOverrides,
         array $navbarOverrides,
-        array $quickActions
+        array $quickActions,
+        array $moduleRoutingOverrides = []
     ) {
         parent::__construct($projectDir, $legacyDir, $legacySessionName, $defaultSessionName, $legacyScopeState,
             $session);
@@ -129,6 +136,7 @@ class NavbarHandler extends LegacyHandler implements NavigationProviderInterface
         $this->navbarAdministrationOverrides = $navbarAdministrationOverrides;
         $this->navbarOverrides = $navbarOverrides;
         $this->quickActionsConfig = $quickActions;
+        $this->moduleRoutingOverrides = $moduleRoutingOverrides;
     }
 
     /**
@@ -618,6 +626,10 @@ class NavbarHandler extends LegacyHandler implements NavigationProviderInterface
 
         $visibleModules = $this->moduleNameMapper->getVisibleModules();
         $routes = $this->moduleRouting;
+
+        foreach ($this->moduleRoutingOverrides as $module => $flags) {
+            $routes[$module] = array_merge($routes[$module] ?? [], $flags ?? []);
+        }
 
         foreach ($visibleModules as $visibleModule) {
             $frontendName = $this->moduleNameMapper->toFrontEnd($visibleModule);

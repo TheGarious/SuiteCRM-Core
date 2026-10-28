@@ -14,6 +14,7 @@ services:
       $legacySessionName: '%legacy.session_name%'
       $defaultSessionName: '%default_session_name%'
       $moduleRouting: '%legacy.module_routing%'
+      $moduleRoutingOverrides: '%legacy.module_routing_overrides%'
       $exposedSystemConfigs: '%legacy.exposed_system_configs%'
       $systemConfigKeyMap: '%legacy.system_config_key_map%'
       $menuItemMap: '%legacy.menu_item_map%'

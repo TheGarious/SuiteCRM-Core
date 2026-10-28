@@ -276,3 +276,11 @@ parameters:
       index: true
       list: true
       record: false
+
+  # Changes to legacy.module_routing that survive the upgrades of this file, e.g. from an
+  # extension (extensions/<name>/config/*.yaml, loaded after the core configuration).
+  # Front-end module name => the flags to add or replace (index, list, record...):
+  #   legacy.module_routing_overrides:
+  #     products:
+  #       record: true
+  legacy.module_routing_overrides: {}
